@@ -7,93 +7,110 @@ class Window(Gtk.Window):
         self.set_default_size(1000, 700)
 
         
-        # Header Bar
-
+        # --- Header Bar ---
         self.hb = Gtk.HeaderBar()
         self.hb.set_show_close_button(True)
         self.set_titlebar(self.hb)
 
-        # ---
-
-        # Date Range Buttons (Left Side of Header Bar)
-        self.day_button = Gtk.Button("Day")
-        self.week_button = Gtk.Button("Week")
-        self.month_button = Gtk.Button("Month")
+        # --- Date Range Buttons (Left Side of Header Bar) ---
+            
+            # Create Buttons
+        self.dayButton = Gtk.Button("Day")
+        self.weekButton = Gtk.Button("Week")
+        self.monthButton = Gtk.Button("Month")
+            # Set Size
+        self.dayButton.set_size_request(65,32)
+        self.weekButton.set_size_request(65,32)
+        self.monthButton.set_size_request(65,32)
+            # Connect to handler
+        self.dayButton.connect("clicked", self.on_dayButton_clicked)
+        self.weekButton.connect("clicked", self.on_weekButton_clicked)
+        self.monthButton.connect("clicked", self.on_monthButton_clicked)
+            # Pack into Box 
+        self.rangeBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+        Gtk.StyleContext.add_class(self.rangeBox.get_style_context(), "linked")
+        self.rangeBox.add(self.dayButton)
+        self.rangeBox.add(self.weekButton)
+        self.rangeBox.add(self.monthButton)
         
-        self.day_button.set_size_request(65,32)
-        self.week_button.set_size_request(65,32)
-        self.month_button.set_size_request(65,32)
+        # --- Navigation Buttons (Center of Header Bar) ---
+            
+            # Create Buttons
+        self.overviewButton = Gtk.Button("Overview")
+        self.incomeButton = Gtk.Button("Income")
+        self.expensesButton = Gtk.Button("Expenses")
+        self.projectionsButton = Gtk.Button("Projections")
+            # Set Size
+        self.overviewButton.set_size_request(100,32)
+        self.incomeButton.set_size_request(100,32)
+        self.expensesButton.set_size_request(100,32)
+        self.projectionsButton.set_size_request(100,32)
+            # Connect to handler
+        self.overviewButton.connect("clicked", self.on_overviewButton_clicked)
+        self.incomeButton.connect("clicked", self.on_incomeButton_clicked)
+        self.expensesButton.connect("clicked", self.on_expensesButton_clicked)
+        self.projectionsButton.connect("clicked", self.on_projectionsButton_clicked)
+            # Pack into Box 
+        self.navBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+        Gtk.StyleContext.add_class(self.navBox.get_style_context(), "linked")
+        self.navBox.add(self.overviewButton)
+        self.navBox.add(self.incomeButton)
+        self.navBox.add(self.expensesButton)
+        self.navBox.add(self.projectionsButton)
         
-        # Date Range Box 
-        self.range_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-        Gtk.StyleContext.add_class(self.range_box.get_style_context(), "linked")
-        self.range_box.add(self.day_button)
-        self.range_box.add(self.week_button)
-        self.range_box.add(self.month_button)
+        # --- Action Buttons (Right of Header Bar) ---
         
-        # ---
-
-        # Navigation Buttons (Center of Header Bar)
-        self.overview_button = Gtk.Button("Overview")
-        self.income_button = Gtk.Button("Income")
-        self.expenses_button = Gtk.Button("Expenses")
-        self.projections_button = Gtk.Button("Projections")
+            # Create Buttons
+        self.addButton = Gtk.Button()
+        self.menuButton = Gtk.MenuButton();
+            # Add Image
+        self.addIcon = Gio.ThemedIcon(name="list-add-symbolic")
+        self.menuIcon = Gio.ThemedIcon(name="emblem-system-symbolic")
+        self.addImage = Gtk.Image.new_from_gicon(self.addIcon, Gtk.IconSize.MENU)
+        self.menuImage = Gtk.Image.new_from_gicon(self.menuIcon, Gtk.IconSize.MENU)
+        self.addButton.add(self.addImage)
+        self.menuButton.add(self.menuImage)
+            # Set Size
+        self.addButton.set_size_request(32,32)
+        self.menuButton.set_size_request(32,32)
+            # Connect to handler
+        self.addButton.connect("clicked", self.on_addButton_clicked)
+        self.menuButton.connect("clicked", self.on_menuButton_clicked)
         
-        self.overview_button.set_size_request(100,32)
-        self.income_button.set_size_request(100,32)
-        self.expenses_button.set_size_request(100,32)
-        self.projections_button.set_size_request(100,32)
-       
-        # Navigation Box
-        self.nav_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-        Gtk.StyleContext.add_class(self.nav_box.get_style_context(), "linked")
+        # --- Header Bar Packing ---
+        self.hb.set_custom_title(self.navBox)
+        self.hb.pack_start(self.rangeBox)
+        self.hb.pack_end(self.menuButton)
+        self.hb.pack_end(self.addButton)
         
-        self.nav_box.add(self.overview_button)
-        self.nav_box.add(self.income_button)
-        self.nav_box.add(self.expenses_button)
-        self.nav_box.add(self.projections_button)
-        
-        # ---
+    
 
-        # Action Buttons (Right of Header Bar)
-        self.quick_add_button = Gtk.Button()
-        self.icon = Gio.ThemedIcon(name="list-add-symbolic")
-        self.image = Gtk.Image.new_from_gicon(self.icon, Gtk.IconSize.MENU)
-        self.quick_add_button.set_size_request(32,32)
-        self.quick_add_button.add(self.image)
-        
-        self.menu_button = Gtk.MenuButton();
-        self.icon = Gio.ThemedIcon(name="emblem-system-symbolic")
-        self.image = Gtk.Image.new_from_gicon(self.icon, Gtk.IconSize.MENU)
-        self.menu_button.set_size_request(32,32)
-        self.menu_button.add(self.image)
-       
-        # ---
+    def on_dayButton_clicked(self, *args):
+        print("Day Button Working!")
+    
+    def on_weekButton_clicked(self, *args):
+        print("Week Button Working!")
 
-        # Header Bar Packing
-        self.hb.set_custom_title(self.nav_box)
-        self.hb.pack_start(self.range_box)
-        self.hb.pack_end(self.menu_button)
-        self.hb.pack_end(self.quick_add_button)
-        
-        
+    def on_monthButton_clicked(self, *args):
+        print("Month Button Working!")
 
+    def on_overviewButton_clicked(self, *args):
+        print("Overview Button Working!")
 
-        #self.quick_add_button = Gtk.Button()
-        #self.add_button.add(Gtk.Arrow(Gtk.ArrowType.plus, Gtk.ShadowType.NONE))
+    def on_incomeButton_clicked(self, *args):
+        print("Income Button Working!")
 
-#        box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-#        Gtk.StyleContext.add_class(box.get_style_context(), "linked")
+    def on_expensesButton_clicked(self, *args):
+        print("Expenses Button Working!")
 
-#        button = Gtk.Button()
-#        button.add(Gtk.Arrow(Gtk.ArrowType.LEFT, Gtk.ShadowType.NONE))
-#        box.add(button)
+    def on_projectionsButton_clicked(self, *args):
+        print("Projections Button Working!")
 
-#        button = Gtk.Button()
-#        button.add(Gtk.Arrow(Gtk.ArrowType.RIGHT, Gtk.ShadowType.NONE))
-#        box.add(button)
+    def on_addButton_clicked(self, *args):
+        print("Add Button Working!")
 
-#        hb.pack_start(box)
+    def on_menuButton_clicked(self, *args):
+        print("Menu Button Working!")
 
 
 win = Window()
