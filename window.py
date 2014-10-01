@@ -1,4 +1,5 @@
 from gi.repository import Gtk, Gio
+from sidebar import Sidebar
 
 class Window(Gtk.Window):
 
@@ -82,7 +83,9 @@ class Window(Gtk.Window):
         self.hb.pack_start(self.rangeBox)
         self.hb.pack_end(self.menuButton)
         self.hb.pack_end(self.addButton)
-        
+
+        self.sidebar = Sidebar()
+        self.add(self.sidebar.grid) 
     
 
     def on_dayButton_clicked(self, *args):
@@ -102,6 +105,8 @@ class Window(Gtk.Window):
 
     def on_expensesButton_clicked(self, *args):
         print("Expenses Button Working!")
+        sidebar = Sidebar()
+        self.add(sidebar.grid) 
 
     def on_projectionsButton_clicked(self, *args):
         print("Projections Button Working!")
