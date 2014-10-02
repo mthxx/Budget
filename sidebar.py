@@ -1,6 +1,6 @@
 from gi.repository import Gtk, Gio
 
-class Sidebar(Gtk.Window):
+class Sidebar():
 
     def __init__(self):
 

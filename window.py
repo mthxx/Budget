@@ -1,4 +1,5 @@
 from gi.repository import Gtk, Gio
+from income import Income
 from sidebar import Sidebar
 
 class Window(Gtk.Window):
@@ -84,9 +85,21 @@ class Window(Gtk.Window):
         self.hb.pack_end(self.menuButton)
         self.hb.pack_end(self.addButton)
 
-        self.sidebar = Sidebar()
-        self.add(self.sidebar.grid) 
-    
+        # --- Notebook Views ---
+
+        self.sidebar1 = Sidebar()
+        self.sidebar2 = Sidebar()
+        self.sidebar3 = Sidebar()
+        self.sidebar4 = Sidebar()
+        self.notebook = Gtk.Notebook()
+        self.notebook.insert_page(self.sidebar1.grid, None, 0)
+        self.notebook.append_page(self.sidebar2.grid, None)
+        self.notebook.append_page(self.sidebar3.grid, None)
+        self.notebook.append_page(self.sidebar4.grid, None)
+        self.notebook.set_show_tabs(False)
+        self.add(self.notebook)
+        
+        self.income = Income()
 
     def on_dayButton_clicked(self, *args):
         print("Day Button Working!")
@@ -99,26 +112,22 @@ class Window(Gtk.Window):
 
     def on_overviewButton_clicked(self, *args):
         print("Overview Button Working!")
+        self.notebook.set_current_page(0)
 
     def on_incomeButton_clicked(self, *args):
         print("Income Button Working!")
+        self.notebook.set_current_page(1)
 
     def on_expensesButton_clicked(self, *args):
         print("Expenses Button Working!")
-        sidebar = Sidebar()
-        self.add(sidebar.grid) 
+        self.notebook.set_current_page(2)
 
     def on_projectionsButton_clicked(self, *args):
         print("Projections Button Working!")
+        self.notebook.set_current_page(3)
 
     def on_addButton_clicked(self, *args):
         print("Add Button Working!")
 
     def on_menuButton_clicked(self, *args):
         print("Menu Button Working!")
-
-
-win = Window()
-win.connect("delete-event", Gtk.main_quit)
-win.show_all()
-Gtk.main()
