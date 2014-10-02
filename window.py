@@ -1,6 +1,11 @@
 from gi.repository import Gtk, Gio
+from overview import Overview
 from income import Income
+from expense import Expense
+from projections import Projections
 from sidebar import Sidebar
+from basic import Basic
+
 
 class Window(Gtk.Window):
 
@@ -47,7 +52,7 @@ class Window(Gtk.Window):
         self.incomeButton.set_size_request(100,32)
         self.expensesButton.set_size_request(100,32)
         self.projectionsButton.set_size_request(100,32)
-            # Connect to handler
+        # Connect to handler
         self.overviewButton.connect("clicked", self.on_overviewButton_clicked)
         self.incomeButton.connect("clicked", self.on_incomeButton_clicked)
         self.expensesButton.connect("clicked", self.on_expensesButton_clicked)
@@ -81,25 +86,23 @@ class Window(Gtk.Window):
         
         # --- Header Bar Packing ---
         self.hb.set_custom_title(self.navBox)
-        self.hb.pack_start(self.rangeBox)
+        #self.hb.pack_start(self.rangeBox)
         self.hb.pack_end(self.menuButton)
         self.hb.pack_end(self.addButton)
 
         # --- Notebook Views ---
+        self.overview = Overview()
+        self.income = Income()
+        self.expense = Expense()
+        self.projections = Projections()
 
-        self.sidebar1 = Sidebar()
-        self.sidebar2 = Sidebar()
-        self.sidebar3 = Sidebar()
-        self.sidebar4 = Sidebar()
         self.notebook = Gtk.Notebook()
-        self.notebook.insert_page(self.sidebar1.grid, None, 0)
-        self.notebook.append_page(self.sidebar2.grid, None)
-        self.notebook.append_page(self.sidebar3.grid, None)
-        self.notebook.append_page(self.sidebar4.grid, None)
+        self.notebook.insert_page(self.overview.view.grid, None, 0)
+        self.notebook.append_page(self.income.view.grid, None)
+        self.notebook.append_page(self.expense.view.grid, None)
+        self.notebook.append_page(self.projections.view.grid, None)
         self.notebook.set_show_tabs(False)
         self.add(self.notebook)
-        
-        self.income = Income()
 
     def on_dayButton_clicked(self, *args):
         print("Day Button Working!")
