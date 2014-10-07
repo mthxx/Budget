@@ -13,7 +13,7 @@ class Expense():
         self.dateOffsetLeft = 1
         self.costOffsetLeft = 3
         self.descriptionOffsetLeft = 5
-        self.editOffsetLeft = 7
+        self.editOffsetLeft = 6
 
         # Define Widgets
         self.contentGrid = Gtk.Grid()
@@ -84,8 +84,6 @@ class Expense():
         self.expensesLabel.set_justify(Gtk.Justification.RIGHT)
         
         # Build Content Area
-        self.contentGrid.attach(self.expensesLabel, 0,0,7,1)
-        
         self.contentGrid.attach(self.monthSpentLabel, self.dateOffsetLeft, 2, 1, 1)
         self.contentGrid.attach(self.monthRemainingLabel, self.costOffsetLeft, 2, 1, 1)
         self.contentGrid.attach(self.percBudgetLabel, self.descriptionOffsetLeft, 2, 1, 1)
