@@ -33,7 +33,7 @@ class Income():
         self.dummyLabel2 = Gtk.Label()
         self.currentMonthTotalLabel = Gtk.Label("$1,500")
         self.yearToDateTotalLabel = Gtk.Label("$28,500")
-        
+       
         self.paymentLabel1 = Gtk.Label("$1,500")
         self.paymentLabel2 = Gtk.Label("$1,500")
         self.paymentLabel3 = Gtk.Label("$1,500")
