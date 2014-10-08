@@ -7,7 +7,6 @@ class Expense():
         # Define Sidebar Menu
         self.values = ['Rent','Monthly Bills','Insurance','Credit/Loans','Auto','Grocery','Restaurant','Media','Activities','Medical','Pet','Athletics','Donations','Gifts','Home Improvement','Technology','Travel','Clothing','Misc. Expenses','Wedding']
         
-        
         self.entryOffsetTop = 7
         
         self.dateOffsetLeft = 1
@@ -17,7 +16,6 @@ class Expense():
 
         # Define Widgets
         self.contentGrid = Gtk.Grid()
-        self.expensesLabel = Gtk.Label("Restaurants")
         
         self.monthSpentLabel = Gtk.Label("Total Spent")
         self.monthRemainingLabel = Gtk.Label("Total Remaining")
@@ -76,12 +74,10 @@ class Expense():
         self.addEntryButton = Gtk.Button("Add")
         self.addEntryPopover = Gtk.Popover.new(self.addEntryButton)
         
-        #Widget Styling
+        # Widget Styling
         self.contentGrid.set_column_homogeneous(True)
         self.contentGrid.set_row_homogeneous(True)
         self.contentGrid.set_hexpand(True)
-        
-        self.expensesLabel.set_justify(Gtk.Justification.RIGHT)
         
         # Build Content Area
         self.contentGrid.attach(self.monthSpentLabel, self.dateOffsetLeft, 2, 1, 1)
@@ -93,11 +89,8 @@ class Expense():
         self.contentGrid.attach(self.percBudgetTotalLabel, self.descriptionOffsetLeft, 3, 1, 1)
         
         self.contentGrid.attach(self.dummyLabel1, 5, 4, 2, 1)
-        
         self.contentGrid.attach(self.addEntryButton, 3, 5, 1, 1)
-
         self.contentGrid.attach(self.dummyLabel2, 5, 6, 2, 1)
-
         
         self.contentGrid.attach(self.dateLabel10, self.dateOffsetLeft, self.entryOffsetTop, 1, 1)
         self.contentGrid.attach(self.paymentLabel10, self.costOffsetLeft, self.entryOffsetTop, 1, 1)
@@ -152,13 +145,4 @@ class Expense():
         self.view = Sidebar(self.values) 
         
         # Attach Content
-        self.view.grid.attach(self.contentGrid, 1, 0, 1, 1)
-        
-
-
-    def open_view(window, sidebar):
-        window.add(sidebar.grid)
-        self.view = Sidebar(values) 
-
-    def open_view(window, sidebar):
-        window.add(sidebar.grid)
+        self.view.contentViewport.add(self.contentGrid)

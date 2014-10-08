@@ -29,7 +29,6 @@ class Income():
 
         # Define Widgets
         self.contentGrid = Gtk.Grid()
-        self.incomeLabel = Gtk.Label("Income 1")
         
         self.currentMonthLabel = Gtk.Label("Current Month")
         self.currentMonthRemainingLabel = Gtk.Label("Remaining")
@@ -77,12 +76,10 @@ class Income():
         self.novemberLabel = Gtk.Label("November:")
         self.decemberLabel = Gtk.Label("December:")
         
-        #Widget Styling
+        # Widget Styling
         self.contentGrid.set_column_homogeneous(True)
         self.contentGrid.set_row_homogeneous(True)
         self.contentGrid.set_hexpand(True)
-        
-        self.incomeLabel.set_justify(Gtk.Justification.RIGHT)
         
         self.januaryLabel.set_halign(Gtk.Align.END)
         self.februaryLabel.set_halign(Gtk.Align.END)
@@ -151,7 +148,6 @@ class Income():
         self.contentGrid.attach(self.paymentLabel14, self.monthOffsetLeft + 2, self.monthOffsetTop + self.julyOffsetTop, 1, 1)
         self.contentGrid.attach(self.editButton4, self.editOffsetLeft, self.monthOffsetTop + self.julyOffsetTop, 1, 1)
         
-        
         self.contentGrid.attach(self.paymentLabel11, self.monthOffsetLeft + 1, self.monthOffsetTop + self.juneOffsetTop, 1, 1)
         self.contentGrid.attach(self.paymentLabel12, self.monthOffsetLeft + 2, self.monthOffsetTop + self.juneOffsetTop, 1, 1)
         self.contentGrid.attach(self.editButton5, self.editOffsetLeft, self.monthOffsetTop + self.juneOffsetTop, 1, 1)
@@ -179,9 +175,4 @@ class Income():
         self.view = Sidebar(self.values) 
         
         # Attach Content
-        self.view.grid.attach(self.contentGrid, 1, 0, 1, 1)
-        
-
-
-    def open_view(window, sidebar):
-        window.add(sidebar.grid)
+        self.view.contentViewport.add(self.contentGrid)

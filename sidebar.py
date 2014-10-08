@@ -6,10 +6,17 @@ class Sidebar():
 
         # Create Grid, Sidebar, List, and Buttons
         self.grid = Gtk.Grid()
+       
         self.menuListBox = Gtk.ListBox()
+
         self.menuScrolledWindow = Gtk.ScrolledWindow()
+        self.contentScrolledWindow = Gtk.ScrolledWindow()
+        
         self.menuViewport = Gtk.Viewport()
+        self.contentViewport = Gtk.Viewport()
+        
         self.buttons = []
+        
         for i in range(0,len(values)):
             self.buttons.append(Gtk.Button(values[i]))
             
@@ -27,5 +34,9 @@ class Sidebar():
             
         # Add items to Grid 
         self.menuViewport.add(self.menuListBox)
+        
         self.menuScrolledWindow.add(self.menuViewport)
-        self.grid.add(self.menuScrolledWindow)
+        self.contentScrolledWindow.add(self.contentViewport)
+        
+        self.grid.attach(self.menuScrolledWindow,0,0,1,1)
+        self.grid.attach(self.contentScrolledWindow,1,0,1,1)
