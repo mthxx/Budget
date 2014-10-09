@@ -5,41 +5,42 @@ class Income():
 
     def __init__(self):
         # Define Sidebar Menu
-        self.values = ['All','Income 1','Income 2','Income 3','Income 4','Income 5']
-        self.monthOffsetLeft = 1
-        self.monthOffsetTop = 7
+        self.menu = ['All','Income 1','Income 2','Income 3','Income 4','Income 5']
+        self.subMenu = ['All','December','November','October','September','August','July','June','May','April','March','February','January']
         
-        self.dateOffsetLeft = 1
+        self.entryOffsetTop = 7
+        
+        self.dateOffsetLeft = 2
         self.costOffsetLeft = 3
-        self.descriptionOffsetLeft = 5
-        self.editOffsetLeft = 4
-        
-        self.januaryOffsetTop = 11
-        self.februaryOffsetTop = 10
-        self.marchOffsetTop = 9
-        self.aprilOffsetTop = 8
-        self.mayOffsetTop = 7
-        self.juneOffsetTop = 6
-        self.julyOffsetTop = 5
-        self.augustOffsetTop = 4
-        self.septemberOffsetTop = 3
-        self.octoberOffsetTop = 2
-        self.novemberOffsetTop = 1
-        self.decemberOffsetTop = 0
+        self.descriptionOffsetLeft = 4
+        self.editOffsetLeft = 5
 
         # Define Widgets
         self.contentGrid = Gtk.Grid()
         
-        self.currentMonthLabel = Gtk.Label("Current Month")
-        self.currentMonthRemainingLabel = Gtk.Label("Remaining")
-        self.yearToDateLabel = Gtk.Label("Year to date")
-
+        self.monthSpentLabel = Gtk.Label("Income")
+        self.monthRemainingLabel = Gtk.Label("Remaining Income")
+        self.percBudgetLabel = Gtk.Label("% Remaining")
+        
         self.dummyLabel1 = Gtk.Label()
         self.dummyLabel2 = Gtk.Label()
-        self.currentMonthTotalLabel = Gtk.Label("$1,500")
-        self.currentMonthRemainingTotalLabel = Gtk.Label("$1,500")
-        self.yearToDateTotalLabel = Gtk.Label("$28,500")
+        self.dummyLabel3 = Gtk.Label()
+        
+        self.monthSpentTotalLabel = Gtk.Label("$1,500")
+        self.monthRemainingTotalLabel = Gtk.Label("$1,500")
+        self.percBudgetTotalLabel = Gtk.Label("50.00%")
        
+        self.dateLabel1 = Gtk.Label("January 1st")
+        self.dateLabel2 = Gtk.Label("January 15th")
+        self.dateLabel3 = Gtk.Label("February 1st")
+        self.dateLabel4 = Gtk.Label("February 15th")
+        self.dateLabel5 = Gtk.Label("March 1st")
+        self.dateLabel6 = Gtk.Label("March 15th")
+        self.dateLabel7 = Gtk.Label("April 1st")
+        self.dateLabel8 = Gtk.Label("April 15th")
+        self.dateLabel9 = Gtk.Label("May 1st")
+        self.dateLabel10 = Gtk.Label("May 15th")
+
         self.paymentLabel1 = Gtk.Label("$1,500")
         self.paymentLabel2 = Gtk.Label("$1,500")
         self.paymentLabel3 = Gtk.Label("$1,500")
@@ -50,129 +51,85 @@ class Income():
         self.paymentLabel8 = Gtk.Label("$1,500")
         self.paymentLabel9 = Gtk.Label("$1,500")
         self.paymentLabel10 = Gtk.Label("$1,500")
-        self.paymentLabel11 = Gtk.Label("$1,500")
-        self.paymentLabel12 = Gtk.Label("$1,500")
-        self.paymentLabel13 = Gtk.Label("$1,500")
-        self.paymentLabel14 = Gtk.Label("$1,500")
-        self.paymentLabel15 = Gtk.Label("$1,500")
-        self.paymentLabel16 = Gtk.Label("$1,500")
-        self.paymentLabel17 = Gtk.Label("$1,500")
-        self.paymentLabel18 = Gtk.Label("$1,500")
-        self.paymentLabel19 = Gtk.Label("$1,500")
+        
+        self.descriptionLabel1 = Gtk.Label("Income 1")
+        self.descriptionLabel2 = Gtk.Label("Income 2")
+        self.descriptionLabel3 = Gtk.Label("Income 1")
+        self.descriptionLabel4 = Gtk.Label("Tax Return")
+        self.descriptionLabel5 = Gtk.Label("Income 1")
+        self.descriptionLabel6 = Gtk.Label("Bonus")
+        self.descriptionLabel7 = Gtk.Label("Income 1")
+        self.descriptionLabel8 = Gtk.Label("Income 2")
+        self.descriptionLabel9 = Gtk.Label("Income 1")
+        self.descriptionLabel10 = Gtk.Label("Income 2")
         
         self.addEntryButton = Gtk.Button("Add")
         self.addEntryPopover = Gtk.Popover.new(self.addEntryButton)
-        
-        self.januaryLabel = Gtk.Label("January:")
-        self.februaryLabel = Gtk.Label("February:")
-        self.marchLabel = Gtk.Label("March:")
-        self.aprilLabel = Gtk.Label("April:")
-        self.mayLabel = Gtk.Label("May:")
-        self.juneLabel = Gtk.Label("June:")
-        self.julyLabel = Gtk.Label("July:")
-        self.augustLabel = Gtk.Label("August:")
-        self.septemberLabel = Gtk.Label("September:")
-        self.octoberLabel = Gtk.Label("October:")
-        self.novemberLabel = Gtk.Label("November:")
-        self.decemberLabel = Gtk.Label("December:")
+        self.editEntryButton = Gtk.Button("Edit")
+        self.editEntryPopover = Gtk.Popover.new(self.addEntryButton)
         
         # Widget Styling
         self.contentGrid.set_column_homogeneous(True)
         self.contentGrid.set_row_homogeneous(True)
         self.contentGrid.set_hexpand(True)
         
-        self.januaryLabel.set_halign(Gtk.Align.END)
-        self.februaryLabel.set_halign(Gtk.Align.END)
-        self.marchLabel.set_halign(Gtk.Align.END)
-        self.aprilLabel.set_halign(Gtk.Align.END)
-        self.mayLabel.set_halign(Gtk.Align.END)
-        self.juneLabel.set_halign(Gtk.Align.END)
-        self.julyLabel.set_halign(Gtk.Align.END)
-        self.augustLabel.set_halign(Gtk.Align.END)
-        self.septemberLabel.set_halign(Gtk.Align.END)
-        self.octoberLabel.set_halign(Gtk.Align.END)
-        self.novemberLabel.set_halign(Gtk.Align.END)
-        self.decemberLabel.set_halign(Gtk.Align.END)
-
-        self.editButton1 = Gtk.Button("Edit")
-        self.editButton2 = Gtk.Button("Edit")
-        self.editButton3 = Gtk.Button("Edit")
-        self.editButton4 = Gtk.Button("Edit")
-        self.editButton5 = Gtk.Button("Edit")
-        self.editButton6 = Gtk.Button("Edit")
-        self.editButton7 = Gtk.Button("Edit")
-        self.editButton8 = Gtk.Button("Edit")
-        self.editButton9 = Gtk.Button("Edit")
-        self.editButton10 = Gtk.Button("Edit")
-        
         # Build Content Area
-        self.contentGrid.attach(self.currentMonthLabel, self.monthOffsetLeft, 2, 1, 1)
-        self.contentGrid.attach(self.currentMonthRemainingLabel, self.monthOffsetLeft + 1, 2, 1, 1)
-        self.contentGrid.attach(self.yearToDateLabel, self.monthOffsetLeft + 2, 2, 1, 1)
+        self.contentGrid.attach(self.monthSpentLabel, self.dateOffsetLeft, 2, 1, 1)
+        self.contentGrid.attach(self.monthRemainingLabel, self.costOffsetLeft, 2, 1, 1)
+        self.contentGrid.attach(self.percBudgetLabel, self.descriptionOffsetLeft, 2, 1, 1)
         
-        self.contentGrid.attach(self.currentMonthTotalLabel, self.monthOffsetLeft, 3, 1, 1)
-        self.contentGrid.attach(self.currentMonthRemainingTotalLabel, self.monthOffsetLeft + 1, 3, 1, 1)
-        self.contentGrid.attach(self.yearToDateTotalLabel, self.monthOffsetLeft + 2, 3, 1, 1)
+        self.contentGrid.attach(self.monthSpentTotalLabel, self.dateOffsetLeft, 3, 1, 1)
+        self.contentGrid.attach(self.monthRemainingTotalLabel, self.costOffsetLeft, 3, 1, 1)
+        self.contentGrid.attach(self.percBudgetTotalLabel, self.descriptionOffsetLeft, 3, 1, 1)
         
-        self.contentGrid.attach(self.dummyLabel1, 3, 4, 2, 1)
-        
+        self.contentGrid.attach(self.dummyLabel1, 1, 4, 5, 1)
         self.contentGrid.attach(self.addEntryButton, 2, 5, 1, 1)
-
-        self.contentGrid.attach(self.dummyLabel2, 3, 6, 2, 1)
-
-        self.contentGrid.attach(self.januaryLabel, self.monthOffsetLeft, self.monthOffsetTop + self.januaryOffsetTop, 1, 1)
-        self.contentGrid.attach(self.februaryLabel, self.monthOffsetLeft, self.monthOffsetTop + self.februaryOffsetTop, 1, 1)
-        self.contentGrid.attach(self.marchLabel, self.monthOffsetLeft, self.monthOffsetTop + self.marchOffsetTop, 1, 1)
-        self.contentGrid.attach(self.aprilLabel, self.monthOffsetLeft, self.monthOffsetTop + self.aprilOffsetTop, 1, 1)
-        self.contentGrid.attach(self.mayLabel, self.monthOffsetLeft, self.monthOffsetTop + self.mayOffsetTop, 1, 1)
-        self.contentGrid.attach(self.juneLabel, self.monthOffsetLeft, self.monthOffsetTop + self.juneOffsetTop, 1, 1)
-        self.contentGrid.attach(self.julyLabel, self.monthOffsetLeft, self.monthOffsetTop + self.julyOffsetTop, 1, 1)
-        self.contentGrid.attach(self.augustLabel, self.monthOffsetLeft, self.monthOffsetTop + self.augustOffsetTop, 1, 1)
-        self.contentGrid.attach(self.septemberLabel, self.monthOffsetLeft, self.monthOffsetTop + self.septemberOffsetTop, 1, 1)
-        self.contentGrid.attach(self.octoberLabel, self.monthOffsetLeft, self.monthOffsetTop + self.octoberOffsetTop, 1, 1)
-        #self.contentGrid.attach(self.novemberLabel, self.monthOffsetLeft, self.monthOffsetTop + self.novemberOffsetTop, 1, 1)
-        #self.contentGrid.attach(self.decemberLabel, self.monthOffsetLeft, self.monthOffsetTop + self.decemberOffsetTop, 1, 1)
+        self.contentGrid.attach(self.editEntryButton, 4, 5, 1, 1)
+        self.contentGrid.attach(self.dummyLabel2, 1, 6, 1, 1)
         
-        self.contentGrid.attach(self.paymentLabel19, self.monthOffsetLeft + 1, self.monthOffsetTop + self.octoberOffsetTop, 1, 1)
-        self.contentGrid.attach(self.editButton1, self.editOffsetLeft, self.monthOffsetTop + self.octoberOffsetTop, 1, 1)
+        self.contentGrid.attach(self.dateLabel10, self.dateOffsetLeft, self.entryOffsetTop, 1, 1)
+        self.contentGrid.attach(self.paymentLabel10, self.costOffsetLeft, self.entryOffsetTop, 1, 1)
+        self.contentGrid.attach(self.descriptionLabel10, self.descriptionOffsetLeft, self.entryOffsetTop, 1, 1)
         
-        self.contentGrid.attach(self.paymentLabel17, self.monthOffsetLeft + 1, self.monthOffsetTop + self.septemberOffsetTop, 1, 1)
-        self.contentGrid.attach(self.paymentLabel18, self.monthOffsetLeft + 2, self.monthOffsetTop + self.septemberOffsetTop, 1, 1)
-        self.contentGrid.attach(self.editButton2, self.editOffsetLeft, self.monthOffsetTop + self.septemberOffsetTop, 1, 1)
+        self.contentGrid.attach(self.dateLabel9, self.dateOffsetLeft, self.entryOffsetTop + 1, 1, 1)
+        self.contentGrid.attach(self.paymentLabel9, self.costOffsetLeft, self.entryOffsetTop + 1, 1, 1)
+        self.contentGrid.attach(self.descriptionLabel9, self.descriptionOffsetLeft, self.entryOffsetTop + 1, 1, 1)
         
-        self.contentGrid.attach(self.paymentLabel15, self.monthOffsetLeft + 1, self.monthOffsetTop + self.augustOffsetTop, 1, 1)
-        self.contentGrid.attach(self.paymentLabel16, self.monthOffsetLeft + 2, self.monthOffsetTop + self.augustOffsetTop, 1, 1)
-        self.contentGrid.attach(self.editButton3, self.editOffsetLeft, self.monthOffsetTop + self.augustOffsetTop, 1, 1)
+        self.contentGrid.attach(self.dateLabel8, self.dateOffsetLeft, self.entryOffsetTop + 2, 1, 1)
+        self.contentGrid.attach(self.paymentLabel8, self.costOffsetLeft, self.entryOffsetTop + 2, 1, 1)
+        self.contentGrid.attach(self.descriptionLabel8, self.descriptionOffsetLeft, self.entryOffsetTop + 2, 1, 1)
         
-        self.contentGrid.attach(self.paymentLabel13, self.monthOffsetLeft + 1, self.monthOffsetTop + self.julyOffsetTop, 1, 1)
-        self.contentGrid.attach(self.paymentLabel14, self.monthOffsetLeft + 2, self.monthOffsetTop + self.julyOffsetTop, 1, 1)
-        self.contentGrid.attach(self.editButton4, self.editOffsetLeft, self.monthOffsetTop + self.julyOffsetTop, 1, 1)
+        self.contentGrid.attach(self.dateLabel7, self.dateOffsetLeft, self.entryOffsetTop + 3, 1, 1)
+        self.contentGrid.attach(self.paymentLabel7, self.costOffsetLeft, self.entryOffsetTop + 3, 1, 1)
+        self.contentGrid.attach(self.descriptionLabel7, self.descriptionOffsetLeft, self.entryOffsetTop + 3, 1, 1)
         
-        self.contentGrid.attach(self.paymentLabel11, self.monthOffsetLeft + 1, self.monthOffsetTop + self.juneOffsetTop, 1, 1)
-        self.contentGrid.attach(self.paymentLabel12, self.monthOffsetLeft + 2, self.monthOffsetTop + self.juneOffsetTop, 1, 1)
-        self.contentGrid.attach(self.editButton5, self.editOffsetLeft, self.monthOffsetTop + self.juneOffsetTop, 1, 1)
+        self.contentGrid.attach(self.dateLabel6, self.dateOffsetLeft, self.entryOffsetTop + 4, 1, 1)
+        self.contentGrid.attach(self.paymentLabel6, self.costOffsetLeft, self.entryOffsetTop + 4, 1, 1)
+        self.contentGrid.attach(self.descriptionLabel6, self.descriptionOffsetLeft, self.entryOffsetTop + 4, 1, 1)
         
-        self.contentGrid.attach(self.paymentLabel9, self.monthOffsetLeft + 1, self.monthOffsetTop + self.mayOffsetTop, 1, 1)
-        self.contentGrid.attach(self.paymentLabel10, self.monthOffsetLeft + 2, self.monthOffsetTop + self.mayOffsetTop, 1, 1)
-        self.contentGrid.attach(self.editButton6, self.editOffsetLeft, self.monthOffsetTop + self.mayOffsetTop, 1, 1)
+        self.contentGrid.attach(self.dateLabel5, self.dateOffsetLeft, self.entryOffsetTop + 5, 1, 1)
+        self.contentGrid.attach(self.paymentLabel5, self.costOffsetLeft, self.entryOffsetTop + 5, 1, 1)
+        self.contentGrid.attach(self.descriptionLabel5, self.descriptionOffsetLeft, self.entryOffsetTop + 5, 1, 1)
         
-        self.contentGrid.attach(self.paymentLabel7, self.monthOffsetLeft + 1, self.monthOffsetTop + self.aprilOffsetTop, 1, 1)
-        self.contentGrid.attach(self.paymentLabel8, self.monthOffsetLeft + 2, self.monthOffsetTop + self.aprilOffsetTop, 1, 1)
-        self.contentGrid.attach(self.editButton7, self.editOffsetLeft, self.monthOffsetTop + self.aprilOffsetTop, 1, 1)
+        self.contentGrid.attach(self.dateLabel4, self.dateOffsetLeft, self.entryOffsetTop + 6, 1, 1)
+        self.contentGrid.attach(self.paymentLabel4, self.costOffsetLeft, self.entryOffsetTop + 6, 1, 1)
+        self.contentGrid.attach(self.descriptionLabel4, self.descriptionOffsetLeft, self.entryOffsetTop + 6, 1, 1)
         
-        self.contentGrid.attach(self.paymentLabel5, self.monthOffsetLeft + 1, self.monthOffsetTop + self.marchOffsetTop, 1, 1)
-        self.contentGrid.attach(self.paymentLabel6, self.monthOffsetLeft + 2, self.monthOffsetTop + self.marchOffsetTop, 1, 1)
-        self.contentGrid.attach(self.editButton8, self.editOffsetLeft, self.monthOffsetTop + self.marchOffsetTop, 1, 1)
-
-        self.contentGrid.attach(self.paymentLabel3, self.monthOffsetLeft + 1, self.monthOffsetTop + self.februaryOffsetTop, 1, 1)
-        self.contentGrid.attach(self.paymentLabel4, self.monthOffsetLeft + 2, self.monthOffsetTop + self.februaryOffsetTop, 1, 1)
-        self.contentGrid.attach(self.editButton9, self.editOffsetLeft, self.monthOffsetTop + self.februaryOffsetTop, 1, 1)
+        self.contentGrid.attach(self.dateLabel3, self.dateOffsetLeft, self.entryOffsetTop + 7, 1, 1)
+        self.contentGrid.attach(self.paymentLabel3, self.costOffsetLeft, self.entryOffsetTop + 7, 1, 1)
+        self.contentGrid.attach(self.descriptionLabel3, self.descriptionOffsetLeft, self.entryOffsetTop + 7, 1, 1)
         
-        self.contentGrid.attach(self.paymentLabel1, self.monthOffsetLeft + 1, self.monthOffsetTop + self.januaryOffsetTop, 1, 1)
-        self.contentGrid.attach(self.paymentLabel2, self.monthOffsetLeft + 2, self.monthOffsetTop + self.januaryOffsetTop, 1, 1)
-        self.contentGrid.attach(self.editButton10, self.editOffsetLeft, self.monthOffsetTop + self.januaryOffsetTop, 1, 1)
+        self.contentGrid.attach(self.dateLabel2, self.dateOffsetLeft, self.entryOffsetTop + 8, 1, 1)
+        self.contentGrid.attach(self.paymentLabel2, self.costOffsetLeft, self.entryOffsetTop + 8, 1, 1)
+        self.contentGrid.attach(self.descriptionLabel2, self.descriptionOffsetLeft, self.entryOffsetTop + 8, 1, 1)
         
-        self.view = Sidebar(self.values) 
+        self.contentGrid.attach(self.dateLabel1, self.dateOffsetLeft, self.entryOffsetTop + 9, 1, 1)
+        self.contentGrid.attach(self.paymentLabel1, self.costOffsetLeft, self.entryOffsetTop + 9, 1, 1)
+        self.contentGrid.attach(self.descriptionLabel1, self.descriptionOffsetLeft, self.entryOffsetTop + 9, 1, 1)
+        
+        self.contentGrid.attach(self.dummyLabel3, 5, self.entryOffsetTop + 10, 2, 1)
+        
+        self.view = Sidebar(self.menu, self.subMenu) 
         
         # Attach Content
         self.view.contentViewport.add(self.contentGrid)
