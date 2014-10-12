@@ -4,10 +4,11 @@ from sidebar import Sidebar
 class Data():
 
     def __init__(self):
+        self.incomeMenu = ['All','Income 1','Income 2','Income 3','Income 4','Income 5']
+        self.expenseMenu = ['All','Rent','Monthly Bills','Insurance','Credit/Loans','Auto','Grocery','Restaurant','Media','Activities','Medical','Pet','Athletics','Donations','Gifts','Home Improvement','Technology','Travel','Clothing','Misc. Expenses','Wedding']
+        
         self.currentMonthMenu = ['All','October','September','August','July','June','May','April','March','February','January']
         self.allMonthMenu = ['All','December','November','October','September','August','July','June','May','April','March','February','January']
-        self.incomeSources = ['All','Income 1','Income 2','Income 3','Income 4','Income 5']
-        self.expenseMenu = ['All','Rent','Monthly Bills','Insurance','Credit/Loans','Auto','Grocery','Restaurant','Media','Activities','Medical','Pet','Athletics','Donations','Gifts','Home Improvement','Technology','Travel','Clothing','Misc. Expenses','Wedding']
         
         self.income = [
                 ['Income 2', 12, 15, '1500','Income 2']
