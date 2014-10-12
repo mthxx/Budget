@@ -6,13 +6,11 @@ from projections import Projections
 from sidebar import Sidebar
 from basic import Basic
 
-
 class Window(Gtk.Window):
 
     def __init__(self):
         Gtk.Window.__init__(self, title="Budget")
         self.set_default_size(1000, 700)
-
         
         # --- Header Bar ---
         self.hb = Gtk.HeaderBar()
@@ -114,19 +112,15 @@ class Window(Gtk.Window):
         print("Month Button Working!")
 
     def on_overviewButton_clicked(self, *args):
-        print("Overview Button Working!")
         self.notebook.set_current_page(0)
 
     def on_incomeButton_clicked(self, *args):
-        print("Income Button Working!")
         self.notebook.set_current_page(1)
 
     def on_expensesButton_clicked(self, *args):
-        print("Expenses Button Working!")
         self.notebook.set_current_page(2)
 
     def on_projectionsButton_clicked(self, *args):
-        print("Projections Button Working!")
         self.notebook.set_current_page(3)
 
     def on_addButton_clicked(self, *args):
@@ -134,3 +128,4 @@ class Window(Gtk.Window):
 
     def on_menuButton_clicked(self, *args):
         print("Menu Button Working!")
+
