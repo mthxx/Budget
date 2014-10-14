@@ -18,7 +18,7 @@ class Income():
             self.dateString = ""
             self.dateString = Data.translate_date(self.dateString,self.data.income, i)
 
-            self.categoryLabel = Gtk.Label(self.data.income[i][0])
+            self.categoryLabel = Gtk.Label(self.data.income[i][0][1])
             self.dateLabel = Gtk.Label(self.dateString)
             self.costLabel = Gtk.Label("$" + self.data.income[i][3])
             self.descriptionLabel = Gtk.Label(self.data.income[i][4])
@@ -34,11 +34,16 @@ class Income():
         
         # Build Sidebars
         for i in range(0,len(self.data.incomeMenu)):
-            self.label = Gtk.Label(self.data.incomeMenu[i])
+            self.label = Gtk.Label(self.data.incomeMenu[i][1])
             self.label.set_property("height-request", 60)
             self.view.menuListBox.add(self.label)
         
         for i in range(0,len(self.data.currentMonthMenu)):
-            self.label = Gtk.Label(self.data.currentMonthMenu[i])
+            self.label = Gtk.Label(self.data.currentMonthMenu[i][1])
             self.label.set_property("height-request", 60)
             self.view.subMenuListBox.add(self.label)
+
+
+        # Add Signal Handling
+        self.view.menuListBox.connect("row-selected",self.view.menu_clicked, self.data.income)
+        self.view.subMenuListBox.connect("row-selected",self.view.subMenu_clicked, self.data.income)

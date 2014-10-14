@@ -18,7 +18,7 @@ class Expense():
             self.dateString = ""
             self.dateString = Data.translate_date(self.dateString,self.data.expenses, i)
 
-            self.categoryLabel = Gtk.Label(self.data.expenses[i][0])
+            self.categoryLabel = Gtk.Label(self.data.expenses[i][0][1])
             self.dateLabel = Gtk.Label(self.dateString)
             self.costLabel = Gtk.Label("$" + self.data.expenses[i][3])
             self.descriptionLabel = Gtk.Label(self.data.expenses[i][4])
@@ -34,11 +34,11 @@ class Expense():
 
         # Build Sidebars
         for i in range(0,len(self.data.expenseMenu)):
-            self.label = Gtk.Label(self.data.expenseMenu[i])
+            self.label = Gtk.Label(self.data.expenseMenu[i][1])
             self.label.set_property("height-request", 60)
             self.view.menuListBox.add(self.label)
         
         for i in range(0,len(self.data.currentMonthMenu)):
-            self.label = Gtk.Label(self.data.currentMonthMenu[i])
+            self.label = Gtk.Label(self.data.currentMonthMenu[i][1])
             self.label.set_property("height-request", 60)
             self.view.subMenuListBox.add(self.label)
