@@ -5,8 +5,6 @@ class Sidebar():
     def __init__(self):
 
         # Initialize Variables
-        self.menuButtons = []
-        self.subMenuButtons = []
         self.entryRows = []
         self.menu = "All"
         self.subMenu = "All"
@@ -104,17 +102,19 @@ class Sidebar():
         
         self.contentViewport.add(self.contentGrid)
         
-
-    def menu_clicked(self,button):
-        (button.get_label())
-
-    def menu_clicked(self,button):
-        self.menu = button.get_label()
+        # Add Signal Handling
+        self.menuListBox.connect("row-selected",self.menu_clicked)
+        self.subMenuListBox.connect("row-selected",self.subMenu_clicked)
+        
+    def menu_clicked(self,listbox,row):
+        print(row.get_index())
+        #self.menu = row.get_index()
         self.filter_menu()
     
-    def subMenu_clicked(self,button):
-        self.subMenu = button.get_label()
-        self.filter_subMenu()
+    def subMenu_clicked(self,listbox,row):
+        print(row.get_index())
+        #self.subMenu = row.get_index()
+        self.filter_menu()
     
     def filter_menu(self):
         for i in range (0,len(self.entryRows)):

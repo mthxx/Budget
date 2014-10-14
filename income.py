@@ -34,27 +34,11 @@ class Income():
         
         # Build Sidebars
         for i in range(0,len(self.data.incomeMenu)):
-            self.button = Gtk.Button(self.data.incomeMenu[i])
-            self.view.menuButtons.append(self.button)
-            self.button.connect("clicked",self.view.menu_clicked)
+            self.label = Gtk.Label(self.data.incomeMenu[i])
+            self.label.set_property("height-request", 60)
+            self.view.menuListBox.add(self.label)
         
         for i in range(0,len(self.data.currentMonthMenu)):
-            self.button = Gtk.Button(self.data.currentMonthMenu[i])
-            self.view.subMenuButtons.append(self.button)
-            self.button.connect("clicked",self.view.subMenu_clicked)
-        
-        # Style Sidebars
-        for i in range(0,len(self.data.incomeMenu)):
-            self.view.menuButtons[i].set_relief(Gtk.ReliefStyle.NONE)
-            self.view.menuButtons[i].set_property("height-request", 60)
-        
-        for i in range(0,len(self.data.currentMonthMenu)):
-            self.view.subMenuButtons[i].set_relief(Gtk.ReliefStyle.NONE)
-            self.view.subMenuButtons[i].set_property("height-request", 60)
-            
-        # Attach Buttons and Content
-        for i in range(0,len(self.data.incomeMenu)):
-            self.view.menuListBox.add(self.view.menuButtons[i])
-        
-        for i in range(0,len(self.data.currentMonthMenu)):
-            self.view.subMenuListBox.add(self.view.subMenuButtons[i])
+            self.label = Gtk.Label(self.data.currentMonthMenu[i])
+            self.label.set_property("height-request", 60)
+            self.view.subMenuListBox.add(self.label)
