@@ -4,15 +4,28 @@ class Sidebar():
 
     def __init__(self):
 
-        # Define Widgets
+        # Initialize Variables
+        self.menuButtons = []
+        self.subMenuButtons = []
+        self.entryRows = []
+        self.menu = "All"
+        self.subMenu = "All"
+        
+        # Set Offsets
+        self.entryOffsetTop = 8
+        self.categoryOffsetLeft = 1
+        self.dateOffsetLeft = 2
+        self.costOffsetLeft = 3
+        self.descriptionOffsetLeft = 4
+        self.editOffsetLeft = 5
+        
+        # Define Layouts
         self.grid = Gtk.Grid()
-        
         self.contentGrid = Gtk.Grid()
-        
        
         self.menuListBox = Gtk.ListBox()
         self.subMenuListBox = Gtk.ListBox()
-
+        
         self.menuScrolledWindow = Gtk.ScrolledWindow()
         self.subMenuScrolledWindow = Gtk.ScrolledWindow()
         self.contentScrolledWindow = Gtk.ScrolledWindow()
@@ -20,12 +33,8 @@ class Sidebar():
         self.menuViewport = Gtk.Viewport()
         self.subMenuViewport = Gtk.Viewport()
         self.contentViewport = Gtk.Viewport()
-        
-        self.categoryNotebook = Gtk.Notebook()
-        
-        self.menuButtons = []
-        self.subMenuButtons = []
-        
+
+        # Define Widgets
         self.categoryTitleLabel = Gtk.Label("Category")
         self.dateTitleLabel = Gtk.Label("Date")
         self.costTitleLabel = Gtk.Label("Cost")
@@ -46,20 +55,6 @@ class Sidebar():
         self.monthSpentTotalLabel = Gtk.Label("$1,500")
         self.monthRemainingTotalLabel = Gtk.Label("$1,500")
         self.percBudgetTotalLabel = Gtk.Label("50.00%")
-        
-        self.entryRows = []
-
-        self.menu = "All"
-        self.subMenu = "All"
-
-        # Set Offsets
-        self.entryOffsetTop = 8
-        
-        self.categoryOffsetLeft = 1
-        self.dateOffsetLeft = 2
-        self.costOffsetLeft = 3
-        self.descriptionOffsetLeft = 4
-        self.editOffsetLeft = 5
 
         # Set Styling
         self.menuScrolledWindow.set_vexpand(True)
@@ -76,8 +71,7 @@ class Sidebar():
         self.costTitleLabel.set_markup("<b>Cost</b>")
         self.descriptionTitleLabel.set_markup("<b>Description</b>")
         
-        
-        # Add items to Grid 
+        # Add items to Main Grid 
         self.menuViewport.add(self.menuListBox)
         self.subMenuViewport.add(self.subMenuListBox)
         
@@ -89,7 +83,7 @@ class Sidebar():
         self.grid.attach(self.subMenuScrolledWindow,2,0,1,1)
         self.grid.attach(self.contentScrolledWindow,1,0,1,1)
 
-        # Build Content Area
+        # Build Content Area - Add items to Content Grid
         self.contentGrid.attach(self.topLeftLabel, self.dateOffsetLeft, 2, 1, 1)
         self.contentGrid.attach(self.topMiddleLabel, self.costOffsetLeft, 2, 1, 1)
         self.contentGrid.attach(self.topRightLabel, self.descriptionOffsetLeft, 2, 1, 1)
@@ -113,7 +107,6 @@ class Sidebar():
 
     def menu_clicked(self,button):
         (button.get_label())
-
 
     def menu_clicked(self,button):
         self.menu = button.get_label()
