@@ -103,25 +103,24 @@ class Sidebar():
         self.contentGrid.attach(self.descriptionTitleLabel, self.descriptionOffsetLeft, 7, 1, 1)
         
         self.contentViewport.add(self.contentGrid)
-        
-    def menu_clicked(self, listbox, row, data):
-        for i in range (len(self.data.incomeMenu)):
-            if self.data.incomeMenu[i][0] == row.get_index():
-                self.menu = self.data.incomeMenu[i][1]
-        print(self.menu)
-        self.filter_menu(data)
+
+    def menu_clicked(self, listbox, row, data, dataMenu):
+        for i in range (len(dataMenu)):
+            if dataMenu[i][0] == row.get_index():
+                self.menu = dataMenu[i][1]
+        self.filter_menu(data, dataMenu)
     
-    def subMenu_clicked(self, listbox, row, data):
+    def subMenu_clicked(self, listbox, row, data, dataMenu):
         for i in range (len(self.data.currentMonthMenu)):
             if self.data.currentMonthMenu[i][0] == row.get_index():
                 self.subMenu = self.data.currentMonthMenu[i][1]
-        self.filter_subMenu(data)
+        self.filter_subMenu(data, dataMenu)
 
-    def filter_menu(self, data):
+    def filter_menu(self, data, dataMenu):
         for i in range (0,len(self.entryRows)):
             self.month = self.entryRows[i][1].get_label().split()
             self.month =  self.month[0]
-            if self.menu == self.data.incomeMenu[0][1]:
+            if self.menu == dataMenu[0][1]:
                 if self.subMenu == self.data.currentMonthMenu[0][1]:
                     self.categoryTitleLabel.show()
                     self.entryRows[i][0].show()
@@ -140,7 +139,7 @@ class Sidebar():
                     self.entryRows[i][1].hide()
                     self.entryRows[i][2].hide()
                     self.entryRows[i][3].hide()
-            elif self.menu != self.data.incomeMenu[0][1]:
+            elif self.menu != dataMenu[0][1]:
                 if self.entryRows[i][0].get_label() == self.menu:
                     if self.subMenu == self.data.currentMonthMenu[0][1]:
                         self.categoryTitleLabel.hide()
@@ -165,11 +164,11 @@ class Sidebar():
                     self.entryRows[i][2].hide()
                     self.entryRows[i][3].hide()
 
-    def filter_subMenu(self, data):
+    def filter_subMenu(self, data, dataMenu):
         for i in range (0,len(self.entryRows)):
             self.month = self.entryRows[i][1].get_label().split()
             self.month = self.month[0]
-            if self.menu == self.data.incomeMenu[0][1]:
+            if self.menu == dataMenu[0][1]:
                 if self.subMenu == self.data.currentMonthMenu[0][1]:
                     self.entryRows[i][0].show()
                     self.entryRows[i][1].show()
@@ -185,7 +184,7 @@ class Sidebar():
                     self.entryRows[i][1].hide()
                     self.entryRows[i][2].hide()
                     self.entryRows[i][3].hide()
-            elif self.menu != self.data.incomeMenu[0][1]:
+            elif self.menu != dataMenu[0][1]:
                 if self.month == self.subMenu and self.entryRows[i][0].get_label() == self.menu:
                     self.entryRows[i][0].hide()
                     self.entryRows[i][1].show()

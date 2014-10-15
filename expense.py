@@ -42,3 +42,7 @@ class Expense():
             self.label = Gtk.Label(self.data.currentMonthMenu[i][1])
             self.label.set_property("height-request", 60)
             self.view.subMenuListBox.add(self.label)
+        
+        # Add Signal Handling
+        self.view.menuListBox.connect("row-activated",self.view.menu_clicked, self.data.expenses, self.data.expenseMenu)
+        self.view.subMenuListBox.connect("row-activated",self.view.subMenu_clicked, self.data.expenses, self.data.expenseMenu)

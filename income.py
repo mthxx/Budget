@@ -42,8 +42,7 @@ class Income():
             self.label = Gtk.Label(self.data.currentMonthMenu[i][1])
             self.label.set_property("height-request", 60)
             self.view.subMenuListBox.add(self.label)
-
-
+        
         # Add Signal Handling
-        self.view.menuListBox.connect("row-selected",self.view.menu_clicked, self.data.income)
-        self.view.subMenuListBox.connect("row-selected",self.view.subMenu_clicked, self.data.income)
+        self.view.menuListBox.connect("row-activated",self.view.menu_clicked, self.data.income, self.data.incomeMenu)
+        self.view.subMenuListBox.connect("row-activated",self.view.subMenu_clicked, self.data.income, self.data.incomeMenu)
