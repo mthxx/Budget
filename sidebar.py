@@ -58,7 +58,7 @@ class Sidebar():
 
         # Set Styling
         self.menuScrolledWindow.set_vexpand(True)
-        self.menuScrolledWindow.set_property("width-request",200)
+        self.menuScrolledWindow.set_property("width-request",150)
         
         self.subMenuScrolledWindow.set_vexpand(True)
         self.subMenuScrolledWindow.set_property("width-request",100)

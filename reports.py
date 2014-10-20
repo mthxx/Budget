@@ -1,6 +1,6 @@
 from gi.repository import Gtk, Gio
 
-class Projections():
+class Reports():
         
     def __init__(self):
         self.grid = Gtk.Grid()

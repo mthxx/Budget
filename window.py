@@ -1,10 +1,8 @@
 from gi.repository import Gtk, Gio
-from overview import Overview
+from overview_menu import Overview_Menu
 from income import Income
 from expense import Expense
-from projections import Projections
 from sidebar import Sidebar
-from basic import Basic
 
 class Window(Gtk.Window):
 
@@ -44,24 +42,20 @@ class Window(Gtk.Window):
         self.overviewButton = Gtk.Button("Overview")
         self.incomeButton = Gtk.Button("Income")
         self.expensesButton = Gtk.Button("Expenses")
-        self.projectionsButton = Gtk.Button("Projections")
             # Set Size
         self.overviewButton.set_size_request(100,32)
         self.incomeButton.set_size_request(100,32)
         self.expensesButton.set_size_request(100,32)
-        self.projectionsButton.set_size_request(100,32)
         # Connect to handler
         self.overviewButton.connect("clicked", self.on_overviewButton_clicked)
         self.incomeButton.connect("clicked", self.on_incomeButton_clicked)
         self.expensesButton.connect("clicked", self.on_expensesButton_clicked)
-        self.projectionsButton.connect("clicked", self.on_projectionsButton_clicked)
             # Pack into Box 
         self.navBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         Gtk.StyleContext.add_class(self.navBox.get_style_context(), "linked")
         self.navBox.add(self.overviewButton)
         self.navBox.add(self.incomeButton)
         self.navBox.add(self.expensesButton)
-        self.navBox.add(self.projectionsButton)
         
         # --- Action Buttons (Right of Header Bar) ---
         
@@ -89,16 +83,14 @@ class Window(Gtk.Window):
         self.hb.pack_end(self.addButton)
 
         # --- Notebook Views ---
-        self.overview = Overview()
+        self.overviewMenu = Overview_Menu()
         self.income = Income()
         self.expense = Expense()
-        self.projections = Projections()
 
         self.notebook = Gtk.Notebook()
-        self.notebook.insert_page(self.overview.view.grid, None, 0)
+        self.notebook.insert_page(self.overviewMenu.notebook, None, 0)
         self.notebook.append_page(self.income.view.grid, None)
         self.notebook.append_page(self.expense.view.grid, None)
-        self.notebook.append_page(self.projections.view.grid, None)
         self.notebook.set_show_tabs(False)
         self.add(self.notebook)
 
@@ -119,9 +111,6 @@ class Window(Gtk.Window):
 
     def on_expensesButton_clicked(self, *args):
         self.notebook.set_current_page(2)
-
-    def on_projectionsButton_clicked(self, *args):
-        self.notebook.set_current_page(3)
 
     def on_addButton_clicked(self, *args):
         print("Add Button Working!")
