@@ -48,7 +48,21 @@ class Data():
                         ,[10, 'January']
                         ]
 
-        self.allMonthMenu = ['All','December','November','October','September','August','July','June','May','April','March','February','January']
+        self.allMonthMenu = [
+                        [0, 'All']
+                        ,[1, 'January']
+                        ,[2, 'February']
+                        ,[3, 'March']
+                        ,[4, 'April']
+                        ,[5, 'May']
+                        ,[6, 'June']
+                        ,[7, 'July']
+                        ,[8, 'August']
+                        ,[9, 'September']
+                        ,[10, 'October']
+                        ,[11, 'November']
+                        ,[12, 'December']
+                        ]
         
         self.income = [
                 [[2, 'Income 2'], 12, 15, '1500','Income 2']
