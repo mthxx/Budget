@@ -61,10 +61,11 @@ class Overview():
 
         # Print out Months
         for index in range(1,len(self.data.allMonthMenu)):
-            self.label = Gtk.Label(self.data.allMonthMenu[index][1])
-            self.label.set_property("height-request", 30)
-            self.label.set_property("width-request", 50)
-            self.monthGrid.attach(self.label,index,0,1,1)
+            self.button = Gtk.Button(self.data.allMonthMenu[index][1])
+            self.button.set_relief(Gtk.ReliefStyle.NONE)
+            self.button.set_property("height-request", 30)
+            self.button.set_property("width-request", 120)
+            self.monthGrid.attach(self.button,index,0,1,1)
         
 
         self.display_info(self.data.incomeMenu, self.data.income)
@@ -74,10 +75,11 @@ class Overview():
     def display_info(self,data_cat, data_arr):
         # Print out Categories
         for index in range(1,len(data_cat)):
-            self.label = Gtk.Label(data_cat[index][1])
-            self.label.set_property("height-request", 30)
+            self.button = Gtk.Button(data_cat[index][1])
+            self.button.set_relief(Gtk.ReliefStyle.NONE)
+            self.button.set_property("height-request", 40)
             self.index += 1
-            self.categoryGrid.attach(self.label, 0, self.index - 1, 1, 1)
+            self.categoryGrid.attach(self.button, 0, self.index - 1, 1, 1)
             # Print out total values for each category for each month
             for month in range(1,len(self.data.allMonthMenu)):
                 self.total = 0
@@ -86,14 +88,16 @@ class Overview():
                         if data_arr[data][1] == self.data.allMonthMenu[month][0]:
                             self.total += Decimal(data_arr[data][3])
                 self.totalLabel = Gtk.Label("$" + str(self.total))
-                self.totalLabel.set_property("height-request", 30)
+                self.totalLabel.set_property("height-request", 40)
+                self.totalLabel.set_property("width-request", 120)
                 self.contentGrid.attach(self.totalLabel, month - 1, self.index, 1, 1) 
         
         # Print out "All" label
         self.index += 1
-        self.AllLabel = Gtk.Label(data_cat[0][1])
-        self.AllLabel.set_property("height-request", 30)
-        self.categoryGrid.attach(self.AllLabel, 0, self.index, 1, 1)
+        self.AllButton = Gtk.Button(data_cat[0][1])
+        self.AllButton.set_relief(Gtk.ReliefStyle.NONE)
+        self.AllButton.set_property("height-request", 40)
+        self.categoryGrid.attach(self.AllButton, 0, self.index, 1, 1)
         
         # Print out total values of all categories for each month 
         for month in range(1,len(self.data.allMonthMenu)):
@@ -102,7 +106,7 @@ class Overview():
                 if data_arr[data][1] == self.data.allMonthMenu[month][0]:
                     self.total += Decimal(data_arr[data][3])
             self.totalLabel = Gtk.Label("$" + str(self.total))
-            self.totalLabel.set_property("height-request", 30)
+            self.totalLabel.set_property("height-request", 40)
             self.contentGrid.attach(self.totalLabel, month - 1, self.index, 1, 1) 
         
         self.index += 1
