@@ -1,4 +1,4 @@
-from gi.repository import Gtk, Gio
+from gi.repository import Gtk, Gio, Gdk
 from decimal import *
 from data import Data
 
@@ -8,6 +8,9 @@ class Overview():
         
         # Initialize Variables
         self.data = Data()
+        self.monthArr = []
+        self.categoryArr = []
+        self.entryRows = []
         self.index = 1
 
         # Create Layouts
@@ -66,6 +69,8 @@ class Overview():
             self.button.set_property("height-request", 30)
             self.button.set_property("width-request", 120)
             self.monthGrid.attach(self.button,index,0,1,1)
+            self.monthArr.append(self.button)
+            self.button.connect("clicked", self.month_clicked, index)
         
 
         self.display_info(self.data.incomeMenu, self.data.income)
@@ -79,6 +84,9 @@ class Overview():
             self.button.set_relief(Gtk.ReliefStyle.NONE)
             self.button.set_property("height-request", 40)
             self.index += 1
+            self.contentArr = []
+            self.categoryArr.append(self.button)
+            self.button.connect("clicked", self.category_clicked, index)
             self.categoryGrid.attach(self.button, 0, self.index - 1, 1, 1)
             # Print out total values for each category for each month
             for month in range(1,len(self.data.allMonthMenu)):
@@ -90,15 +98,19 @@ class Overview():
                 self.totalLabel = Gtk.Label("$" + str(self.total))
                 self.totalLabel.set_property("height-request", 40)
                 self.totalLabel.set_property("width-request", 120)
+                self.contentArr.append(self.totalLabel)
                 self.contentGrid.attach(self.totalLabel, month - 1, self.index, 1, 1) 
+            self.entryRows.append(self.contentArr)
         
         # Print out "All" label
         self.index += 1
         self.AllButton = Gtk.Button(data_cat[0][1])
         self.AllButton.set_relief(Gtk.ReliefStyle.NONE)
         self.AllButton.set_property("height-request", 40)
+        self.categoryArr.append(self.AllButton)
+        self.AllButton.connect("clicked", self.category_clicked, index)
         self.categoryGrid.attach(self.AllButton, 0, self.index, 1, 1)
-        
+
         # Print out total values of all categories for each month 
         for month in range(1,len(self.data.allMonthMenu)):
             self.total = 0
@@ -115,3 +127,21 @@ class Overview():
         self.categoryGrid.attach(self.dummyCategoryLabel, 0, self.index, 1, 1) 
         self.contentGrid.attach(self.dummyContentLabel, 0, self.index, 1, 1) 
         self.index += 1
+
+    def month_clicked(self, button, index):
+        for i in range (0, len(self.monthArr)):
+            if button.get_label() != self.monthArr[i].get_label():
+                self.monthArr[i].set_relief(Gtk.ReliefStyle.NONE)
+            else:
+                self.monthArr[i].set_relief(Gtk.ReliefStyle.HALF)
+    
+    def category_clicked(self, button, index):
+        for i in range (0, len(self.categoryArr)):
+            if button.get_label() != self.categoryArr[i].get_label():
+                self.categoryArr[i].set_relief(Gtk.ReliefStyle.NONE)
+                for j in range(0, len(self.entryRows[index])):
+                    self.entryRows[index - 1][j].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(0.0, 0.0, 0.0, 0.0));
+            else:
+                self.categoryArr[i].set_relief(Gtk.ReliefStyle.HALF)
+                for j in range(0, len(self.entryRows[index])):
+                    self.entryRows[index - 1][j].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(.2, .2, .2, .2));
