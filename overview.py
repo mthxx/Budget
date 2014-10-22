@@ -32,17 +32,20 @@ class Overview():
         self.categoryVScrollBar = self.categoryScrolledWindow.get_vscrollbar()
         self.categoryVScrollBar.set_property("visible",False)
         self.categoryScrolledWindow.set_property("hscrollbar-policy",Gtk.PolicyType.NEVER)
+        self.categoryScrolledWindow.set_vadjustment(self.contentScrolledWindow.get_vadjustment())
         
         self.monthGrid.set_column_homogeneous(True)
         self.monthGrid.set_hexpand(True)
         self.monthScrolledWindow.set_property("vscrollbar-policy",Gtk.PolicyType.NEVER)
         self.monthHScrollBar = self.monthScrolledWindow.get_hscrollbar()
         self.monthHScrollBar.set_property("visible",False)
+        self.monthScrolledWindow.set_hadjustment(self.contentScrolledWindow.get_hadjustment())
         
         self.contentScrolledWindow.set_vexpand(True)
         self.contentGrid.set_column_homogeneous(True)
         self.contentGrid.set_hexpand(True)
         
+
         # Build Layouts
         self.monthViewport.add(self.monthGrid)
         self.monthScrolledWindow.add(self.monthViewport)
