@@ -4,7 +4,7 @@ class Data():
 
     def __init__(self):
         self.incomeMenu = [
-                        [0, 'All']
+                        [0, 'All Income']
                         ,[1, 'Income 1']
                         ,[2, 'Income 2']
                         ,[3, 'Income 3']
@@ -12,7 +12,7 @@ class Data():
                         ,[5, 'Income 5']]
         
         self.expenseMenu = [
-                        [0, 'All']
+                        [0, 'All Expenses']
                         ,[1, 'Rent']
                         ,[2, 'Monthly Bills']
                         ,[3, 'Insurance']
