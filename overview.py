@@ -12,6 +12,8 @@ class Overview():
         self.categoryArr = []
         self.entryRows = []
         self.index = 0
+        self.monthIndex = 10000
+        self.categoryIndex = 10000
 
         # Create Layouts
         self.grid = Gtk.Grid()
@@ -69,7 +71,7 @@ class Overview():
             self.button.set_property("height-request", 30)
             self.button.set_property("width-request", 120)
             self.monthGrid.attach(self.button,index,0,1,1)
-            self.monthArr.append(self.button)
+            self.monthArr.append([index, self.button])
             self.button.connect("clicked", self.month_clicked, index)
         
 
@@ -87,6 +89,7 @@ class Overview():
             self.categoryArr.append([self.index, self.button])
             self.button.connect("clicked", self.category_clicked, self.index)
             self.categoryGrid.attach(self.button, 0, self.index, 1, 1)
+            
             # Print out total values for each category for each month
             for month in range(1,len(self.data.allMonthMenu)):
                 self.total = 0
@@ -143,23 +146,37 @@ class Overview():
         self.index += 1
 
     def month_clicked(self, button, index):
+        self.monthIndex = index - 1
         for i in range (0, len(self.monthArr)):
-            if button.get_label() == self.monthArr[i].get_label():
-                self.monthArr[i].set_relief(Gtk.ReliefStyle.HALF)
+            if self.monthArr[i][0] == index:
+                self.monthArr[i][1].set_relief(Gtk.ReliefStyle.HALF)
                 for j in range(0, len(self.entryRows)):
-                    self.entryRows[j][1][i].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(.2, .2, .2, .2));
+                    if self.entryRows[j][0] == self.categoryIndex:
+                        self.entryRows[j][1][i].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(.5, .5, .5, .5));
+                    else:
+                        self.entryRows[j][1][i].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(.1, .1, .1, .1));
             else:
-                self.monthArr[i].set_relief(Gtk.ReliefStyle.NONE)
+                self.monthArr[i][1].set_relief(Gtk.ReliefStyle.NONE)
                 for j in range(0, len(self.entryRows)):
-                    self.entryRows[j][1][i].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(.0, .0, .0, .0));
+                    if self.entryRows[j][0] != self.categoryIndex:
+                       self.entryRows[j][1][i].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(.0, .0, .0, .0));
+                    else:
+                        self.entryRows[j][1][i].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(.1, .1, .1, .1));
     
     def category_clicked(self, button, index):
+        self.categoryIndex = index
         for i in range (0, len(self.categoryArr)):
-            if button.get_label() == self.categoryArr[i][1].get_label():
+            if self.categoryArr[i][0] == index:
                 self.categoryArr[i][1].set_relief(Gtk.ReliefStyle.HALF)
                 for j in range(0, len(self.entryRows[i][1])):
-                    self.entryRows[i][1][j].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(.2, .2, .2, .2));
+                    if j == self.monthIndex:
+                        self.entryRows[i][1][j].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(.5, .5, .5, .5));
+                    else:
+                        self.entryRows[i][1][j].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(.1, .1, .1, .1));
             else:
                 self.categoryArr[i][1].set_relief(Gtk.ReliefStyle.NONE)
                 for j in range(0, len(self.entryRows[i][1])):
-                    self.entryRows[i][1][j].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(.0, .0, .0, .0));
+                    if j != self.monthIndex:
+                        self.entryRows[i][1][j].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(.0, .0, .0, .0));
+                    else:
+                        self.entryRows[i][1][j].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(.1, .1, .1, .1));
