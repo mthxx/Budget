@@ -125,30 +125,33 @@ class Overview():
         self.index += 1
        
         # Set up empty Row
-        self.dummyCategoryButton = Gtk.Button()
-        self.dummyContentLabel = Gtk.Label()
-        
-        self.dummyCategoryButton.set_property("height-request", 30)
-        self.dummyCategoryButton.set_relief(Gtk.ReliefStyle.NONE)
-        self.dummyCategoryButton.set_sensitive(False) 
-        self.dummyContentLabel.set_property("height-request", 30)
-        
-        self.categoryArr.append([self.index, self.dummyCategoryButton])
         self.contentArr = []
-        self.contentArr.append(self.dummyContentLabel)
-        self.contentArr.append(self.dummyContentLabel)
+        self.dummyCategoryButton = Gtk.Button()
+        self.dummyCategoryButton.set_relief(Gtk.ReliefStyle.NONE)
+        self.dummyCategoryButton.set_property("height-request", 30)
+        self.dummyCategoryButton.set_sensitive(False) 
+        self.categoryArr.append([self.index, self.dummyCategoryButton])
+       
+        for month in range(1,len(self.data.allMonthMenu)):
+            self.dummyContentLabel = Gtk.Label()
+            self.dummyContentLabel.set_property("height-request", 30)
+            self.contentArr.append(self.dummyContentLabel)
+            self.contentGrid.attach(self.dummyContentLabel, month - 1, self.index, 1, 1) 
         self.entryRows.append([self.index, self.contentArr])
         
         self.categoryGrid.attach(self.dummyCategoryButton, 0, self.index, 1, 1) 
-        self.contentGrid.attach(self.dummyContentLabel, 0, self.index, 1, 1) 
         self.index += 1
 
     def month_clicked(self, button, index):
         for i in range (0, len(self.monthArr)):
-            if button.get_label() != self.monthArr[i].get_label():
-                self.monthArr[i].set_relief(Gtk.ReliefStyle.NONE)
-            else:
+            if button.get_label() == self.monthArr[i].get_label():
                 self.monthArr[i].set_relief(Gtk.ReliefStyle.HALF)
+                for j in range(0, len(self.entryRows)):
+                    self.entryRows[j][1][i].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(.2, .2, .2, .2));
+            else:
+                self.monthArr[i].set_relief(Gtk.ReliefStyle.NONE)
+                for j in range(0, len(self.entryRows)):
+                    self.entryRows[j][1][i].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(.0, .0, .0, .0));
     
     def category_clicked(self, button, index):
         for i in range (0, len(self.categoryArr)):
