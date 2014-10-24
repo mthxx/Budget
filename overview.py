@@ -17,7 +17,9 @@ class Overview():
 
         # Create Layouts
         self.grid = Gtk.Grid()
-        
+        self.overviewGrid = Gtk.Grid()
+        self.headerGrid = Gtk.Grid()
+
         self.monthGrid = Gtk.Grid()
         self.monthScrolledWindow = Gtk.ScrolledWindow()
         self.monthViewport = Gtk.Viewport()
@@ -31,6 +33,9 @@ class Overview():
         self.categoryViewport = Gtk.Viewport()
        
         # Style Layouts
+        self.headerGrid.set_column_homogeneous(True)
+        self.headerGrid.set_hexpand(True)
+        
         self.categoryScrolledWindow.set_vexpand(True)
         self.categoryGrid.set_column_homogeneous(True)
         self.categoryScrolledWindow.set_property("width-request",150)
@@ -51,18 +56,65 @@ class Overview():
         self.contentGrid.set_hexpand(True)
         
 
+        # Create Header Grid
+        for i in range(0,5):
+            self.dummyHeaderLabel = Gtk.Label()
+            self.headerGrid.attach(self.dummyHeaderLabel,i,0,1,1)
+        
+        self.balanceLabel = Gtk.Label("Balance:  ")
+        self.balanceLabel.set_halign(Gtk.Align.END)
+        self.balanceTotalLabel = Gtk.Label( "$" + str(self.sumData(self.data.income)))
+        self.balanceTotalLabel.set_halign(Gtk.Align.START)
+
+        self.varianceLabel = Gtk.Label("Variance:  ")
+        self.varianceLabel.set_halign(Gtk.Align.END)
+        self.varianceTotalLabel = Gtk.Label( "$" + str(self.sumData(self.data.income)))
+        self.varianceTotalLabel.set_halign(Gtk.Align.START)
+        
+        self.incomeTotalLabel = Gtk.Label("Total Income:  ")
+        self.incomeTotalLabel.set_halign(Gtk.Align.END)
+        self.incomeTotalValueLabel = Gtk.Label( "$" + str(self.sumData(self.data.income)))
+        self.incomeTotalValueLabel.set_halign(Gtk.Align.START)
+        
+        self.expensesTotalLabel = Gtk.Label("Total Expenses:  ")
+        self.expensesTotalLabel.set_halign(Gtk.Align.END)
+        self.expensesTotalValueLabel = Gtk.Label( "$" + str(self.sumData(self.data.expenses)))
+        self.expensesTotalValueLabel.set_halign(Gtk.Align.START)
+        
+
+        for i in range(0,5):
+            self.dummyHeaderLabel = Gtk.Label()
+            self.headerGrid.attach(self.dummyHeaderLabel,i,4,1,1)
+
         # Build Layouts
+
+        self.headerGrid.attach(self.balanceLabel,0,1,1,1)
+        self.headerGrid.attach(self.balanceTotalLabel,1,1,1,1)
+        
+        self.headerGrid.attach(self.varianceLabel,0,2,1,1)
+        self.headerGrid.attach(self.varianceTotalLabel,1,2,1,1)
+        
+        self.headerGrid.attach(self.expensesTotalLabel,3,1,1,1)
+        self.headerGrid.attach(self.expensesTotalValueLabel,4,1,1,1)
+        
+        self.headerGrid.attach(self.incomeTotalLabel,3,2,1,1)
+        self.headerGrid.attach(self.incomeTotalValueLabel,4,2,1,1)
+        
+
         self.monthViewport.add(self.monthGrid)
         self.monthScrolledWindow.add(self.monthViewport)
-        self.grid.attach(self.monthScrolledWindow,1,0,1,1)
+        self.overviewGrid.attach(self.monthScrolledWindow,1,0,1,1)
         
         self.categoryViewport.add(self.categoryGrid)
         self.categoryScrolledWindow.add(self.categoryViewport)
-        self.grid.attach(self.categoryScrolledWindow,0,1,1,1)
+        self.overviewGrid.attach(self.categoryScrolledWindow,0,1,1,1)
        
         self.contentViewport.add(self.contentGrid)
         self.contentScrolledWindow.add(self.contentViewport)
-        self.grid.attach(self.contentScrolledWindow,1,1,1,1)
+        self.overviewGrid.attach(self.contentScrolledWindow,1,1,1,1)
+       
+        self.grid.attach(self.headerGrid,0,0,1,1)
+        self.grid.attach(self.overviewGrid,0,1,1,1)
 
         # Print out Months
         for index in range(1,len(self.data.allMonthMenu)):
@@ -95,8 +147,8 @@ class Overview():
                 self.total = 0
                 for data in range(0,len(data_arr)):
                     if data_arr[data][0][0] == index:
-                        if data_arr[data][1] == self.data.allMonthMenu[month][0]:
-                            self.total += Decimal(data_arr[data][3])
+                        if data_arr[data][1][0] == self.data.allMonthMenu[month][0]:
+                            self.total += Decimal(data_arr[data][2])
                 self.totalLabel = Gtk.Label("$" + str(self.total))
                 self.totalLabel.set_property("height-request", 40)
                 self.totalLabel.set_property("width-request", 120)
@@ -118,8 +170,8 @@ class Overview():
         for month in range(1,len(self.data.allMonthMenu)):
             self.total = 0
             for data in range(0,len(data_arr)):
-                if data_arr[data][1] == self.data.allMonthMenu[month][0]:
-                    self.total += Decimal(data_arr[data][3])
+                if data_arr[data][1][0] == self.data.allMonthMenu[month][0]:
+                    self.total += Decimal(data_arr[data][2])
             self.totalLabel = Gtk.Label("$" + str(self.total))
             self.totalLabel.set_property("height-request", 40)
             self.contentArr.append(self.totalLabel)
@@ -180,3 +232,9 @@ class Overview():
                         self.entryRows[i][1][j].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(.0, .0, .0, .0));
                     else:
                         self.entryRows[i][1][j].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(.1, .1, .1, .1));
+
+    def sumData(self,data_arr):
+        total = 0
+        for i in range (0,len(data_arr)):
+            total += Decimal(data_arr[i][2])
+        return total
