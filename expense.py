@@ -20,8 +20,8 @@ class Expense():
 
             self.categoryLabel = Gtk.Label(self.data.expenses[i][0][1])
             self.dateLabel = Gtk.Label(self.dateString)
-            self.costLabel = Gtk.Label("$" + self.data.expenses[i][3])
-            self.descriptionLabel = Gtk.Label(self.data.expenses[i][4])
+            self.costLabel = Gtk.Label("$" + self.data.expenses[i][2])
+            self.descriptionLabel = Gtk.Label(self.data.expenses[i][3])
             
             self.costLabel.set_property("height-request", 35)
             
