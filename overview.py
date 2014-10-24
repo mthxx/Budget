@@ -27,7 +27,7 @@ class Overview():
         self.contentGrid = Gtk.Grid()
         self.contentScrolledWindow = Gtk.ScrolledWindow()
         self.contentViewport = Gtk.Viewport()
-        
+
         self.categoryGrid = Gtk.Grid()
         self.categoryScrolledWindow = Gtk.ScrolledWindow()
         self.categoryViewport = Gtk.Viewport()
@@ -46,10 +46,6 @@ class Overview():
 
     def build_header(self):
         # Build Header Grid
-        for i in range(0,5):
-            self.dummyHeaderLabel = Gtk.Label()
-            self.headerGrid.attach(self.dummyHeaderLabel,i,0,1,1)
-        
         self.balanceLabel = Gtk.Label("Balance:  ")
         self.balanceLabel.set_halign(Gtk.Align.END)
         self.balanceTotalLabel = Gtk.Label( "$" + str(self.sumData(self.data.income)))
@@ -93,8 +89,9 @@ class Overview():
 
     def build_overview(self):
         # Build Overview Grid
-        self.topLeftLabel = Gtk.Label()
-        self.overviewGrid.attach(self.topLeftLabel,0,0,1,1)
+        self.clearButton = Gtk.Button("Clear Selection")
+        self.clearButton.connect("clicked", self.clear_selection)
+        self.overviewGrid.attach(self.clearButton,0,0,1,1)
 
         self.monthViewport.add(self.monthGrid)
         self.monthScrolledWindow.add(self.monthViewport)
@@ -119,23 +116,30 @@ class Overview():
             self.button.connect("clicked", self.month_clicked, index)
 
         # Style Overview Grid
-        self.topLeftLabel.override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(.1, .1, .1, .1));
-        self.categoryScrolledWindow.set_vexpand(True)
+        self.clearButton.override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(.5, .5, .5, .5));
+        #self.clearButton.set_relief(Gtk.ReliefStyle.NONE)
+        
         self.categoryGrid.set_column_homogeneous(True)
-        self.categoryGrid.override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(.1, .1, .1, .1));
+        self.categoryGrid.override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(.5, .5, .5, .5));
+        
+        self.categoryScrolledWindow.set_vexpand(True)
         self.categoryScrolledWindow.set_property("width-request",150)
-        self.categoryVScrollBar = self.categoryScrolledWindow.get_vscrollbar()
-        self.categoryVScrollBar.set_property("visible",False)
         self.categoryScrolledWindow.set_property("hscrollbar-policy",Gtk.PolicyType.NEVER)
         self.categoryScrolledWindow.set_vadjustment(self.contentScrolledWindow.get_vadjustment())
         
+        self.categoryVScrollBar = self.categoryScrolledWindow.get_vscrollbar()
+        self.categoryVScrollBar.set_property("visible",False)
+        
+        
         self.monthGrid.set_column_homogeneous(True)
         self.monthGrid.set_hexpand(True)
-        self.monthGrid.override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(.1, .1, .1, .1));
+        self.monthGrid.override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(.5, .5, .5, .5));
+        
         self.monthScrolledWindow.set_property("vscrollbar-policy",Gtk.PolicyType.NEVER)
+        self.monthScrolledWindow.set_hadjustment(self.contentScrolledWindow.get_hadjustment())
+        
         self.monthHScrollBar = self.monthScrolledWindow.get_hscrollbar()
         self.monthHScrollBar.set_property("visible",False)
-        self.monthScrolledWindow.set_hadjustment(self.contentScrolledWindow.get_hadjustment())
         
         self.contentScrolledWindow.set_vexpand(True)
         self.contentGrid.set_column_homogeneous(True)
@@ -242,7 +246,18 @@ class Overview():
                         self.entryRows[i][1][j].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(.0, .0, .0, .0));
                     else:
                         self.entryRows[i][1][j].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(.1, .1, .1, .1));
-
+    
+    def clear_selection(self, button):
+        self.categoryIndex = 10000
+        self.monthIndex = 10000
+        for i in range (0, len(self.categoryArr)):
+            self.categoryArr[i][1].set_relief(Gtk.ReliefStyle.NONE)
+        for i in range (0, len(self.monthArr)):
+            self.monthArr[i][1].set_relief(Gtk.ReliefStyle.NONE)
+        for i in range(0, len(self.entryRows)):
+            for j in range(0, len(self.entryRows[i][1])):
+                self.entryRows[i][1][j].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(.0, .0, .0, .0));
+    
     def sumData(self,data_arr):
         total = 0
         for i in range (0,len(data_arr)):
