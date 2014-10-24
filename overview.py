@@ -31,32 +31,21 @@ class Overview():
         self.categoryGrid = Gtk.Grid()
         self.categoryScrolledWindow = Gtk.ScrolledWindow()
         self.categoryViewport = Gtk.Viewport()
-       
-        # Style Layouts
-        self.headerGrid.set_column_homogeneous(True)
-        self.headerGrid.set_hexpand(True)
         
-        self.categoryScrolledWindow.set_vexpand(True)
-        self.categoryGrid.set_column_homogeneous(True)
-        self.categoryScrolledWindow.set_property("width-request",150)
-        self.categoryVScrollBar = self.categoryScrolledWindow.get_vscrollbar()
-        self.categoryVScrollBar.set_property("visible",False)
-        self.categoryScrolledWindow.set_property("hscrollbar-policy",Gtk.PolicyType.NEVER)
-        self.categoryScrolledWindow.set_vadjustment(self.contentScrolledWindow.get_vadjustment())
+        # Build Master Grid
+        self.grid.attach(self.headerGrid,0,0,1,1)
+        self.grid.attach(self.overviewGrid,0,1,1,1)
         
-        self.monthGrid.set_column_homogeneous(True)
-        self.monthGrid.set_hexpand(True)
-        self.monthScrolledWindow.set_property("vscrollbar-policy",Gtk.PolicyType.NEVER)
-        self.monthHScrollBar = self.monthScrolledWindow.get_hscrollbar()
-        self.monthHScrollBar.set_property("visible",False)
-        self.monthScrolledWindow.set_hadjustment(self.contentScrolledWindow.get_hadjustment())
+        # Style Master Grid
+        #self.grid.override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(.1, .1, .1, .1));
         
-        self.contentScrolledWindow.set_vexpand(True)
-        self.contentGrid.set_column_homogeneous(True)
-        self.contentGrid.set_hexpand(True)
-        
+        self.build_header()
+        self.build_overview()    
+        self.display_info(self.data.incomeMenu, self.data.income)
+        self.display_info(self.data.expenseMenu, self.data.expenses)
 
-        # Create Header Grid
+    def build_header(self):
+        # Build Header Grid
         for i in range(0,5):
             self.dummyHeaderLabel = Gtk.Label()
             self.headerGrid.attach(self.dummyHeaderLabel,i,0,1,1)
@@ -81,13 +70,6 @@ class Overview():
         self.expensesTotalValueLabel = Gtk.Label( "$" + str(self.sumData(self.data.expenses)))
         self.expensesTotalValueLabel.set_halign(Gtk.Align.START)
         
-
-        for i in range(0,5):
-            self.dummyHeaderLabel = Gtk.Label()
-            self.headerGrid.attach(self.dummyHeaderLabel,i,4,1,1)
-
-        # Build Layouts
-
         self.headerGrid.attach(self.balanceLabel,0,1,1,1)
         self.headerGrid.attach(self.balanceTotalLabel,1,1,1,1)
         
@@ -100,6 +82,19 @@ class Overview():
         self.headerGrid.attach(self.incomeTotalLabel,3,2,1,1)
         self.headerGrid.attach(self.incomeTotalValueLabel,4,2,1,1)
         
+        for i in range(0,5):
+            self.dummyHeaderLabel = Gtk.Label()
+            self.headerGrid.attach(self.dummyHeaderLabel,i,4,1,1)
+
+        # Style Header Grid
+        self.headerGrid.set_column_homogeneous(True)
+        self.headerGrid.set_hexpand(True)
+       
+
+    def build_overview(self):
+        # Build Overview Grid
+        self.topLeftLabel = Gtk.Label()
+        self.overviewGrid.attach(self.topLeftLabel,0,0,1,1)
 
         self.monthViewport.add(self.monthGrid)
         self.monthScrolledWindow.add(self.monthViewport)
@@ -112,10 +107,7 @@ class Overview():
         self.contentViewport.add(self.contentGrid)
         self.contentScrolledWindow.add(self.contentViewport)
         self.overviewGrid.attach(self.contentScrolledWindow,1,1,1,1)
-       
-        self.grid.attach(self.headerGrid,0,0,1,1)
-        self.grid.attach(self.overviewGrid,0,1,1,1)
-
+        
         # Print out Months
         for index in range(1,len(self.data.allMonthMenu)):
             self.button = Gtk.Button(self.data.allMonthMenu[index][1])
@@ -125,12 +117,30 @@ class Overview():
             self.monthGrid.attach(self.button,index,0,1,1)
             self.monthArr.append([index, self.button])
             self.button.connect("clicked", self.month_clicked, index)
+
+        # Style Overview Grid
+        self.topLeftLabel.override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(.1, .1, .1, .1));
+        self.categoryScrolledWindow.set_vexpand(True)
+        self.categoryGrid.set_column_homogeneous(True)
+        self.categoryGrid.override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(.1, .1, .1, .1));
+        self.categoryScrolledWindow.set_property("width-request",150)
+        self.categoryVScrollBar = self.categoryScrolledWindow.get_vscrollbar()
+        self.categoryVScrollBar.set_property("visible",False)
+        self.categoryScrolledWindow.set_property("hscrollbar-policy",Gtk.PolicyType.NEVER)
+        self.categoryScrolledWindow.set_vadjustment(self.contentScrolledWindow.get_vadjustment())
         
-
-        self.display_info(self.data.incomeMenu, self.data.income)
-        self.display_info(self.data.expenseMenu, self.data.expenses)
-
-    
+        self.monthGrid.set_column_homogeneous(True)
+        self.monthGrid.set_hexpand(True)
+        self.monthGrid.override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(.1, .1, .1, .1));
+        self.monthScrolledWindow.set_property("vscrollbar-policy",Gtk.PolicyType.NEVER)
+        self.monthHScrollBar = self.monthScrolledWindow.get_hscrollbar()
+        self.monthHScrollBar.set_property("visible",False)
+        self.monthScrolledWindow.set_hadjustment(self.contentScrolledWindow.get_hadjustment())
+        
+        self.contentScrolledWindow.set_vexpand(True)
+        self.contentGrid.set_column_homogeneous(True)
+        self.contentGrid.set_hexpand(True)
+        
     def display_info(self,data_cat, data_arr):
         # Print out Categories
         for index in range(1,len(data_cat)):
