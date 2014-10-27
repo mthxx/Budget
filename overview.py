@@ -14,16 +14,16 @@ class Overview():
         self.index = 0
         self.monthIndex = 10000
         self.categoryIndex = 10000
-
+        
         self.menuColor = .5
         self.totalColor = .75
         self.highlightColor = .1
-
+        
         # Create Layouts
         self.grid = Gtk.Grid()
         self.overviewGrid = Gtk.Grid()
         self.headerGrid = Gtk.Grid()
-
+        
         self.monthGrid = Gtk.Grid()
         self.monthScrolledWindow = Gtk.ScrolledWindow()
         self.monthViewport = Gtk.Viewport()
@@ -31,7 +31,7 @@ class Overview():
         self.contentGrid = Gtk.Grid()
         self.contentScrolledWindow = Gtk.ScrolledWindow()
         self.contentViewport = Gtk.Viewport()
-
+        
         self.categoryGrid = Gtk.Grid()
         self.categoryScrolledWindow = Gtk.ScrolledWindow()
         self.categoryViewport = Gtk.Viewport()
@@ -41,7 +41,6 @@ class Overview():
         self.grid.attach(self.overviewGrid,0,1,1,1)
         
         # Style Master Grid
-        #self.grid.override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(.1, .1, .1, .1));
         
         self.build_header()
         self.build_overview()    
@@ -52,12 +51,12 @@ class Overview():
     def build_header(self):
         # Build Header Grid
         self.blankLabel = Gtk.Label()
-
+        
         self.balanceLabel = Gtk.Label("Balance:  ")
         self.balanceLabel.set_halign(Gtk.Align.END)
         self.balanceTotalLabel = Gtk.Label( "$" + str(self.sumData(self.data.income) - self.sumData(self.data.expenses)))
         self.balanceTotalLabel.set_halign(Gtk.Align.START)
-
+        
         self.varianceLabel = Gtk.Label("Variance:  ")
         self.varianceLabel.set_halign(Gtk.Align.END)
         self.varianceTotalLabel = Gtk.Label( "$" + str(self.sumData(self.data.income)))
@@ -74,7 +73,7 @@ class Overview():
         self.expensesTotalValueLabel.set_halign(Gtk.Align.START)
         
         self.headerGrid.attach(self.blankLabel,0,0,5,1)
-
+        
         self.headerGrid.attach(self.balanceLabel,0,1,1,1)
         self.headerGrid.attach(self.balanceTotalLabel,1,1,1,1)
         
@@ -90,7 +89,7 @@ class Overview():
         for i in range(0,5):
             self.dummyHeaderLabel = Gtk.Label()
             self.headerGrid.attach(self.dummyHeaderLabel,i,4,1,1)
-
+        
         # Style Header Grid
         self.headerGrid.set_column_homogeneous(True)
         self.headerGrid.set_hexpand(True)
@@ -101,7 +100,7 @@ class Overview():
         self.clearButton = Gtk.Button("Clear Selection")
         self.clearButton.connect("clicked", self.clear_selection)
         self.overviewGrid.attach(self.clearButton,0,0,1,1)
-
+        
         self.monthViewport.add(self.monthGrid)
         self.monthScrolledWindow.add(self.monthViewport)
         self.overviewGrid.attach(self.monthScrolledWindow,1,0,1,1)
@@ -133,10 +132,9 @@ class Overview():
                 self.monthGrid.attach(self.button,index,0,1,1)
                 self.monthArr.append([index, self.button])
                 self.button.connect("clicked", self.month_clicked, index)
-
+        
         # Style Overview Grid
         self.clearButton.override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(self.menuColor, self.menuColor, self.menuColor, self.menuColor))
-        #self.clearButton.set_relief(Gtk.ReliefStyle.NONE)
         
         self.categoryGrid.set_column_homogeneous(True)
         self.categoryGrid.override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(self.menuColor, self.menuColor, self.menuColor, self.menuColor))
@@ -148,7 +146,6 @@ class Overview():
         
         self.categoryVScrollBar = self.categoryScrolledWindow.get_vscrollbar()
         self.categoryVScrollBar.set_property("visible",False)
-        
         
         self.monthGrid.set_column_homogeneous(True)
         self.monthGrid.set_hexpand(True)
@@ -312,7 +309,7 @@ class Overview():
                         self.entryRows[i][1][j].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(self.totalColor, self.totalColor, self.totalColor, self.totalColor))
                     else:
                         self.entryRows[i][1][j].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(.0, .0, .0, .0));
-    
+         
     def sumData(self,data_arr):
         total = 0
         for i in range (0,len(data_arr)):

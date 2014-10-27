@@ -72,6 +72,8 @@ class Window(Gtk.Window):
             # Set Size
         self.addButton.set_size_request(32,32)
         self.menuButton.set_size_request(32,32)
+            # Create Popovers
+        self.addPopover = Gtk.Popover.new(self.addButton)
             # Connect to handler
         self.addButton.connect("clicked", self.on_addButton_clicked)
         self.menuButton.connect("clicked", self.on_menuButton_clicked)
