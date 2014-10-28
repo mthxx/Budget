@@ -149,7 +149,7 @@ class Overview():
         
         self.monthGrid.set_column_homogeneous(True)
         self.monthGrid.set_hexpand(True)
-        self.monthGrid.override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(self.menuColor, self.menuColor, self.menuColor, self.menuColor))        
+        self.monthGrid.override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(self.menuColor, self.menuColor, self.menuColor, self.menuColor))
         self.monthScrolledWindow.set_property("vscrollbar-policy",Gtk.PolicyType.NEVER)
         self.monthScrolledWindow.set_hadjustment(self.contentScrolledWindow.get_hadjustment())
         
