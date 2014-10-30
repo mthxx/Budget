@@ -6,6 +6,8 @@ class Reports():
     def __init__(self):
         self.css = Gtk.CssProvider()
         self.css.load_from_path("style.css")
+        Gtk.StyleContext.add_provider_for_screen(Gdk.Screen.get_default(), self.css, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+        
         self.data = Data()
 
         self.grid = Gtk.Grid()
@@ -21,8 +23,6 @@ class Reports():
         self.emptyLabel = Gtk.Label()
 
         self.grid.attach(self.emptyLabel,0,0,5,1)
-        #self.grid.set_column_homogeneous(True)
-        #self.grid.set_hexpand(True)
 
         self.contentScrolledWindow.set_vexpand(True)
         self.contentGrid.set_column_homogeneous(True)
@@ -31,9 +31,10 @@ class Reports():
         self.grid.override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(0.2, 0.2, 0.2, 0.2))
 
         self.index = 0
+
         for i in range (0,len(self.data.income)):
             
-            self.layoutGrid = Gtk.Grid()
+            self.layoutGrid = Gtk.Grid(name="layoutGrid")
             self.layoutGrid.set_column_homogeneous(True)
             self.layoutGrid.set_hexpand(True)
             
@@ -57,7 +58,7 @@ class Reports():
             self.layoutGrid.attach(self.dateLabel, 1, 0, 1, 1)
             self.layoutGrid.attach(self.costLabel, 0, 1, 1, 1)
             self.layoutGrid.attach(self.descriptionLabel, 1, 1, 1, 1)
-            
+
             self.layoutGrid.override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(1, 1, 1, 1))
             self.contentGrid.attach(self.layoutGrid, 1, self.index, 3, 2)
             
