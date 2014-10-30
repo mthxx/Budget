@@ -4,6 +4,8 @@ from data import Data
 class Reports():
         
     def __init__(self):
+        self.css = Gtk.CssProvider()
+        self.css.load_from_path("style.css")
         self.data = Data()
 
         self.grid = Gtk.Grid()
