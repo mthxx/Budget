@@ -138,102 +138,66 @@ class Sidebar():
 
             self.layoutGrid.override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(1, 1, 1, 1))
             self.contentGrid.attach(self.layoutGrid, 1, self.index, 3, 2)
-            self.entryRows.append([self.categoryLabel,self.dateLabel,self.costLabel,self.descriptionLabel])
+            self.entryRows.append([self.layoutGrid,[self.categoryLabel,self.dateLabel,self.costLabel,self.descriptionLabel]])
 
-    def menu_clicked(self, listbox, row, data, dataMenu):
-        for i in range (len(dataMenu)):
-            if dataMenu[i][0] == row.get_index():
-                self.menu = dataMenu[i][1]
-        self.filter_menu(data, dataMenu)
+    def menu_clicked(self, listbox, row, data, menu):
+        for i in range (len(menu)):
+            if menu[i][0] == row.get_index():
+                self.menu = "<b>" +  menu[i][1] + "</b>"
+        self.filter_menu(data, menu)
     
-    def subMenu_clicked(self, listbox, row, data, dataMenu):
+    def subMenu_clicked(self, listbox, row, data, menu):
         for i in range (len(self.data.currentMonthMenu)):
             if self.data.currentMonthMenu[i][0] == row.get_index():
                 self.subMenu = self.data.currentMonthMenu[i][1]
-        self.filter_subMenu(data, dataMenu)
+        self.filter_subMenu(data, menu)
 
-    def filter_menu(self, data, dataMenu):
+    def filter_menu(self, data, menu):
         for i in range (0,len(self.entryRows)):
-            self.month = self.entryRows[i][1].get_label().split()
+            self.month = self.entryRows[i][1][1].get_label().split()
             self.month =  self.month[0]
-            if self.menu == dataMenu[0][1]:
-                if self.subMenu == self.data.currentMonthMenu[0][1]:
-                    #self.categoryTitleLabel.show()
-                    self.entryRows[i][0].show()
-                    self.entryRows[i][1].show()
-                    self.entryRows[i][2].show()
-                    self.entryRows[i][3].show()
-                elif self.month == self.subMenu:
-                    #self.categoryTitleLabel.show()
-                    self.entryRows[i][0].show()
-                    self.entryRows[i][1].show()
-                    self.entryRows[i][2].show()
-                    self.entryRows[i][3].show()
-                elif self.month != self.subMenu:
-                    #self.categoryTitleLabel.show()
-                    self.entryRows[i][0].hide()
-                    self.entryRows[i][1].hide()
-                    self.entryRows[i][2].hide()
-                    self.entryRows[i][3].hide()
-            elif self.menu != dataMenu[0][1]:
-                if self.entryRows[i][0].get_label() == self.menu:
-                    if self.subMenu == self.data.currentMonthMenu[0][1]:
-                        #self.categoryTitleLabel.hide()
-                        self.entryRows[i][0].hide()
-                        self.entryRows[i][1].show()
-                        self.entryRows[i][2].show()
-                        self.entryRows[i][3].show()
-                    if self.subMenu == self.month:
-                        self.categoryTitleLabel.hide()
-                        self.entryRows[i][0].hide()
-                        self.entryRows[i][1].show()
-                        self.entryRows[i][2].show()
-                        self.entryRows[i][3].show()
-                    if self.entryRows[i][0].get_label() != self.menu:
-                        self.entryRows[i][0].hide()
-                        self.entryRows[i][1].hide()
-                        self.entryRows[i][2].hide()
-                        self.entryRows[i][3].hide()
-                elif self.entryRows[i][0].get_label() != self.menu:
-                    self.entryRows[i][0].hide()
-                    self.entryRows[i][1].hide()
-                    self.entryRows[i][2].hide()
-                    self.entryRows[i][3].hide()
 
-    def filter_subMenu(self, data, dataMenu):
-        for i in range (0,len(self.entryRows)):
-            self.month = self.entryRows[i][1].get_label().split()
-            self.month = self.month[0]
-            if self.menu == dataMenu[0][1]:
+            # If selected menu item is "All"
+            if self.menu == "<b>" + menu[0][1] + "</b>":
                 if self.subMenu == self.data.currentMonthMenu[0][1]:
                     self.entryRows[i][0].show()
-                    self.entryRows[i][1].show()
-                    self.entryRows[i][2].show()
-                    self.entryRows[i][3].show()
                 elif self.month == self.subMenu:
                     self.entryRows[i][0].show()
-                    self.entryRows[i][1].show()
-                    self.entryRows[i][2].show()
-                    self.entryRows[i][3].show()
                 elif self.month != self.subMenu:
                     self.entryRows[i][0].hide()
-                    self.entryRows[i][1].hide()
-                    self.entryRows[i][2].hide()
-                    self.entryRows[i][3].hide()
-            elif self.menu != dataMenu[0][1]:
-                if self.month == self.subMenu and self.entryRows[i][0].get_label() == self.menu:
-                    self.entryRows[i][0].hide()
-                    self.entryRows[i][1].show()
-                    self.entryRows[i][2].show()
-                    self.entryRows[i][3].show()
-                elif self.month != self.subMenu or self.entryRows[i][0].get_label() != self.menu:
-                    self.entryRows[i][0].hide()
-                    self.entryRows[i][1].hide()
-                    self.entryRows[i][2].hide()
-                    self.entryRows[i][3].hide()
-                if self.subMenu == self.data.currentMonthMenu[0][1]:
-                    if self.entryRows[i][0].get_label() == self.menu:
+
+            # If selected menu item is not "All"
+            elif self.menu != "<b>" + menu[0][1] + "</b>":
+                # If category matches menu item selected
+                if self.entryRows[i][1][0].get_label() == self.menu:
+                    if self.subMenu == self.data.currentMonthMenu[0][1]:
+                        self.entryRows[i][0].show()
+                    if self.subMenu == self.month:
+                        self.entryRows[i][0].show()
+                    if self.entryRows[i][1][0].get_label() != self.menu:
                         self.entryRows[i][0].hide()
-                        self.entryRows[i][1].show()
-                        self.entryRows[i][2].show()
-                        self.entryRows[i][3].show()
+                elif self.entryRows[i][1][0].get_label() != self.menu:
+                    self.entryRows[i][0].hide()
+
+    def filter_subMenu(self, data, menu):
+        for i in range (0,len(self.entryRows)):
+            self.month = self.entryRows[i][1][1].get_label().split()
+            self.month = self.month[0]
+            # If selected month is equal to "All"
+            if self.menu == "<b>" + menu[0][1] + "</b>":
+                if self.subMenu == self.data.currentMonthMenu[0][1]:
+                    self.entryRows[i][0].show()
+                elif self.month == self.subMenu:
+                    self.entryRows[i][0].show()
+                elif self.month != self.subMenu:
+                    self.entryRows[i][0].hide()
+
+            # If selected category is not equal to "All"
+            elif self.menu != "<b>" + menu[0][1] + "</b>":
+                if self.month == self.subMenu and self.entryRows[i][1][0].get_label() == self.menu:
+                    self.entryRows[i][0].show()
+                elif self.month != self.subMenu or self.entryRows[i][1][0].get_label() != self.menu:
+                    self.entryRows[i][0].hide()
+                if self.subMenu == self.data.currentMonthMenu[0][1]:
+                    if self.entryRows[i][1][0].get_label() == self.menu:
+                        self.entryRows[i][0].show()
