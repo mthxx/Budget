@@ -102,17 +102,12 @@ class Sidebar():
             self.subMenuListBox.add(self.label)
 
     def generate_content(self, data):
-        self.index = 3
+        self.index = 7
         for i in range (0,len(data)):
             
             self.layoutGrid = Gtk.Grid(name="layoutGrid")
             self.layoutGrid.set_column_homogeneous(True)
             self.layoutGrid.set_hexpand(True)
-            
-            self.whiteSpaceLabel = Gtk.Label()
-            self.index = self.index + 2
-            self.contentGrid.attach(self.whiteSpaceLabel,0, self.index, 5, 1)
-            self.index = self.index + 3
             
             self.dateString = ""
             self.dateString = Data.translate_date(self.dateString,data, i)
@@ -122,23 +117,30 @@ class Sidebar():
             self.dateLabel = Gtk.Label(self.dateString)
             self.costLabel = Gtk.Label("$" + data[i][2])
             self.descriptionLabel = Gtk.Label(data[i][3])
-            #self.whiteSpaceLabel = Gtk.Label()
             
             self.costLabel.set_property("height-request", 35)
             
-            #self.layoutGrid.attach(self.whiteSpaceLabel,0, 1, 3, 1)
             self.layoutGrid.attach(self.categoryLabel, 0, 1, 1, 1)
             self.layoutGrid.attach(self.dateLabel, 1, 1, 1, 1)
             self.layoutGrid.attach(self.costLabel, 2, 1, 1, 1)
             
             if self.descriptionLabel.get_text() != "":
                 self.layoutGrid.attach(self.descriptionLabel, 0, 3, 3, 1)
-                self.whiteSpaceLabel = Gtk.Label()
-                self.layoutGrid.attach(self.whiteSpaceLabel,0, 4, 3, 1)
-
+                self.extraSpaceLabel = Gtk.Label()
+                self.layoutGrid.attach(self.extraSpaceLabel,0, 4, 3, 1)
+            
             self.layoutGrid.override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(1, 1, 1, 1))
+            
             self.contentGrid.attach(self.layoutGrid, 1, self.index, 3, 2)
-            self.entryRows.append([self.layoutGrid,[self.categoryLabel,self.dateLabel,self.costLabel,self.descriptionLabel]])
+            
+            self.index = self.index + 2
+            
+            self.whiteSpaceLabel = Gtk.Label()
+            self.contentGrid.attach(self.whiteSpaceLabel,0, self.index, 5, 1)
+            self.index = self.index + 1
+            
+            self.entryRows.append([[self.layoutGrid, self.whiteSpaceLabel],[self.categoryLabel,self.dateLabel,self.costLabel,self.descriptionLabel]])
+
 
     def menu_clicked(self, listbox, row, data, menu):
         for i in range (len(menu)):
@@ -160,24 +162,31 @@ class Sidebar():
             # If selected menu item is "All"
             if self.menu == "<b>" + menu[0][1] + "</b>":
                 if self.subMenu == self.data.currentMonthMenu[0][1]:
-                    self.entryRows[i][0].show()
+                    self.entryRows[i][0][0].show()
+                    self.entryRows[i][0][1].show()
                 elif self.month == self.subMenu:
-                    self.entryRows[i][0].show()
+                    self.entryRows[i][0][0].show()
+                    self.entryRows[i][0][1].show()
                 elif self.month != self.subMenu:
-                    self.entryRows[i][0].hide()
+                    self.entryRows[i][0][0].hide()
+                    self.entryRows[i][0][1].hide()
 
             # If selected menu item is not "All"
             elif self.menu != "<b>" + menu[0][1] + "</b>":
                 # If category matches menu item selected
                 if self.entryRows[i][1][0].get_label() == self.menu:
                     if self.subMenu == self.data.currentMonthMenu[0][1]:
-                        self.entryRows[i][0].show()
+                        self.entryRows[i][0][0].show()
+                        self.entryRows[i][0][1].show()
                     if self.subMenu == self.month:
-                        self.entryRows[i][0].show()
+                        self.entryRows[i][0][0].show()
+                        self.entryRows[i][0][1].show()
                     if self.entryRows[i][1][0].get_label() != self.menu:
-                        self.entryRows[i][0].hide()
+                        self.entryRows[i][0][0].hide()
+                        self.entryRows[i][0][1].hide()
                 elif self.entryRows[i][1][0].get_label() != self.menu:
-                    self.entryRows[i][0].hide()
+                    self.entryRows[i][0][0].hide()
+                    self.entryRows[i][0][1].hide()
 
     def filter_subMenu(self, data, menu):
         for i in range (0,len(self.entryRows)):
@@ -186,18 +195,24 @@ class Sidebar():
             # If selected month is equal to "All"
             if self.menu == "<b>" + menu[0][1] + "</b>":
                 if self.subMenu == self.data.currentMonthMenu[0][1]:
-                    self.entryRows[i][0].show()
+                    self.entryRows[i][0][0].show()
+                    self.entryRows[i][0][1].show()
                 elif self.month == self.subMenu:
-                    self.entryRows[i][0].show()
+                    self.entryRows[i][0][0].show()
+                    self.entryRows[i][0][1].show()
                 elif self.month != self.subMenu:
-                    self.entryRows[i][0].hide()
+                    self.entryRows[i][0][0].hide()
+                    self.entryRows[i][0][1].hide()
 
             # If selected category is not equal to "All"
             elif self.menu != "<b>" + menu[0][1] + "</b>":
                 if self.month == self.subMenu and self.entryRows[i][1][0].get_label() == self.menu:
-                    self.entryRows[i][0].show()
+                    self.entryRows[i][0][0].show()
+                    self.entryRows[i][0][1].show()
                 elif self.month != self.subMenu or self.entryRows[i][1][0].get_label() != self.menu:
-                    self.entryRows[i][0].hide()
+                    self.entryRows[i][0][0].hide()
+                    self.entryRows[i][0][1].hide()
                 if self.subMenu == self.data.currentMonthMenu[0][1]:
                     if self.entryRows[i][1][0].get_label() == self.menu:
-                        self.entryRows[i][0].show()
+                        self.entryRows[i][0][0].show()
+                        self.entryRows[i][0][1].show()
