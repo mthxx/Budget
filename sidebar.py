@@ -90,6 +90,56 @@ class Sidebar():
         
         self.contentViewport.add(self.contentGrid)
 
+    def generate_sidebars(self, data):
+        for i in range(0,len(data)):
+            self.label = Gtk.Label(data[i][1])
+            self.label.set_property("height-request", 60)
+            self.menuListBox.add(self.label)
+        
+        for i in range(0,len(self.data.currentMonthMenu)):
+            self.label = Gtk.Label(self.data.currentMonthMenu[i][1])
+            self.label.set_property("height-request", 60)
+            self.subMenuListBox.add(self.label)
+
+    def generate_content(self, data):
+        self.index = 3
+        for i in range (0,len(data)):
+            
+            self.layoutGrid = Gtk.Grid(name="layoutGrid")
+            self.layoutGrid.set_column_homogeneous(True)
+            self.layoutGrid.set_hexpand(True)
+            
+            self.whiteSpaceLabel = Gtk.Label()
+            self.index = self.index + 2
+            self.contentGrid.attach(self.whiteSpaceLabel,0, self.index, 5, 1)
+            self.index = self.index + 3
+            
+            self.dateString = ""
+            self.dateString = Data.translate_date(self.dateString,data, i)
+
+            self.categoryLabel = Gtk.Label()
+            self.categoryLabel.set_markup("<b>" + data[i][0][1] + "</b>")
+            self.dateLabel = Gtk.Label(self.dateString)
+            self.costLabel = Gtk.Label("$" + data[i][2])
+            self.descriptionLabel = Gtk.Label(data[i][3])
+            #self.whiteSpaceLabel = Gtk.Label()
+            
+            self.costLabel.set_property("height-request", 35)
+            
+            #self.layoutGrid.attach(self.whiteSpaceLabel,0, 1, 3, 1)
+            self.layoutGrid.attach(self.categoryLabel, 0, 1, 1, 1)
+            self.layoutGrid.attach(self.dateLabel, 1, 1, 1, 1)
+            self.layoutGrid.attach(self.costLabel, 2, 1, 1, 1)
+            
+            if self.descriptionLabel.get_text() != "":
+                self.layoutGrid.attach(self.descriptionLabel, 0, 3, 3, 1)
+                self.whiteSpaceLabel = Gtk.Label()
+                self.layoutGrid.attach(self.whiteSpaceLabel,0, 4, 3, 1)
+
+            self.layoutGrid.override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(1, 1, 1, 1))
+            self.contentGrid.attach(self.layoutGrid, 1, self.index, 3, 2)
+            self.entryRows.append([self.categoryLabel,self.dateLabel,self.costLabel,self.descriptionLabel])
+
     def menu_clicked(self, listbox, row, data, dataMenu):
         for i in range (len(dataMenu)):
             if dataMenu[i][0] == row.get_index():
