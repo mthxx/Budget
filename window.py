@@ -1,4 +1,4 @@
-from gi.repository import Gtk, Gio
+from gi.repository import Gtk, Gio, Gdk
 from overview_menu import Overview_Menu
 from income import Income
 from expense import Expense
@@ -7,6 +7,11 @@ from sidebar import Sidebar
 class Window(Gtk.Window):
 
     def __init__(self):
+        
+        self.provider = Gtk.CssProvider()
+        self.provider.load_from_path("style.css")
+        Gtk.StyleContext.add_provider_for_screen(Gdk.Screen.get_default(), self.provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+        
         Gtk.Window.__init__(self, title="Budget")
         self.set_default_size(1000, 700)
         

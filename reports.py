@@ -4,12 +4,12 @@ from data import Data
 class Reports():
         
     def __init__(self):
-        self.css = Gtk.CssProvider()
-        self.css.load_from_path("style.css")
-        Gtk.StyleContext.add_provider_for_screen(Gdk.Screen.get_default(), self.css, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
         
+        # Initialize Variables
         self.data = Data()
+        self.index = 0
 
+        # Define Layouts
         self.grid = Gtk.Grid()
         
         self.contentGrid = Gtk.Grid()
@@ -20,17 +20,16 @@ class Reports():
         self.contentScrolledWindow.add(self.contentViewport)
         self.grid.attach(self.contentScrolledWindow,0,0,1,1)
         
-        self.emptyLabel = Gtk.Label()
+        self.whiteSpaceLabel = Gtk.Label()
 
-        self.grid.attach(self.emptyLabel,0,0,5,1)
+        self.grid.attach(self.whiteSpaceLabel,0,0,5,1)
 
+        # Style Layouts
         self.contentScrolledWindow.set_vexpand(True)
         self.contentGrid.set_column_homogeneous(True)
         self.contentGrid.set_hexpand(True)
         
         self.grid.override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(0.2, 0.2, 0.2, 0.2))
-
-        self.index = 0
 
         for i in range (0,len(self.data.income)):
             
@@ -62,4 +61,3 @@ class Reports():
             self.layoutGrid.override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(1, 1, 1, 1))
             self.contentGrid.attach(self.layoutGrid, 1, self.index, 3, 2)
             
-
