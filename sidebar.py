@@ -35,8 +35,8 @@ class Sidebar():
         self.contentViewport = Gtk.Viewport()
 
         # Define Widgets
-        self.dummyLabel1 = Gtk.Label()
-        self.dummyLabel2 = Gtk.Label()
+        self.whiteSpaceLabel1 = Gtk.Label()
+        self.whiteSpaceLabel2 = Gtk.Label()
         
         self.addEntryButton = Gtk.Button("Add")
         self.editEntryButton = Gtk.Button("Edit")
@@ -75,18 +75,18 @@ class Sidebar():
         self.grid.attach(self.contentScrolledWindow,1,0,1,1)
 
         # Build Content Area - Add items to Content Grid
-        self.contentGrid.attach(self.topLeftLabel, 1, 2, 1, 1)
-        self.contentGrid.attach(self.topMiddleLabel, 2, 2, 1, 1)
-        self.contentGrid.attach(self.topRightLabel, 3, 2, 1, 1)
+        self.contentGrid.attach(self.topLeftLabel, 1, 0, 1, 1)
+        self.contentGrid.attach(self.topMiddleLabel, 2, 0, 1, 1)
+        self.contentGrid.attach(self.topRightLabel, 3, 0, 1, 1)
         
-        self.contentGrid.attach(self.monthSpentTotalLabel, 1, 3, 1, 1)
-        self.contentGrid.attach(self.monthRemainingTotalLabel, 2, 3, 1, 1)
-        self.contentGrid.attach(self.percBudgetTotalLabel, 3, 3, 1, 1)
+        self.contentGrid.attach(self.monthSpentTotalLabel, 1, 1, 1, 1)
+        self.contentGrid.attach(self.monthRemainingTotalLabel, 2, 1, 1, 1)
+        self.contentGrid.attach(self.percBudgetTotalLabel, 3, 1, 1, 1)
         
-        self.contentGrid.attach(self.dummyLabel1, 0, 4, 3, 1)
-        self.contentGrid.attach(self.addEntryButton, 1, 5, 1, 1)
-        self.contentGrid.attach(self.editEntryButton, 3, 5, 1, 1)
-        self.contentGrid.attach(self.dummyLabel2, 1, 6, 1, 1)
+        self.contentGrid.attach(self.whiteSpaceLabel1, 0, 2, 5, 1)
+        self.contentGrid.attach(self.addEntryButton, 1, 3, 1, 1)
+        self.contentGrid.attach(self.editEntryButton, 3, 3, 1, 1)
+        self.contentGrid.attach(self.whiteSpaceLabel2, 1, 4, 1, 1)
         
         self.contentViewport.add(self.contentGrid)
 
@@ -102,7 +102,8 @@ class Sidebar():
             self.subMenuListBox.add(self.label)
 
     def generate_content(self, data):
-        self.index = 7
+        self.index = 5
+        
         for i in range (0,len(data)):
             
             self.layoutGrid = Gtk.Grid(name="layoutGrid")
@@ -112,35 +113,36 @@ class Sidebar():
             self.dateString = ""
             self.dateString = Data.translate_date(self.dateString,data, i)
 
+            # Set labels
             self.categoryLabel = Gtk.Label()
-            self.categoryLabel.set_markup("<b>" + data[i][0][1] + "</b>")
             self.dateLabel = Gtk.Label(self.dateString)
+            self.descriptionLabel = Gtk.Label()
+          
+            # Style Labels
             self.costLabel = Gtk.Label("$" + data[i][2])
-            self.descriptionLabel = Gtk.Label(data[i][3])
+            self.categoryLabel.set_markup("<b>" + data[i][0][1] + "</b>")
+            self.descriptionLabel.set_markup("<i>" + data[i][3] + "</i>")
+            self.categoryLabel.set_property("height-request", 50)
             
-            self.costLabel.set_property("height-request", 35)
-            
+            # Attach Labels
             self.layoutGrid.attach(self.categoryLabel, 0, 1, 1, 1)
             self.layoutGrid.attach(self.dateLabel, 1, 1, 1, 1)
             self.layoutGrid.attach(self.costLabel, 2, 1, 1, 1)
             
-            if self.descriptionLabel.get_text() != "":
+            if self.descriptionLabel.get_text() == "":
                 self.layoutGrid.attach(self.descriptionLabel, 0, 3, 3, 1)
                 self.extraSpaceLabel = Gtk.Label()
                 self.layoutGrid.attach(self.extraSpaceLabel,0, 4, 3, 1)
             
-            self.layoutGrid.override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(1, 1, 1, 1))
-            
+            # Add Layout Grid to Content Grid. Increment index and apply whitespaces
             self.contentGrid.attach(self.layoutGrid, 1, self.index, 3, 2)
             
             self.index = self.index + 2
-            
             self.whiteSpaceLabel = Gtk.Label()
             self.contentGrid.attach(self.whiteSpaceLabel,0, self.index, 5, 1)
             self.index = self.index + 1
             
             self.entryRows.append([[self.layoutGrid, self.whiteSpaceLabel],[self.categoryLabel,self.dateLabel,self.costLabel,self.descriptionLabel]])
-
 
     def menu_clicked(self, listbox, row, data, menu):
         for i in range (len(menu)):
