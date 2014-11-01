@@ -36,16 +36,17 @@ class Data():
         
         self.currentMonthMenu = [
                         [0, 'All']
-                        ,[1, 'October']
-                        ,[2, 'September']
-                        ,[3, 'August']
-                        ,[4, 'July']
-                        ,[5, 'June']
-                        ,[6, 'May']
-                        ,[7, 'April']
-                        ,[8, 'March']
-                        ,[9, 'February']
-                        ,[10, 'January']
+                        ,[1, 'November']
+                        ,[2, 'October']
+                        ,[3, 'September']
+                        ,[4, 'August']
+                        ,[5, 'July']
+                        ,[6, 'June']
+                        ,[7, 'May']
+                        ,[8, 'April']
+                        ,[9, 'March']
+                        ,[10, 'February']
+                        ,[11, 'January']
                         ]
 
         self.allMonthMenu = [
@@ -65,11 +66,7 @@ class Data():
                         ]
         
         self.income = [
-                [[2, 'Income 2'], [12, 15, 2014], '1500','']
-                ,[[1, 'Income 1'], [12, 1, 2014], '1500','']
-                ,[[2, 'Income 2'], [11, 15, 2014], '1500','']
-                ,[[1, 'Income 1'], [11, 1, 2014], '1500','']
-                ,[[2, 'Income 2'], [10, 15, 2014], '1500','']
+                [[2, 'Income 2'], [10, 15, 2014], '1500','']
                 ,[[1, 'Income 1'], [10, 1, 2014], '1500','']
                 ,[[2, 'Income 2'], [9, 15, 2014], '1500','']
                 ,[[1, 'Income 1'], [9, 1, 2014], '1500','']

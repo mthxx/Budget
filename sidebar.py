@@ -8,8 +8,8 @@ class Sidebar():
         self.data = Data()
         # Initialize Variables
         self.entryRows = []
-        self.menu = self.data.incomeMenu[0][1]
-        self.subMenu = self.data.currentMonthMenu[0][1]
+        self.menu = ""
+        self.subMenu = ""
         
         # Set Offsets
         self.entryOffsetTop = 8
@@ -91,15 +91,19 @@ class Sidebar():
         self.contentViewport.add(self.contentGrid)
 
     def generate_sidebars(self, data):
+        self.menu = "<b>" +  data[0][1] + "</b>"
+        self.subMenu = self.data.currentMonthMenu[0][1]
         for i in range(0,len(data)):
             self.label = Gtk.Label(data[i][1])
             self.label.set_property("height-request", 60)
             self.menuListBox.add(self.label)
+            self.menuListBox.select_row(self.menuListBox.get_row_at_index(0))
         
         for i in range(0,len(self.data.currentMonthMenu)):
             self.label = Gtk.Label(self.data.currentMonthMenu[i][1])
             self.label.set_property("height-request", 60)
             self.subMenuListBox.add(self.label)
+            self.subMenuListBox.select_row(self.subMenuListBox.get_row_at_index(0))
 
     def generate_content(self, data):
         self.index = 5
