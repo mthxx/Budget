@@ -129,7 +129,7 @@ class Sidebar():
             self.layoutGrid.attach(self.dateLabel, 1, 1, 1, 1)
             self.layoutGrid.attach(self.costLabel, 2, 1, 1, 1)
             
-            if self.descriptionLabel.get_text() == "":
+            if self.descriptionLabel.get_text() != "":
                 self.layoutGrid.attach(self.descriptionLabel, 0, 3, 3, 1)
                 self.extraSpaceLabel = Gtk.Label()
                 self.layoutGrid.attach(self.extraSpaceLabel,0, 4, 3, 1)
