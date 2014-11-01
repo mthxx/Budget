@@ -2,3 +2,16 @@
     box-shadow: 0px 2px 3px rgb(153, 153, 153);    
     background-color: white;
 }
+
+#menuViewport, #subMenuViewport{
+    border-style: solid;
+    border-width: 1px;
+}
+
+#menuListBox, #subMenuListBox{
+    background-color: #D1D1D1;
+}
+
+#entryScrolledWindow{
+    background-color: #D1D1D1;
+}

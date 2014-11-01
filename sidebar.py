@@ -23,15 +23,15 @@ class Sidebar():
         self.grid = Gtk.Grid()
         self.contentGrid = Gtk.Grid()
        
-        self.menuListBox = Gtk.ListBox()
-        self.subMenuListBox = Gtk.ListBox()
+        self.menuListBox = Gtk.ListBox(name="menuListBox")
+        self.subMenuListBox = Gtk.ListBox(name="subMenuListBox")
         
-        self.menuScrolledWindow = Gtk.ScrolledWindow()
-        self.subMenuScrolledWindow = Gtk.ScrolledWindow()
-        self.contentScrolledWindow = Gtk.ScrolledWindow()
+        self.menuScrolledWindow = Gtk.ScrolledWindow(name="menuScrolledWindow")
+        self.subMenuScrolledWindow = Gtk.ScrolledWindow(name="subMenuScrolledWindow")
+        self.contentScrolledWindow = Gtk.ScrolledWindow(name="entryScrolledWindow")
         
-        self.menuViewport = Gtk.Viewport()
-        self.subMenuViewport = Gtk.Viewport()
+        self.menuViewport = Gtk.Viewport(name="menuViewport")
+        self.subMenuViewport = Gtk.Viewport(name="subMenuViewport")
         self.contentViewport = Gtk.Viewport()
 
         # Define Widgets
@@ -55,7 +55,7 @@ class Sidebar():
 #        self.grid.override_backgrounddcolor(Gtk.StateFlags.NORMAL, Gdk.RGBA(0.2, 0.2, 0.2, 0.2))
         self.menuScrolledWindow.set_vexpand(True)
         self.menuScrolledWindow.set_property("width-request",150)
-        
+
         self.subMenuScrolledWindow.set_vexpand(True)
         self.subMenuScrolledWindow.set_property("width-request",100)
         
@@ -71,8 +71,8 @@ class Sidebar():
         self.contentScrolledWindow.add(self.contentViewport)
         
         self.grid.attach(self.menuScrolledWindow,0,0,1,1)
-        self.grid.attach(self.subMenuScrolledWindow,2,0,1,1)
-        self.grid.attach(self.contentScrolledWindow,1,0,1,1)
+        self.grid.attach(self.subMenuScrolledWindow,1,0,1,1)
+        self.grid.attach(self.contentScrolledWindow,2,0,1,1)
 
         # Build Content Area - Add items to Content Grid
         self.contentGrid.attach(self.topLeftLabel, 1, 0, 1, 1)
