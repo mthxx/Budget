@@ -21,6 +21,7 @@ class Sidebar():
         
         # Define Layouts
         self.grid = Gtk.Grid()
+        self.headerGrid = Gtk.Grid( name = "headerGrid")
         self.contentGrid = Gtk.Grid()
        
         self.menuListBox = Gtk.ListBox(name="menuListBox")
@@ -59,8 +60,12 @@ class Sidebar():
         self.subMenuScrolledWindow.set_vexpand(True)
         self.subMenuScrolledWindow.set_property("width-request",100)
         
+        self.headerGrid.set_column_homogeneous(True)
+        self.headerGrid.set_hexpand(True)
+        
         self.contentGrid.set_column_homogeneous(True)
         self.contentGrid.set_hexpand(True)
+        self.contentGrid.set_vexpand(True)
         
         # Add items to Main Grid 
         self.menuViewport.add(self.menuListBox)
@@ -70,23 +75,24 @@ class Sidebar():
         self.subMenuScrolledWindow.add(self.subMenuViewport)
         self.contentScrolledWindow.add(self.contentViewport)
         
-        self.grid.attach(self.menuScrolledWindow,0,0,1,1)
-        self.grid.attach(self.subMenuScrolledWindow,1,0,1,1)
-        self.grid.attach(self.contentScrolledWindow,2,0,1,1)
+        self.grid.attach(self.menuScrolledWindow,0,0,1,2)
+        self.grid.attach(self.subMenuScrolledWindow,1,0,1,2)
+        self.grid.attach(self.headerGrid,2,0,1,1)
+        self.grid.attach(self.contentScrolledWindow,2,1,1,1)
 
         # Build Content Area - Add items to Content Grid
-        self.contentGrid.attach(self.topLeftLabel, 1, 0, 1, 1)
-        self.contentGrid.attach(self.topMiddleLabel, 2, 0, 1, 1)
-        self.contentGrid.attach(self.topRightLabel, 3, 0, 1, 1)
+        self.headerGrid.attach(self.topLeftLabel, 1, 0, 1, 1)
+        self.headerGrid.attach(self.topMiddleLabel, 2, 0, 1, 1)
+        self.headerGrid.attach(self.topRightLabel, 3, 0, 1, 1)
         
-        self.contentGrid.attach(self.monthSpentTotalLabel, 1, 1, 1, 1)
-        self.contentGrid.attach(self.monthRemainingTotalLabel, 2, 1, 1, 1)
-        self.contentGrid.attach(self.percBudgetTotalLabel, 3, 1, 1, 1)
+        self.headerGrid.attach(self.monthSpentTotalLabel, 1, 1, 1, 1)
+        self.headerGrid.attach(self.monthRemainingTotalLabel, 2, 1, 1, 1)
+        self.headerGrid.attach(self.percBudgetTotalLabel, 3, 1, 1, 1)
         
-        self.contentGrid.attach(self.whiteSpaceLabel1, 0, 2, 5, 1)
-        self.contentGrid.attach(self.addEntryButton, 1, 3, 1, 1)
-        self.contentGrid.attach(self.editEntryButton, 3, 3, 1, 1)
-        self.contentGrid.attach(self.whiteSpaceLabel2, 1, 4, 1, 1)
+        self.headerGrid.attach(self.whiteSpaceLabel1, 0, 2, 5, 1)
+        self.headerGrid.attach(self.addEntryButton, 1, 3, 1, 1)
+        self.headerGrid.attach(self.editEntryButton, 3, 3, 1, 1)
+        self.headerGrid.attach(self.whiteSpaceLabel2, 1, 4, 1, 1)
         
         self.contentViewport.add(self.contentGrid)
 
