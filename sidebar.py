@@ -21,7 +21,7 @@ class Sidebar():
         
         # Define Layouts
         self.grid = Gtk.Grid()
-        self.headerGrid = Gtk.Grid( name = "headerGrid")
+        self.headerGrid = Gtk.Grid(name="headerGrid")
         self.contentGrid = Gtk.Grid()
        
         self.menuListBox = Gtk.ListBox(name="menuListBox")
