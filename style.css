@@ -8,7 +8,7 @@
     border-width: 1px;
 }
 
-#headerGrid, #menuListBox, #subMenuListBox{
+#overviewGrid, #reportsGrid, #projectionsGrid, #headerGrid, #menuListBox, #subMenuListBox{
     background-color: #D1D1D1;
 }
 

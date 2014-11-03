@@ -15,12 +15,12 @@ class Overview():
         self.monthIndex = 10000
         self.categoryIndex = 10000
         
-        self.menuColor = .5
+        self.menuColor = .75
         self.totalColor = .75
-        self.highlightColor = .1
+        self.highlightColor = .95
         
         # Create Layouts
-        self.grid = Gtk.Grid()
+        self.grid = Gtk.Grid(name="overviewGrid")
         self.overviewGrid = Gtk.Grid()
         self.headerGrid = Gtk.Grid()
         
