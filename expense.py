@@ -13,6 +13,8 @@ class Expense():
         self.view.topMiddleLabel.set_markup("<b>Total Remaining</b>")
         self.view.topRightLabel.set_markup("<b>% of Budget</b>")
         
+        self.view.monthTotalLabel.set_text( "$" + str(self.view.sumTotalData(self.data.expenses)))
+        
         self.view.generate_sidebars(self.data.expenseMenu)
         self.view.generate_content(self.data.expenses)
 

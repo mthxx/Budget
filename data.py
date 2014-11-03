@@ -3,6 +3,19 @@ from gi.repository import Gtk, Gio
 class Data():
 
     def __init__(self):
+        #Indexes for data arrays
+        self.category = 0
+        self.category_index = 0
+        self.category_text = 1
+
+        self.date = 1
+        self.date_month = 0
+        self.date_day = 1
+        self.date_year = 2
+       
+        self.value = 2
+        self.description = 3
+
         self.incomeMenu = [
                         [0, 'All Income']
                         ,[1, 'Income 1']

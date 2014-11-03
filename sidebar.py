@@ -1,5 +1,6 @@
 from gi.repository import Gtk, Gio, Gdk
 from data import Data
+from decimal import *
 
 class Sidebar():
 
@@ -48,7 +49,7 @@ class Sidebar():
         self.topMiddleLabel = Gtk.Label()
         self.topRightLabel = Gtk.Label()
         
-        self.monthSpentTotalLabel = Gtk.Label("$1,500")
+        self.monthTotalLabel = Gtk.Label()
         self.monthRemainingTotalLabel = Gtk.Label("$1,500")
         self.percBudgetTotalLabel = Gtk.Label("50.00%")
 
@@ -85,7 +86,7 @@ class Sidebar():
         self.headerGrid.attach(self.topMiddleLabel, 2, 0, 1, 1)
         self.headerGrid.attach(self.topRightLabel, 3, 0, 1, 1)
         
-        self.headerGrid.attach(self.monthSpentTotalLabel, 1, 1, 1, 1)
+        self.headerGrid.attach(self.monthTotalLabel, 1, 1, 1, 1)
         self.headerGrid.attach(self.monthRemainingTotalLabel, 2, 1, 1, 1)
         self.headerGrid.attach(self.percBudgetTotalLabel, 3, 1, 1, 1)
         
@@ -129,9 +130,9 @@ class Sidebar():
             self.descriptionLabel = Gtk.Label()
           
             # Style Labels
-            self.costLabel = Gtk.Label("$" + data[i][2])
-            self.categoryLabel.set_markup("<b>" + data[i][0][1] + "</b>")
-            self.descriptionLabel.set_markup("<i>" + data[i][3] + "</i>")
+            self.costLabel = Gtk.Label("$" + data[i][self.data.value])
+            self.categoryLabel.set_markup("<b>" + data[i][self.data.category][self.data.category_text] + "</b>")
+            self.descriptionLabel.set_markup("<i>" + data[i][self.data.description] + "</i>")
             self.categoryLabel.set_property("height-request", 50)
             
             # Attach Labels
@@ -156,14 +157,14 @@ class Sidebar():
 
     def menu_clicked(self, listbox, row, data, menu):
         for i in range (len(menu)):
-            if menu[i][0] == row.get_index():
-                self.menu = "<b>" +  menu[i][1] + "</b>"
+            if menu[i][self.data.category_index] == row.get_index():
+                self.menu = "<b>" +  menu[i][self.data.category_text] + "</b>"
         self.filter_menu(data, menu)
     
     def subMenu_clicked(self, listbox, row, data, menu):
         for i in range (len(self.data.currentMonthMenu)):
-            if self.data.currentMonthMenu[i][0] == row.get_index():
-                self.subMenu = self.data.currentMonthMenu[i][1]
+            if self.data.currentMonthMenu[i][self.data.category_index] == row.get_index():
+                self.subMenu = self.data.currentMonthMenu[i][self.data.category_text]
         self.filter_subMenu(data, menu)
 
     def filter_menu(self, data, menu):
@@ -172,8 +173,8 @@ class Sidebar():
             self.month =  self.month[0]
 
             # If selected menu item is "All"
-            if self.menu == "<b>" + menu[0][1] + "</b>":
-                if self.subMenu == self.data.currentMonthMenu[0][1]:
+            if self.menu == "<b>" + menu[self.data.category][self.data.category_text] + "</b>":
+                if self.subMenu == self.data.currentMonthMenu[self.data.category][self.data.category_text]:
                     self.entryRows[i][0][0].show()
                     self.entryRows[i][0][1].show()
                 elif self.month == self.subMenu:
@@ -184,10 +185,10 @@ class Sidebar():
                     self.entryRows[i][0][1].hide()
 
             # If selected menu item is not "All"
-            elif self.menu != "<b>" + menu[0][1] + "</b>":
+            elif self.menu != "<b>" + menu[self.data.category][self.data.category_text] + "</b>":
                 # If category matches menu item selected
                 if self.entryRows[i][1][0].get_label() == self.menu:
-                    if self.subMenu == self.data.currentMonthMenu[0][1]:
+                    if self.subMenu == self.data.currentMonthMenu[self.data.category][self.data.category_index]:
                         self.entryRows[i][0][0].show()
                         self.entryRows[i][0][1].show()
                     if self.subMenu == self.month:
@@ -205,8 +206,8 @@ class Sidebar():
             self.month = self.entryRows[i][1][1].get_label().split()
             self.month = self.month[0]
             # If selected month is equal to "All"
-            if self.menu == "<b>" + menu[0][1] + "</b>":
-                if self.subMenu == self.data.currentMonthMenu[0][1]:
+            if self.menu == "<b>" + menu[self.data.category][self.data.category_text] + "</b>":
+                if self.subMenu == self.data.currentMonthMenu[self.data.category][self.data.category_text]:
                     self.entryRows[i][0][0].show()
                     self.entryRows[i][0][1].show()
                 elif self.month == self.subMenu:
@@ -217,14 +218,27 @@ class Sidebar():
                     self.entryRows[i][0][1].hide()
 
             # If selected category is not equal to "All"
-            elif self.menu != "<b>" + menu[0][1] + "</b>":
+            elif self.menu != "<b>" + menu[self.data.category][self.data.category_text] + "</b>":
                 if self.month == self.subMenu and self.entryRows[i][1][0].get_label() == self.menu:
                     self.entryRows[i][0][0].show()
                     self.entryRows[i][0][1].show()
                 elif self.month != self.subMenu or self.entryRows[i][1][0].get_label() != self.menu:
                     self.entryRows[i][0][0].hide()
                     self.entryRows[i][0][1].hide()
-                if self.subMenu == self.data.currentMonthMenu[0][1]:
+                if self.subMenu == self.data.currentMonthMenu[self.data.category][self.data.category_text]:
                     if self.entryRows[i][1][0].get_label() == self.menu:
                         self.entryRows[i][0][0].show()
                         self.entryRows[i][0][1].show()
+    
+    def sumTotalData(self,data_arr):
+        total = 0
+        for i in range (0,len(data_arr)):
+            total += Decimal(data_arr[i][self.data.value])
+        return total
+    
+    def sumMonthData(self,data_arr, month):
+        total = 0
+        for i in range (0,len(data_arr)):
+            if data_arr[i][self.data.date][self.data.date_month] == month:
+                total += Decimal(data_arr[i][self.data.value])
+        return total
