@@ -17,7 +17,7 @@ class Overview():
         
         self.menuColor = .75
         self.totalColor = .75
-        self.highlightColor = .95
+        self.highlightColor = .88
         
         # Create Layouts
         self.grid = Gtk.Grid(name="overviewGrid")

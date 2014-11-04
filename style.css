@@ -8,10 +8,8 @@
     border-width: 1px;
 }
 
-#overviewGrid, #reportsGrid, #projectionsGrid, #headerGrid, #menuListBox, #subMenuListBox{
-    background-color: #D1D1D1;
-}
-
-#entryScrolledWindow{
-    background-color: #D1D1D1;
+#entryScrolledWindow, #overviewGrid, #reportsGrid, #projectionsGrid, #headerGrid, #menuListBox, #subMenuListBox{
+    background-color: #F3F3F3;
+    /*background-color: #EBEBEB;*/
+    /*background-color: #D1D1D1;*/
 }
