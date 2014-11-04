@@ -1,19 +1,21 @@
 from gi.repository import Gtk, Gio
 from sidebar import Sidebar
 from data import Data
+from calc import Calc
 
 class Expense():
 
     def __init__(self):
         # Define Sidebar Menu
         self.data = Data()
+        self.calc = Calc()
         self.view = Sidebar() 
         
         self.view.topLeftLabel.set_markup("<b>Total Spent</b>")
         self.view.topMiddleLabel.set_markup("<b>Total Remaining</b>")
         self.view.topRightLabel.set_markup("<b>% of Budget</b>")
         
-        self.view.monthTotalLabel.set_text( "$" + str(self.view.sumTotalData(self.data.expenses)))
+        self.view.monthTotalLabel.set_text( "$" + str(self.calc.sumTotalData(self.data.expenses)))
         
         self.view.generate_sidebars(self.data.expenseMenu)
         self.view.generate_content(self.data.expenses)

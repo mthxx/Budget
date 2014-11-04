@@ -1,0 +1,21 @@
+from gi.repository import Gtk, Gio, Gdk
+from data import Data
+from decimal import *
+
+class Calc():
+
+    def __init__(self):
+        self.data = Data()
+
+    def sumTotalData(self,data_arr):
+        total = 0
+        for i in range (0,len(data_arr)):
+            total += Decimal(data_arr[i][self.data.value])
+        return total
+    
+    def sumMonthData(self,data_arr, month):
+        total = 0
+        for i in range (0,len(data_arr)):
+            if data_arr[i][self.data.date][self.data.date_month] == month:
+                total += Decimal(data_arr[i][self.data.value])
+        return total
