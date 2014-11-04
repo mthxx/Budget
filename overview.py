@@ -1,6 +1,7 @@
 from gi.repository import Gtk, Gio, Gdk
 from decimal import *
 from data import Data
+from calc import Calc
 
 class Overview():
 
@@ -8,6 +9,7 @@ class Overview():
         
         # Initialize Variables
         self.data = Data()
+        self.calc = Calc()
         self.monthArr = []
         self.categoryArr = []
         self.entryRows = []
@@ -54,22 +56,22 @@ class Overview():
         
         self.balanceLabel = Gtk.Label("Balance:  ")
         self.balanceLabel.set_halign(Gtk.Align.END)
-        self.balanceTotalLabel = Gtk.Label( "$" + str(self.sumData(self.data.income) - self.sumData(self.data.expenses)))
+        self.balanceTotalLabel = Gtk.Label( "$" + str(self.calc.sumTotalData(self.data.income) - self.calc.sumTotalData(self.data.expenses)))
         self.balanceTotalLabel.set_halign(Gtk.Align.START)
         
         self.varianceLabel = Gtk.Label("Variance:  ")
         self.varianceLabel.set_halign(Gtk.Align.END)
-        self.varianceTotalLabel = Gtk.Label( "$" + str(self.sumData(self.data.income)))
+        self.varianceTotalLabel = Gtk.Label( "$" + str(self.calc.sumTotalData(self.data.income)))
         self.varianceTotalLabel.set_halign(Gtk.Align.START)
         
         self.incomeTotalLabel = Gtk.Label("Total Income:  ")
         self.incomeTotalLabel.set_halign(Gtk.Align.END)
-        self.incomeTotalValueLabel = Gtk.Label( "$" + str(self.sumData(self.data.income)))
+        self.incomeTotalValueLabel = Gtk.Label( "$" + str(self.calc.sumTotalData(self.data.income)))
         self.incomeTotalValueLabel.set_halign(Gtk.Align.START)
         
         self.expensesTotalLabel = Gtk.Label("Total Expenses:  ")
         self.expensesTotalLabel.set_halign(Gtk.Align.END)
-        self.expensesTotalValueLabel = Gtk.Label( "$" + str(self.sumData(self.data.expenses)))
+        self.expensesTotalValueLabel = Gtk.Label( "$" + str(self.calc.sumTotalData(self.data.expenses)))
         self.expensesTotalValueLabel.set_halign(Gtk.Align.START)
         
         self.headerGrid.attach(self.blankLabel,0,0,5,1)
@@ -309,9 +311,3 @@ class Overview():
                         self.entryRows[i][1][j].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(self.totalColor, self.totalColor, self.totalColor, self.totalColor))
                     else:
                         self.entryRows[i][1][j].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(.0, .0, .0, .0));
-         
-    def sumData(self,data_arr):
-        total = 0
-        for i in range (0,len(data_arr)):
-            total += Decimal(data_arr[i][2])
-        return total
