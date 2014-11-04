@@ -1,12 +1,13 @@
 from gi.repository import Gtk, Gio, Gdk
 from data import Data
-from decimal import *
+from calc import Calc
 
 class Sidebar():
 
     def __init__(self):
         
         self.data = Data()
+        self.calc = Calc()
         # Initialize Variables
         self.entryRows = []
         self.menu = ""
@@ -164,7 +165,8 @@ class Sidebar():
     def subMenu_clicked(self, listbox, row, data, menu):
         for i in range (len(self.data.currentMonthMenu)):
             if self.data.currentMonthMenu[i][self.data.category_index] == row.get_index():
-                self.subMenu = self.data.currentMonthMenu[i][self.data.category_text]
+                self.row = self.data.currentMonthMenu[i][self.data.category_index]
+        self.subMenu = self.data.currentMonthMenu[self.row][self.data.category_text]
         self.filter_subMenu(data, menu)
 
     def filter_menu(self, data, menu):
@@ -202,20 +204,27 @@ class Sidebar():
                     self.entryRows[i][0][1].hide()
 
     def filter_subMenu(self, data, menu):
+        for i in range(0, len(self.data.currentMonthMenu)):
+            if self.subMenu == self.data.currentMonthMenu[i][1]:
+                self.month_index = self.data.currentMonthMenu[i][0]
         for i in range (0,len(self.entryRows)):
             self.month = self.entryRows[i][1][1].get_label().split()
             self.month = self.month[0]
             # If selected month is equal to "All"
             if self.menu == "<b>" + menu[self.data.category][self.data.category_text] + "</b>":
                 if self.subMenu == self.data.currentMonthMenu[self.data.category][self.data.category_text]:
+                    #month_index = self.data.currentMonthMenu[self.data.category][self.data.category_index]
                     self.entryRows[i][0][0].show()
                     self.entryRows[i][0][1].show()
+                    self.monthTotalLabel.set_text("$" + str(self.calc.sumTotalData(data)))
                 elif self.month == self.subMenu:
                     self.entryRows[i][0][0].show()
                     self.entryRows[i][0][1].show()
+                    self.monthTotalLabel.set_text("$" + str(self.calc.sumMonthData(data,self.month_index)))
                 elif self.month != self.subMenu:
                     self.entryRows[i][0][0].hide()
                     self.entryRows[i][0][1].hide()
+                    self.monthTotalLabel.set_text("$" + str(self.calc.sumMonthData(data,self.month_index)))
 
             # If selected category is not equal to "All"
             elif self.menu != "<b>" + menu[self.data.category][self.data.category_text] + "</b>":
@@ -229,16 +238,3 @@ class Sidebar():
                     if self.entryRows[i][1][0].get_label() == self.menu:
                         self.entryRows[i][0][0].show()
                         self.entryRows[i][0][1].show()
-    
-    def sumTotalData(self,data_arr):
-        total = 0
-        for i in range (0,len(data_arr)):
-            total += Decimal(data_arr[i][self.data.value])
-        return total
-    
-    def sumMonthData(self,data_arr, month):
-        total = 0
-        for i in range (0,len(data_arr)):
-            if data_arr[i][self.data.date][self.data.date_month] == month:
-                total += Decimal(data_arr[i][self.data.value])
-        return total
