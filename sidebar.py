@@ -180,28 +180,35 @@ class Sidebar():
 
             # If selected menu item is "All"
             if self.menu_index == menu[0][self.data.category_index]:
+                # If selected sub category equals "All", show row
                 if self.subMenu == self.data.currentMonthMenu[self.data.category][self.data.category_text]:
                     self.entryRows[i][0][0].show()
                     self.entryRows[i][0][1].show()
+                    self.monthTotalLabel.set_text("$" + str(self.calc.sumTotalData(data)))
+                # If selected sub category equals rows sub category, show row
                 elif self.month == self.subMenu:
                     self.entryRows[i][0][0].show()
                     self.entryRows[i][0][1].show()
+                    self.monthTotalLabel.set_text("$" + str(self.calc.sumMonthData(data, self.subMenu_index)))
+                # If selected sub category does not equal rows sub category, hide row
                 elif self.month != self.subMenu:
                     self.entryRows[i][0][0].hide()
                     self.entryRows[i][0][1].hide()
 
             # If selected menu item is not "All"
             elif self.menu_index != menu[0][self.data.category_index]:
-                # If category matches menu item selected
+                # If selected category matches rows category
                 if self.menu == self.entryRows[i][1][0].get_label():
-                    # If selected sub menu is "All", show all rows.
+                    # If selected sub menu is "All", show row.
                     if self.subMenu_index == self.data.currentMonthMenu[0][self.data.category_index]:
                         self.entryRows[i][0][0].show()
                         self.entryRows[i][0][1].show()
+                        self.monthTotalLabel.set_text("$" + str(self.calc.sumCategoryData(data, self.menu_index)))
                     # If selected sub category matches rows sub category, show row
                     if self.subMenu == self.month:
                         self.entryRows[i][0][0].show()
                         self.entryRows[i][0][1].show()
+                        self.monthTotalLabel.set_text("$" + str(self.calc.sumCategoryMonthData(data, self.menu_index, self.subMenu_index)))
                     # If row's category is not the selected category, hide row
                     if self.menu != self.entryRows[i][1][0].get_label():
                         self.entryRows[i][0][0].hide()
@@ -215,16 +222,19 @@ class Sidebar():
         for i in range (0,len(self.entryRows)):
             self.month = self.entryRows[i][1][1].get_label().split()
             self.month = self.month[0]
-            # If selected month is equal to "All"
+           # If selected category is equal to "All"
             if self.menu_index == menu[self.data.category][self.data.category_index]:
+                # If sub category equals "All"
                 if self.subMenu_index == self.data.currentMonthMenu[self.data.category][self.data.category_index]:
                     self.entryRows[i][0][0].show()
                     self.entryRows[i][0][1].show()
                     self.monthTotalLabel.set_text("$" + str(self.calc.sumTotalData(data)))
+                # If selected sub category matches rows sub category, show row
                 elif self.month == self.subMenu:
                     self.entryRows[i][0][0].show()
                     self.entryRows[i][0][1].show()
                     self.monthTotalLabel.set_text("$" + str(self.calc.sumMonthData(data,self.subMenu_index)))
+                # If selected sub category does not match rows sub category, hide row
                 elif self.month != self.subMenu:
                     self.entryRows[i][0][0].hide()
                     self.entryRows[i][0][1].hide()
@@ -232,13 +242,19 @@ class Sidebar():
 
             # If selected category is not equal to "All"
             elif self.menu_index != menu[self.data.category][self.data.category_index]:
+                # If selected sub category equals "All" and selected category equals rows category, show row
                 if self.month == self.subMenu and self.entryRows[i][1][0].get_label() == self.menu:
                     self.entryRows[i][0][0].show()
                     self.entryRows[i][0][1].show()
+                    self.monthTotalLabel.set_text("$" + str(self.calc.sumCategoryMonthData(data,self.menu_index, self.subMenu_index)))
+                # If selected sub category does not equal rows sub category, or selected category doesn't equal rows category, hide row.
                 elif self.month != self.subMenu or self.entryRows[i][1][0].get_label() != self.menu:
                     self.entryRows[i][0][0].hide()
                     self.entryRows[i][0][1].hide()
-                if self.subMenu_index == self.data.currentMonthMenu[self.data.category][self.data.category_index]:
+                # If selected sub category equals "All"
+                if self.subMenu_index == self.data.currentMonthMenu[0][0]:
+                    # If selected category equals rows category, show row
                     if self.entryRows[i][1][0].get_label() == self.menu:
                         self.entryRows[i][0][0].show()
                         self.entryRows[i][0][1].show()
+                        self.monthTotalLabel.set_text("$" + str(self.calc.sumCategoryData(data,self.menu_index)))
