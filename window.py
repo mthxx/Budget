@@ -1,5 +1,6 @@
 from gi.repository import Gtk, Gio, Gdk
 from overview_menu import Overview_Menu
+from data import Data
 from income import Income
 from expense import Expense
 from sidebar import Sidebar
@@ -11,7 +12,8 @@ class Window(Gtk.Window):
         self.provider = Gtk.CssProvider()
         self.provider.load_from_path("style.css")
         Gtk.StyleContext.add_provider_for_screen(Gdk.Screen.get_default(), self.provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
-        
+        self.data = Data()
+
         Gtk.Window.__init__(self, title="Budget")
         self.set_default_size(1000, 700)
         
@@ -77,9 +79,27 @@ class Window(Gtk.Window):
             # Set Size
         self.addButton.set_size_request(32,32)
         self.menuButton.set_size_request(32,32)
+            
             # Create Popovers
         self.addPopover = Gtk.Popover.new(self.addButton)
-            # Connect to handler
+        self.addGrid = Gtk.Grid()
+        self.addIncomeButton = Gtk.Button("Income")
+        self.addExpenseButton = Gtk.Button("Expense")
+        self.addCategoryComboBoxText = Gtk.ComboBoxText()
+        for i in range(0,len(self.data.incomeMenu)):
+            self.addCategoryComboBoxText.append_text(self.data.incomeMenu[i][1])
+
+        self.addEntry = Gtk.Entry()
+        self.addCurrencyLabel = Gtk.Label("$")
+        
+        self.addGrid.attach(self.addIncomeButton,1,0,1,1)
+        self.addGrid.attach(self.addExpenseButton,2,0,1,1)
+        self.addGrid.attach(self.addCategoryComboBoxText,1,1,2,1)
+        self.addGrid.attach(self.addCurrencyLabel,0,2,1,1)
+        self.addGrid.attach(self.addEntry,1,2,2,1)
+        self.addPopover.add(self.addGrid)
+
+           # Connect to handler
         self.addButton.connect("clicked", self.on_addButton_clicked)
         self.menuButton.connect("clicked", self.on_menuButton_clicked)
         
@@ -120,7 +140,10 @@ class Window(Gtk.Window):
         self.notebook.set_current_page(2)
 
     def on_addButton_clicked(self, *args):
-        print("Add Button Working!")
+        if self.addPopover.get_visible():
+            self.addPopover.hide()
+        else:
+            self.addPopover.show_all()
 
     def on_menuButton_clicked(self, *args):
         print("Menu Button Working!")
