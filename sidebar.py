@@ -52,6 +52,10 @@ class Sidebar():
         self.topMiddleLabel = Gtk.Label()
         self.topRightLabel = Gtk.Label()
         
+        self.topLeftLabel.set_markup("<b>Total</b>")
+        self.topMiddleLabel.set_markup("<b>Remaining</b>")
+        self.topRightLabel.set_markup("<b>% Remaining</b>")
+        
         self.monthTotalLabel = Gtk.Label()
         self.monthRemainingTotalLabel = Gtk.Label("$1,500")
         self.percBudgetTotalLabel = Gtk.Label("50.00%")

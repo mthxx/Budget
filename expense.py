@@ -11,10 +11,6 @@ class Expense():
         self.calc = Calc()
         self.view = Sidebar() 
         
-        self.view.topLeftLabel.set_markup("<b>Total Spent</b>")
-        self.view.topMiddleLabel.set_markup("<b>Total Remaining</b>")
-        self.view.topRightLabel.set_markup("<b>% of Budget</b>")
-        
         self.view.monthTotalLabel.set_text( "$" + str(self.calc.sumTotalData(self.data.expenses)))
         
         self.view.generate_sidebars(self.data.expenseMenu)

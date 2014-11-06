@@ -11,10 +11,6 @@ class Income():
         self.calc = Calc()
         self.view = Sidebar() 
         
-        self.view.topLeftLabel.set_markup("<b>All Income</b>")
-        self.view.topMiddleLabel.set_markup("<b>All Remaining</b>")
-        self.view.topRightLabel.set_markup("<b>% Remaining</b>")
-        
         self.view.monthTotalLabel.set_text("$" + str(self.calc.sumTotalData(self.data.income)))
 
         self.view.generate_sidebars(self.data.incomeMenu)
