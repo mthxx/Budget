@@ -174,6 +174,7 @@ class Sidebar():
         self.filter_subMenu(data, menu)
 
     def filter_menu(self, data, menu):
+        count = 0
         for i in range (0,len(self.entryRows)):
             self.month = self.entryRows[i][1][1].get_label().split()
             self.month =  self.month[0]
@@ -196,7 +197,7 @@ class Sidebar():
                     self.entryRows[i][0][1].hide()
 
             # If selected menu item is not "All"
-            elif self.menu_index != menu[0][self.data.category_index]:
+            elif self.menu_index != menu[0][1]:
                 # If selected category matches rows category
                 if self.menu == self.entryRows[i][1][0].get_label():
                     # If selected sub menu is "All", show row.
@@ -205,18 +206,19 @@ class Sidebar():
                         self.entryRows[i][0][1].show()
                         self.monthTotalLabel.set_text("$" + str(self.calc.sumCategoryData(data, self.menu_index)))
                     # If selected sub category matches rows sub category, show row
-                    if self.subMenu == self.month:
+                    elif self.subMenu == self.month:
                         self.entryRows[i][0][0].show()
                         self.entryRows[i][0][1].show()
                         self.monthTotalLabel.set_text("$" + str(self.calc.sumCategoryMonthData(data, self.menu_index, self.subMenu_index)))
                     # If row's category is not the selected category, hide row
-                    if self.menu != self.entryRows[i][1][0].get_label():
+                    elif self.menu != self.entryRows[i][1][0].get_label():
                         self.entryRows[i][0][0].hide()
                         self.entryRows[i][0][1].hide()
                 # If Row's category does not match selected category, hide row 
                 elif self.menu != self.entryRows[i][1][0].get_label():
                     self.entryRows[i][0][0].hide()
                     self.entryRows[i][0][1].hide()
+                    self.monthTotalLabel.set_text("$" + str(self.calc.sumCategoryData(data, self.menu_index)))
 
     def filter_subMenu(self, data, menu):
         for i in range (0,len(self.entryRows)):
@@ -251,6 +253,7 @@ class Sidebar():
                 elif self.month != self.subMenu or self.entryRows[i][1][0].get_label() != self.menu:
                     self.entryRows[i][0][0].hide()
                     self.entryRows[i][0][1].hide()
+                    self.monthTotalLabel.set_text("$" + str(self.calc.sumCategoryMonthData(data,self.menu_index, self.subMenu_index)))
                 # If selected sub category equals "All"
                 if self.subMenu_index == self.data.currentMonthMenu[0][0]:
                     # If selected category equals rows category, show row
