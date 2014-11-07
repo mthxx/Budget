@@ -108,8 +108,8 @@ class Window(Gtk.Window):
         # Create Widgets
         self.addPopover = Gtk.Popover.new(self.addButton)
         self.addGrid = Gtk.Grid()
-        self.addIncomeButton = Gtk.Button("Income", name="addIncomeButton")
-        self.addExpenseButton = Gtk.Button("Expense", name="addExpenseButton")
+        self.addIncomeButton = Gtk.ToggleButton("Income", name="addIncomeButton")
+        self.addExpenseButton = Gtk.ToggleButton("Expense", name="addExpenseButton")
         self.addLinkedBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, name="addLinkedBox")
         self.addLinkedBox.add(self.addIncomeButton)
         self.addLinkedBox.add(self.addExpenseButton)
@@ -119,6 +119,19 @@ class Window(Gtk.Window):
         self.addDate = Gtk.Calendar()
         self.addSubmitButton = Gtk.Button("Submit")
         
+        #Test Widgets
+        self.addIncomeRadio = Gtk.RadioButton.new_with_label(None, "Income")
+        self.addExpenseRadio = Gtk.RadioButton.new_with_label_from_widget(self.addIncomeRadio, "Expense")
+        
+        self.addStack = Gtk.Stack()
+        self.addStackSwitcher = Gtk.StackSwitcher()
+        
+        self.addStack.add_named(self.addIncomeRadio, "Income")
+        self.addStack.add_named(self.addExpenseRadio, "Expense")
+        self.addStackSwitcher.set_stack(self.addStack)
+        
+        self.addGrid.attach(self.addStackSwitcher,1,5,2,1)
+
         # Style Widgets
         self.addIncomeButton.set_hexpand(True)
         self.addExpenseButton.set_hexpand(True)
@@ -159,7 +172,9 @@ class Window(Gtk.Window):
         widget.set_margin_bottom(margin)
 
     def on_addIncomeButton_clicked(self, *args):
-        #print(self.addCategoryComboBoxText.get_has_entry())
+        #self.addIncomeButton.set_active(True)
+        #self.addExpenseButton.set_active(False)
+        
         self.addCategoryComboBoxText.set_sensitive(True)
         self.addCurrencyLabel.set_sensitive(True)
         self.addEntry.set_sensitive(True)
@@ -172,6 +187,9 @@ class Window(Gtk.Window):
             self.addCategoryComboBoxText.append_text(self.data.incomeMenu[i][1])
     
     def on_addExpenseButton_clicked(self, *args):
+        #self.addExpenseButton.set_active(True)
+        #self.addIncomeButton.set_active(False)
+        
         self.addCategoryComboBoxText.set_sensitive(True)
         self.addCurrencyLabel.set_sensitive(True)
         self.addEntry.set_sensitive(True)
