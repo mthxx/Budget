@@ -108,36 +108,24 @@ class Window(Gtk.Window):
         # Create Widgets
         self.addPopover = Gtk.Popover.new(self.addButton)
         self.addGrid = Gtk.Grid()
-        self.addIncomeButton = Gtk.ToggleButton("Income", name="addIncomeButton")
-        self.addExpenseButton = Gtk.ToggleButton("Expense", name="addExpenseButton")
-        self.addLinkedBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, name="addLinkedBox")
-        self.addLinkedBox.add(self.addIncomeButton)
-        self.addLinkedBox.add(self.addExpenseButton)
+        self.addIncomeRadio = Gtk.RadioButton.new_with_label(None, "Income")
+        self.addExpenseRadio = Gtk.RadioButton.new_with_label_from_widget(self.addIncomeRadio, "Expense")
+        self.addStack = Gtk.Stack()
+        self.addStackSwitcher = Gtk.StackSwitcher()
+        self.addStack.add_titled(self.addIncomeRadio, "Income", "Income")
+        self.addStack.add_titled(self.addExpenseRadio, "Expense", "Expense")
+        self.addStackSwitcher.set_stack(self.addStack)
         self.addCategoryComboBoxText = Gtk.ComboBoxText(name="addCategoryComboBoxText")
         self.addEntry = Gtk.Entry(name="addEntry")
         self.addCurrencyLabel = Gtk.Label("$")
         self.addDate = Gtk.Calendar()
         self.addSubmitButton = Gtk.Button("Submit")
         
-        #Test Widgets
-        self.addIncomeRadio = Gtk.RadioButton.new_with_label(None, "Income")
-        self.addExpenseRadio = Gtk.RadioButton.new_with_label_from_widget(self.addIncomeRadio, "Expense")
-        
-        self.addStack = Gtk.Stack()
-        self.addStackSwitcher = Gtk.StackSwitcher()
-        
-        self.addStack.add_named(self.addIncomeRadio, "Income")
-        self.addStack.add_named(self.addExpenseRadio, "Expense")
-        self.addStackSwitcher.set_stack(self.addStack)
-        
-        self.addGrid.attach(self.addStackSwitcher,1,5,2,1)
-
         # Style Widgets
-        self.addIncomeButton.set_hexpand(True)
-        self.addExpenseButton.set_hexpand(True)
-        Gtk.StyleContext.add_class(self.addLinkedBox.get_style_context(), "linked")
+        self.addStackSwitcher.set_homogeneous(True)
+        self.addStack.set_hexpand(True)
         
-        self.add_popover_margin(self.addLinkedBox, 10)
+        self.add_popover_margin(self.addStackSwitcher, 10)
         self.add_popover_margin(self.addCategoryComboBoxText, 10)
         self.add_popover_margin(self.addEntry, 10)
         self.add_popover_margin(self.addCurrencyLabel, 10)
@@ -153,11 +141,11 @@ class Window(Gtk.Window):
         self.addDate.set_sensitive(False)
 
         #Connect Widget Handlers
-        self.addIncomeButton.connect("clicked", self.on_addIncomeButton_clicked)
-        self.addExpenseButton.connect("clicked", self.on_addExpenseButton_clicked)
+        self.addIncomeRadio.connect("toggled", self.on_addIncomeRadio_toggled)
+        self.addExpenseRadio.connect("toggled", self.on_addExpenseRadio_toggled)
         
         # Add Widgets to Grid
-        self.addGrid.attach(self.addLinkedBox,1,0,2,1)
+        self.addGrid.attach(self.addStackSwitcher,1,0,2,1)
         self.addGrid.attach(self.addCategoryComboBoxText,1,1,2,1)
         self.addGrid.attach(self.addCurrencyLabel,0,2,1,1)
         self.addGrid.attach(self.addEntry,1,2,2,1)
@@ -171,10 +159,7 @@ class Window(Gtk.Window):
         widget.set_margin_end(margin)
         widget.set_margin_bottom(margin)
 
-    def on_addIncomeButton_clicked(self, *args):
-        #self.addIncomeButton.set_active(True)
-        #self.addExpenseButton.set_active(False)
-        
+    def on_addIncomeRadio_toggled(self, *args):
         self.addCategoryComboBoxText.set_sensitive(True)
         self.addCurrencyLabel.set_sensitive(True)
         self.addEntry.set_sensitive(True)
@@ -186,10 +171,7 @@ class Window(Gtk.Window):
         for i in range(0,len(self.data.incomeMenu)):
             self.addCategoryComboBoxText.append_text(self.data.incomeMenu[i][1])
     
-    def on_addExpenseButton_clicked(self, *args):
-        #self.addExpenseButton.set_active(True)
-        #self.addIncomeButton.set_active(False)
-        
+    def on_addExpenseRadio_toggled(self, *args):
         self.addCategoryComboBoxText.set_sensitive(True)
         self.addCurrencyLabel.set_sensitive(True)
         self.addEntry.set_sensitive(True)
