@@ -118,7 +118,10 @@ class Window(Gtk.Window):
         self.addStack.add_titled(self.addExpenseRadio, "Expense", "Expense")
         self.addStackSwitcher.set_stack(self.addStack)
         self.addCategoryComboBoxText = Gtk.ComboBoxText()
+        self.addEntryLabel = Gtk.Label("Entry")
+        self.addDescriptionLabel = Gtk.Label("Description")
         self.addEntry = Gtk.Entry()
+        self.addDescription = Gtk.Entry()
         self.addEntry.set_text("$")
         self.addDate = Gtk.Calendar()
         self.addSubmitButton = Gtk.Button("Submit")
@@ -129,9 +132,12 @@ class Window(Gtk.Window):
         
         self.add_popover_margin(self.addStackSwitcher, 10)
         self.add_popover_margin(self.addCategoryComboBoxText, 10)
+        #self.add_popover_margin(self.addEntryLabel, 10)
+        #self.add_popover_margin(self.addDescriptionLabel, 10)
         self.add_popover_margin(self.addEntry, 10)
-        self.add_popover_margin(self.addSubmitButton, 10)
+        self.add_popover_margin(self.addDescription, 10)
         self.add_popover_margin(self.addDate, 10)
+        self.add_popover_margin(self.addSubmitButton, 10)
 
         self.addCategoryComboBoxText.set_property("height-request", 34)
 
@@ -144,9 +150,12 @@ class Window(Gtk.Window):
         # Add Widgets to Grid
         self.addGrid.attach(self.addStackSwitcher,0,0,2,1)
         self.addGrid.attach(self.addCategoryComboBoxText,0,1,2,1)
-        self.addGrid.attach(self.addEntry,0,2,2,1)
-        self.addGrid.attach(self.addDate,0,3,1,1)
-        self.addGrid.attach(self.addSubmitButton,0,4,2,1)
+        self.addGrid.attach(self.addEntryLabel,0,2,1,1)
+        self.addGrid.attach(self.addDescriptionLabel,1,2,1,1)
+        self.addGrid.attach(self.addEntry,0,3,1,1)
+        self.addGrid.attach(self.addDescription,1,3,1,1)
+        self.addGrid.attach(self.addDate,0,4,2,1)
+        self.addGrid.attach(self.addSubmitButton,0,5,2,1)
         self.addPopover.add(self.addGrid)
 
     def add_popover_margin(self, widget, margin):
