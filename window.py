@@ -108,16 +108,18 @@ class Window(Gtk.Window):
         # Create Widgets
         self.addPopover = Gtk.Popover.new(self.addButton)
         self.addGrid = Gtk.Grid()
-        self.addIncomeRadio = Gtk.RadioButton.new_with_label(None, "Income")
-        self.addExpenseRadio = Gtk.RadioButton.new_with_label_from_widget(self.addIncomeRadio, "Expense")
+        #self.addIncomeRadio = Gtk.RadioButton.new_with_label_from_widget(None, "Income")
+        self.addIncomeRadio = Gtk.RadioButton(None, "Income")
+        self.addExpenseRadio = Gtk.RadioButton(self.addIncomeRadio, "Expense")
+        #self.addExpenseRadio = Gtk.RadioButton.new_from_widget(self.addIncomeRadio)
         self.addStack = Gtk.Stack()
         self.addStackSwitcher = Gtk.StackSwitcher()
         self.addStack.add_titled(self.addIncomeRadio, "Income", "Income")
         self.addStack.add_titled(self.addExpenseRadio, "Expense", "Expense")
         self.addStackSwitcher.set_stack(self.addStack)
-        self.addCategoryComboBoxText = Gtk.ComboBoxText(name="addCategoryComboBoxText")
-        self.addEntry = Gtk.Entry(name="addEntry")
-        self.addCurrencyLabel = Gtk.Label("$")
+        self.addCategoryComboBoxText = Gtk.ComboBoxText()
+        self.addEntry = Gtk.Entry()
+        self.addEntry.set_text("$")
         self.addDate = Gtk.Calendar()
         self.addSubmitButton = Gtk.Button("Submit")
         
@@ -128,29 +130,23 @@ class Window(Gtk.Window):
         self.add_popover_margin(self.addStackSwitcher, 10)
         self.add_popover_margin(self.addCategoryComboBoxText, 10)
         self.add_popover_margin(self.addEntry, 10)
-        self.add_popover_margin(self.addCurrencyLabel, 10)
         self.add_popover_margin(self.addSubmitButton, 10)
         self.add_popover_margin(self.addDate, 10)
 
         self.addCategoryComboBoxText.set_property("height-request", 34)
 
-        self.addCategoryComboBoxText.set_sensitive(False)
-        self.addCurrencyLabel.set_sensitive(False)
-        self.addEntry.set_sensitive(False)
-        self.addSubmitButton.set_sensitive(False)
-        self.addDate.set_sensitive(False)
-
-        #Connect Widget Handlers
-        self.addIncomeRadio.connect("toggled", self.on_addIncomeRadio_toggled)
-        self.addExpenseRadio.connect("toggled", self.on_addExpenseRadio_toggled)
+        for i in range(1,len(self.data.incomeMenu)):
+            self.addCategoryComboBoxText.append_text(self.data.incomeMenu[i][1])
+        
+        # Connect Widget Handlers
+        self.addStackSwitcher.connect("set-focus-child", self.on_addRadio_toggled)
         
         # Add Widgets to Grid
-        self.addGrid.attach(self.addStackSwitcher,1,0,2,1)
-        self.addGrid.attach(self.addCategoryComboBoxText,1,1,2,1)
-        self.addGrid.attach(self.addCurrencyLabel,0,2,1,1)
-        self.addGrid.attach(self.addEntry,1,2,2,1)
-        self.addGrid.attach(self.addDate,1,3,1,1)
-        self.addGrid.attach(self.addSubmitButton,1,4,2,1)
+        self.addGrid.attach(self.addStackSwitcher,0,0,2,1)
+        self.addGrid.attach(self.addCategoryComboBoxText,0,1,2,1)
+        self.addGrid.attach(self.addEntry,0,2,2,1)
+        self.addGrid.attach(self.addDate,0,3,1,1)
+        self.addGrid.attach(self.addSubmitButton,0,4,2,1)
         self.addPopover.add(self.addGrid)
 
     def add_popover_margin(self, widget, margin):
@@ -159,29 +155,16 @@ class Window(Gtk.Window):
         widget.set_margin_end(margin)
         widget.set_margin_bottom(margin)
 
-    def on_addIncomeRadio_toggled(self, *args):
-        self.addCategoryComboBoxText.set_sensitive(True)
-        self.addCurrencyLabel.set_sensitive(True)
-        self.addEntry.set_sensitive(True)
-        self.addSubmitButton.set_sensitive(True)
-        self.addDate.set_sensitive(True)
-        for i in range(0, len(self.data.incomeMenu) + len(self.data.expenseMenu)):
-            self.addCategoryComboBoxText.remove(0)
-
-        for i in range(0,len(self.data.incomeMenu)):
-            self.addCategoryComboBoxText.append_text(self.data.incomeMenu[i][1])
-    
-    def on_addExpenseRadio_toggled(self, *args):
-        self.addCategoryComboBoxText.set_sensitive(True)
-        self.addCurrencyLabel.set_sensitive(True)
-        self.addEntry.set_sensitive(True)
-        self.addSubmitButton.set_sensitive(True)
-        self.addDate.set_sensitive(True)
-        for i in range(0, len(self.data.incomeMenu) + len(self.data.expenseMenu)):
-            self.addCategoryComboBoxText.remove(0)
-        
-        for i in range(0,len(self.data.expenseMenu)):
-            self.addCategoryComboBoxText.append_text(self.data.expenseMenu[i][1])
+    def on_addRadio_toggled(self, *args):
+        if args[1] != None:
+            for i in range(0, len(self.data.incomeMenu) + len(self.data.expenseMenu)):
+                self.addCategoryComboBoxText.remove(0)
+            if args[1].get_group()[0].get_active():
+                for i in range(1,len(self.data.incomeMenu)):
+                    self.addCategoryComboBoxText.append_text(self.data.incomeMenu[i][1])
+            if args[1].get_group()[1].get_active():
+                for i in range(1,len(self.data.expenseMenu)):
+                    self.addCategoryComboBoxText.append_text(self.data.expenseMenu[i][1])
 
     def on_dayButton_clicked(self, *args):
         print("Day Button Working!")
@@ -206,12 +189,6 @@ class Window(Gtk.Window):
             self.addPopover.hide()
         else:
             self.addPopover.show_all()
-
-        self.addCategoryComboBoxText.set_sensitive(False)
-        self.addCurrencyLabel.set_sensitive(False)
-        self.addEntry.set_sensitive(False)
-        self.addSubmitButton.set_sensitive(False)
-        self.addDate.set_sensitive(False)
 
     def on_menuButton_clicked(self, *args):
         print("Menu Button Working!")
