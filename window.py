@@ -1,9 +1,9 @@
 from gi.repository import Gtk, Gio, Gdk
 from overview_menu import Overview_Menu
-from data import Data
 from income import Income
 from expense import Expense
 from sidebar import Sidebar
+from add_popover import Add_Popover
 
 class Window(Gtk.Window):
 
@@ -12,7 +12,6 @@ class Window(Gtk.Window):
         self.provider = Gtk.CssProvider()
         self.provider.load_from_path("style.css")
         Gtk.StyleContext.add_provider_for_screen(Gdk.Screen.get_default(), self.provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
-        self.data = Data()
 
         Gtk.Window.__init__(self, title="Budget")
         self.set_default_size(1000, 700)
@@ -53,7 +52,7 @@ class Window(Gtk.Window):
         self.overviewButton.set_size_request(100,32)
         self.incomeButton.set_size_request(100,32)
         self.expensesButton.set_size_request(100,32)
-        # Connect to handler
+            # Connect to handler
         self.overviewButton.connect("clicked", self.on_overviewButton_clicked)
         self.incomeButton.connect("clicked", self.on_incomeButton_clicked)
         self.expensesButton.connect("clicked", self.on_expensesButton_clicked)
@@ -69,6 +68,7 @@ class Window(Gtk.Window):
             # Create Buttons
         self.addButton = Gtk.Button()
         self.menuButton = Gtk.MenuButton();
+        self.addPopover = Gtk.Popover.new(self.addButton)
             # Add Image
         self.addIcon = Gio.ThemedIcon(name="list-add-symbolic")
         self.menuIcon = Gio.ThemedIcon(name="emblem-system-symbolic")
@@ -79,9 +79,9 @@ class Window(Gtk.Window):
             # Set Size
         self.addButton.set_size_request(32,32)
         self.menuButton.set_size_request(32,32)
-            
             # Create Popovers
-        self.create_add_popover()
+        self.add_popover = Add_Popover()
+        self.addPopover.add(self.add_popover.addGrid)
            # Connect to handler
         self.addButton.connect("clicked", self.on_addButton_clicked)
         self.menuButton.connect("clicked", self.on_menuButton_clicked)
@@ -103,81 +103,12 @@ class Window(Gtk.Window):
         self.notebook.append_page(self.expense.view.grid, None)
         self.notebook.set_show_tabs(False)
         self.add(self.notebook)
-
-    def create_add_popover(self):
-        # Create Widgets
-        self.addPopover = Gtk.Popover.new(self.addButton)
-        self.addGrid = Gtk.Grid()
-        self.addIncomeRadio = Gtk.RadioButton(None, "Income")
-        self.addExpenseRadio = Gtk.RadioButton(self.addIncomeRadio, "Expense")
-        self.addStack = Gtk.Stack()
-        self.addStackSwitcher = Gtk.StackSwitcher()
-        self.addStack.add_titled(self.addIncomeRadio, "Income", "Income")
-        self.addStack.add_titled(self.addExpenseRadio, "Expense", "Expense")
-        self.addStackSwitcher.set_stack(self.addStack)
-        self.addCategoryComboBoxText = Gtk.ComboBoxText()
-        self.addEntryBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-        self.addEntryLabel = Gtk.Label("Entry")
-        self.addDescriptionLabel = Gtk.Label("Description")
-        self.addCurrencyLabel = Gtk.Label("$ ")
-        self.addEntry = Gtk.Entry()
-        self.addDescription = Gtk.Entry()
-        self.addDate = Gtk.Calendar()
-        self.addSubmitButton = Gtk.Button("Submit")
-        
-        self.addEntryBox.add(self.addCurrencyLabel)
-        self.addEntryBox.add(self.addEntry)
-        
-        # Style Widgets
-        self.addStackSwitcher.set_homogeneous(True)
-        self.addStack.set_hexpand(True)
-        
-        self.add_popover_margin(self.addStackSwitcher, 10)
-        self.add_popover_margin(self.addCategoryComboBoxText, 10)
-        self.add_popover_margin(self.addEntryBox, 10)
-        self.add_popover_margin(self.addDescription, 10)
-        self.addEntryBox.set_margin_top(0)
-        self.addEntryBox.set_margin_end(4)
-        self.addDescription.set_margin_top(0)
-        self.addDescription.set_margin_start(4)
-        self.add_popover_margin(self.addDate, 10)
-        self.add_popover_margin(self.addSubmitButton, 10)
-
-        self.addCategoryComboBoxText.set_property("height-request", 34)
-
-        for i in range(1,len(self.data.incomeMenu)):
-            self.addCategoryComboBoxText.append_text(self.data.incomeMenu[i][1])
-        
-        # Connect Widget Handlers
-        self.addStackSwitcher.connect("set-focus-child", self.on_addRadio_toggled)
-        
-        # Add Widgets to Grid
-        self.addGrid.attach(self.addStackSwitcher,0,0,2,1)
-        self.addGrid.attach(self.addCategoryComboBoxText,0,1,2,1)
-        self.addGrid.attach(self.addEntryLabel,0,2,1,1)
-        self.addGrid.attach(self.addDescriptionLabel,1,2,1,1)
-        self.addGrid.attach(self.addEntryBox,0,3,1,1)
-        self.addGrid.attach(self.addDescription,1,3,1,1)
-        self.addGrid.attach(self.addDate,0,4,2,1)
-        self.addGrid.attach(self.addSubmitButton,0,5,2,1)
-        self.addPopover.add(self.addGrid)
-
-    def add_popover_margin(self, widget, margin):
-        widget.set_margin_start(margin)
-        widget.set_margin_top(margin)
-        widget.set_margin_end(margin)
-        widget.set_margin_bottom(margin)
-
-    def on_addRadio_toggled(self, *args):
-        if args[1] != None:
-            for i in range(0, len(self.data.incomeMenu) + len(self.data.expenseMenu)):
-                self.addCategoryComboBoxText.remove(0)
-            if args[1].get_group()[0].get_active():
-                for i in range(1,len(self.data.incomeMenu)):
-                    self.addCategoryComboBoxText.append_text(self.data.incomeMenu[i][1])
-            if args[1].get_group()[1].get_active():
-                for i in range(1,len(self.data.expenseMenu)):
-                    self.addCategoryComboBoxText.append_text(self.data.expenseMenu[i][1])
+    
+    def on_addButton_clicked(self, *args):
+        if self.addPopover.get_visible():
+            self.addPopover.hide()
+        else:
+            self.addPopover.show_all()
 
     def on_dayButton_clicked(self, *args):
         print("Day Button Working!")
@@ -197,12 +128,5 @@ class Window(Gtk.Window):
     def on_expensesButton_clicked(self, *args):
         self.notebook.set_current_page(2)
 
-    def on_addButton_clicked(self, *args):
-        if self.addPopover.get_visible():
-            self.addPopover.hide()
-        else:
-            self.addPopover.show_all()
-
     def on_menuButton_clicked(self, *args):
         print("Menu Button Working!")
-
