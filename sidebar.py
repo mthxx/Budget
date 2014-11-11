@@ -6,9 +6,9 @@ class Sidebar():
 
     def __init__(self):
         
+        # Initialize Variables
         self.data = Data()
         self.calc = Calc()
-        # Initialize Variables
         self.entryRows = []
         self.menu = ""
         self.menu_index = 0
@@ -47,7 +47,7 @@ class Sidebar():
         self.editEntryButton = Gtk.Button("Edit")
         self.addEntryPopover = Gtk.Popover.new(self.addEntryButton)
         self.editEntryPopover = Gtk.Popover.new(self.addEntryButton)
-        
+
         self.topLeftLabel = Gtk.Label()
         self.topMiddleLabel = Gtk.Label()
         self.topRightLabel = Gtk.Label()
@@ -61,7 +61,6 @@ class Sidebar():
         self.percBudgetTotalLabel = Gtk.Label("50.00%")
 
         # Set Styling
-#        self.grid.override_backgrounddcolor(Gtk.StateFlags.NORMAL, Gdk.RGBA(0.2, 0.2, 0.2, 0.2))
         self.menuScrolledWindow.set_vexpand(True)
         self.menuScrolledWindow.set_property("width-request",150)
 
@@ -101,7 +100,7 @@ class Sidebar():
         self.headerGrid.attach(self.addEntryButton, 1, 3, 1, 1)
         self.headerGrid.attach(self.editEntryButton, 3, 3, 1, 1)
         self.headerGrid.attach(self.whiteSpaceLabel2, 1, 4, 1, 1)
-        
+
         self.contentViewport.add(self.contentGrid)
 
     def generate_sidebars(self, data):
@@ -161,7 +160,62 @@ class Sidebar():
             self.index = self.index + 1
             
             self.entryRows.append([[self.layoutGrid, self.whiteSpaceLabel],[self.categoryLabel,self.dateLabel,self.costLabel,self.descriptionLabel]])
+        
+    def add_entry(self, button):
+        if self.addEntryPopover.get_visible():
+            self.addEntryPopover.hide()
+        else:
+            self.addEntryPopover.show_all()
 
+    def generate_add_popover(self, data):
+        # Add Items to Add Popover
+        self.addGrid = Gtk.Grid()
+        self.addCategoryComboBoxText = Gtk.ComboBoxText()
+        self.addEntryBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+        self.addEntryLabel = Gtk.Label("Entry")
+        self.addDescriptionLabel = Gtk.Label("Description")
+        self.addCurrencyLabel = Gtk.Label("$ ")
+        self.addEntry = Gtk.Entry()
+        self.addDescription = Gtk.Entry()
+        self.addDate = Gtk.Calendar()
+        self.addSubmitButton = Gtk.Button("Submit")
+        
+        self.addEntryBox.add(self.addCurrencyLabel)
+        self.addEntryBox.add(self.addEntry)
+        
+        # Style Add Popover Items
+        self.add_popover_margin(self.addCategoryComboBoxText, 10)
+        self.add_popover_margin(self.addEntryBox, 10)
+        self.add_popover_margin(self.addDescription, 10)
+        self.addEntryBox.set_margin_top(0)
+        self.addEntryBox.set_margin_end(4)
+        self.addDescription.set_margin_top(0)
+        self.addDescription.set_margin_start(4)
+        self.add_popover_margin(self.addDate, 10)
+        self.add_popover_margin(self.addSubmitButton, 10)
+
+        self.addCategoryComboBoxText.set_property("height-request", 34)
+
+        for i in range(1,len(data)):
+            self.addCategoryComboBoxText.append_text(data[i][1])
+        
+        # Add Widgets to Grid
+        self.addGrid.attach(self.addCategoryComboBoxText,0,0,2,1)
+        self.addGrid.attach(self.addEntryLabel,0,1,1,1)
+        self.addGrid.attach(self.addDescriptionLabel,1,1,1,1)
+        self.addGrid.attach(self.addEntryBox,0,2,1,1)
+        self.addGrid.attach(self.addDescription,1,2,1,1)
+        self.addGrid.attach(self.addDate,0,3,2,1)
+        self.addGrid.attach(self.addSubmitButton,0,4,2,1)
+    
+        self.addEntryPopover.add(self.addGrid)
+   
+    def add_popover_margin(self, widget, margin):
+        widget.set_margin_start(margin)
+        widget.set_margin_top(margin)
+        widget.set_margin_end(margin)
+        widget.set_margin_bottom(margin)
+    
     def menu_clicked(self, listbox, row, data, menu):
         for i in range(len(menu)):
             if menu[i][self.data.category_index] == row.get_index():
@@ -176,7 +230,7 @@ class Sidebar():
         self.subMenu = self.data.currentMonthMenu[self.row][self.data.category_text]
         self.subMenu_index = self.data.currentMonthMenu[self.row][self.data.category_index]
         self.filter_subMenu(data, menu)
-
+        
     def filter_menu(self, data, menu):
         count = 0
         for i in range (0,len(self.entryRows)):
