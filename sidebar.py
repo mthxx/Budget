@@ -1,6 +1,7 @@
 from gi.repository import Gtk, Gio, Gdk
 from data import Data
 from calc import Calc
+from add_popover import Add_Popover
 
 class Sidebar():
 
@@ -45,8 +46,7 @@ class Sidebar():
         
         self.addEntryButton = Gtk.Button("Add")
         self.editEntryButton = Gtk.Button("Edit")
-        self.addEntryPopover = Gtk.Popover.new(self.addEntryButton)
-        self.editEntryPopover = Gtk.Popover.new(self.addEntryButton)
+        
 
         self.topLeftLabel = Gtk.Label()
         self.topMiddleLabel = Gtk.Label()
@@ -122,7 +122,6 @@ class Sidebar():
         self.index = 5
         
         for i in range (0,len(data)):
-            
             self.layoutGrid = Gtk.Grid(name="layoutGrid")
             self.layoutGrid.set_column_homogeneous(True)
             self.layoutGrid.set_hexpand(True)
@@ -161,61 +160,18 @@ class Sidebar():
             
             self.entryRows.append([[self.layoutGrid, self.whiteSpaceLabel],[self.categoryLabel,self.dateLabel,self.costLabel,self.descriptionLabel]])
         
-    def add_entry(self, button):
-        if self.addEntryPopover.get_visible():
-            self.addEntryPopover.hide()
-        else:
-            self.addEntryPopover.show_all()
-
-    def generate_add_popover(self, data):
-        # Add Items to Add Popover
-        self.addGrid = Gtk.Grid()
-        self.addCategoryComboBoxText = Gtk.ComboBoxText()
-        self.addEntryBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-        self.addEntryLabel = Gtk.Label("Entry")
-        self.addDescriptionLabel = Gtk.Label("Description")
-        self.addCurrencyLabel = Gtk.Label("$ ")
-        self.addEntry = Gtk.Entry()
-        self.addDescription = Gtk.Entry()
-        self.addDate = Gtk.Calendar()
-        self.addSubmitButton = Gtk.Button("Submit")
+    def generate_add_popover(self, page):
+        # Create Add Popover
+        self.addEntryPopover = Gtk.Popover.new(self.addEntryButton)
+        self.add_popover = Add_Popover(page)
+        self.addEntryPopover.add(self.add_popover.addGrid)
         
-        self.addEntryBox.add(self.addCurrencyLabel)
-        self.addEntryBox.add(self.addEntry)
+        # Create Edit Popover
+        #self.editEntryPopover = Gtk.Popover.new(self.addEntryButton)
         
-        # Style Add Popover Items
-        self.add_popover_margin(self.addCategoryComboBoxText, 10)
-        self.add_popover_margin(self.addEntryBox, 10)
-        self.add_popover_margin(self.addDescription, 10)
-        self.addEntryBox.set_margin_top(0)
-        self.addEntryBox.set_margin_end(4)
-        self.addDescription.set_margin_top(0)
-        self.addDescription.set_margin_start(4)
-        self.add_popover_margin(self.addDate, 10)
-        self.add_popover_margin(self.addSubmitButton, 10)
-
-        self.addCategoryComboBoxText.set_property("height-request", 34)
-
-        for i in range(1,len(data)):
-            self.addCategoryComboBoxText.append_text(data[i][1])
-        
-        # Add Widgets to Grid
-        self.addGrid.attach(self.addCategoryComboBoxText,0,0,2,1)
-        self.addGrid.attach(self.addEntryLabel,0,1,1,1)
-        self.addGrid.attach(self.addDescriptionLabel,1,1,1,1)
-        self.addGrid.attach(self.addEntryBox,0,2,1,1)
-        self.addGrid.attach(self.addDescription,1,2,1,1)
-        self.addGrid.attach(self.addDate,0,3,2,1)
-        self.addGrid.attach(self.addSubmitButton,0,4,2,1)
-    
-        self.addEntryPopover.add(self.addGrid)
-   
-    def add_popover_margin(self, widget, margin):
-        widget.set_margin_start(margin)
-        widget.set_margin_top(margin)
-        widget.set_margin_end(margin)
-        widget.set_margin_bottom(margin)
-    
+        # Connect to Handler
+        self.addEntryButton.connect("clicked", self.add_popover.on_addButton_clicked, self.addEntryPopover)
+       
     def menu_clicked(self, listbox, row, data, menu):
         for i in range(len(menu)):
             if menu[i][self.data.category_index] == row.get_index():
