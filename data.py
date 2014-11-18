@@ -115,19 +115,19 @@ class Data():
 
         dateString += (" " + str(data[index][dateIndex][dayIndex]))
 
-        if data[index][dateIndex][dayIndex] == '1':
+        if data[index][dateIndex][dayIndex] == 1:
             dateString += ("st")
-        elif data[index][dateIndex][dayIndex] == '21':
+        elif data[index][dateIndex][dayIndex] == 21:
             dateString += ("st")
-        elif data[index][dateIndex][dayIndex] == '31':
+        elif data[index][dateIndex][dayIndex] == 31:
             dateString += ("st")
-        elif data[index][dateIndex][dayIndex] == '2':
+        elif data[index][dateIndex][dayIndex] == 2:
             dateString += ("nd")
-        elif data[index][dateIndex][dayIndex] == '22':
+        elif data[index][dateIndex][dayIndex] == 22:
             dateString += ("nd")
-        elif data[index][dateIndex][dayIndex] == '3':
+        elif data[index][dateIndex][dayIndex] == 3:
             dateString += ("rd")
-        elif data[index][dateIndex][dayIndex] == '23':
+        elif data[index][dateIndex][dayIndex] == 23:
             dateString += ("rd")
         else:
             dateString += ("th")
