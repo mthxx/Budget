@@ -1,15 +1,14 @@
 from gi.repository import Gtk, Gio
 from sidebar import Sidebar
-from data import Data
 from calc import Calc
 
 class Expense():
 
-    def __init__(self):
+    def __init__(self, data):
         # Define Sidebar Menu
-        self.data = Data()
-        self.calc = Calc()
-        self.view = Sidebar() 
+        self.data = data
+        self.calc = Calc(self.data)
+        self.view = Sidebar(self.data) 
         
         self.view.monthTotalLabel.set_text( "$" + str(self.calc.sumTotalData(self.data.expenses)))
         

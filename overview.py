@@ -1,15 +1,14 @@
 from gi.repository import Gtk, Gio, Gdk
 from decimal import *
-from data import Data
 from calc import Calc
 
 class Overview():
 
-    def __init__(self):
+    def __init__(self, data):
         
+        self.data = data
         # Initialize Variables
-        self.data = Data()
-        self.calc = Calc()
+        self.calc = Calc(self.data)
         self.monthArr = []
         self.categoryArr = []
         self.entryRows = []

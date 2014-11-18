@@ -7,8 +7,8 @@ from add_popover import Add_Popover
 
 class Window(Gtk.Window):
 
-    def __init__(self):
-        
+    def __init__(self, data):
+        self.data = data 
         self.provider = Gtk.CssProvider()
         self.provider.load_from_path("style.css")
         Gtk.StyleContext.add_provider_for_screen(Gdk.Screen.get_default(), self.provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
@@ -80,7 +80,7 @@ class Window(Gtk.Window):
         self.addButton.set_size_request(32,32)
         self.menuButton.set_size_request(32,32)
             # Create Popovers
-        self.add_popover = Add_Popover("window")
+        self.add_popover = Add_Popover("window", self.data)
         self.addPopover.add(self.add_popover.addGrid)
            # Connect to handler
         self.addButton.connect("clicked", self.add_popover.on_addButton_clicked, self.addPopover)
@@ -93,9 +93,9 @@ class Window(Gtk.Window):
         self.hb.pack_end(self.addButton)
 
         # --- Notebook Views ---
-        self.overviewMenu = Overview_Menu()
-        self.income = Income()
-        self.expense = Expense()
+        self.overviewMenu = Overview_Menu(self.data)
+        self.income = Income(self.data)
+        self.expense = Expense(self.data)
 
         self.notebook = Gtk.Notebook()
         self.notebook.insert_page(self.overviewMenu.notebook, None, 0)

@@ -5,11 +5,11 @@ from projections import Projections
 
 class Overview_Menu():
 
-    def __init__(self):
+    def __init__(self, data):
 
-
+        self.data = data
         # Notebook Views
-        self.overview = Overview()
+        self.overview = Overview(self.data)
         self.reports = Reports()
         self.projections = Projections()
         

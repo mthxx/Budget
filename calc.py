@@ -1,11 +1,10 @@
 from gi.repository import Gtk, Gio, Gdk
-from data import Data
 from decimal import *
 
 class Calc():
 
-    def __init__(self):
-        self.data = Data()
+    def __init__(self, data):
+        self.data = data
 
     def sumTotalData(self,data_arr):
         total = 0

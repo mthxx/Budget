@@ -1,15 +1,14 @@
 from gi.repository import Gtk, Gio, Gdk
-from data import Data
 from calc import Calc
 from add_popover import Add_Popover
 
 class Sidebar():
 
-    def __init__(self):
+    def __init__(self, data):
         
         # Initialize Variables
-        self.data = Data()
-        self.calc = Calc()
+        self.data = data
+        self.calc = Calc(self.data)
         self.entryRows = []
         self.menu = ""
         self.menu_index = 0
@@ -127,7 +126,7 @@ class Sidebar():
             self.layoutGrid.set_hexpand(True)
             
             self.dateString = ""
-            self.dateString = Data.translate_date(self.dateString,data, i)
+            self.dateString = self.data.translate_date(data, i)
 
             # Set labels
             self.categoryLabel = Gtk.Label()
@@ -163,7 +162,7 @@ class Sidebar():
     def generate_add_popover(self, page):
         # Create Add Popover
         self.addEntryPopover = Gtk.Popover.new(self.addEntryButton)
-        self.add_popover = Add_Popover(page)
+        self.add_popover = Add_Popover(page, self.data)
         self.addEntryPopover.add(self.add_popover.addGrid)
         
         # Create Edit Popover

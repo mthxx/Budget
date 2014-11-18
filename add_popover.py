@@ -1,12 +1,11 @@
 from gi.repository import Gtk, Gio, Gdk
 from overview_menu import Overview_Menu
-from data import Data
 
 class Add_Popover(Gtk.Window):
 
-    def __init__(self, page):
+    def __init__(self, page, data):
         #Initialize Data
-        self.data = Data()
+        self.data = data
         # Create Widgets
         self.addGrid = Gtk.Grid()
         if page == "window":
