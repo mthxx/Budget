@@ -48,10 +48,12 @@ class Add_Popover(Gtk.Window):
         self.addCategoryComboBoxText.set_property("height-request", 34)
 
         if page == "window" or page == "income":
+            self.radioStatus = "income"
             for i in range(1,len(self.data.incomeMenu)):
                 self.addCategoryComboBoxText.append_text(self.data.incomeMenu[i][1])
         
         if page == "expense":
+            self.radioStatus = "expense"
             for i in range(1,len(self.data.expenseMenu)):
                 self.addCategoryComboBoxText.append_text(self.data.expenseMenu[i][1])
         
@@ -70,7 +72,8 @@ class Add_Popover(Gtk.Window):
         self.addGrid.attach(self.addDescription,1,3,1,1)
         self.addGrid.attach(self.addDate,0,4,2,1)
         self.addGrid.attach(self.addSubmitButton,0,5,2,1)
-
+        self.addSubmitButton.connect("clicked", self.on_addSubmitButton_clicked)
+    
     def add_popover_margin(self, widget, margin):
         widget.set_margin_start(margin)
         widget.set_margin_top(margin)
@@ -88,8 +91,17 @@ class Add_Popover(Gtk.Window):
             for i in range(0, len(self.data.incomeMenu) + len(self.data.expenseMenu)):
                 self.addCategoryComboBoxText.remove(0)
             if args[1].get_group()[0].get_active():
+                self.radioStatus = "income"
                 for i in range(1,len(self.data.incomeMenu)):
                     self.addCategoryComboBoxText.append_text(self.data.incomeMenu[i][1])
             if args[1].get_group()[1].get_active():
+                self.radioStatus = "expense"
                 for i in range(1,len(self.data.expenseMenu)):
                     self.addCategoryComboBoxText.append_text(self.data.expenseMenu[i][1])
+    
+    def on_addSubmitButton_clicked(self, *args):
+        print(self.radioStatus)
+        print(self.addCategoryComboBoxText.get_active_text())
+        print(self.addEntry.get_text())
+        print(self.addDescription.get_text())
+        print(self.addDate.get_date())
