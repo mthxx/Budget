@@ -1,4 +1,6 @@
 from gi.repository import Gtk, Gio
+from decimal import *
+import os.path 
 
 class Data():
 
@@ -16,135 +18,67 @@ class Data():
         self.value = 2
         self.description = 3
 
-        self.incomeMenu = [
-                        [0, 'All Income']
-                        ,[1, 'Income 1']
-                        ,[2, 'Income 2']
-                        ,[3, 'Income 3']
-                        ,[4, 'Income 4']
-                        ,[5, 'Income 5']]
-        
-        self.expenseMenu = [
-                        [0, 'All Expenses']
-                        ,[1, 'Rent']
-                        ,[2, 'Monthly Bills']
-                        ,[3, 'Insurance']
-                        ,[4, 'Credit/Loans']
-                        ,[5, 'Auto']
-                        ,[6, 'Grocery']
-                        ,[7, 'Restaurant']
-                        ,[8, 'Media']
-                        ,[9, 'Activities']
-                        ,[10, 'Medical']
-                        ,[11, 'Pet']
-                        ,[12, 'Athletics']
-                        ,[13, 'Donations']
-                        ,[14, 'Gifts']
-                        ,[15, 'Home Improvement']
-                        ,[16, 'Technology']
-                        ,[17, 'Travel']
-                        ,[18, 'Clothing']
-                        ,[19, 'Misc. Expenses']
-                        ,[20, 'Wedding']]
-        
-        self.currentMonthMenu = [
-                        [0, 'All']
-                        ,[11, 'November']
-                        ,[10, 'October']
-                        ,[9, 'September']
-                        ,[8, 'August']
-                        ,[7, 'July']
-                        ,[6, 'June']
-                        ,[5, 'May']
-                        ,[4, 'April']
-                        ,[3, 'March']
-                        ,[2, 'February']
-                        ,[1, 'January']
-                        ]
+        self.incomeMenu = []
+        self.expenseMenu = []
+        self.currentMonthMenu = []
+        self.allMonthMenu = []
+        self.income = []
+        self.expenses = []
 
-        self.allMonthMenu = [
-                        [0, 'All']
-                        ,[1, 'January']
-                        ,[2, 'February']
-                        ,[3, 'March']
-                        ,[4, 'April']
-                        ,[5, 'May']
-                        ,[6, 'June']
-                        ,[7, 'July']
-                        ,[8, 'August']
-                        ,[9, 'September']
-                        ,[10, 'October']
-                        ,[11, 'November']
-                        ,[12, 'December']
-                        ]
-        
-        self.income = [
-                [[2, 'Income 2'], [10, 15, 2014], '1500','']
-                ,[[1, 'Income 1'], [10, 1, 2014], '1500','']
-                ,[[2, 'Income 2'], [9, 15, 2014], '1500','']
-                ,[[1, 'Income 1'], [9, 1, 2014], '1500','']
-                ,[[2, 'Income 2'], [8, 15, 2014], '1500','']
-                ,[[1, 'Income 1'], [8, 1, 2014], '1500','']
-                ,[[2, 'Income 2'], [7, 15, 2014], '1500','']
-                ,[[1, 'Income 1'], [7, 1, 2014], '1500','']
-                ,[[2, 'Income 2'], [6, 15, 2014], '3000','']
-                ,[[1, 'Income 1'], [6, 1, 2014], '1500','']
-                ,[[2, 'Income 2'], [5, 15, 2014], '1500','']
-                ,[[1, 'Income 1'], [5, 1, 2014], '1500','']
-                ,[[2, 'Income 2'], [4, 15, 2014], '1500','']
-                ,[[1, 'Income 1'], [4, 1, 2014], '1500','']
-                ,[[2, 'Income 2'], [3, 15, 2014], '1500','']
-                ,[[1, 'Income 1'], [3, 1, 2014], '1500','']
-                ,[[2, 'Income 2'], [2, 15, 2014], '1500','']
-                ,[[1, 'Income 1'], [2, 1, 2014], '1500','']
-                ,[[2, 'Income 2'], [1, 15, 2014], '1500','']
-                ,[[1, 'Income 1'], [1, 1, 2014], '1500','']
-                ]
-        
-        self.expenses = [
-                [[7, 'Restaurant'], [10, 10, 2014], '1.66','Cafetaria']
-                ,[[7, 'Restaurant'], [10, 9, 2014], '29.52','Pizza Hut']
-                ,[[7, 'Restaurant'], [10, 8, 2014], '26.52','Chinese Buffet']
-                ,[[4, 'Credit/Loans'], [10, 8, 2014], '453.20','Federal Loan']
-                ,[[7, 'Restaurant'], [10, 7, 2014], '40.76','Hibachi Grill']
-                ,[[5, 'Auto'], [10, 7, 2014], '40.45','Lumina Gas']
-                ,[[7, 'Restaurant'], [10, 6, 2014], '10.55','Taco Bell']
-                ,[[7, 'Restaurant'], [10, 5, 2014], '2.22','Cafetaria']
-                ,[[5, 'Auto'], [10, 4], '29.45','Prius Gas']
-                ,[[7, 'Restaurant'], [10, 4, 2014], '9.19','Bar']
-                ,[[7, 'Restaurant'], [10, 3, 2014], '8.12','Burger King']
-                ,[[7, 'Restaurant'], [10, 3, 2014], '15.20','Taco Bell']
-                ,[[7, 'Restaurant'], [10, 2, 2014], '1.66','Cafetaria']
-                ,[[1, 'Rent'], [10, 1, 2014], '1650','Rent']
-                ,[[7, 'Restaurant'], [9, 10, 2014], '1.66','Cafetaria']
-                ,[[7, 'Restaurant'], [9, 9, 2014], '29.52','Pizza Hut']
-                ,[[7, 'Restaurant'], [9, 8, 2014], '26.52','Chinese Buffet']
-                ,[[4, 'Credit/Loans'], [8, 8, 2014], '453.20','Federal Loan']
-                ,[[7, 'Restaurant'], [8, 7, 2014], '40.76','Hibachi Grill']
-                ,[[5, 'Auto'], [8, 7, 2014], '40.45','Lumina Gas']
-                ,[[7, 'Restaurant'], [7, 6, 2014], '10.55','Taco Bell']
-                ,[[7, 'Restaurant'], [7, 5, 2014], '2.22','Cafetaria']
-                ,[[5, 'Auto'], [7, 4, 2014], '29.45','Prius Gas']
-                ,[[7, 'Restaurant'], [6, 4, 2014], '9.19','Bar']
-                ,[[7, 'Restaurant'], [6, 3, 2014], '8.12','Burger King']
-                ,[[7, 'Restaurant'], [6, 3, 2014], '15.20','Taco Bell']
-                ,[[7, 'Restaurant'], [5, 2, 2014], '1.66','Cafetaria']
-                ,[[1, 'Rent'], [5, 1, 2014], '1650','Rent']
-                ,[[7, 'Restaurant'], [5, 10, 2014], '1.66','Cafetaria']
-                ,[[7, 'Restaurant'], [4, 9, 2014], '29.52','Pizza Hut']
-                ,[[7, 'Restaurant'], [4, 8, 2014], '26.52','Chinese Buffet']
-                ,[[4, 'Credit/Loans'], [4, 8, 2014], '453.20','Federal Loan']
-                ,[[7, 'Restaurant'], [3, 7, 2014], '40.76','Hibachi Grill']
-                ,[[5, 'Auto'], [3, 7, 2014], '40.45','Lumina Gas']
-                ,[[7, 'Restaurant'], [3, 6, 2014], '10.55','Taco Bell']
-                ,[[7, 'Restaurant'], [2, 5, 2014], '2.22','Cafetaria']
-                ,[[5, 'Auto'], [7, 2, 2014], '29.45','Prius Gas']
-                ,[[7, 'Restaurant'], [2, 4, 2014], '9.19','Bar']
-                ,[[7, 'Restaurant'], [1, 3, 2014], '8.12','Burger King']
-                ,[[7, 'Restaurant'], [1, 3, 2014], '15.20','Taco Bell']
-                ,[[7, 'Restaurant'], [1, 2, 2014], '1.66','Cafetaria']
-                ,[[1, 'Rent'], [1, 1, 2014], '1650','Rent']
-                ]
+        if(os.path.isfile('database.txt')):
+            f = open('database.txt', 'r')
+            for db in f.readlines():
+                line = db.split(',')
+                if line[0] == 'incomeMenu':
+                    self.arr = []
+                    self.arr.append(int(line[1].strip()))
+                    self.arr.append(line[2].strip())
+                    self.incomeMenu.append(self.arr)
+                elif line[0] == 'expenseMenu':
+                    self.arr = []
+                    self.arr.append(int(line[1].strip()))
+                    self.arr.append(line[2].strip())
+                    self.expenseMenu.append(self.arr)
+                elif line[0] == 'currentMonthMenu':
+                    self.arr = []
+                    self.arr.append(int(line[1].strip()))
+                    self.arr.append(line[2].strip())
+                    self.currentMonthMenu.append(self.arr)
+                elif line[0] == 'allMonthMenu':
+                    self.arr = []
+                    self.arr.append(int(line[1].strip()))
+                    self.arr.append(line[2].strip())
+                    self.allMonthMenu.append(self.arr)
+                elif line[0] == 'income':
+                    self.arr = []
+                    self.catArr = []
+                    self.dateArr = []
+                    self.catArr.append(int(line[1].strip()))
+                    self.catArr.append(line[2].strip())
+                    self.dateArr.append(int(line[3].strip()))
+                    self.dateArr.append(int(line[4].strip()))
+                    self.dateArr.append(int(line[5].strip()))
+                    self.arr.append(self.catArr)
+                    self.arr.append(self.dateArr)
+                    self.arr.append(Decimal(line[6].strip()))
+                    self.arr.append(line[7].strip())
+                    self.income.append(self.arr)
+                elif line[0] == 'expense':
+                    self.arr = []
+                    self.catArr = []
+                    self.dateArr = []
+                    self.catArr.append(int(line[1].strip()))
+                    self.catArr.append(line[2].strip())
+                    self.dateArr.append(int(line[3].strip()))
+                    self.dateArr.append(int(line[4].strip()))
+                    self.dateArr.append(int(line[5].strip()))
+                    self.arr.append(self.catArr)
+                    self.arr.append(self.dateArr)
+                    self.arr.append(Decimal(line[6].strip()))
+                    self.arr.append(line[7].strip())
+                    self.expenses.append(self.arr)
+
+            f.close()
 
     def translate_date(self,data,index):
         dateString = ""
