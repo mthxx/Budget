@@ -135,7 +135,7 @@ class Sidebar():
             self.descriptionLabel = Gtk.Label()
           
             # Style Labels
-            self.costLabel = Gtk.Label("$" + data[i][self.data.value])
+            self.costLabel = Gtk.Label("$" + str(data[i][self.data.value]))
             self.categoryLabel.set_markup("<b>" + data[i][self.data.category][self.data.category_text] + "</b>")
             self.descriptionLabel.set_markup("<i>" + data[i][self.data.description] + "</i>")
             self.categoryLabel.set_property("height-request", 50)
