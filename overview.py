@@ -201,7 +201,7 @@ class Overview():
             self.index += 1
         
         # Print out "All" Button
-        self.AllButton = Gtk.Button(data_cat[0][1])
+        self.AllButton = Gtk.Button(data_cat[self.data.category][self.data.category_text])
         self.AllButton.set_relief(Gtk.ReliefStyle.NONE)
         self.AllButton.set_property("height-request", 40)
         self.categoryArr.append([self.index, self.AllButton])
