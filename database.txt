@@ -1,30 +1,30 @@
-incomeMenu, 0, All Income
-incomeMenu, 1, Income 1
-incomeMenu, 2, Income 2
-incomeMenu, 3, Income 3
-incomeMenu, 4, Income 4
-incomeMenu, 5, Income 5
-expenseMenu, 0, All Expenses
-expenseMenu, 1, Rent
-expenseMenu, 2, Monthly Bills
-expenseMenu, 3, Insurance
-expenseMenu, 4, Credit/Loans
-expenseMenu, 5, Auto
-expenseMenu, 6, Grocery
-expenseMenu, 7, Restaurant
-expenseMenu, 8, Media
-expenseMenu, 9, Activities
-expenseMenu, 10, Medical
-expenseMenu, 11, Pet
-expenseMenu, 12, Athletics
-expenseMenu, 13, Donations
-expenseMenu, 14, Gifts
-expenseMenu, 15, Home Improvement
-expenseMenu, 16, Technology
-expenseMenu, 17, Travel
-expenseMenu, 18, Clothing
-expenseMenu, 19, Misc. Expenses
-expenseMenu, 20,  Wedding
+incomeMenu, 0, All Income, 1
+incomeMenu, 1, Income 1, 2
+incomeMenu, 2, Income 2, 3
+incomeMenu, 3, Income 3, 4
+incomeMenu, 4, Income 4, 5
+incomeMenu, 5, Income 5, 6
+expenseMenu, 0, All Expenses, 7
+expenseMenu, 1, Rent, 8
+expenseMenu, 2, Monthly Bills, 9
+expenseMenu, 3, Insurance, 10
+expenseMenu, 4, Credit/Loans, 11
+expenseMenu, 5, Auto, 12
+expenseMenu, 6, Grocery, 13
+expenseMenu, 7, Restaurant, 14
+expenseMenu, 8, Media, 15
+expenseMenu, 9, Activities, 16
+expenseMenu, 10, Medical, 17
+expenseMenu, 11, Pet, 18
+expenseMenu, 12, Athletics, 19
+expenseMenu, 13, Donations, 20
+expenseMenu, 14, Gifts, 21
+expenseMenu, 15, Home Improvement, 22
+expenseMenu, 16, Technology, 23
+expenseMenu, 17, Travel, 24
+expenseMenu, 18, Clothing, 25
+expenseMenu, 19, Misc. Expenses, 26
+expenseMenu, 20,  Wedding, 27
 currentMonthMenu, 0, All
 currentMonthMenu, 11, November
 currentMonthMenu, 10, October
@@ -50,65 +50,65 @@ allMonthMenu, 9, September
 allMonthMenu, 10, October
 allMonthMenu, 11, November
 allMonthMenu, 12, December
-income, 2, Income 2, 2014, 10, 15, 1500,
-income, 1, Income 1, 2014, 10, 1, 1500,
-income, 2, Income 2, 2014, 9, 15, 1500,
-income, 1, Income 1, 2014, 9, 1, 1500,
-income, 2, Income 2, 2014, 8, 15, 1500,
-income, 1, Income 1, 2014, 8, 1, 1500,
-income, 2, Income 2, 2014, 7, 15, 1500,
-income, 1, Income 1, 2014, 7, 1, 1500,
-income, 2, Income 2, 2014, 6, 15, 3000,
-income, 1, Income 1, 2014, 6, 1, 1500,
-income, 2, Income 2, 2014, 5, 15, 1500,
-income, 1, Income 1, 2014, 5, 1, 1500,
-income, 2, Income 2, 2014, 4, 15, 1500,
-income, 1, Income 1, 2014, 4, 1, 1500,
-income, 2, Income 2, 2014, 3, 15, 1500,
-income, 1, Income 1, 2014, 3, 1, 1500,
-income, 2, Income 2, 2014, 2, 15, 1500,
-income, 1, Income 1, 2014, 2, 1, 1500,
-income, 2, Income 2, 2014, 1, 15, 1500,
-income, 1, Income 1, 2014, 1, 1, 1500,
-expense, 7, Restaurant, 2014, 10, 10, 1.66 , Cafetaria
-expense, 7, Restaurant, 2014, 10, 9, 29.52 , Pizza Hut
-expense, 7, Restaurant, 2014, 10, 8, 26.52 , Chinese Buffet
-expense, 4, Credit/Loans, 2014, 10, 8, 453.20 , Federal Loan
-expense, 7, Restaurant, 2014, 10, 7, 40.76 , Hibachi Grill
-expense, 5, Auto, 2014, 10, 7, 40.45 , Lumina Gas
-expense, 7, Restaurant, 2014, 10, 6, 10.55 , Taco Bell
-expense, 7, Restaurant, 2014, 10, 5, 2.22 , Cafetaria
-expense, 5, Auto, 2014, 10, 4, 29.45 , Prius Gas
-expense, 7, Restaurant, 2014, 10, 4, 9.19 , Bar
-expense, 7, Restaurant, 2014, 10, 3, 8.12 , Burger King
-expense, 7, Restaurant, 2014, 10, 3, 15.20 , Taco Bell
-expense, 7, Restaurant, 2014, 10, 2, 1.66 , Cafetaria
-expense, 1, Rent, 2014, 10, 1, 1650 , Rent
-expense, 7, Restaurant, 2014, 9, 10, 1.66 , Cafetaria
-expense, 7, Restaurant, 2014, 9, 9, 29.52 , Pizza Hut
-expense, 7, Restaurant, 2014, 9, 8, 26.52 , Chinese Buffet
-expense, 4, Credit/Loans, 2014, 8, 8, 453.20 , Federal Loan
-expense, 7, Restaurant, 2014, 8, 7, 40.76 , Hibachi Grill
-expense, 5, Auto, 2014, 8, 7, 40.45 , Lumina Gas
-expense, 7, Restaurant, 2014, 7, 6, 10.55 , Taco Bell
-expense, 7, Restaurant, 2014, 7, 5, 2.22 , Cafetaria
-expense, 5, Auto, 2014, 7, 4, 29.45 , Prius Gas
-expense, 7, Restaurant, 2014, 6, 4, 9.19 , Bar
-expense, 7, Restaurant, 2014, 6, 3, 8.12 , Burger King
-expense, 7, Restaurant, 2014, 6, 3, 15.20 , Taco Bell
-expense, 7, Restaurant, 2014, 5, 2, 1.66 , Cafetaria
-expense, 1, Rent, 2014, 5, 1, 1650 , Rent
-expense, 7, Restaurant, 2014, 5, 10, 1.66 , Cafetaria
-expense, 7, Restaurant, 2014, 4, 9, 29.52 , Pizza Hut
-expense, 7, Restaurant, 2014, 4, 8, 26.52 , Chinese Buffet
-expense, 4, Credit/Loans, 2014, 4, 8, 453.20 , Federal Loan
-expense, 7, Restaurant, 2014, 3, 7, 40.76 , Hibachi Grill
-expense, 5, Auto, 2014, 3, 7, 40.45 , Lumina Gas
-expense, 7, Restaurant, 2014, 3, 6, 10.55 , Taco Bell
-expense, 7, Restaurant, 2014, 2, 5, 2.22 , Cafetaria
-expense, 5, Auto, 2014, 7, 2, 29.45 , Prius Gas
-expense, 7, Restaurant, 2014, 2, 4, 9.19, Bar
-expense, 7, Restaurant, 2014, 1, 3, 8.12, Burger King
-expense, 7, Restaurant, 2014, 1, 3, 15.20, Taco Bell
-expense, 7, Restaurant, 2014, 1, 2, 1.66, Cafetaria
-expense, 1, Rent, 2014, 1, 1, 1650, Rent
+income, 2, Income 2, 2014, 10, 15, 1500,,28
+income, 1, Income 1, 2014, 10, 1, 1500,,29
+income, 2, Income 2, 2014, 9, 15, 1500,,30
+income, 1, Income 1, 2014, 9, 1, 1500,,31
+income, 2, Income 2, 2014, 8, 15, 1500,,32
+income, 1, Income 1, 2014, 8, 1, 1500,,33
+income, 2, Income 2, 2014, 7, 15, 1500,,34
+income, 1, Income 1, 2014, 7, 1, 1500,,35
+income, 2, Income 2, 2014, 6, 15, 3000,,36
+income, 1, Income 1, 2014, 6, 1, 1500,,37
+income, 2, Income 2, 2014, 5, 15, 1500,,38
+income, 1, Income 1, 2014, 5, 1, 1500,,39
+income, 2, Income 2, 2014, 4, 15, 1500,,40
+income, 1, Income 1, 2014, 4, 1, 1500,,41
+income, 2, Income 2, 2014, 3, 15, 1500,,42
+income, 1, Income 1, 2014, 3, 1, 1500,,43
+income, 2, Income 2, 2014, 2, 15, 1500,,44
+income, 1, Income 1, 2014, 2, 1, 1500,,45
+income, 2, Income 2, 2014, 1, 15, 1500,,46
+income, 1, Income 1, 2014, 1, 1, 1500,,47
+expense, 7, Restaurant, 2014, 10, 10, 1.66 , Cafetaria,48
+expense, 7, Restaurant, 2014, 10, 9, 29.52 , Pizza Hut, 49
+expense, 7, Restaurant, 2014, 10, 8, 26.52 , Chinese Buffet,50
+expense, 4, Credit/Loans, 2014, 10, 8, 453.20 , Federal Loan,51
+expense, 7, Restaurant, 2014, 10, 7, 40.76 , Hibachi Grill,52
+expense, 5, Auto, 2014, 10, 7, 40.45 , Lumina Gas,53
+expense, 7, Restaurant, 2014, 10, 6, 10.55 , Taco Bell,54
+expense, 7, Restaurant, 2014, 10, 5, 2.22 , Cafetaria,55
+expense, 5, Auto, 2014, 10, 4, 29.45 , Prius Gas,56
+expense, 7, Restaurant, 2014, 10, 4, 9.19 , Bar,57
+expense, 7, Restaurant, 2014, 10, 3, 8.12 , Burger King,58
+expense, 7, Restaurant, 2014, 10, 3, 15.20 , Taco Bell,59
+expense, 7, Restaurant, 2014, 10, 2, 1.66 , Cafetaria,60
+expense, 1, Rent, 2014, 10, 1, 1650 , Rent,61
+expense, 7, Restaurant, 2014, 9, 10, 1.66 , Cafetaria,62
+expense, 7, Restaurant, 2014, 9, 9, 29.52 , Pizza Hut,63
+expense, 7, Restaurant, 2014, 9, 8, 26.52 , Chinese Buffet,64
+expense, 4, Credit/Loans, 2014, 8, 8, 453.20 , Federal Loan,65
+expense, 7, Restaurant, 2014, 8, 7, 40.76 , Hibachi Grill,66
+expense, 5, Auto, 2014, 8, 7, 40.45 , Lumina Gas,67
+expense, 7, Restaurant, 2014, 7, 6, 10.55 , Taco Bell,68
+expense, 7, Restaurant, 2014, 7, 5, 2.22 , Cafetaria,69
+expense, 5, Auto, 2014, 7, 4, 29.45 , Prius Gas,70
+expense, 7, Restaurant, 2014, 6, 4, 9.19 , Bar,71
+expense, 7, Restaurant, 2014, 6, 3, 8.12 , Burger King,72
+expense, 7, Restaurant, 2014, 6, 3, 15.20 , Taco Bell,73
+expense, 7, Restaurant, 2014, 5, 2, 1.66 , Cafetaria,74
+expense, 1, Rent, 2014, 5, 1, 1650 , Rent,75
+expense, 7, Restaurant, 2014, 5, 10, 1.66 , Cafetaria,76
+expense, 7, Restaurant, 2014, 4, 9, 29.52 , Pizza Hut,77
+expense, 7, Restaurant, 2014, 4, 8, 26.52 , Chinese Buffet,78
+expense, 4, Credit/Loans, 2014, 4, 8, 453.20 , Federal Loan,79
+expense, 7, Restaurant, 2014, 3, 7, 40.76 , Hibachi Grill,80
+expense, 5, Auto, 2014, 3, 7, 40.45 , Lumina Gas,81
+expense, 7, Restaurant, 2014, 3, 6, 10.55 , Taco Bell,82
+expense, 7, Restaurant, 2014, 2, 5, 2.22 , Cafetaria,83
+expense, 5, Auto, 2014, 7, 2, 29.45 , Prius Gas,84
+expense, 7, Restaurant, 2014, 2, 4, 9.19, Bar,85
+expense, 7, Restaurant, 2014, 1, 3, 8.12, Burger King,86
+expense, 7, Restaurant, 2014, 1, 3, 15.20, Taco Bell,87
+expense, 7, Restaurant, 2014, 1, 2, 1.66, Cafetaria,88
+expense, 1, Rent, 2014, 1, 1, 1650, Rent,89

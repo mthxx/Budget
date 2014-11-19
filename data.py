@@ -33,11 +33,13 @@ class Data():
                     self.arr = []
                     self.arr.append(int(line[1].strip()))
                     self.arr.append(line[2].strip())
+                    self.arr.append(line[3].strip())
                     self.incomeMenu.append(self.arr)
                 elif line[0] == 'expenseMenu':
                     self.arr = []
                     self.arr.append(int(line[1].strip()))
                     self.arr.append(line[2].strip())
+                    self.arr.append(line[3].strip())
                     self.expenseMenu.append(self.arr)
                 elif line[0] == 'currentMonthMenu':
                     self.arr = []
@@ -62,6 +64,7 @@ class Data():
                     self.arr.append(self.dateArr)
                     self.arr.append(Decimal(line[6].strip()))
                     self.arr.append(line[7].strip())
+                    self.arr.append(line[8].strip())
                     self.income.append(self.arr)
                 elif line[0] == 'expense':
                     self.arr = []
@@ -76,6 +79,7 @@ class Data():
                     self.arr.append(self.dateArr)
                     self.arr.append(Decimal(line[6].strip()))
                     self.arr.append(line[7].strip())
+                    self.arr.append(line[8].strip())
                     self.expenses.append(self.arr)
 
             f.close()
