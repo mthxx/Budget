@@ -100,8 +100,17 @@ class Add_Popover(Gtk.Window):
                     self.addCategoryComboBoxText.append_text(self.data.expenseMenu[i][1])
     
     def on_addSubmitButton_clicked(self, *args):
-        print(self.radioStatus)
-        print(self.addCategoryComboBoxText.get_active_text())
-        print(self.addEntry.get_text())
-        print(self.addDescription.get_text())
-        print(self.addDate.get_date())
+        self.entryString = ""
+        
+        if self.addCategoryComboBoxText.get_active() < 0:
+            print("Invalid Response")
+        else:
+            self.entryString += self.radioStatus + ", "
+            self.entryString += str(int(self.addCategoryComboBoxText.get_active()) + 1) + ", "
+            self.entryString += str(self.addCategoryComboBoxText.get_active_text()) + ", "
+            self.entryString += str(self.addDate.get_date()) + ", "
+            self.entryString = self.entryString.replace("(", "")
+            self.entryString = self.entryString.replace(")", "")
+            self.entryString += self.addEntry.get_text() + ", "
+            self.entryString += self.addDescription.get_text()
+            print(self.entryString)
