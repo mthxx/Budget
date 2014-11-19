@@ -157,8 +157,8 @@ class Sidebar():
             self.contentGrid.attach(self.whiteSpaceLabel,0, self.index, 5, 1)
             self.index = self.index + 1
             
-            self.entryRows.append([[self.layoutGrid, self.whiteSpaceLabel],[self.categoryLabel,self.dateLabel,self.costLabel,self.descriptionLabel]])
-        
+            self.entryRows.append([[self.layoutGrid, self.whiteSpaceLabel],[self.categoryLabel,self.dateLabel,self.costLabel,self.descriptionLabel], data[self.data.unique_id]])
+
     def generate_add_popover(self, page):
         # Create Add Popover
         self.addEntryPopover = Gtk.Popover.new(self.addEntryButton)
