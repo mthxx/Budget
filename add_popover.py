@@ -108,9 +108,12 @@ class Add_Popover(Gtk.Window):
             self.entryString += self.radioStatus + ", "
             self.entryString += str(int(self.addCategoryComboBoxText.get_active()) + 1) + ", "
             self.entryString += str(self.addCategoryComboBoxText.get_active_text()) + ", "
-            self.entryString += str(self.addDate.get_date()) + ", "
-            self.entryString = self.entryString.replace("(", "")
-            self.entryString = self.entryString.replace(")", "")
+            self.dateArr = self.addDate.get_date()
+            self.entryString += str(self.dateArr[0]) + ", "
+            self.entryString += str(self.dateArr[1] + 1) + ", "
+            self.entryString += str(self.dateArr[2]) + ", "
             self.entryString += self.addEntry.get_text() + ", "
-            self.entryString += self.addDescription.get_text()
-            print(self.entryString)
+            self.entryString += self.addDescription.get_text() + ", "
+            self.data.latest_id += 1
+            self.entryString += str(self.data.latest_id)
+            self.data.add_data(self.entryString)
