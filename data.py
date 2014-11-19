@@ -17,6 +17,10 @@ class Data():
        
         self.value = 2
         self.description = 3
+        
+        self.unique_id = 4 
+
+        self.latest_id = 0
 
         self.incomeMenu = []
         self.expenseMenu = []
@@ -65,6 +69,8 @@ class Data():
                     self.arr.append(Decimal(line[6].strip()))
                     self.arr.append(line[7].strip())
                     self.arr.append(line[8].strip())
+                    if self.latest_id < int(line[8].strip()):
+                        self.latest_id = int(line[8].strip())
                     self.income.append(self.arr)
                 elif line[0] == 'expense':
                     self.arr = []
@@ -80,8 +86,16 @@ class Data():
                     self.arr.append(Decimal(line[6].strip()))
                     self.arr.append(line[7].strip())
                     self.arr.append(line[8].strip())
+                    if self.latest_id < int(line[8].strip()):
+                        self.latest_id = int(line[8].strip())
                     self.expenses.append(self.arr)
+            
+            f.close()
 
+    def add_data(self, entryString):
+        if(os.path.isfile('database.txt')):
+            f = open('database.txt', 'a')
+            f.write(entryString)
             f.close()
 
     def translate_date(self,data,index):
