@@ -11,9 +11,9 @@ class Data():
         self.category_text = 1
 
         self.date = 1
-        self.date_month = 0
-        self.date_day = 1
-        self.date_year = 2
+        self.date_year = 0
+        self.date_month = 1
+        self.date_day = 2
        
         self.value = 2
         self.description = 3
@@ -82,52 +82,49 @@ class Data():
 
     def translate_date(self,data,index):
         dateString = ""
-        dateIndex = 1
-        monthIndex = 0
-        dayIndex = 1
-
-        if data[index][dateIndex][monthIndex] == 1:
+        
+        if data[index][self.date][self.date_month] == 1:
             dateString += ("January")
-        elif data[index][dateIndex][monthIndex] == 2:
+        elif data[index][self.date][self.date_month] == 2:
             dateString += ("February")
-        elif data[index][dateIndex][monthIndex] == 3:
+        elif data[index][self.date][self.date_month] == 3:
             dateString += ("March")
-        elif data[index][dateIndex][monthIndex] == 4:
+        elif data[index][self.date][self.date_month] == 4:
             dateString += ("April")
-        elif data[index][dateIndex][monthIndex] == 5:
+        elif data[index][self.date][self.date_month] == 5:
             dateString += ("May")
-        elif data[index][dateIndex][monthIndex] == 6:
+        elif data[index][self.date][self.date_month] == 6:
             dateString += ("June")
-        elif data[index][dateIndex][monthIndex] == 7:
+        elif data[index][self.date][self.date_month] == 7:
             dateString += ("July")
-        elif data[index][dateIndex][monthIndex] == 8:
+        elif data[index][self.date][self.date_month] == 8:
             dateString += ("August")
-        elif data[index][dateIndex][monthIndex] == 9:
+        elif data[index][self.date][self.date_month] == 9:
             dateString += ("September")
-        elif data[index][dateIndex][monthIndex] == 10:
+        elif data[index][self.date][self.date_month] == 10:
             dateString += ("October")
-        elif data[index][dateIndex][monthIndex] == 11:
+        elif data[index][self.date][self.date_month] == 11:
             dateString += ("November")
-        elif data[index][dateIndex][monthIndex] == 12:
+        elif data[index][self.date][self.date_month] == 12:
             dateString += ("December")
         else:
             dateString += ("Month Fail")
 
-        dateString += (" " + str(data[index][dateIndex][dayIndex]))
+        dateString += (" " + str(data[index][self.date][self.date_day]))
 
-        if data[index][dateIndex][dayIndex] == 1:
+        if data[index][self.date][self.date_day] == 1:
             dateString += ("st")
-        elif data[index][dateIndex][dayIndex] == 21:
+        elif data[index][self.date][self.date_day] == 21:
             dateString += ("st")
-        elif data[index][dateIndex][dayIndex] == 31:
+        elif data[index][self.date][self.date_day] == 31:
             dateString += ("st")
-        elif data[index][dateIndex][dayIndex] == 2:
+        elif data[index][self.date][self.date_day] == 2:
             dateString += ("nd")
-        elif data[index][dateIndex][dayIndex] == 22:
+        elif data[index][self.date][self.date_day] == 22:
             dateString += ("nd")
-        elif data[index][dateIndex][dayIndex] == 3:
+        elif data[index][self.date][self.date_day] == 3:
             dateString += ("rd")
-        elif data[index][dateIndex][dayIndex] == 23:
+        elif data[index][self.date][self.date_day] == 23:
             dateString += ("rd")
         else:
             dateString += ("th")

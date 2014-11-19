@@ -189,8 +189,8 @@ class Overview():
                     self.contentGrid.attach(self.totalLabel, month - 1, self.index, 1, 1) 
                 else:
                     for data in range(0,len(data_arr)):
-                        if data_arr[data][0][0] == index:
-                            if data_arr[data][1][0] == self.data.allMonthMenu[month][0]:
+                        if data_arr[data][self.data.category][self.data.category_index] == index:
+                            if data_arr[data][self.data.date][self.data.date_month] == self.data.allMonthMenu[month][0]:
                                 self.total += Decimal(data_arr[data][2])
                     self.totalLabel = Gtk.Label("$" + str(self.total))
                     self.totalLabel.set_property("height-request", 40)
