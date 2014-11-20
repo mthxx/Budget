@@ -23,6 +23,7 @@ class Add_Popover(Gtk.Window):
         self.addDescriptionLabel = Gtk.Label("Description")
         self.addCurrencyLabel = Gtk.Label("$ ")
         self.addEntry = Gtk.Entry()
+        self.addEntry.set_input_purpose(Gtk.InputPurpose.NUMBER)
         self.addDescription = Gtk.Entry()
         self.addDate = Gtk.Calendar()
         self.addSubmitButton = Gtk.Button("Submit")
