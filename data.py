@@ -106,17 +106,30 @@ class Data():
                     if data[i][self.DATE][self.DATE_MONTH] == int(self.arr[self.DATE][self.DATE_MONTH]):
                         # If entry's day is equal to array's day
                         if data[i][self.DATE][self.DATE_DAY] == int(self.arr[self.DATE][self.DATE_DAY]):
-                            #self.expenses.insert(i, self.arr)
+                            self.expenses.insert(i, self.arr)
                             flag = True
                             break
                         # If entry's day is less than array's day
+                        elif data[i][self.DATE][self.DATE_DAY] > int(self.arr[self.DATE][self.DATE_DAY]):
+                            for j in range(i, len(data)):
+                                if data[j][self.DATE][self.DATE_MONTH] == int(self.arr[self.DATE][self.DATE_MONTH]):
+                                    if data[j][self.DATE][self.DATE_DAY] <= int(self.arr[self.DATE][self.DATE_DAY]):
+                                        data.insert(j, self.arr)
+                                        flag = True
+                                        break
+                                else:
+                                    data.insert(j , self.arr)
+                                    flag = True
+                                    break
+                            break
+                        # If entry's day is greater than array's day
                         elif data[i][self.DATE][self.DATE_DAY] < int(self.arr[self.DATE][self.DATE_DAY]):
                             data.insert(i , self.arr)
                             flag = True
                             break
                     # If entry's month is less than array's month
                     elif data[i][self.DATE][self.DATE_MONTH] < int(self.arr[self.DATE][self.DATE_MONTH]):
-                        data.insert(i - 1 , self.arr)
+                        data.insert(i , self.arr)
                         flag = True
                         break
                 # If entry's year is less than income array's year
