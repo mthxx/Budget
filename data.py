@@ -106,7 +106,7 @@ class Data():
                     if data[i][self.DATE][self.DATE_MONTH] == int(self.arr[self.DATE][self.DATE_MONTH]):
                         # If entry's day is equal to array's day
                         if data[i][self.DATE][self.DATE_DAY] == int(self.arr[self.DATE][self.DATE_DAY]):
-                            self.expenses.insert(i, self.arr)
+                            data.insert(i, self.arr)
                             flag = True
                             break
                         # If entry's day is less than array's day
