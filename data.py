@@ -3,24 +3,24 @@ from decimal import *
 import os.path 
 
 class Data():
+    CATEGORY = 0
+    CATEGORY_INDEX = 0
+    CATEGORY_TEXT = 1
+
+    DATE = 1
+    DATE_YEAR = 0
+    DATE_MONTH = 1
+    DATE_DAY = 2
+   
+    VALUE = 2
+    DESCRIPTION = 3
+    
+    UNIQUE_ID = 4 
+
+    LATEST_ID = 0
 
     def __init__(self):
         #Indexes for data arrays
-        self.CATEGORY = 0
-        self.CATEGORY_INDEX = 0
-        self.CATEGORY_TEXT = 1
-
-        self.DATE = 1
-        self.DATE_YEAR = 0
-        self.DATE_MONTH = 1
-        self.DATE_DAY = 2
-       
-        self.VALUE = 2
-        self.DESCRIPTION = 3
-        
-        self.UNIQUE_ID = 4 
-
-        self.LATEST_ID = 0
 
         self.incomeMenu = []
         self.expenseMenu = []
