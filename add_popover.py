@@ -76,7 +76,7 @@ class Add_Popover(Gtk.Window):
         self.addGrid.attach(self.addDescription,1,4,1,1)
         self.addGrid.attach(self.addDate,0,5,2,1)
         self.addGrid.attach(self.addSubmitButton,0,6,2,1)
-        self.addSubmitButton.connect("clicked", self.on_addSubmitButton_clicked)
+#        self.addSubmitButton.connect("clicked", self.on_addSubmitButton_clicked)
     
     def add_popover_margin(self, widget, margin):
         widget.set_margin_start(margin)
@@ -127,8 +127,11 @@ class Add_Popover(Gtk.Window):
             self.entryString += self.addEntry.get_text() + ", "
             self.entryString += self.addDescription.get_text() + ", "
             self.data.LATEST_ID += 1
-            self.entryString += str(self.data.LATEST_ID)
-            #self.data.add_data(self.entryString)
-
+            self.entryString += str(self.data.LATEST_ID) + "\n"
             self.addEntry.set_text("")
             self.addDescription.set_text("")
+            if self.radioStatus == "income":
+                self.data.add_data(self.entryString, args[1])
+            elif self.radioStatus == "expense":
+                self.data.add_data(self.entryString, args[2])
+                 #   args[1].view.display_content(self.income)

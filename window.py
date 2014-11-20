@@ -103,6 +103,8 @@ class Window(Gtk.Window):
         self.notebook.append_page(self.expense.view.grid, None)
         self.notebook.set_show_tabs(False)
         self.add(self.notebook)
+        
+        self.add_popover.addSubmitButton.connect("clicked", self.add_popover.on_addSubmitButton_clicked, self.income, self.expense)
     
     def on_addButton_clicked(self, *args):
         if self.addPopover.get_visible():

@@ -16,7 +16,6 @@ class Data():
     DESCRIPTION = 3
     
     UNIQUE_ID = 4 
-
     LATEST_ID = 0
 
     def __init__(self):
@@ -142,10 +141,10 @@ class Data():
                 data.append(self.arr)
             
 
-    def add_data(self, entryString):
+    def add_data(self, entryString, view_update):
         if(os.path.isfile('database.txt')):
             f = open('database.txt', 'a')
-            f.write(entryString)
+            #f.write(entryString)
             f.close()
 
     def translate_date(self,data,index):
