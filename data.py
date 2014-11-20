@@ -29,6 +29,7 @@ class Data():
         self.income = []
         self.expenses = []
 
+    def import_data(self):
         if(os.path.isfile('database.txt')):
             f = open('database.txt', 'r')
             for db in f.readlines():
@@ -90,6 +91,7 @@ class Data():
                     if self.latest_id < int(line[8].strip()):
                         self.latest_id = int(line[8].strip())
                     self.sort_data(self.expenses)
+            
             f.close()
 
     def sort_data(self, data):

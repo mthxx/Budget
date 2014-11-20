@@ -6,6 +6,7 @@ class main():
 
     def __init__(self):
         self.data = Data()
+        self.data.import_data()
         win = Window(self.data)
         win.connect("delete-event", Gtk.main_quit)
         win.show_all()
