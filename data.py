@@ -71,38 +71,7 @@ class Data():
                     self.arr.append(line[8].strip())
                     if self.latest_id < int(line[8].strip()):
                         self.latest_id = int(line[8].strip())
-                    if len(self.income) == 0:
-                        self.income.append(self.arr)
-                    else:
-                        flag = False
-                        for i in range(len(self.income)):
-                            # If entry's year is equal to array's year
-                            if self.income[i][self.date][self.date_year] == int(self.arr[self.date][self.date_year]):
-                                # If entry's month is equal to array's month
-                                if self.income[i][self.date][self.date_month] == int(self.arr[self.date][self.date_month]):
-                                    # If entry's day is equal to array's day
-                                    if self.income[i][self.date][self.date_day] == int(self.arr[self.date][self.date_day]):
-                                        #self.expenses.insert(i, self.arr)
-                                        flag = True
-                                        break
-                                    # If entry's day is less than array's day
-                                    elif self.income[i][self.date][self.date_day] < int(self.arr[self.date][self.date_day]):
-                                        self.income.insert(i , self.arr)
-                                        flag = True
-                                        break
-                                # If entry's month is less than array's month
-                                elif self.income[i][self.date][self.date_month] < int(self.arr[self.date][self.date_month]):
-                                    self.income.insert(i - 1 , self.arr)
-                                    flag = True
-                                    break
-                            # If entry's year is less than income array's year
-                            elif self.income[i][self.date][self.date_year] < int(self.arr[self.date][self.date_year]):
-                                self.income.insert(i , self.arr)
-                                flag = True
-                                break
-
-                        if flag == False:
-                            self.income.append(self.arr)
+                    self.sort_data(self.income)
 
                 elif line[0] == 'expense':
                     self.arr = []
@@ -120,40 +89,43 @@ class Data():
                     self.arr.append(line[8].strip())
                     if self.latest_id < int(line[8].strip()):
                         self.latest_id = int(line[8].strip())
-                    if len(self.expenses) == 0:
-                        self.expenses.append(self.arr)
-                    else:
-                        flag = False
-                        for i in range(len(self.expenses)):
-                            # If entry's year is equal to array's year
-                            if self.expenses[i][self.date][self.date_year] == int(self.arr[self.date][self.date_year]):
-                                # If entry's month is equal to array's month
-                                if self.expenses[i][self.date][self.date_month] == int(self.arr[self.date][self.date_month]):
-                                    # If entry's day is equal to array's day
-                                    if self.expenses[i][self.date][self.date_day] == int(self.arr[self.date][self.date_day]):
-                                        #self.expenses.insert(i, self.arr)
-                                        flag = True
-                                        break
-                                    # If entry's day is less than array's day
-                                    elif self.expenses[i][self.date][self.date_day] < int(self.arr[self.date][self.date_day]):
-                                        self.expenses.insert(i , self.arr)
-                                        flag = True
-                                        break
-                                # If entry's month is less than array's month
-                                elif self.expenses[i][self.date][self.date_month] < int(self.arr[self.date][self.date_month]):
-                                    self.expenses.insert(i - 1 , self.arr)
-                                    flag = True
-                                    break
-                            # If entry's year is less than income array's year
-                            elif self.expenses[i][self.date][self.date_year] < int(self.arr[self.date][self.date_year]):
-                                self.expenses.insert(i , self.arr)
-                                flag = True
-                                break
-
-                        if flag == False:
-                            self.expenses.append(self.arr)
-            
+                    self.sort_data(self.expenses)
             f.close()
+
+    def sort_data(self, data):
+        if len(data) == 0:
+            data.append(self.arr)
+        else:
+            flag = False
+            for i in range(len(data)):
+                # If entry's year is equal to array's year
+                if data[i][self.date][self.date_year] == int(self.arr[self.date][self.date_year]):
+                    # If entry's month is equal to array's month
+                    if data[i][self.date][self.date_month] == int(self.arr[self.date][self.date_month]):
+                        # If entry's day is equal to array's day
+                        if data[i][self.date][self.date_day] == int(self.arr[self.date][self.date_day]):
+                            #self.expenses.insert(i, self.arr)
+                            flag = True
+                            break
+                        # If entry's day is less than array's day
+                        elif data[i][self.date][self.date_day] < int(self.arr[self.date][self.date_day]):
+                            data.insert(i , self.arr)
+                            flag = True
+                            break
+                    # If entry's month is less than array's month
+                    elif data[i][self.date][self.date_month] < int(self.arr[self.date][self.date_month]):
+                        data.insert(i - 1 , self.arr)
+                        flag = True
+                        break
+                # If entry's year is less than income array's year
+                elif data[i][self.date][self.date_year] < int(self.arr[self.date][self.date_year]):
+                    data.insert(i , self.arr)
+                    flag = True
+                    break
+
+            if flag == False:
+                data.append(self.arr)
+            
 
     def add_data(self, entryString):
         if(os.path.isfile('database.txt')):
