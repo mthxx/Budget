@@ -13,7 +13,7 @@ class Expense():
         self.view.monthTotalLabel.set_text( "$" + str(self.calc.sumTotalData(self.data.expenses)))
         
         self.view.generate_sidebars(self.data.expenseMenu)
-        self.view.generate_content(self.data.expenses)
+        self.view.display_content(self.data.expenses)
         self.view.generate_add_popover("expense")
         
         # Add Signal Handling

@@ -13,7 +13,7 @@ class Income():
         self.view.monthTotalLabel.set_text("$" + str(self.calc.sumTotalData(self.data.income)))
 
         self.view.generate_sidebars(self.data.incomeMenu)
-        self.view.generate_content(self.data.income)
+        self.view.display_content(self.data.income)
         self.view.generate_add_popover("income")
 
         # Add Signal Handling

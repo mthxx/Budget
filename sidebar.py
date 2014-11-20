@@ -117,9 +117,15 @@ class Sidebar():
             self.subMenuListBox.add(self.label)
             self.subMenuListBox.select_row(self.subMenuListBox.get_row_at_index(0))
 
-    def generate_content(self, data):
-        self.index = 5
+    def display_content(self, data):
+        #Clear existing data
+        #while len(self.contentGrid) > 0:
+        #    self.contentGrid.remove_row(0)
+        #    
+        #while len(self.entryRows) > 0:
+        #        self.entryRows.pop(0)
         
+        self.index = 5
         for i in range (0,len(data)):
             self.layoutGrid = Gtk.Grid(name="layoutGrid")
             self.layoutGrid.set_column_homogeneous(True)
@@ -158,7 +164,7 @@ class Sidebar():
             self.index = self.index + 1
             
             self.entryRows.append([[self.layoutGrid, self.whiteSpaceLabel],[self.categoryLabel,self.dateLabel,self.costLabel,self.descriptionLabel]]) # data[self.data.UNIQUE_ID]])
-
+        
     def generate_add_popover(self, page):
         # Create Add Popover
         self.addEntryPopover = Gtk.Popover.new(self.addEntryButton)
