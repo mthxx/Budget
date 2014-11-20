@@ -1,0 +1,7 @@
+CLASS_LEVEL_VARIABLE               |  All Caps
+
+self.instanceLevelVariable         |  Camel Case
+
+def function_name()                |  underscore delimited
+                                   
+localVariable                      |  Camel Case
