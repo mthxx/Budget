@@ -16,6 +16,7 @@ class Add_Popover(Gtk.Window):
             self.addStack.add_titled(self.addIncomeRadio, "Income", "Income")
             self.addStack.add_titled(self.addExpenseRadio, "Expense", "Expense")
             self.addStackSwitcher.set_stack(self.addStack)
+        self.addCategoryLabel = Gtk.Label("Category")
         self.addCategoryComboBoxText = Gtk.ComboBoxText()
         self.addEntryBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         self.addEntryLabel = Gtk.Label("Entry")
@@ -38,6 +39,7 @@ class Add_Popover(Gtk.Window):
         self.add_popover_margin(self.addCategoryComboBoxText, 10)
         self.add_popover_margin(self.addEntryBox, 10)
         self.add_popover_margin(self.addDescription, 10)
+        self.addCategoryComboBoxText.set_margin_top(0)
         self.addEntryBox.set_margin_top(0)
         self.addEntryBox.set_margin_end(4)
         self.addDescription.set_margin_top(0)
@@ -65,13 +67,14 @@ class Add_Popover(Gtk.Window):
         if page == "window":
             self.addGrid.attach(self.addStackSwitcher,0,0,2,1)
         
-        self.addGrid.attach(self.addCategoryComboBoxText,0,1,2,1)
-        self.addGrid.attach(self.addEntryLabel,0,2,1,1)
-        self.addGrid.attach(self.addDescriptionLabel,1,2,1,1)
-        self.addGrid.attach(self.addEntryBox,0,3,1,1)
-        self.addGrid.attach(self.addDescription,1,3,1,1)
-        self.addGrid.attach(self.addDate,0,4,2,1)
-        self.addGrid.attach(self.addSubmitButton,0,5,2,1)
+        self.addGrid.attach(self.addCategoryLabel,0,1,2,1)
+        self.addGrid.attach(self.addCategoryComboBoxText,0,2,2,1)
+        self.addGrid.attach(self.addEntryLabel,0,3,1,1)
+        self.addGrid.attach(self.addDescriptionLabel,1,3,1,1)
+        self.addGrid.attach(self.addEntryBox,0,4,1,1)
+        self.addGrid.attach(self.addDescription,1,4,1,1)
+        self.addGrid.attach(self.addDate,0,5,2,1)
+        self.addGrid.attach(self.addSubmitButton,0,6,2,1)
         self.addSubmitButton.connect("clicked", self.on_addSubmitButton_clicked)
     
     def add_popover_margin(self, widget, margin):
@@ -103,8 +106,16 @@ class Add_Popover(Gtk.Window):
         self.entryString = ""
         
         if self.addCategoryComboBoxText.get_active() < 0:
-            print("Invalid Response")
+            self.addCategoryLabel.set_markup("<span foreground=\"red\"><b>* Category</b></span>")
         else:
+            self.addCategoryLabel.set_text("Category")
+        
+        if self.addEntry.get_text() == "":
+            self.addEntryLabel.set_markup("<span foreground=\"red\"><b>* Entry</b></span>")
+        else:
+            self.addEntryLabel.set_text("Entry")
+        
+        if self.addCategoryComboBoxText.get_active() >= 0 and self.addEntry.get_text != "":
             self.entryString += self.radioStatus + ", "
             self.entryString += str(int(self.addCategoryComboBoxText.get_active()) + 1) + ", "
             self.entryString += str(self.addCategoryComboBoxText.get_active_text()) + ", "
@@ -114,6 +125,9 @@ class Add_Popover(Gtk.Window):
             self.entryString += str(self.dateArr[2]) + ", "
             self.entryString += self.addEntry.get_text() + ", "
             self.entryString += self.addDescription.get_text() + ", "
-            self.data.latest_id += 1
-            self.entryString += str(self.data.latest_id)
-            self.data.add_data(self.entryString)
+            self.data.LATEST_ID += 1
+            self.entryString += str(self.data.LATEST_ID)
+            #self.data.add_data(self.entryString)
+
+            self.addEntry.set_text("")
+            self.addDescription.set_text("")
