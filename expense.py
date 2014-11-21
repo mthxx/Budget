@@ -14,7 +14,6 @@ class Expense():
         
         self.view.generate_sidebars(self.data.expenseMenu)
         self.view.display_content(self.data.expenses)
-        self.view.generate_add_popover("expense")
         
         # Add Signal Handling
         self.view.menuListBox.connect("row-activated",self.view.menu_clicked, self.data.expenses, self.data.expenseMenu)

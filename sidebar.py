@@ -1,6 +1,5 @@
 from gi.repository import Gtk, Gio, Gdk
 from calc import Calc
-from add_popover import Add_Popover
 
 class Sidebar():
 
@@ -41,12 +40,7 @@ class Sidebar():
 
         # Define Widgets
         self.whiteSpaceLabel1 = Gtk.Label()
-        self.whiteSpaceLabel2 = Gtk.Label()
         
-        self.addEntryButton = Gtk.Button("Add")
-        self.editEntryButton = Gtk.Button("Edit")
-        
-
         self.topLeftLabel = Gtk.Label()
         self.topMiddleLabel = Gtk.Label()
         self.topRightLabel = Gtk.Label()
@@ -96,9 +90,6 @@ class Sidebar():
         self.headerGrid.attach(self.percBudgetTotalLabel, 3, 1, 1, 1)
         
         self.headerGrid.attach(self.whiteSpaceLabel1, 0, 2, 5, 1)
-        self.headerGrid.attach(self.addEntryButton, 1, 3, 1, 1)
-        self.headerGrid.attach(self.editEntryButton, 3, 3, 1, 1)
-        self.headerGrid.attach(self.whiteSpaceLabel2, 1, 4, 1, 1)
 
         self.contentViewport.add(self.contentGrid)
 
@@ -166,18 +157,6 @@ class Sidebar():
             self.entryRows.append([[self.layoutGrid, self.whiteSpaceLabel],[self.categoryLabel,self.dateLabel,self.costLabel,self.descriptionLabel]]) # data[self.data.UNIQUE_ID]])
             self.contentGrid.show_all() 
         
-    def generate_add_popover(self, page):
-        # Create Add Popover
-        self.addEntryPopover = Gtk.Popover.new(self.addEntryButton)
-        self.add_popover = Add_Popover(page, self.data)
-        self.addEntryPopover.add(self.add_popover.addGrid)
-        
-        # Create Edit Popover
-        #self.editEntryPopover = Gtk.Popover.new(self.addEntryButton)
-        
-        # Connect to Handler
-        self.addEntryButton.connect("clicked", self.add_popover.on_addButton_clicked, self.addEntryPopover)
-       
     def menu_clicked(self, listbox, row, data, menu):
         for i in range(len(menu)):
             if menu[i][self.data.CATEGORY_INDEX] == row.get_index():

@@ -80,7 +80,7 @@ class Window(Gtk.Window):
         self.addButton.set_size_request(32,32)
         self.menuButton.set_size_request(32,32)
             # Create Popovers
-        self.add_popover = Add_Popover("window", self.data)
+        self.add_popover = Add_Popover(self.data)
         self.addPopover.add(self.add_popover.addGrid)
            # Connect to handler
         self.addButton.connect("clicked", self.add_popover.on_addButton_clicked, self.addPopover)

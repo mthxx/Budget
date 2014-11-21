@@ -3,7 +3,7 @@ from overview_menu import Overview_Menu
 
 class Add_Popover(Gtk.Window):
 
-    def __init__(self, page, data):
+    def __init__(self, data):
         #Initialize Data
         self.data = data
         # Create Widgets
