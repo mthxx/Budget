@@ -141,7 +141,7 @@ class Data():
                 data.append(self.arr)
             
 
-    def add_data(self, entryString, radio, view_update):
+    def add_data(self, entryString, radio, view_update, overview):
         if(os.path.isfile('database.txt')):
             self.incomeMenu = []
             self.expenseMenu = []
@@ -157,6 +157,7 @@ class Data():
                 view_update.view.display_content(self.income)
             if radio == "expense":
                 view_update.view.display_content(self.expenses)
+            overview.redisplay_info()
             
 
     def translate_date(self,data,index):

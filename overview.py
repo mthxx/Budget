@@ -160,7 +160,21 @@ class Overview():
         self.contentScrolledWindow.set_vexpand(True)
         self.contentGrid.set_column_homogeneous(True)
         self.contentGrid.set_hexpand(True)
-        
+    
+    def redisplay_info(self):
+        self.clear_selection(self.clearButton)
+        self.index = 0
+        while len(self.categoryArr) > 0:
+            self.categoryArr.pop(0)
+            self.categoryGrid.remove_row(0)
+            self.contentGrid.remove_row(0)
+        while len(self.entryRows) > 0:
+            self.entryRows.pop(0)
+        self.display_info(self.data.incomeMenu, self.data.income)
+        self.empty_row()
+        self.display_info(self.data.expenseMenu, self.data.expenses)
+        self.overviewGrid.show_all()
+
     def display_info(self,data_cat, data_arr):
         # Print out Categories
         for index in range(1,len(data_cat)):
