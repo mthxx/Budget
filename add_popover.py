@@ -8,14 +8,13 @@ class Add_Popover(Gtk.Window):
         self.data = data
         # Create Widgets
         self.addGrid = Gtk.Grid()
-        if page == "window":
-            self.addIncomeRadio = Gtk.RadioButton(None, "Income")
-            self.addExpenseRadio = Gtk.RadioButton(self.addIncomeRadio, "Expense")
-            self.addStack = Gtk.Stack()
-            self.addStackSwitcher = Gtk.StackSwitcher()
-            self.addStack.add_titled(self.addIncomeRadio, "Income", "Income")
-            self.addStack.add_titled(self.addExpenseRadio, "Expense", "Expense")
-            self.addStackSwitcher.set_stack(self.addStack)
+        self.addIncomeRadio = Gtk.RadioButton(None, "Income")
+        self.addExpenseRadio = Gtk.RadioButton(self.addIncomeRadio, "Expense")
+        self.addStack = Gtk.Stack()
+        self.addStackSwitcher = Gtk.StackSwitcher()
+        self.addStack.add_titled(self.addIncomeRadio, "Income", "Income")
+        self.addStack.add_titled(self.addExpenseRadio, "Expense", "Expense")
+        self.addStackSwitcher.set_stack(self.addStack)
         self.addCategoryLabel = Gtk.Label("Category")
         self.addCategoryComboBoxText = Gtk.ComboBoxText()
         self.addEntryBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
@@ -32,10 +31,9 @@ class Add_Popover(Gtk.Window):
         self.addEntryBox.add(self.addEntry)
         
         # Style Widgets
-        if page == "window":
-            self.addStackSwitcher.set_homogeneous(True)
-            self.addStack.set_hexpand(True)        
-            self.add_popover_margin(self.addStackSwitcher, 10)
+        self.addStackSwitcher.set_homogeneous(True)
+        self.addStack.set_hexpand(True)        
+        self.add_popover_margin(self.addStackSwitcher, 10)
         
         self.add_popover_margin(self.addCategoryComboBoxText, 10)
         self.add_popover_margin(self.addEntryBox, 10)
@@ -50,23 +48,15 @@ class Add_Popover(Gtk.Window):
 
         self.addCategoryComboBoxText.set_property("height-request", 34)
 
-        if page == "window" or page == "income":
-            self.radioStatus = "income"
-            for i in range(1,len(self.data.incomeMenu)):
-                self.addCategoryComboBoxText.append_text(self.data.incomeMenu[i][1])
-        
-        if page == "expense":
-            self.radioStatus = "expense"
-            for i in range(1,len(self.data.expenseMenu)):
-                self.addCategoryComboBoxText.append_text(self.data.expenseMenu[i][1])
+        self.radioStatus = "income"
+        for i in range(1,len(self.data.incomeMenu)):
+            self.addCategoryComboBoxText.append_text(self.data.incomeMenu[i][1])
         
         # Connect Widget Handlers
-        if page == "window":
-            self.addStackSwitcher.connect("set-focus-child", self.on_addRadio_toggled)
+        self.addStackSwitcher.connect("set-focus-child", self.on_addRadio_toggled)
         
         # Add Widgets to Grid
-        if page == "window":
-            self.addGrid.attach(self.addStackSwitcher,0,0,2,1)
+        self.addGrid.attach(self.addStackSwitcher,0,0,2,1)
         
         self.addGrid.attach(self.addCategoryLabel,0,1,2,1)
         self.addGrid.attach(self.addCategoryComboBoxText,0,2,2,1)
@@ -131,7 +121,7 @@ class Add_Popover(Gtk.Window):
             self.addEntry.set_text("")
             self.addDescription.set_text("")
             if self.radioStatus == "income":
-                self.data.add_data(self.entryString, args[1])
+                self.data.add_data(self.entryString, self.radioStatus, args[1])
             elif self.radioStatus == "expense":
-                self.data.add_data(self.entryString, args[2])
+                self.data.add_data(self.entryString, self.radioStatus, args[2])
                  #   args[1].view.display_content(self.income)

@@ -119,11 +119,11 @@ class Sidebar():
 
     def display_content(self, data):
         #Clear existing data
-        #while len(self.contentGrid) > 0:
-        #    self.contentGrid.remove_row(0)
-        #    
-        #while len(self.entryRows) > 0:
-        #        self.entryRows.pop(0)
+        while len(self.contentGrid) > 0:
+            self.contentGrid.remove_row(0)
+            
+        while len(self.entryRows) > 0:
+                self.entryRows.pop(0)
         
         self.index = 5
         for i in range (0,len(data)):
@@ -164,6 +164,7 @@ class Sidebar():
             self.index = self.index + 1
             
             self.entryRows.append([[self.layoutGrid, self.whiteSpaceLabel],[self.categoryLabel,self.dateLabel,self.costLabel,self.descriptionLabel]]) # data[self.data.UNIQUE_ID]])
+            self.contentGrid.show_all() 
         
     def generate_add_popover(self, page):
         # Create Add Popover

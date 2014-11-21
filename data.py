@@ -141,14 +141,23 @@ class Data():
                 data.append(self.arr)
             
 
-    def add_data(self, entryString, view_update):
+    def add_data(self, entryString, radio, view_update):
         if(os.path.isfile('database.txt')):
-            #f = open('database.txt', 'a')
-            #f.write(entryString)
-            #f.close()
-            testLabel = Gtk.Label("Testing")
-            #view_update.view.contentGrid.insert_row(100)
-            view_update.view.contentGrid.attach(testLabel, 0,160, 10, 1)
+            self.incomeMenu = []
+            self.expenseMenu = []
+            self.currentMonthMenu = []
+            self.allMonthMenu = []
+            self.income = []
+            self.expenses = []
+            f = open('database.txt', 'a')
+            f.write(entryString)
+            f.close()
+            self.import_data()
+            if radio == "income":
+                view_update.view.display_content(self.income)
+            if radio == "expense":
+                view_update.view.display_content(self.expenses)
+            
 
     def translate_date(self,data,index):
         dateString = ""
