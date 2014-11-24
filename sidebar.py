@@ -122,9 +122,11 @@ class Sidebar():
         
         self.index = 5
         for i in range (0,len(data)):
+            
             self.layoutGrid = Gtk.Grid(name="layoutGrid")
-            self.layoutGrid.set_column_homogeneous(True)
-            self.layoutGrid.set_hexpand(True)
+            self.entryGrid = Gtk.Grid()
+            self.entryGrid.set_column_homogeneous(True)
+            self.entryGrid.set_hexpand(True)
             
             self.dateString = ""
             self.dateString = self.data.translate_date(data, i)
@@ -133,24 +135,40 @@ class Sidebar():
             self.categoryLabel = Gtk.Label()
             self.dateLabel = Gtk.Label(self.dateString)
             self.descriptionLabel = Gtk.Label()
-          
+            self.editButton = Gtk.Button()
+
             # Style Labels
             self.costLabel = Gtk.Label("$" + str(data[i][self.data.VALUE]))
             self.categoryLabel.set_markup("<b>" + data[i][self.data.CATEGORY][self.data.CATEGORY_TEXT] + "</b>")
             self.descriptionLabel.set_markup("<i>" + data[i][self.data.DESCRIPTION] + "</i>")
             self.categoryLabel.set_property("height-request", 50)
             
-            # Attach Labels
-            self.layoutGrid.attach(self.categoryLabel, 0, 1, 1, 1)
-            self.layoutGrid.attach(self.dateLabel, 1, 1, 1, 1)
-            self.layoutGrid.attach(self.costLabel, 2, 1, 1, 1)
+            #Style Edit Button
+            self.editIcon = Gio.ThemedIcon(name="go-down-symbolic")
+            self.editImage = Gtk.Image.new_from_gicon(self.editIcon, Gtk.IconSize.MENU)
+            self.editButton.add(self.editImage)
+            self.editButton.set_relief(Gtk.ReliefStyle.NONE)
+            self.editButton.set_size_request(32,32)
             
+            # Attach Labels
+            self.entryGrid.attach(self.categoryLabel, 0, 1, 1, 1)
+            self.entryGrid.attach(self.dateLabel, 1, 1, 1, 1)
+            self.entryGrid.attach(self.costLabel, 2, 1, 1, 1)
+           
             if self.descriptionLabel.get_text() != "":
-                self.layoutGrid.attach(self.descriptionLabel, 0, 3, 3, 1)
+                self.entryGrid.attach(self.descriptionLabel, 0, 3, 3, 1)
                 self.extraSpaceLabel = Gtk.Label()
-                self.layoutGrid.attach(self.extraSpaceLabel,0, 4, 3, 1)
+                self.entryGrid.attach(self.extraSpaceLabel,0, 4, 3, 1)
+                
+                self.editEmptyLabel = Gtk.Label()
+                self.layoutGrid.attach(self.editEmptyLabel, 0, 1, 1, 1)
+                self.layoutGrid.attach(self.entryGrid, 0, 0, 1, 2)
             
             # Add Layout Grid to Content Grid. Increment index and apply whitespaces
+            else:
+                self.layoutGrid.attach(self.entryGrid, 0, 0, 1, 1)
+            self.layoutGrid.attach(self.editButton, 1, 0, 1, 1)
+
             self.contentGrid.attach(self.layoutGrid, 1, self.index, 3, 2)
             
             self.index = self.index + 2
