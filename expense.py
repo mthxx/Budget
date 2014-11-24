@@ -10,8 +10,6 @@ class Expense():
         self.calc = Calc(self.data)
         self.view = Sidebar(self.data) 
         
-        self.view.monthTotalLabel.set_text( "$" + str(self.calc.sumTotalData(self.data.expenses)))
-        
         self.view.generate_sidebars(self.data.expenseMenu)
         self.view.display_content(self.data.expenses)
         

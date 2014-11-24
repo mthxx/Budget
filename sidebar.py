@@ -116,6 +116,10 @@ class Sidebar():
         while len(self.entryRows) > 0:
                 self.entryRows.pop(0)
         
+        self.monthTotalLabel.set_text("$" + str(self.calc.sumTotalData(data)))
+        self.monthRemainingTotalLabel.set_text("$1,500")
+        self.percBudgetTotalLabel.set_text("50.00%")
+        
         self.index = 5
         for i in range (0,len(data)):
             self.layoutGrid = Gtk.Grid(name="layoutGrid")
