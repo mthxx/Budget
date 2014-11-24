@@ -174,6 +174,11 @@ class Overview():
         self.empty_row()
         self.display_info(self.data.expenseMenu, self.data.expenses)
         self.overviewGrid.show_all()
+        
+        self.balanceTotalLabel.set_text( "$" + str(self.calc.sumTotalData(self.data.income) - self.calc.sumTotalData(self.data.expenses)))
+        self.varianceTotalLabel.set_text( "$" + str(self.calc.sumTotalData(self.data.income)))
+        self.incomeTotalValueLabel.set_text( "$" + str(self.calc.sumTotalData(self.data.income)))
+        self.expensesTotalValueLabel.set_text( "$" + str(self.calc.sumTotalData(self.data.expenses)))
 
     def display_info(self,data_cat, data_arr):
         # Print out Categories
