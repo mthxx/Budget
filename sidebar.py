@@ -1,5 +1,6 @@
 from gi.repository import Gtk, Gio, Gdk
 from calc import Calc
+from edit_popover import Edit_Popover
 
 class Sidebar():
 
@@ -123,6 +124,7 @@ class Sidebar():
         self.index = 5
         for i in range (0,len(data)):
             
+            # Create Grids
             self.layoutGrid = Gtk.Grid(name="layoutGrid")
             self.entryGrid = Gtk.Grid()
             self.entryGrid.set_column_homogeneous(True)
@@ -131,11 +133,17 @@ class Sidebar():
             self.dateString = ""
             self.dateString = self.data.translate_date(data, i)
 
+            # Create Edit Popover
+            self.editButton = Gtk.Button()
+            self.editPopover = Gtk.Popover.new(self.editButton)
+            self.edit_popover = Edit_Popover(self.data)
+            self.editPopover.add(self.edit_popover.editGrid)
+            self.editButton.connect("clicked", self.edit_popover.on_editButton_clicked, self.editPopover)
+
             # Set labels
             self.categoryLabel = Gtk.Label()
             self.dateLabel = Gtk.Label(self.dateString)
             self.descriptionLabel = Gtk.Label()
-            self.editButton = Gtk.Button()
 
             # Style Labels
             self.costLabel = Gtk.Label("$" + str(data[i][self.data.VALUE]))
@@ -282,3 +290,9 @@ class Sidebar():
                         self.entryRows[i][0][0].show()
                         self.entryRows[i][0][1].show()
                         self.monthTotalLabel.set_text("$" + str(self.calc.sumCategoryData(data,self.menu_index)))
+    
+    def on_editButton_clicked(self, button, editPopover):
+        if editPopover.get_visible():
+            editPopover.hide()
+        else:
+            editPopover.show_all()
