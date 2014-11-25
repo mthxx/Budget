@@ -11,7 +11,7 @@ class Income():
         self.view = Sidebar(self.data) 
 
         self.view.generate_sidebars(self.data.incomeMenu)
-        self.view.display_content(self.data.income)
+        self.view.display_content(self.data.income, self.data.incomeMenu)
 
         # Add Signal Handling
         self.view.menuListBox.connect("row-activated",self.view.menu_clicked, self.data.income, self.data.incomeMenu)

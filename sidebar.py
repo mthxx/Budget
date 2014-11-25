@@ -109,7 +109,7 @@ class Sidebar():
             self.subMenuListBox.add(self.label)
             self.subMenuListBox.select_row(self.subMenuListBox.get_row_at_index(0))
 
-    def display_content(self, data):
+    def display_content(self, data, menu):
         #Clear existing data
         while len(self.contentGrid) > 0:
             self.contentGrid.remove_row(0)
@@ -138,7 +138,7 @@ class Sidebar():
             self.editPopover = Gtk.Popover.new(self.editButton)
             self.edit_popover = Edit_Popover(self.data)
             self.editPopover.add(self.edit_popover.editGrid)
-            self.editButton.connect("clicked", self.edit_popover.on_editButton_clicked, self.editPopover)
+            self.editButton.connect("clicked", self.edit_popover.on_editDropdown_clicked, self.editPopover, data[i][self.data.UNIQUE_ID], self.entryRows, menu)
 
             # Set labels
             self.categoryLabel = Gtk.Label()
@@ -184,7 +184,7 @@ class Sidebar():
             self.contentGrid.attach(self.whiteSpaceLabel,0, self.index, 5, 1)
             self.index = self.index + 1
             
-            self.entryRows.append([[self.layoutGrid, self.whiteSpaceLabel],[self.categoryLabel,self.dateLabel,self.costLabel,self.descriptionLabel]]) # data[self.data.UNIQUE_ID]])
+            self.entryRows.append([[self.layoutGrid, self.whiteSpaceLabel],[self.categoryLabel,self.dateLabel,self.costLabel,self.descriptionLabel], self.entryGrid, data[i][self.data.UNIQUE_ID]])
             self.contentGrid.show_all() 
         
     def menu_clicked(self, listbox, row, data, menu):
