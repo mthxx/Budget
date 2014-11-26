@@ -124,14 +124,21 @@ class Sidebar():
         self.index = 5
         for i in range (0,len(data)):
             
-            # Create Grids
-            self.layoutGrid = Gtk.Grid(name="layoutGrid")
-            self.entryGrid = Gtk.Grid()
-            self.entryGrid.set_column_homogeneous(True)
-            self.entryGrid.set_hexpand(True)
-            
+            # Date String
             self.dateString = ""
             self.dateString = self.data.translate_date(data, i)
+            
+            # Create Widgets
+            self.layoutGrid = Gtk.Grid(name="layoutGrid")
+            self.entryGrid = Gtk.Grid()
+            self.costGrid = Gtk.Grid()
+            
+            self.categoryLabel = Gtk.Label()
+            self.dateLabel = Gtk.Label(self.dateString)
+            self.descriptionLabel = Gtk.Label()
+            
+            self.currencyLabel = Gtk.Label("$")
+            self.costLabel = Gtk.Label(str(data[i][self.data.VALUE]))
 
             # Create Edit Popover
             self.editButton = Gtk.Button()
@@ -140,18 +147,17 @@ class Sidebar():
             self.editPopover.add(self.edit_popover.editGrid)
             self.editButton.connect("clicked", self.edit_popover.on_editDropdown_clicked, self.editPopover, data[i][self.data.UNIQUE_ID], self.entryRows, menu)
 
-            # Set labels
-            self.categoryLabel = Gtk.Label()
-            self.dateLabel = Gtk.Label(self.dateString)
-            self.descriptionLabel = Gtk.Label()
+            # Style Widgets
+            self.entryGrid.set_column_homogeneous(True)
+            self.entryGrid.set_hexpand(True)
 
-            # Style Labels
-            self.costLabel = Gtk.Label("$" + str(data[i][self.data.VALUE]))
             self.categoryLabel.set_markup("<b>" + data[i][self.data.CATEGORY][self.data.CATEGORY_TEXT] + "</b>")
             self.descriptionLabel.set_markup("<i>" + data[i][self.data.DESCRIPTION] + "</i>")
             self.categoryLabel.set_property("height-request", 50)
+            self.costGrid.set_row_homogeneous(True)
+            self.costGrid.set_halign(Gtk.Align.CENTER)
             
-            #Style Edit Button
+            # Style Edit Button
             self.editIcon = Gio.ThemedIcon(name="go-down-symbolic")
             self.editImage = Gtk.Image.new_from_gicon(self.editIcon, Gtk.IconSize.MENU)
             self.editButton.add(self.editImage)
@@ -159,9 +165,11 @@ class Sidebar():
             self.editButton.set_size_request(32,32)
             
             # Attach Labels
+            self.costGrid.attach(self.currencyLabel, 0,0,1,1)
+            self.costGrid.attach(self.costLabel, 1,0,1,1)
             self.entryGrid.attach(self.categoryLabel, 0, 1, 1, 1)
             self.entryGrid.attach(self.dateLabel, 1, 1, 1, 1)
-            self.entryGrid.attach(self.costLabel, 2, 1, 1, 1)
+            self.entryGrid.attach(self.costGrid, 2, 1, 1, 1)
            
             if self.descriptionLabel.get_text() != "":
                 self.entryGrid.attach(self.descriptionLabel, 0, 3, 3, 1)
@@ -184,7 +192,7 @@ class Sidebar():
             self.contentGrid.attach(self.whiteSpaceLabel,0, self.index, 5, 1)
             self.index = self.index + 1
             
-            self.entryRows.append([[self.layoutGrid, self.whiteSpaceLabel],[self.categoryLabel,self.dateLabel,self.costLabel,self.descriptionLabel], self.entryGrid, data[i][self.data.UNIQUE_ID]])
+            self.entryRows.append([[self.layoutGrid, self.whiteSpaceLabel],[self.categoryLabel,self.dateLabel, self.currencyLabel, self.costLabel, self.descriptionLabel], self.entryGrid, self.costGrid, data[i][self.data.UNIQUE_ID]])
             self.contentGrid.show_all() 
         
     def menu_clicked(self, listbox, row, data, menu):
