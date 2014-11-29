@@ -4,6 +4,8 @@ from overview_menu import Overview_Menu
 class Edit_Popover(Gtk.Window):
 
     def __init__(self, data):
+        self.data = data
+
         # Content Grid
         self.CONTENT_GRID_INDEX = 0          # Array
         self.LAYOUT_GRID_INDEX = 0           # Element
@@ -73,9 +75,12 @@ class Edit_Popover(Gtk.Window):
         self.calendarButton = Gtk.Button()
         self.calendarPopover = Gtk.Popover.new(self.calendarButton)
         self.calendarPopover.add(self.calendar)
+        
+        # Connect Widgets
         self.calendarButton.connect("clicked", self.on_calendarDropdown_clicked, self.calendarPopover)
+        self.calendarPopover.connect("closed", self.on_calendarDropdown_closed)
 
-        #Style Editing Widgets
+        # Style Editing Widgets
         self.categoryComboBoxText.set_margin_start(5)
         self.categoryComboBoxText.set_margin_top(8)
         self.categoryComboBoxText.set_margin_bottom(8)
@@ -90,6 +95,12 @@ class Edit_Popover(Gtk.Window):
         self.costEntry.set_margin_start(5)
         self.costEntry.set_margin_top(8)
         self.costEntry.set_margin_bottom(8)
+       
+        # Set Calendar to currently set date
+        if self.menu[0][1] == self.data.incomeMenu[0][1]:
+            self.set_calendar(self.data.income)
+        elif self.menu[0][1] == self.data.expenseMenu[0][1]:
+            self.set_calendar(self.data.expenses)
         
         # Replace label widgets with editing widgets
         for i in range(0, len(self.entryRows)):
@@ -105,7 +116,6 @@ class Edit_Popover(Gtk.Window):
                 self.categoryComboBoxText.show()
                 
                 # Date
-                
                 self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.DATE_LABEL_INDEX].hide()
                 self.entryRows[i][self.ENTRY_GRID_INDEX].attach(self.calendarButton,1,1,1,1)
                 self.calendarButton.set_label(self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.DATE_LABEL_INDEX].get_text())
@@ -117,7 +127,8 @@ class Edit_Popover(Gtk.Window):
                 self.costEntry.set_text(self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.COST_LABEL_INDEX].get_text())
                 self.costEntry.show()
                 # Description
-    
+  
+
     def on_calendarDropdown_clicked(self, button, calendarPopover):
         if calendarPopover.get_visible():
             calendarPopover.hide()
@@ -125,3 +136,14 @@ class Edit_Popover(Gtk.Window):
             calendarPopover.show_all()
 
 
+    def on_calendarDropdown_closed(self, calendarPopover):
+#        self.calendarButton.set_label(self.calendar.get_date())
+        dateString = self.data.translate_date(self.calendar.get_date(),"edit")
+        self.calendarButton.set_label(dateString)
+    
+    def set_calendar(self,data):
+        for i in range(0, len(data)):
+            if data[i][self.data.UNIQUE_ID] == self.unique_id:
+                self.calendar.select_month(data[i][self.data.DATE][self.data.DATE_MONTH] - 1,
+                                            data[i][self.data.DATE][self.data.DATE_YEAR])
+                self.calendar.select_day(data[i][self.data.DATE][self.data.DATE_DAY])
