@@ -28,6 +28,8 @@ class Edit_Popover(Gtk.Window):
         self.unique_id = 0
         self.entryRows = 0
         self.menu = 0
+        self.editPopover = ""
+        
         # Create Widgets
         self.editGrid = Gtk.Grid()
         
@@ -62,15 +64,22 @@ class Edit_Popover(Gtk.Window):
             editPopover.hide()
         else:
             editPopover.show_all()
+
+        self.editPopover = editPopover
         self.unique_id = unique_id
         self.entryRows = entryRows
         self.menu = menu
 
     def on_editButton_clicked(self, *args):
+        
+        self.editPopover.hide()
         # Create editing widgets
         self.categoryComboBoxText = Gtk.ComboBoxText()
         self.costEntry = Gtk.Entry()
-                
+        self.descriptionEntry = Gtk.Entry()
+        self.submitButton = Gtk.Button("Submit")
+        self.cancelButton = Gtk.Button("Cancel")
+
         self.calendar = Gtk.Calendar()
         self.calendarButton = Gtk.Button()
         self.calendarPopover = Gtk.Popover.new(self.calendarButton)
@@ -92,9 +101,21 @@ class Edit_Popover(Gtk.Window):
 
         self.costEntry.set_width_chars(5)
         self.costEntry.set_alignment(1)
-        self.costEntry.set_margin_start(5)
+        self.costEntry.set_margin_start(6)
         self.costEntry.set_margin_top(8)
         self.costEntry.set_margin_bottom(8)
+        
+        self.descriptionEntry.set_margin_start(6)
+        self.descriptionEntry.set_margin_top(8)
+        self.descriptionEntry.set_margin_bottom(8)
+        
+        self.submitButton.set_margin_start(6)
+        self.submitButton.set_margin_top(8)
+        self.submitButton.set_margin_bottom(8)
+        
+        self.cancelButton.set_margin_start(6)
+        self.cancelButton.set_margin_top(8)
+        self.cancelButton.set_margin_bottom(8)
        
         # Set Calendar to currently set date
         if self.menu[0][1] == self.data.incomeMenu[0][1]:
@@ -126,7 +147,20 @@ class Edit_Popover(Gtk.Window):
                 self.entryRows[i][self.COST_GRID_INDEX].attach(self.costEntry,1,0,1,1)
                 self.costEntry.set_text(self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.COST_LABEL_INDEX].get_text())
                 self.costEntry.show()
+                
                 # Description
+                self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.DESCRIPTION_LABEL_INDEX].hide()
+                self.entryRows[i][self.ENTRY_GRID_INDEX].attach(self.descriptionEntry,0,3,3,1)
+                self.descriptionEntry.set_text(self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.DESCRIPTION_LABEL_INDEX].get_text())
+                self.descriptionEntry.show()
+
+                # Add Submit/Cancel Button to popover
+                self.entryRows[i][self.ENTRY_GRID_INDEX].attach(self.submitButton,0,4,1,1)
+                self.entryRows[i][self.ENTRY_GRID_INDEX].attach(self.cancelButton,2,4,1,1)
+                self.submitButton.show()
+                self.cancelButton.show()
+
+
   
 
     def on_calendarDropdown_clicked(self, button, calendarPopover):
