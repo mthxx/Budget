@@ -27,6 +27,10 @@ class Data():
         self.allMonthMenu = []
         self.income = []
         self.expenses = []
+        
+        self.income_view = 0
+        self.expense_view = 0
+        self.overview = 0
 
     def import_data(self):
         if(os.path.isfile('database.txt')):
@@ -140,8 +144,12 @@ class Data():
             if flag == False:
                 data.append(self.arr)
             
+    def connect_data_views(self, income_view, expense_view, overview):
+        self.income_view = income_view
+        self.expense_view = expense_view
+        self.overview = overview
 
-    def add_data(self, entryString, radio, view_update, overview):
+    def add_data(self, entryString, radio):
         if(os.path.isfile('database.txt')):
             self.incomeMenu = []
             self.expenseMenu = []
@@ -154,10 +162,10 @@ class Data():
             f.close()
             self.import_data()
             if radio == "income":
-                view_update.view.display_content(self.income)
+                self.income_view.view.display_content(self.income, self.incomeMenu)
             if radio == "expense":
-                view_update.view.display_content(self.expenses)
-            overview.redisplay_info()
+                self.expense_view.view.display_content(self.expenses, self.expenseMenu)
+            self.overview.redisplay_info()
             
 
     def translate_date(self,data,index):

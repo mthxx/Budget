@@ -198,10 +198,30 @@ class Edit_Popover(Gtk.Window):
     
     def on_submitButton_clicked(self, button):
         self.editGrid.hide()
+        self.editString = ""
+        if self.menu[0][1] == self.data.incomeMenu[0][1]:
+            self.radio = "income"
+            self.editString += "income" + ", "
+        elif self.menu[0][1] == self.data.expenseMenu[0][1]:
+            self.radio = "expense"
+            self.editString += "expense" + ", "
+        self.editString += str(int(self.categoryComboBoxText.get_active()) + 1) + ", "
+        self.editString += self.categoryComboBoxText.get_active_text() + ", "
+        self.dateArr = self.calendar.get_date()
+        self.editString += str(self.dateArr[0]) + ", "
+        self.editString += str(self.dateArr[1] + 1) + ", "
+        self.editString += str(self.dateArr[2]) + ", "
+        self.editString += self.costEntry.get_text() + ", "
+        self.editString += self.descriptionEntry.get_text() + ", "
+        self.editString += self.unique_id
+        print(self.editString)
+        self.data.add_data(self.editString, self.radio)
+        
         for i in range(0, len(self.entryRows)):
             if self.entryRows[i][self.UNIQUE_ID_INDEX] == self.unique_id:
                 self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.EDIT_BUTTON_INDEX].show_all()
                 self.entryRows[i][self.ENTRY_GRID_INDEX].show_all()
+
     
     def on_calendarDropdown_closed(self, calendarPopover):
         dateString = self.data.translate_date(self.calendar.get_date(),"edit")

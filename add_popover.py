@@ -121,7 +121,7 @@ class Add_Popover(Gtk.Window):
             self.addEntry.set_text("")
             self.addDescription.set_text("")
             if self.radioStatus == "income":
-                self.data.add_data(self.entryString, self.radioStatus, args[1], args[3])
+                self.data.add_data(self.entryString, self.radioStatus)
             elif self.radioStatus == "expense":
-                self.data.add_data(self.entryString, self.radioStatus, args[2], args[3])
+                self.data.add_data(self.entryString, self.radioStatus)
                  #   args[1].view.display_content(self.income)
