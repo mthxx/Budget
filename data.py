@@ -166,6 +166,38 @@ class Data():
             if radio == "expense":
                 self.expense_view.view.display_content(self.expenses, self.expenseMenu)
             self.overview.redisplay_info()
+    
+    def delete_data(self, radio, uniqueID):
+        if(os.path.isfile('database.txt')):
+            self.incomeMenu = []
+            self.expenseMenu = []
+            self.currentMonthMenu = []
+            self.allMonthMenu = []
+            self.income = []
+            self.expenses = []
+            f = open('database.txt', 'r')
+            output = []
+            for line in f:
+                cur = line.split(",")
+                cur[0].strip()
+                if radio == cur[0]:
+                    if cur[8].strip() != uniqueID:
+                        output.append(line)
+                else:
+                    output.append(line)
+            
+            f.close()
+            
+            f = open('database.txt', 'w')
+            f.writelines(output)
+            f.close()
+           
+            self.import_data()
+            if radio == "income":
+                self.income_view.view.display_content(self.income, self.incomeMenu)
+            if radio == "expense":
+                self.expense_view.view.display_content(self.expenses, self.expenseMenu)
+            self.overview.redisplay_info()
             
 
     def translate_date(self,data,index):

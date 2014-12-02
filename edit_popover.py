@@ -28,6 +28,7 @@ class Edit_Popover(Gtk.Window):
         self.unique_id = 0
         self.entryRows = 0
         self.menu = 0
+        self.radio = 0
         self.editPopover = ""
         
         # Create Widgets
@@ -47,6 +48,7 @@ class Edit_Popover(Gtk.Window):
 
         # Connect Widget Handlers
         self.editButton.connect("clicked", self.on_editButton_clicked)
+        self.deleteButton.connect("clicked", self.on_deleteButton_clicked)
 
         # Add Widgets to Grid
         self.selectorBox.add(self.editButton)
@@ -69,7 +71,16 @@ class Edit_Popover(Gtk.Window):
         self.unique_id = unique_id
         self.entryRows = entryRows
         self.menu = menu
+        
+        if self.menu[0][1] == self.data.incomeMenu[0][1]:
+            self.radio = "income"
+        elif self.menu[0][1] == self.data.expenseMenu[0][1]:
+            self.radio = "expense"
 
+    def on_deleteButton_clicked(self, *args):
+        self.editPopover.hide()
+        self.data.delete_data(self.radio, self.unique_id)
+    
     def on_editButton_clicked(self, *args):
         self.editPopover.hide()
         
@@ -199,12 +210,7 @@ class Edit_Popover(Gtk.Window):
     def on_submitButton_clicked(self, button):
         self.editGrid.hide()
         self.editString = ""
-        if self.menu[0][1] == self.data.incomeMenu[0][1]:
-            self.radio = "income"
-            self.editString += "income" + ", "
-        elif self.menu[0][1] == self.data.expenseMenu[0][1]:
-            self.radio = "expense"
-            self.editString += "expense" + ", "
+        self.editString += self.radio +  ", "
         self.editString += str(int(self.categoryComboBoxText.get_active()) + 1) + ", "
         self.editString += self.categoryComboBoxText.get_active_text() + ", "
         self.dateArr = self.calendar.get_date()
@@ -213,8 +219,8 @@ class Edit_Popover(Gtk.Window):
         self.editString += str(self.dateArr[2]) + ", "
         self.editString += self.costEntry.get_text() + ", "
         self.editString += self.descriptionEntry.get_text() + ", "
-        self.editString += self.unique_id
-        print(self.editString)
+        self.editString += self.unique_id + "\n"
+        self.data.delete_data(self.radio, self.unique_id)
         self.data.add_data(self.editString, self.radio)
         
         for i in range(0, len(self.entryRows)):
