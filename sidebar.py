@@ -165,24 +165,31 @@ class Sidebar():
             self.editButton.set_size_request(32,32)
             
             # Attach Labels
-            self.costGrid.attach(self.currencyLabel, 0,0,1,1)
-            self.costGrid.attach(self.costLabel, 1,0,1,1)
+            self.costGrid.attach(self.currencyLabel, 0,1,1,1)
+            self.costGrid.attach(self.costLabel, 1,1,1,1)
             self.entryGrid.attach(self.categoryLabel, 0, 1, 1, 1)
             self.entryGrid.attach(self.dateLabel, 1, 1, 1, 1)
-            self.entryGrid.attach(self.costGrid, 2, 1, 1, 1)
+            self.entryGrid.attach(self.costGrid, 2, 0, 1, 2)
            
             if self.descriptionLabel.get_text() != "":
                 self.entryGrid.attach(self.descriptionLabel, 0, 3, 3, 1)
                 self.extraSpaceLabel = Gtk.Label()
-                self.entryGrid.attach(self.extraSpaceLabel,0, 4, 3, 1)
+                self.entryGrid.attach(self.extraSpaceLabel,0, 4, 1, 1)
                 
-                self.editEmptyLabel = Gtk.Label()
-                self.layoutGrid.attach(self.editEmptyLabel, 0, 1, 1, 1)
-                self.layoutGrid.attach(self.entryGrid, 0, 0, 1, 2)
+               # self.editEmptyLabel = Gtk.Label()
+               # self.layoutGrid.attach(self.editEmptyLabel, 0, 1, 1, 1)
+               # self.editEmptyLabel = Gtk.Label()
+               # self.layoutGrid.attach(self.editEmptyLabel, 0, 2, 1, 1)
+               # self.editEmptyLabel = Gtk.Label()
+               # self.layoutGrid.attach(self.editEmptyLabel, 0, 3, 1, 1)
+                self.layoutGrid.attach(self.entryGrid, 0, 0, 1, 4)
             
             # Add Layout Grid to Content Grid. Increment index and apply whitespaces
             else:
-                self.layoutGrid.attach(self.entryGrid, 0, 0, 1, 1)
+                #self.editEmptyLabel = Gtk.Label()
+                #self.layoutGrid.attach(self.editEmptyLabel, 0, 1, 1, 1)
+                self.layoutGrid.attach(self.entryGrid, 0, 0, 1, 2)
+            
             self.layoutGrid.attach(self.editButton, 1, 0, 1, 1)
 
             self.contentGrid.attach(self.layoutGrid, 1, self.index, 3, 2)
@@ -192,7 +199,7 @@ class Sidebar():
             self.contentGrid.attach(self.whiteSpaceLabel,0, self.index, 5, 1)
             self.index = self.index + 1
             
-            self.entryRows.append([[self.layoutGrid, self.whiteSpaceLabel],[self.categoryLabel,self.dateLabel, self.currencyLabel, self.costLabel, self.descriptionLabel], self.entryGrid, self.costGrid, data[i][self.data.UNIQUE_ID]])
+            self.entryRows.append([[self.layoutGrid, self.whiteSpaceLabel],[self.categoryLabel,self.dateLabel, self.currencyLabel, self.costLabel, self.descriptionLabel, self.editButton], self.entryGrid, self.costGrid, data[i][self.data.UNIQUE_ID]])
             self.contentGrid.show_all() 
         
     def menu_clicked(self, listbox, row, data, menu):
