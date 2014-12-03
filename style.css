@@ -8,8 +8,16 @@
     border-width: 1px;
 }
 
-#entryScrolledWindow, #overviewGrid, #reportsGrid, #projectionsGrid, #headerGrid, #menuListBox, #subMenuListBox{
+#overviewGrid, #reportsGrid, #projectionsGrid, #headerGrid, #menuListBox, #subMenuListBox{
     background-color: #F3F3F3;
+    /*background-color: #CCCCCC;*/
+    /*background-color: #EBEBEB;*/
+    /*background-color: #D1D1D1;*/
+}
+
+#entryScrolledWindow,#headerGrid{
+    /*background-color: #F3F3F3;*/
+    background-color: #CCCCCC;
     /*background-color: #EBEBEB;*/
     /*background-color: #D1D1D1;*/
 }
