@@ -14,7 +14,9 @@ class main():
         Gtk.main()
 
     def on_key_function(self, widget, event):
+        # If ctrl is pressed
         if Gdk.ModifierType.CONTROL_MASK & event.state:
+            # ctrl+q to quit
             if event.keyval == 113:
                 Gtk.main_quit()
 
