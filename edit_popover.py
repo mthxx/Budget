@@ -29,7 +29,8 @@ class Edit_Popover(Gtk.Window):
         self.menu = 0
         self.radio = 0
         self.editPopover = ""
-        
+        self.contentGrid = 0
+
         # Create Widgets
         self.editGrid = Gtk.Grid()
         
@@ -60,7 +61,7 @@ class Edit_Popover(Gtk.Window):
         widget.set_margin_top(margin)
         widget.set_margin_bottom(margin)
     
-    def on_editDropdown_clicked(self, button, editPopover, unique_id, entryRows, menu):
+    def on_editDropdown_clicked(self, button, editPopover, unique_id, entryRows, menu, contentGrid):
         if editPopover.get_visible():
             editPopover.hide()
         else:
@@ -70,6 +71,7 @@ class Edit_Popover(Gtk.Window):
         self.unique_id = unique_id
         self.entryRows = entryRows
         self.menu = menu
+        self.contentGrid = contentGrid
         
         if self.menu[0][1] == self.data.incomeMenu[0][1]:
             self.radio = "income"
@@ -189,6 +191,7 @@ class Edit_Popover(Gtk.Window):
 
                 # Attach and Show Edit Grid
                 self.entryRows[i][self.LAYOUT_GRID_INDEX].attach(self.editGrid, 0, 0, 1, 1)
+                self.contentGrid.queue_draw()
                 self.editGrid.show_all()
 
   
@@ -205,6 +208,7 @@ class Edit_Popover(Gtk.Window):
             if self.entryRows[i][self.UNIQUE_ID_INDEX] == self.unique_id:
                 self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.EDIT_BUTTON_INDEX].show_all()
                 self.entryRows[i][self.ENTRY_GRID_INDEX].show_all()
+        self.contentGrid.queue_draw()
     
     def on_submitButton_clicked(self, button):
         self.editGrid.hide()
@@ -226,6 +230,8 @@ class Edit_Popover(Gtk.Window):
             if self.entryRows[i][self.UNIQUE_ID_INDEX] == self.unique_id:
                 self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.EDIT_BUTTON_INDEX].show_all()
                 self.entryRows[i][self.ENTRY_GRID_INDEX].show_all()
+        
+        self.contentGrid.queue_draw()
 
     
     def on_calendarDropdown_closed(self, calendarPopover):

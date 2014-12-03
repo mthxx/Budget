@@ -165,7 +165,7 @@ class Sidebar():
             self.editPopover = Gtk.Popover.new(self.editButton)
             self.edit_popover = Edit_Popover(self.data)
             self.editPopover.add(self.edit_popover.editGrid)
-            self.editButton.connect("clicked", self.edit_popover.on_editDropdown_clicked, self.editPopover, data[i][self.data.UNIQUE_ID], self.entryRows, menu)
+            self.editButton.connect("clicked", self.edit_popover.on_editDropdown_clicked, self.editPopover, data[i][self.data.UNIQUE_ID], self.entryRows, menu, self.contentGrid)
 
             # Style Widgets
             self.entryGrid.set_column_homogeneous(True)
