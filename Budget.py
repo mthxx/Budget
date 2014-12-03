@@ -13,8 +13,8 @@ class main():
         self.win.connect('key-press-event', self.on_key_function)
         Gtk.main()
 
-    def on_key_function(self, wodget, event):
-        if Gdk.ModifierType.CONTROL_MASK & event.state:# & event.keyval == 113:
+    def on_key_function(self, widget, event):
+        if Gdk.ModifierType.CONTROL_MASK & event.state:
             if event.keyval == 113:
                 Gtk.main_quit()
 
