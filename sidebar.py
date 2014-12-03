@@ -84,6 +84,8 @@ class Sidebar():
         self.contentGrid.set_column_homogeneous(True)
         self.contentGrid.set_hexpand(True)
         self.contentGrid.set_vexpand(True)
+        self.contentGrid.set_margin_left(20)
+        self.contentGrid.set_margin_right(20)
         
         # Add items to Main Grid 
         self.menuViewport.add(self.menuListBox)
@@ -139,7 +141,7 @@ class Sidebar():
         self.percBudgetTotalLabel.set_text("50.00%")
         
         self.whiteSpaceLabel = Gtk.Label()
-        self.contentGrid.attach(self.whiteSpaceLabel,0, 0, 5, 1)
+        #self.contentGrid.attach(self.whiteSpaceLabel,0, 0, 5, 1)
         
         self.index = 5
         for i in range (0,len(data)):
@@ -182,8 +184,9 @@ class Sidebar():
             self.editImage = Gtk.Image.new_from_gicon(self.editIcon, Gtk.IconSize.MENU)
             self.editButton.add(self.editImage)
             self.editButton.set_relief(Gtk.ReliefStyle.NONE)
-            self.editButton.set_size_request(32,32)
-            
+            self.editButton.set_valign(Gtk.Align.START)
+            self.editButton.set_opacity(.5)
+
             # Attach Labels
             self.costGrid.attach(self.currencyLabel, 0,1,1,1)
             self.costGrid.attach(self.costLabel, 1,1,1,1)
@@ -195,14 +198,14 @@ class Sidebar():
                 self.entryGrid.attach(self.descriptionLabel, 0, 3, 3, 1)
                 self.extraSpaceLabel = Gtk.Label()
                 self.entryGrid.attach(self.extraSpaceLabel,0, 4, 1, 1)
-                self.layoutGrid.attach(self.entryGrid, 0, 0, 1, 4)
+                self.layoutGrid.attach(self.entryGrid, 0, 0, 1, 5)
             
             # Add Layout Grid to Content Grid. Increment index and apply whitespaces
             else:
                 self.layoutGrid.attach(self.entryGrid, 0, 0, 1, 2)
             
             self.layoutGrid.attach(self.editButton, 1, 0, 1, 1)
-            self.layoutGrid.set_margin_bottom(15)
+            self.layoutGrid.set_margin_bottom(25)
 
 
             self.contentGrid.attach(self.layoutGrid, 1, self.index, 3, 2)
