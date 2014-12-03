@@ -7,9 +7,7 @@ class Edit_Popover(Gtk.Window):
         self.data = data
 
         # Content Grid
-        self.CONTENT_GRID_INDEX = 0          # Array
         self.LAYOUT_GRID_INDEX = 0           # Element
-        self.WHITESPACE_LABEL = 1            # Element
 
         # Layout Widgets
         self.LAYOUT_WIDGET_INDEX = 1         # Array
@@ -19,6 +17,7 @@ class Edit_Popover(Gtk.Window):
         self.COST_LABEL_INDEX = 3            # Element
         self.DESCRIPTION_LABEL_INDEX = 4     # Element
         self.EDIT_BUTTON_INDEX = 5
+        
         # Additional Items
         self.ENTRY_GRID_INDEX = 2            # Element
         self.COST_GRID_INDEX = 3             # Element
@@ -189,7 +188,7 @@ class Edit_Popover(Gtk.Window):
                 self.editGrid.attach(self.submitButton,2,5,1,1)
 
                 # Attach and Show Edit Grid
-                self.entryRows[i][self.LAYOUT_GRID_INDEX][self.LAYOUT_GRID_INDEX].attach(self.editGrid, 0, 0, 1, 1)
+                self.entryRows[i][self.LAYOUT_GRID_INDEX].attach(self.editGrid, 0, 0, 1, 1)
                 self.editGrid.show_all()
 
   

@@ -6,6 +6,23 @@ class Sidebar():
 
     def __init__(self, data):
         
+        # Content Grid
+        self.LAYOUT_GRID_INDEX = 0           # Element
+
+        # Layout Widgets
+        self.LAYOUT_WIDGET_INDEX = 1         # Array
+        self.CATEGORY_LABEL_INDEX = 0        # Element
+        self.DATE_LABEL_INDEX = 1            # Element
+        self.CURRENCY_LABEL_INDEX = 2        # Element
+        self.COST_LABEL_INDEX = 3            # Element
+        self.DESCRIPTION_LABEL_INDEX = 4     # Element
+        self.EDIT_BUTTON_INDEX = 5
+        
+        # Additional Items
+        self.ENTRY_GRID_INDEX = 2            # Element
+        self.COST_GRID_INDEX = 3             # Element
+        self.UNIQUE_ID_INDEX = 4             # Element
+        
         # Initialize Variables
         self.data = data
         self.calc = Calc(self.data)
@@ -121,6 +138,9 @@ class Sidebar():
         self.monthRemainingTotalLabel.set_text("$1,500")
         self.percBudgetTotalLabel.set_text("50.00%")
         
+        self.whiteSpaceLabel = Gtk.Label()
+        self.contentGrid.attach(self.whiteSpaceLabel,0, 0, 5, 1)
+        
         self.index = 5
         for i in range (0,len(data)):
             
@@ -175,31 +195,21 @@ class Sidebar():
                 self.entryGrid.attach(self.descriptionLabel, 0, 3, 3, 1)
                 self.extraSpaceLabel = Gtk.Label()
                 self.entryGrid.attach(self.extraSpaceLabel,0, 4, 1, 1)
-                
-               # self.editEmptyLabel = Gtk.Label()
-               # self.layoutGrid.attach(self.editEmptyLabel, 0, 1, 1, 1)
-               # self.editEmptyLabel = Gtk.Label()
-               # self.layoutGrid.attach(self.editEmptyLabel, 0, 2, 1, 1)
-               # self.editEmptyLabel = Gtk.Label()
-               # self.layoutGrid.attach(self.editEmptyLabel, 0, 3, 1, 1)
                 self.layoutGrid.attach(self.entryGrid, 0, 0, 1, 4)
             
             # Add Layout Grid to Content Grid. Increment index and apply whitespaces
             else:
-                #self.editEmptyLabel = Gtk.Label()
-                #self.layoutGrid.attach(self.editEmptyLabel, 0, 1, 1, 1)
                 self.layoutGrid.attach(self.entryGrid, 0, 0, 1, 2)
             
             self.layoutGrid.attach(self.editButton, 1, 0, 1, 1)
+            self.layoutGrid.set_margin_bottom(15)
+
 
             self.contentGrid.attach(self.layoutGrid, 1, self.index, 3, 2)
-            
+
             self.index = self.index + 2
-            self.whiteSpaceLabel = Gtk.Label()
-            self.contentGrid.attach(self.whiteSpaceLabel,0, self.index, 5, 1)
-            self.index = self.index + 1
             
-            self.entryRows.append([[self.layoutGrid, self.whiteSpaceLabel],[self.categoryLabel,self.dateLabel, self.currencyLabel, self.costLabel, self.descriptionLabel, self.editButton], self.entryGrid, self.costGrid, data[i][self.data.UNIQUE_ID]])
+            self.entryRows.append([self.layoutGrid, [self.categoryLabel, self.dateLabel, self.currencyLabel, self.costLabel, self.descriptionLabel, self.editButton], self.entryGrid, self.costGrid, data[i][self.data.UNIQUE_ID]])
             self.contentGrid.show_all() 
         
     def menu_clicked(self, listbox, row, data, menu):
@@ -227,83 +237,71 @@ class Sidebar():
             if self.menu_index == menu[0][self.data.CATEGORY_INDEX]:
                 # If selected sub category equals "All", show row
                 if self.subMenu == self.data.currentMonthMenu[self.data.CATEGORY][self.data.CATEGORY_TEXT]:
-                    self.entryRows[i][0][0].show()
-                    self.entryRows[i][0][1].show()
+                    self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
                     self.monthTotalLabel.set_text("$" + str(self.calc.sumTotalData(data)))
                 # If selected sub category equals rows sub category, show row
                 elif self.month == self.subMenu:
-                    self.entryRows[i][0][0].show()
-                    self.entryRows[i][0][1].show()
+                    self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
                     self.monthTotalLabel.set_text("$" + str(self.calc.sumMonthData(data, self.subMenu_index)))
                 # If selected sub category does not equal rows sub category, hide row
                 elif self.month != self.subMenu:
-                    self.entryRows[i][0][0].hide()
-                    self.entryRows[i][0][1].hide()
+                    self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
 
             # If selected menu item is not "All"
             elif self.menu_index != menu[0][1]:
                 # If selected category matches rows category
-                if self.menu == self.entryRows[i][1][0].get_label():
+                if self.menu == self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_label():
                     # If selected sub menu is "All", show row.
                     if self.subMenu_index == self.data.currentMonthMenu[0][self.data.CATEGORY_INDEX]:
-                        self.entryRows[i][0][0].show()
-                        self.entryRows[i][0][1].show()
+                        self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
                         self.monthTotalLabel.set_text("$" + str(self.calc.sumCategoryData(data, self.menu_index)))
                     # If selected sub category matches rows sub category, show row
                     elif self.subMenu == self.month:
-                        self.entryRows[i][0][0].show()
-                        self.entryRows[i][0][1].show()
+                        self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
                         self.monthTotalLabel.set_text("$" + str(self.calc.sumCategoryMonthData(data, self.menu_index, self.subMenu_index)))
                     # If row's category is not the selected category, hide row
-                    elif self.menu != self.entryRows[i][1][0].get_label():
-                        self.entryRows[i][0][0].hide()
-                        self.entryRows[i][0][1].hide()
+                    elif self.menu != self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_label():
+                        self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
+                        #self.entryRows[i][0][1].hide()
                 # If Row's category does not match selected category, hide row 
-                elif self.menu != self.entryRows[i][1][0].get_label():
-                    self.entryRows[i][0][0].hide()
-                    self.entryRows[i][0][1].hide()
+                elif self.menu != self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_label():
+                    self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
                     self.monthTotalLabel.set_text("$" + str(self.calc.sumCategoryData(data, self.menu_index)))
 
     def filter_subMenu(self, data, menu):
         for i in range (0,len(self.entryRows)):
-            self.month = self.entryRows[i][1][1].get_label().split()
+            self.month = self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.DATE_LABEL_INDEX].get_label().split()
             self.month = self.month[0]
            # If selected category is equal to "All"
             if self.menu_index == menu[self.data.CATEGORY][self.data.CATEGORY_INDEX]:
                 # If sub category equals "All"
                 if self.subMenu_index == self.data.currentMonthMenu[self.data.CATEGORY][self.data.CATEGORY_INDEX]:
-                    self.entryRows[i][0][0].show()
-                    self.entryRows[i][0][1].show()
+                    self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
                     self.monthTotalLabel.set_text("$" + str(self.calc.sumTotalData(data)))
                 # If selected sub category matches rows sub category, show row
                 elif self.month == self.subMenu:
-                    self.entryRows[i][0][0].show()
-                    self.entryRows[i][0][1].show()
+                    self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
                     self.monthTotalLabel.set_text("$" + str(self.calc.sumMonthData(data,self.subMenu_index)))
                 # If selected sub category does not match rows sub category, hide row
                 elif self.month != self.subMenu:
-                    self.entryRows[i][0][0].hide()
-                    self.entryRows[i][0][1].hide()
+                    self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
                     self.monthTotalLabel.set_text("$" + str(self.calc.sumMonthData(data,self.subMenu_index)))
 
             # If selected category is not equal to "All"
             elif self.menu_index != menu[self.data.CATEGORY][self.data.CATEGORY_INDEX]:
                 # If selected sub category equals "All" and selected category equals rows category, show row
-                if self.month == self.subMenu and self.entryRows[i][1][0].get_label() == self.menu:
-                    self.entryRows[i][0][0].show()
-                    self.entryRows[i][0][1].show()
+                if self.month == self.subMenu and self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_label() == self.menu:
+                    self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
                     self.monthTotalLabel.set_text("$" + str(self.calc.sumCategoryMonthData(data,self.menu_index, self.subMenu_index)))
                 # If selected sub category does not equal rows sub category, or selected category doesn't equal rows category, hide row.
-                elif self.month != self.subMenu or self.entryRows[i][1][0].get_label() != self.menu:
-                    self.entryRows[i][0][0].hide()
-                    self.entryRows[i][0][1].hide()
+                elif self.month != self.subMenu or self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_label() != self.menu:
+                    self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
                     self.monthTotalLabel.set_text("$" + str(self.calc.sumCategoryMonthData(data,self.menu_index, self.subMenu_index)))
                 # If selected sub category equals "All"
                 if self.subMenu_index == self.data.currentMonthMenu[0][0]:
                     # If selected category equals rows category, show row
-                    if self.entryRows[i][1][0].get_label() == self.menu:
-                        self.entryRows[i][0][0].show()
-                        self.entryRows[i][0][1].show()
+                    if self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_label() == self.menu:
+                        self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
                         self.monthTotalLabel.set_text("$" + str(self.calc.sumCategoryData(data,self.menu_index)))
     
     def on_editButton_clicked(self, button, editPopover):
