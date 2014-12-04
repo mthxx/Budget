@@ -11,6 +11,7 @@ class main():
         self.win.connect("delete-event", Gtk.main_quit)
         self.win.show_all()
         self.win.connect('key-press-event', self.on_key_function)
+        self.win.set_icon_from_file("logo.png")
         Gtk.main()
 
     def on_key_function(self, widget, event):
