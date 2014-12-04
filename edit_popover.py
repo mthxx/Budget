@@ -252,17 +252,15 @@ class Edit_Popover(Gtk.Window):
     
     def on_submitButton_clicked(self, button):
         self.editGrid.hide()
-        self.editString = ""
-        self.editString += self.radio +  ", "
-        self.editString += str(int(self.categoryComboBoxText.get_active()) + 1) + ", "
-        self.editString += self.categoryComboBoxText.get_active_text() + ", "
         self.dateArr = self.calendar.get_date()
-        self.editString += str(self.dateArr[0]) + ", "
-        self.editString += str(self.dateArr[1] + 1) + ", "
-        self.editString += str(self.dateArr[2]) + ", "
-        self.editString += self.costEntry.get_text() + ", "
-        self.editString += self.descriptionEntry.get_text() + ", "
-        self.editString += self.unique_id + "\n"
+        self.year = str(self.dateArr[0])
+        self.month = str(self.dateArr[1] + 1)
+        self.day = str(self.dateArr[2])
+        
+        self.editString = self.data.create_data_string(self.radio, self.categoryComboBoxText.get_active(), self.categoryComboBoxText.get_active_text(),
+                                        self.year, self.month, self.day, self.costEntry.get_text(), self.descriptionEntry.get_text(),
+                                        self.unique_id)
+
         self.data.delete_data(self.radio, self.unique_id)
         self.data.add_data(self.editString, self.radio)
         

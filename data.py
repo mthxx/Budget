@@ -149,6 +149,20 @@ class Data():
         self.expense_view = expense_view
         self.overview = overview
 
+    def create_data_string(self, radio, categoryIndex, category, year, month, day, cost, description, uniqueID):
+        self.editString = ""
+        self.editString += radio +  ", "
+        self.editString += str(int(categoryIndex) + 1) + ", "
+        self.editString += str(category) + ", "
+        self.editString += str(year) + ", "
+        self.editString += str(month) + ", "
+        self.editString += str(day) + ", "
+        self.editString += str(cost) + ", "
+        self.editString += str(description) + ", "
+        self.editString += str(uniqueID) + "\n"
+       
+        return self.editString
+
     def add_data(self, entryString, radio):
         if(os.path.isfile('database.txt')):
             self.incomeMenu = []

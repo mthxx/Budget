@@ -107,21 +107,14 @@ class Add_Popover(Gtk.Window):
             self.addEntryLabel.set_text("Entry")
         
         if self.addCategoryComboBoxText.get_active() >= 0 and self.addEntry.get_text != "":
-            self.entryString += self.radioStatus + ", "
-            self.entryString += str(int(self.addCategoryComboBoxText.get_active()) + 1) + ", "
-            self.entryString += str(self.addCategoryComboBoxText.get_active_text()) + ", "
             self.dateArr = self.addDate.get_date()
-            self.entryString += str(self.dateArr[0]) + ", "
-            self.entryString += str(self.dateArr[1] + 1) + ", "
-            self.entryString += str(self.dateArr[2]) + ", "
-            self.entryString += self.addEntry.get_text() + ", "
-            self.entryString += self.addDescription.get_text() + ", "
+            self.year = str(self.dateArr[0])
+            self.month = str(self.dateArr[1] + 1)
+            self.day = str(self.dateArr[2])
             self.data.LATEST_ID += 1
-            self.entryString += str(self.data.LATEST_ID) + "\n"
-            self.addEntry.set_text("")
-            self.addDescription.set_text("")
-            if self.radioStatus == "income":
-                self.data.add_data(self.entryString, self.radioStatus)
-            elif self.radioStatus == "expense":
-                self.data.add_data(self.entryString, self.radioStatus)
-                 #   args[1].view.display_content(self.income)
+            
+            self.entryString = self.data.create_data_string(self.radioStatus, self.addCategoryComboBoxText.get_active(), self.addCategoryComboBoxText.get_active_text(),
+                                            self.year, self.month, self.day, self.addEntry.get_text(), self.addDescription.get_text(),
+                                            self.data.LATEST_ID)
+            
+            self.data.add_data(self.entryString, self.radioStatus)
