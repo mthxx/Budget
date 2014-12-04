@@ -38,24 +38,48 @@ class Edit_Popover(Gtk.Window):
         self.deleteButton = Gtk.Button("Delete")
         self.selectorBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         
+        self.confirmLabelLine1 = Gtk.Label("Are you sure?")
+        self.confirmLabelLine2 = Gtk.Label()
+        self.deleteCancelButton = Gtk.Button("Cancel")
+        self.deleteConfirmButton = Gtk.Button("Confirm")
+        self.deleteSelectorBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+        
         # Style Widgets
         self.editButton.set_size_request(100,32)
         self.deleteButton.set_size_request(100,32)
+        self.deleteCancelButton.set_size_request(100,32)
+        self.deleteConfirmButton.set_size_request(100,32)
+        self.confirmLabelLine2.set_markup("<span foreground=\"red\"><b>This cannot be undone!</b></span>")
         Gtk.StyleContext.add_class(self.selectorBox.get_style_context(), "linked")
-        self.selectorBox.set_margin_start(5)
-        self.selectorBox.set_margin_top(5)
-        self.selectorBox.set_margin_bottom(5)
+        Gtk.StyleContext.add_class(self.deleteSelectorBox.get_style_context(), "linked")
+        self.selectorBox.set_margin_start(10)
+        self.selectorBox.set_margin_top(10)
+        self.selectorBox.set_margin_bottom(10)
+        self.selectorBox.set_margin_end(5)
+        self.confirmLabelLine1.set_margin_top(10)
+        self.deleteSelectorBox.set_margin_start(10)
+        self.deleteSelectorBox.set_margin_top(10)
+        self.deleteSelectorBox.set_margin_bottom(10)
+        self.deleteSelectorBox.set_margin_end(5)
 
         # Connect Widget Handlers
         self.editButton.connect("clicked", self.on_editButton_clicked)
         self.deleteButton.connect("clicked", self.on_deleteButton_clicked)
+        self.deleteCancelButton.connect("clicked", self.on_deleteCancelButton_clicked)
+        self.deleteConfirmButton.connect("clicked", self.on_deleteConfirmButton_clicked)
 
         # Add Widgets to Grid
         self.selectorBox.add(self.editButton)
         self.selectorBox.add(self.deleteButton)
-        
-        self.editGrid.attach(self.selectorBox,0,0,1,1)
 
+        self.deleteSelectorBox.add(self.deleteCancelButton)
+        self.deleteSelectorBox.add(self.deleteConfirmButton)
+        
+        self.editGrid.attach(self.selectorBox,0,0,2,1)
+        self.editGrid.attach(self.confirmLabelLine1, 0, 1, 2, 1)
+        self.editGrid.attach(self.confirmLabelLine2, 0, 2, 2, 1)
+        self.editGrid.attach(self.deleteSelectorBox, 0, 3, 2, 1)
+        
     def margin(self, widget, margin):
         widget.set_margin_start(margin)
         widget.set_margin_top(margin)
@@ -66,6 +90,10 @@ class Edit_Popover(Gtk.Window):
             editPopover.hide()
         else:
             editPopover.show_all()
+            self.confirmLabelLine1.hide()
+            self.confirmLabelLine2.hide()
+            self.deleteSelectorBox.hide()
+
 
         self.editPopover = editPopover
         self.unique_id = unique_id
@@ -79,6 +107,18 @@ class Edit_Popover(Gtk.Window):
             self.radio = "expense"
 
     def on_deleteButton_clicked(self, *args):
+        self.selectorBox.hide()
+        self.confirmLabelLine1.show()
+        self.confirmLabelLine2.show()
+        self.deleteSelectorBox.show_all()
+    
+    def on_deleteCancelButton_clicked(self, *args):
+        self.confirmLabelLine1.hide()
+        self.confirmLabelLine2.hide()
+        self.deleteSelectorBox.hide()
+        self.selectorBox.show()
+    
+    def on_deleteConfirmButton_clicked(self, *args):
         self.editPopover.hide()
         self.data.delete_data(self.radio, self.unique_id)
     
