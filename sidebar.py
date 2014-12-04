@@ -141,7 +141,6 @@ class Sidebar():
         self.percBudgetTotalLabel.set_text("50.00%")
         
         self.whiteSpaceLabel = Gtk.Label()
-        #self.contentGrid.attach(self.whiteSpaceLabel,0, 0, 5, 1)
         
         self.index = 5
         for i in range (0,len(data)):
@@ -170,14 +169,23 @@ class Sidebar():
             self.editButton.connect("clicked", self.edit_popover.on_editDropdown_clicked, self.editPopover, data[i][self.data.UNIQUE_ID], self.entryRows, menu, self.contentGrid)
 
             # Style Widgets
-            self.entryGrid.set_column_homogeneous(True)
+            self.entryGrid.set_halign(Gtk.Align.CENTER)
             self.entryGrid.set_hexpand(True)
 
             self.categoryLabel.set_markup("<b>" + data[i][self.data.CATEGORY][self.data.CATEGORY_TEXT] + "</b>")
-            self.descriptionLabel.set_markup("<i>" + data[i][self.data.DESCRIPTION] + "</i>")
             self.categoryLabel.set_property("height-request", 50)
+            self.categoryLabel.set_property("xalign", 1)
+            self.categoryLabel.set_width_chars(15)
+            
+            self.dateLabel.set_margin_start(30)
+            self.dateLabel.set_margin_end(30)
+            self.dateLabel.set_width_chars(15)
+            
             self.costGrid.set_row_homogeneous(True)
-            self.costGrid.set_halign(Gtk.Align.CENTER)
+            self.costLabel.set_property("xalign", .05)
+            self.costLabel.set_width_chars(14)
+
+            self.descriptionLabel.set_markup("<i>" + data[i][self.data.DESCRIPTION] + "</i>")
             
             # Style Edit Button
             self.editIcon = Gio.ThemedIcon(name="go-down-symbolic")
