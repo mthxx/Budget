@@ -14,5 +14,5 @@ class Expense():
         self.view.display_content(self.data.expenses, self.data.expenseMenu)
         
         # Add Signal Handling
-        self.view.menuListBox.connect("row-activated",self.view.menu_clicked, self.data.expenses, self.data.expenseMenu)
-        self.view.subMenuListBox.connect("row-activated",self.view.subMenu_clicked, self.data.expenses, self.data.expenseMenu)
+        self.view.menuListBox.connect("row-selected",self.view.menu_clicked, self.data.expenses, self.data.expenseMenu)
+        self.view.subMenuListBox.connect("row-selected",self.view.subMenu_clicked, self.data.expenses, self.data.expenseMenu)
