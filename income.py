@@ -14,6 +14,5 @@ class Income():
         self.view.display_content(self.data.income, self.data.incomeMenu)
 
         # Add Signal Handling
-        #self.view.menuListBox.connect("row-activated",self.view.menu_clicked, self.data.income, self.data.incomeMenu)
         self.view.menuListBox.connect("row-selected",self.view.menu_clicked, self.data.income, self.data.incomeMenu)
         self.view.subMenuListBox.connect("row-selected",self.view.subMenu_clicked, self.data.income, self.data.incomeMenu)

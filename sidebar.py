@@ -116,18 +116,29 @@ class Sidebar():
     def generate_sidebars(self, data):
         self.menu = "<b>" +  data[0][1] + "</b>"
         self.subMenu = self.data.currentMonthMenu[0][1]
+        # Generate from database
         for i in range(0,len(data)):
             self.label = Gtk.Label(data[i][1])
             self.label.set_property("height-request", 60)
             self.menuListBox.add(self.label)
-            self.menuListBox.select_row(self.menuListBox.get_row_at_index(0))
+        
+        # Add uncategorized and + options
+        self.label = Gtk.Label("Uncategorized")
+        self.label.set_property("height-request", 60)
+        self.menuListBox.add(self.label)
+        
+        self.label = Gtk.Label("+")
+        self.label.set_property("height-request", 60)
+        self.menuListBox.add(self.label)
+        self.menuListBox.select_row(self.menuListBox.get_row_at_index(0))
         
         for i in range(0,len(self.data.currentMonthMenu)):
             self.label = Gtk.Label(self.data.currentMonthMenu[i][1])
             self.label.set_property("height-request", 60)
             self.subMenuListBox.add(self.label)
-            self.subMenuListBox.select_row(self.subMenuListBox.get_row_at_index(0))
 
+        self.subMenuListBox.select_row(self.subMenuListBox.get_row_at_index(0))
+    
     def display_content(self, data, menu):
         #Clear existing data
         while len(self.contentGrid) > 0:
@@ -224,19 +235,40 @@ class Sidebar():
             self.contentGrid.show_all() 
         
     def menu_clicked(self, listbox, row, data, menu):
-        for i in range(len(menu)):
-            if menu[i][self.data.CATEGORY_INDEX] == row.get_index():
-                self.menu = "<b>" +  menu[i][self.data.CATEGORY_TEXT] + "</b>"
-                self.menu_index = menu[i][self.data.CATEGORY_INDEX]
-        self.filter_menu(data, menu)
+        if row == None:
+            return
+        elif row.get_index() == len(menu):
+            # Todo: All unassigned entry's will default to this category
+            return
+        elif row.get_index() == len(menu) + 1:
+            self.newCategoryEntry = Gtk.Entry()
+            self.newCategorySubmit = Gtk.Button("Submit")
+            
+            self.newCategoryEntry.set_property("height-request", 30)
+            self.newCategorySubmit.set_property("height-request", 30)
+            
+            self.menuListBox.add(self.newCategoryEntry)
+            self.menuListBox.add(self.newCategorySubmit)
+            self.menuListBox.get_row_at_index(len(menu) + 1).hide()
+            self.menuListBox.get_row_at_index(len(menu) + 2).show_all()
+            self.menuListBox.get_row_at_index(len(menu) + 3).show_all()
+        else:
+            for i in range(len(menu)):
+                if menu[i][self.data.CATEGORY_INDEX] == row.get_index():
+                    self.menu = "<b>" +  menu[i][self.data.CATEGORY_TEXT] + "</b>"
+                    self.menu_index = menu[i][self.data.CATEGORY_INDEX]
+            self.filter_menu(data, menu)
     
     def subMenu_clicked(self, listbox, row, data, menu):
-        for i in range (len(self.data.currentMonthMenu)):
-            if self.data.currentMonthMenu[i][self.data.CATEGORY_INDEX] == row.get_index():
-                self.row = self.data.currentMonthMenu[i][self.data.CATEGORY_INDEX]
-        self.subMenu = self.data.currentMonthMenu[self.row][self.data.CATEGORY_TEXT]
-        self.subMenu_index = self.data.currentMonthMenu[self.row][self.data.CATEGORY_INDEX]
-        self.filter_subMenu(data, menu)
+        if row == None:
+            return
+        else:
+            for i in range (len(self.data.currentMonthMenu)):
+                if self.data.currentMonthMenu[i][self.data.CATEGORY_INDEX] == row.get_index():
+                    self.row = self.data.currentMonthMenu[i][self.data.CATEGORY_INDEX]
+            self.subMenu = self.data.currentMonthMenu[self.row][self.data.CATEGORY_TEXT]
+            self.subMenu_index = self.data.currentMonthMenu[self.row][self.data.CATEGORY_INDEX]
+            self.filter_subMenu(data, menu)
         
     def filter_menu(self, data, menu):
         count = 0
