@@ -4,7 +4,7 @@ from edit_popover import Edit_Popover
 
 class Sidebar():
 
-    def __init__(self, data):
+    def __init__(self, data, radio):
         
         # Content Grid
         self.LAYOUT_GRID_INDEX = 0           # Element
@@ -27,6 +27,7 @@ class Sidebar():
         self.data = data
         self.calc = Calc(self.data)
         self.entryRows = []
+        self.radio = radio
         self.menu = ""
         self.menu_index = 0
         self.subMenu = ""
@@ -128,7 +129,12 @@ class Sidebar():
         self.uncategorizedLabel = Gtk.Label("Uncategorized")
         self.addCategoryButton = Gtk.Button("+")
         self.newCategoryEntry = Gtk.Entry()
+        self.newCategoryCancel = Gtk.Button("Cancel")
         self.newCategorySubmit = Gtk.Button("Submit")
+        
+        self.addCategoryBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+        self.addCategoryBox.add(self.newCategoryCancel)
+        self.addCategoryBox.add(self.newCategorySubmit)
         
         # Style Widgets
         self.uncategorizedLabel.set_property("height-request", 60)
@@ -137,11 +143,14 @@ class Sidebar():
         self.addCategoryButton.set_property("height-request", 60)
         self.addCategoryButton.set_relief(Gtk.ReliefStyle.NONE)
         
-        self.newCategoryEntry.set_property("height-request", 30)
-        self.newCategorySubmit.set_property("height-request", 30)
+        Gtk.StyleContext.add_class(self.addCategoryBox.get_style_context(), "linked")
+        self.addCategoryBox.set_property("height-request", 30)
+        self.addCategoryBox.set_margin_top(10)
+        self.newCategoryCancel.set_margin_start(15)
         
         # Connect Widgets
         self.addCategoryButton.connect("clicked", self.addCategoryButton_clicked, data)
+        self.newCategoryCancel.connect("clicked", self.newCategoryCancel_clicked, data)
         self.newCategorySubmit.connect("clicked", self.newCategorySubmit_clicked, data, self.newCategoryEntry)
         
         # Add Widgets to container
@@ -356,8 +365,16 @@ class Sidebar():
         else:
             editPopover.show_all()
             
+    def newCategoryCancel_clicked(self, button, menu):
+        self.menuListBox.get_row_at_index(len(menu) + 1).show()
+        self.menuListBox.get_row_at_index(len(menu) + 2).hide()
+        self.menuListBox.get_row_at_index(len(menu) + 3).hide()
+
+
     def newCategorySubmit_clicked(self, button, menu, category):
-        print(category.get_text())
+        self.entryString = self.data.create_category_string(menu, category) 
+        self.data.add_data(self.entryString, self.radio)
+
         self.menuListBox.get_row_at_index(len(menu) + 1).show()
         self.menuListBox.get_row_at_index(len(menu) + 2).hide()
         self.menuListBox.get_row_at_index(len(menu) + 3).hide()
@@ -365,9 +382,8 @@ class Sidebar():
     def addCategoryButton_clicked(self, button, menu):
         if self.menuListBox.get_row_at_index(len(menu)+2) == None:
             self.menuListBox.add(self.newCategoryEntry)
-            self.menuListBox.add(self.newCategorySubmit)
+            self.menuListBox.add(self.addCategoryBox)
         
         self.menuListBox.get_row_at_index(len(menu) + 1).hide()
         self.menuListBox.get_row_at_index(len(menu) + 2).show_all()
         self.menuListBox.get_row_at_index(len(menu) + 3).show_all()
-        print("Clicked")

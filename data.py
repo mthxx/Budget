@@ -41,13 +41,13 @@ class Data():
                     self.arr = []
                     self.arr.append(int(line[1].strip()))
                     self.arr.append(line[2].strip())
-                    self.arr.append(line[3].strip())
+                    #self.arr.append(line[3].strip())
                     self.incomeMenu.append(self.arr)
                 elif line[0] == 'expenseMenu':
                     self.arr = []
                     self.arr.append(int(line[1].strip()))
                     self.arr.append(line[2].strip())
-                    self.arr.append(line[3].strip())
+                    #self.arr.append(line[3].strip())
                     self.expenseMenu.append(self.arr)
                 elif line[0] == 'currentMonthMenu':
                     self.arr = []
@@ -160,6 +160,19 @@ class Data():
         self.editString += str(cost) + ", "
         self.editString += str(description) + ", "
         self.editString += str(uniqueID) + "\n"
+       
+        return self.editString
+    
+    def create_category_string(self, menu, category):
+        if menu == self.incomeMenu:
+            self.key = "incomeMenu"
+        if menu == self.expenseMenu:
+            self.key = "expenseMenu"
+        
+        self.editString = ""
+        self.editString += str(self.key) + ", "
+        self.editString += str(len(menu)) + ", "
+        self.editString += str(category.get_text()) + "\n"
        
         return self.editString
 
