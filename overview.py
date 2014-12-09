@@ -162,7 +162,6 @@ class Overview():
         self.contentGrid.set_hexpand(True)
     
     def redisplay_info(self):
-        self.clear_selection(self.clearButton)
         self.index = 0
         while len(self.categoryArr) > 0:
             self.categoryArr.pop(0)
@@ -174,6 +173,8 @@ class Overview():
         self.empty_row()
         self.display_info(self.data.expenseMenu, self.data.expenses)
         self.overviewGrid.show_all()
+        
+        self.clear_selection(self.clearButton)
         
         self.balanceTotalLabel.set_text( "$" + str(self.calc.sumTotalData(self.data.income) - self.calc.sumTotalData(self.data.expenses)))
         self.varianceTotalLabel.set_text( "$" + str(self.calc.sumTotalData(self.data.income)))
