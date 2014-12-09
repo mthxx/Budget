@@ -74,6 +74,7 @@ class Sidebar():
         # Set Styling
         self.menuScrolledWindow.set_vexpand(True)
         self.menuScrolledWindow.set_property("width-request",150)
+        self.menuScrolledWindow.set_property("hscrollbar-policy", Gtk.PolicyType.NEVER)
 
         self.subMenuScrolledWindow.set_vexpand(True)
         self.subMenuScrolledWindow.set_property("width-request",100)
@@ -123,13 +124,32 @@ class Sidebar():
             self.menuListBox.add(self.label)
         
         # Add uncategorized and + options
-        self.label = Gtk.Label("Uncategorized")
-        self.label.set_property("height-request", 60)
-        self.menuListBox.add(self.label)
+        # Create Widgets
+        self.uncategorizedLabel = Gtk.Label("Uncategorized")
+        self.addCategoryButton = Gtk.Button("+")
+        self.newCategoryEntry = Gtk.Entry()
+        self.newCategorySubmit = Gtk.Button("Submit")
         
-        self.label = Gtk.Label("+")
-        self.label.set_property("height-request", 60)
-        self.menuListBox.add(self.label)
+        # Style Widgets
+        self.uncategorizedLabel.set_property("height-request", 60)
+        self.menuListBox.add(self.uncategorizedLabel)
+        
+        self.addCategoryButton.set_property("height-request", 60)
+        self.addCategoryButton.set_relief(Gtk.ReliefStyle.NONE)
+        
+        self.newCategoryEntry.set_property("height-request", 30)
+        self.newCategorySubmit.set_property("height-request", 30)
+        
+        # Connect Widgets
+        self.addCategoryButton.connect("clicked", self.addCategoryButton_clicked, data)
+        self.newCategorySubmit.connect("clicked", self.newCategorySubmit_clicked, data, self.newCategoryEntry)
+        
+        # Add Widgets to container
+        self.menuListBox.add(self.addCategoryButton)
+        self.menuListBox.add(self.newCategoryEntry)
+        self.menuListBox.add(self.newCategorySubmit)
+        
+        # Select default option
         self.menuListBox.select_row(self.menuListBox.get_row_at_index(0))
         
         for i in range(0,len(self.data.currentMonthMenu)):
@@ -146,7 +166,7 @@ class Sidebar():
             
         while len(self.entryRows) > 0:
                 self.entryRows.pop(0)
-        
+         
         self.monthTotalLabel.set_text("$" + str(self.calc.sumTotalData(data)))
         self.monthRemainingTotalLabel.set_text("$1,500")
         self.percBudgetTotalLabel.set_text("50.00%")
@@ -237,21 +257,6 @@ class Sidebar():
     def menu_clicked(self, listbox, row, data, menu):
         if row == None:
             return
-        elif row.get_index() == len(menu):
-            # Todo: All unassigned entry's will default to this category
-            return
-        elif row.get_index() == len(menu) + 1:
-            self.newCategoryEntry = Gtk.Entry()
-            self.newCategorySubmit = Gtk.Button("Submit")
-            
-            self.newCategoryEntry.set_property("height-request", 30)
-            self.newCategorySubmit.set_property("height-request", 30)
-            
-            self.menuListBox.add(self.newCategoryEntry)
-            self.menuListBox.add(self.newCategorySubmit)
-            self.menuListBox.get_row_at_index(len(menu) + 1).hide()
-            self.menuListBox.get_row_at_index(len(menu) + 2).show_all()
-            self.menuListBox.get_row_at_index(len(menu) + 3).show_all()
         else:
             for i in range(len(menu)):
                 if menu[i][self.data.CATEGORY_INDEX] == row.get_index():
@@ -352,3 +357,15 @@ class Sidebar():
             editPopover.hide()
         else:
             editPopover.show_all()
+            
+    def newCategorySubmit_clicked(self, button, menu, category):
+        print(category.get_text())
+        self.menuListBox.get_row_at_index(len(menu) + 1).show()
+        self.menuListBox.get_row_at_index(len(menu) + 2).hide()
+        self.menuListBox.get_row_at_index(len(menu) + 3).hide()
+    
+    def addCategoryButton_clicked(self, button, menu):
+        self.menuListBox.get_row_at_index(len(menu) + 1).hide()
+        self.menuListBox.get_row_at_index(len(menu) + 2).show_all()
+        self.menuListBox.get_row_at_index(len(menu) + 3).show_all()
+        print("Clicked")
