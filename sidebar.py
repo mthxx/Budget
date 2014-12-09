@@ -146,8 +146,6 @@ class Sidebar():
         
         # Add Widgets to container
         self.menuListBox.add(self.addCategoryButton)
-        self.menuListBox.add(self.newCategoryEntry)
-        self.menuListBox.add(self.newCategorySubmit)
         
         # Select default option
         self.menuListBox.select_row(self.menuListBox.get_row_at_index(0))
@@ -365,6 +363,10 @@ class Sidebar():
         self.menuListBox.get_row_at_index(len(menu) + 3).hide()
     
     def addCategoryButton_clicked(self, button, menu):
+        if self.menuListBox.get_row_at_index(len(menu)+2) == None:
+            self.menuListBox.add(self.newCategoryEntry)
+            self.menuListBox.add(self.newCategorySubmit)
+        
         self.menuListBox.get_row_at_index(len(menu) + 1).hide()
         self.menuListBox.get_row_at_index(len(menu) + 2).show_all()
         self.menuListBox.get_row_at_index(len(menu) + 3).show_all()
