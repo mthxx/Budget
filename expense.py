@@ -8,7 +8,7 @@ class Expense():
         # Define Sidebar Menu
         self.data = data
         self.calc = Calc(self.data)
-        self.view = Sidebar(self.data) 
+        self.view = Sidebar(self.data, "expense") 
         
         self.view.generate_sidebars(self.data.expenseMenu)
         self.view.display_content(self.data.expenses, self.data.expenseMenu)

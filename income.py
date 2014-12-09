@@ -8,7 +8,7 @@ class Income():
         # Define Sidebar Menu
         self.data = data 
         self.calc = Calc(self.data)
-        self.view = Sidebar(self.data) 
+        self.view = Sidebar(self.data, "income") 
 
         self.view.generate_sidebars(self.data.incomeMenu)
         self.view.display_content(self.data.income, self.data.incomeMenu)
