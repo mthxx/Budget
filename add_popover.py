@@ -49,8 +49,6 @@ class Add_Popover(Gtk.Window):
         self.addCategoryComboBoxText.set_property("height-request", 34)
 
         self.radioStatus = "income"
-        for i in range(1,len(self.data.incomeMenu)):
-            self.addCategoryComboBoxText.append_text(self.data.incomeMenu[i][1])
         
         # Connect Widget Handlers
         self.addStackSwitcher.connect("set-focus-child", self.on_addRadio_toggled)
@@ -78,6 +76,8 @@ class Add_Popover(Gtk.Window):
         if addPopover.get_visible():
             addPopover.hide()
         else:
+            for i in range(1,len(self.data.incomeMenu)):
+                self.addCategoryComboBoxText.append_text(self.data.incomeMenu[i][1])
             addPopover.show_all()
 
     def on_addRadio_toggled(self, *args):
