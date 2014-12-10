@@ -106,7 +106,7 @@ class Add_Popover(Gtk.Window):
         else:
             self.addEntryLabel.set_text("Entry")
         
-        if self.addCategoryComboBoxText.get_active() >= 0 and self.addEntry.get_text != "":
+        if self.addCategoryComboBoxText.get_active() >= 0 and self.addEntry.get_text() != "":
             self.dateArr = self.addDate.get_date()
             self.year = str(self.dateArr[0])
             self.month = str(self.dateArr[1] + 1)
@@ -117,4 +117,7 @@ class Add_Popover(Gtk.Window):
                                             self.year, self.month, self.day, self.addEntry.get_text(), self.addDescription.get_text(),
                                             self.data.LATEST_ID)
             
+            self.addEntry.set_text("")
+            self.addDescription.set_text("")
+                        
             self.data.add_data(self.entryString, self.radioStatus)
