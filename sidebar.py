@@ -65,7 +65,7 @@ class Sidebar():
         self.topRightLabel = Gtk.Label()
         
         self.topLeftLabel.set_markup("<b>Total</b>")
-        eelf.topMiddleLabel.set_markup("<b>eemaining</b>")
+        self.topMiddleLabel.set_markup("<b>Remaining</b>")
         self.topRightLabel.set_markup("<b>% Remaining</b>")
         
         self.monthTotalLabel = Gtk.Label()
@@ -129,25 +129,42 @@ class Sidebar():
         
         # Add uncategorized and + options
         # Create Widgets
-        self.uncategorizedLabel = Gtk.Label("Uncategorized")
-        self.addCategoryButton = Gtk.Button("+")
+        self.editCategoryButton = Gtk.Button()
+        self.addCategoryButton = Gtk.Button()
         self.newCategoryEntry = Gtk.Entry()
         self.newCategoryCancel = Gtk.Button("Cancel")
         self.newCategorySubmit = Gtk.Button("Submit")
+       
+        self.editCategoryBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+        self.editCategoryBox.add(self.editCategoryButton)
+        self.editCategoryBox.add(self.addCategoryButton)
         
         self.addCategoryBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         self.addCategoryBox.add(self.newCategoryCancel)
         self.addCategoryBox.add(self.newCategorySubmit)
         
         # Style Widgets
+        self.uncategorizedLabel = Gtk.Label("Uncategorized")
         self.uncategorizedLabel.set_property("height-request", 60)
         self.menuListBox.add(self.uncategorizedLabel)
         
+        self.editCategoryButton.set_property("height-request", 60)
+        self.editCategoryButton.set_property("width-request", 60)
+        self.editCategoryButton.set_relief(Gtk.ReliefStyle.NONE)
+        self.editCategoryIcon = Gio.ThemedIcon(name="list-remove-symbolic")
+        self.editCategoryImage = Gtk.Image.new_from_gicon(self.editCategoryIcon, Gtk.IconSize.MENU)
+        self.editCategoryButton.add(self.editCategoryImage)
+        
         self.addCategoryButton.set_property("height-request", 60)
+        self.addCategoryButton.set_property("width-request", 60)
         self.addCategoryButton.set_relief(Gtk.ReliefStyle.NONE)
+        self.addCategoryIcon = Gio.ThemedIcon(name="list-add-symbolic")
+        self.addCategoryImage = Gtk.Image.new_from_gicon(self.addCategoryIcon, Gtk.IconSize.MENU)
+        self.addCategoryButton.add(self.addCategoryImage)
         
         Gtk.StyleContext.add_class(self.addCategoryBox.get_style_context(), "linked")
         self.addCategoryBox.set_property("height-request", 30)
+        self.editCategoryBox.set_margin_start(10)
         self.addCategoryBox.set_margin_top(10)
         self.newCategoryCancel.set_margin_start(15)
         
@@ -158,7 +175,7 @@ class Sidebar():
         self.newCategorySubmit.connect("clicked", self.newCategorySubmit_clicked, data, self.newCategoryEntry)
         
         # Add Widgets to container
-        self.menuListBox.add(self.addCategoryButton)
+        self.menuListBox.add(self.editCategoryBox)
         
         # Select default option
         self.menuListBox.select_row(self.menuListBox.get_row_at_index(0))
