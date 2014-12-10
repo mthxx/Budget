@@ -65,7 +65,7 @@ class Sidebar():
         self.topRightLabel = Gtk.Label()
         
         self.topLeftLabel.set_markup("<b>Total</b>")
-        self.topMiddleLabel.set_markup("<b>Remaining</b>")
+        eelf.topMiddleLabel.set_markup("<b>eemaining</b>")
         self.topRightLabel.set_markup("<b>% Remaining</b>")
         
         self.monthTotalLabel = Gtk.Label()
@@ -116,6 +116,9 @@ class Sidebar():
         self.contentViewport.add(self.contentGrid)
 
     def generate_sidebars(self, data):
+        #Clear existing data
+        while len(self.menuListBox) > 0:
+            self.menuListBox.remove(self.menuListBox.get_row_at_index(0))
         self.menu = "<b>" +  data[0][1] + "</b>"
         self.subMenu = self.data.currentMonthMenu[0][1]
         # Generate from database
@@ -165,7 +168,9 @@ class Sidebar():
             self.label.set_property("height-request", 60)
             self.subMenuListBox.add(self.label)
 
+        self.menuListBox.show_all()
         self.subMenuListBox.select_row(self.subMenuListBox.get_row_at_index(0))
+        
     
     def display_content(self, data, menu):
         #Clear existing data
@@ -263,6 +268,7 @@ class Sidebar():
             self.contentGrid.show_all() 
         
     def menu_clicked(self, listbox, row, data, menu):
+        # To catch calls before widget exists.
         if row == None:
             return
         else:
@@ -273,6 +279,7 @@ class Sidebar():
             self.filter_menu(data, menu)
     
     def subMenu_clicked(self, listbox, row, data, menu):
+        # To catch calls before widget exists.
         if row == None:
             return
         else:
@@ -367,6 +374,7 @@ class Sidebar():
             editPopover.show_all()
             
     def newCategoryCancel_clicked(self, button, menu):
+        # Hide new category widgets
         self.menuListBox.get_row_at_index(len(menu) + 1).show()
         self.menuListBox.get_row_at_index(len(menu) + 2).hide()
         self.menuListBox.get_row_at_index(len(menu) + 3).hide()
@@ -376,18 +384,29 @@ class Sidebar():
         if category.get_text() == "":
             self.newCategoryEntry.set_placeholder_text("Enter A Category")
         else:
+            # Create string and add to database
             self.entryString = self.data.create_category_string(menu, category) 
             self.data.add_data(self.entryString, self.radio)
 
+            # Hide new category widgets
             self.menuListBox.get_row_at_index(len(menu) + 1).show()
             self.menuListBox.get_row_at_index(len(menu) + 2).hide()
             self.menuListBox.get_row_at_index(len(menu) + 3).hide()
-    
+            
+            # Refresh the menu
+            if self.radio == "income":
+                self.generate_sidebars(self.data.incomeMenu)
+            elif self.radio == "expense":
+                self.generate_sidebars(self.data.expenseMenu)
+
     def addCategoryButton_clicked(self, button, menu):
+        # Add widgets to menuList if they don't already exist
+        # This should run only on the first time the "+" button is clicked
         if self.menuListBox.get_row_at_index(len(menu)+2) == None:
             self.menuListBox.add(self.newCategoryEntry)
             self.menuListBox.add(self.addCategoryBox)
         
+        # Clear any existing text. Set focus and show new category widgets
         self.newCategoryEntry.set_text("")
         self.newCategoryEntry.grab_focus()
         self.menuListBox.get_row_at_index(len(menu) + 1).hide()
