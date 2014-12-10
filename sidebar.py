@@ -88,7 +88,11 @@ class Sidebar():
         self.contentGrid.set_vexpand(True)
         self.contentGrid.set_margin_left(20)
         self.contentGrid.set_margin_right(20)
-        
+       
+        # Connect Widgets
+        self.menuListBox.connect("row-selected",self.menu_clicked)
+        self.subMenuListBox.connect("row-selected",self.subMenu_clicked)
+
         # Add items to Main Grid 
         self.menuViewport.add(self.menuListBox)
         self.subMenuViewport.add(self.subMenuListBox)
@@ -114,16 +118,25 @@ class Sidebar():
         self.headerGrid.attach(self.whiteSpaceLabel1, 0, 2, 5, 1)
 
         self.contentViewport.add(self.contentGrid)
+        
+        # Generate Sidebars and Content
+        self.generate_sidebars()
+        self.display_content()
 
-    def generate_sidebars(self, data):
+    def generate_sidebars(self):
+        if self.radio == "income":
+            menu = self.data.incomeMenu
+        elif self.radio == "expense":
+            menu = self.data.expenseMenu
+            
         #Clear existing data
         while len(self.menuListBox) > 0:
             self.menuListBox.remove(self.menuListBox.get_row_at_index(0))
-        self.menu = "<b>" +  data[0][1] + "</b>"
+        self.menu = "<b>" +  menu[0][1] + "</b>"
         self.subMenu = self.data.currentMonthMenu[0][1]
         # Generate from database
-        for i in range(0,len(data)):
-            self.label = Gtk.Label(data[i][1])
+        for i in range(0,len(menu)):
+            self.label = Gtk.Label(menu[i][1])
             self.label.set_property("height-request", 60)
             self.menuListBox.add(self.label)
         
@@ -169,10 +182,10 @@ class Sidebar():
         self.newCategoryCancel.set_margin_start(15)
         
         # Connect Widgets
-        self.addCategoryButton.connect("clicked", self.addCategoryButton_clicked, data)
-        self.newCategoryCancel.connect("clicked", self.newCategoryCancel_clicked, data)
-        self.newCategoryEntry.connect("activate", self.newCategorySubmit_clicked, data, self.newCategoryEntry)
-        self.newCategorySubmit.connect("clicked", self.newCategorySubmit_clicked, data, self.newCategoryEntry)
+        self.addCategoryButton.connect("clicked", self.addCategoryButton_clicked, menu)
+        self.newCategoryCancel.connect("clicked", self.newCategoryCancel_clicked, menu)
+        self.newCategoryEntry.connect("activate", self.newCategorySubmit_clicked, menu, self.newCategoryEntry)
+        self.newCategorySubmit.connect("clicked", self.newCategorySubmit_clicked, menu, self.newCategoryEntry)
         
         # Add Widgets to container
         self.menuListBox.add(self.editCategoryBox)
@@ -189,7 +202,14 @@ class Sidebar():
         self.subMenuListBox.select_row(self.subMenuListBox.get_row_at_index(0))
         
     
-    def display_content(self, data, menu):
+    def display_content(self):
+        if self.radio == "income":
+            menu = self.data.incomeMenu
+            data = self.data.income
+        elif self.radio == "expense":
+            menu = self.data.expenseMenu
+            data = self.data.expenses
+        
         #Clear existing data
         while len(self.contentGrid) > 0:
             self.contentGrid.remove_row(0)
@@ -284,22 +304,36 @@ class Sidebar():
             self.entryRows.append([self.layoutGrid, [self.categoryLabel, self.dateLabel, self.currencyLabel, self.costLabel, self.descriptionLabel, self.editButton], self.entryGrid, self.costGrid, data[i][self.data.UNIQUE_ID]])
             self.contentGrid.show_all() 
         
-    def menu_clicked(self, listbox, row, data, menu):
+    def menu_clicked(self, listbox, row):
         # To catch calls before widget exists.
         if row == None:
             return
         else:
+            if self.radio == "income":
+                menu = self.data.incomeMenu
+                data = self.data.income
+            elif self.radio == "expense":
+                menu = self.data.expenseMenu
+                data = self.data.expenses
+            
             for i in range(len(menu)):
                 if menu[i][self.data.CATEGORY_INDEX] == row.get_index():
                     self.menu = "<b>" +  menu[i][self.data.CATEGORY_TEXT] + "</b>"
                     self.menu_index = menu[i][self.data.CATEGORY_INDEX]
             self.filter_menu(data, menu)
     
-    def subMenu_clicked(self, listbox, row, data, menu):
+    def subMenu_clicked(self, listbox, row):
         # To catch calls before widget exists.
         if row == None:
             return
         else:
+            if self.radio == "income":
+                menu = self.data.incomeMenu
+                data = self.data.income
+            elif self.radio == "expense":
+                menu = self.data.expenseMenu
+                data = self.data.expenses
+            
             for i in range (len(self.data.currentMonthMenu)):
                 if self.data.currentMonthMenu[i][self.data.CATEGORY_INDEX] == row.get_index():
                     self.row = self.data.currentMonthMenu[i][self.data.CATEGORY_INDEX]
@@ -411,10 +445,7 @@ class Sidebar():
             self.menuListBox.get_row_at_index(len(menu) + 3).hide()
             
             # Refresh the menu
-            if self.radio == "income":
-                self.generate_sidebars(self.data.incomeMenu)
-            elif self.radio == "expense":
-                self.generate_sidebars(self.data.expenseMenu)
+            self.generate_sidebars()
 
     def addCategoryButton_clicked(self, button, menu):
         # Add widgets to menuList if they don't already exist
