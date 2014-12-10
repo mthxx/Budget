@@ -182,6 +182,7 @@ class Sidebar():
         self.newCategoryCancel.set_margin_start(15)
         
         # Connect Widgets
+        self.editCategoryButton.connect("clicked", self.editCategoryButton_clicked, menu)
         self.addCategoryButton.connect("clicked", self.addCategoryButton_clicked, menu)
         self.newCategoryCancel.connect("clicked", self.newCategoryCancel_clicked, menu)
         self.newCategoryEntry.connect("activate", self.newCategorySubmit_clicked, menu, self.newCategoryEntry)
@@ -446,6 +447,12 @@ class Sidebar():
             
             # Refresh the menu
             self.generate_sidebars()
+
+    def editCategoryButton_clicked(self, button, menu):
+        #checkBox = Gtk.CheckButton()
+        #self.menuListBox.add(checkBox)
+        #self.menuListBox.show_all()
+        return
 
     def addCategoryButton_clicked(self, button, menu):
         # Add widgets to menuList if they don't already exist
