@@ -151,6 +151,7 @@ class Sidebar():
         # Connect Widgets
         self.addCategoryButton.connect("clicked", self.addCategoryButton_clicked, data)
         self.newCategoryCancel.connect("clicked", self.newCategoryCancel_clicked, data)
+        self.newCategoryEntry.connect("activate", self.newCategorySubmit_clicked, data, self.newCategoryEntry)
         self.newCategorySubmit.connect("clicked", self.newCategorySubmit_clicked, data, self.newCategoryEntry)
         
         # Add Widgets to container
@@ -372,18 +373,23 @@ class Sidebar():
 
 
     def newCategorySubmit_clicked(self, button, menu, category):
-        self.entryString = self.data.create_category_string(menu, category) 
-        self.data.add_data(self.entryString, self.radio)
+        if category.get_text() == "":
+            self.newCategoryEntry.set_placeholder_text("Enter A Category")
+        else:
+            self.entryString = self.data.create_category_string(menu, category) 
+            self.data.add_data(self.entryString, self.radio)
 
-        self.menuListBox.get_row_at_index(len(menu) + 1).show()
-        self.menuListBox.get_row_at_index(len(menu) + 2).hide()
-        self.menuListBox.get_row_at_index(len(menu) + 3).hide()
+            self.menuListBox.get_row_at_index(len(menu) + 1).show()
+            self.menuListBox.get_row_at_index(len(menu) + 2).hide()
+            self.menuListBox.get_row_at_index(len(menu) + 3).hide()
     
     def addCategoryButton_clicked(self, button, menu):
         if self.menuListBox.get_row_at_index(len(menu)+2) == None:
             self.menuListBox.add(self.newCategoryEntry)
             self.menuListBox.add(self.addCategoryBox)
         
+        self.newCategoryEntry.set_text("")
+        self.newCategoryEntry.grab_focus()
         self.menuListBox.get_row_at_index(len(menu) + 1).hide()
         self.menuListBox.get_row_at_index(len(menu) + 2).show_all()
         self.menuListBox.get_row_at_index(len(menu) + 3).show_all()
