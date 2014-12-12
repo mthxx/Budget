@@ -220,10 +220,9 @@ class Data():
             f.close()
            
             self.import_data()
-            if radio == "income":
-                self.income_view.view.display_content(self.income, self.incomeMenu)
-            if radio == "expense":
-                self.expense_view.view.display_content(self.expenses, self.expenseMenu)
+            #if radio == "income":
+            self.income_view.view.display_content()
+            #if radio == "expense":
             self.overview.redisplay_info()
             
 
