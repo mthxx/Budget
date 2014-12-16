@@ -10,6 +10,7 @@ class main():
         self.win = Window(self.data)
         self.win.connect("delete-event", Gtk.main_quit)
         self.win.show_all()
+        self.win.hbLeft.hide()
         self.win.connect('key-press-event', self.on_key_function)
         self.win.set_icon_from_file("logo.png")
         Gtk.main()

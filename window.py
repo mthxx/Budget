@@ -1,9 +1,12 @@
 from gi.repository import Gtk, Gio, Gdk
-from overview_menu import Overview_Menu
+from overview import Overview
 from income import Income
 from expense import Expense
+from reports import Reports
+from projections import Projections
 from sidebar import Sidebar
 from add_popover import Add_Popover
+from add_category_popover import Add_Category_Popover
 
 class Window(Gtk.Window):
 
@@ -16,95 +19,108 @@ class Window(Gtk.Window):
         Gtk.Window.__init__(self, title="Budget")
         self.set_default_size(1000, 700)
         
-        # --- Header Bar ---
-        self.hb = Gtk.HeaderBar()
-        self.hb.set_show_close_button(True)
-        self.set_titlebar(self.hb)
+        # --- Header Bars ---
+        self.headerBox = Gtk.Box(name="headerBox")
+        self.hbLeft = Gtk.HeaderBar()
+        self.hbRight = Gtk.HeaderBar(name="hbRight")
+       
+        # Style Header Bars
+        self.hbLeft.set_show_close_button(False)
+        self.hbLeft.set_property("width-request", 100)
+        
+        self.hbRight.set_show_close_button(True)
+        self.hbRight.set_hexpand(True)
+        
 
-        # --- Date Range Buttons (Left Side of Header Bar) ---
-            
-            # Create Buttons
-        self.dayButton = Gtk.Button("Day")
-        self.weekButton = Gtk.Button("Week")
-        self.monthButton = Gtk.Button("Month")
-            # Set Size
-        self.dayButton.set_size_request(65,32)
-        self.weekButton.set_size_request(65,32)
-        self.monthButton.set_size_request(65,32)
-            # Connect to handler
-        self.dayButton.connect("clicked", self.on_dayButton_clicked)
-        self.weekButton.connect("clicked", self.on_weekButton_clicked)
-        self.monthButton.connect("clicked", self.on_monthButton_clicked)
-            # Pack into Box 
-        self.rangeBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-        Gtk.StyleContext.add_class(self.rangeBox.get_style_context(), "linked")
-        self.rangeBox.add(self.dayButton)
-        self.rangeBox.add(self.weekButton)
-        self.rangeBox.add(self.monthButton)
+        self.headerBox.add(self.hbLeft)
+        self.headerBox.add(self.hbRight)
+        self.set_titlebar(self.headerBox)
+
+        # --- Action Buttons (Left Header Bar) ---
+        # Create Buttons
+        self.addCategoryButton = Gtk.Button()
+        self.selectButton = Gtk.Button()
+        self.selectIcon = Gio.ThemedIcon(name="object-select-symbolic")
+        self.selectImage = Gtk.Image.new_from_gicon(self.selectIcon, Gtk.IconSize.MENU)
+        self.selectButton.add(self.selectImage)
+        self.addCategoryPopover = Gtk.Popover.new(self.addCategoryButton)
         
-        # --- Navigation Buttons (Center of Header Bar) ---
-            
-            # Create Buttons
-        self.overviewButton = Gtk.Button("Overview")
-        self.incomeButton = Gtk.Button("Income")
-        self.expensesButton = Gtk.Button("Expenses")
-            # Set Size
-        self.overviewButton.set_size_request(100,32)
-        self.incomeButton.set_size_request(100,32)
-        self.expensesButton.set_size_request(100,32)
-            # Connect to handler
-        self.overviewButton.connect("clicked", self.on_overviewButton_clicked)
-        self.incomeButton.connect("clicked", self.on_incomeButton_clicked)
-        self.expensesButton.connect("clicked", self.on_expensesButton_clicked)
-            # Pack into Box 
-        self.navBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-        Gtk.StyleContext.add_class(self.navBox.get_style_context(), "linked")
-        self.navBox.add(self.overviewButton)
-        self.navBox.add(self.incomeButton)
-        self.navBox.add(self.expensesButton)
+        # Create Popover
+        self.add_category_popover = Add_Category_Popover(self.data)
+        self.addCategoryPopover.add(self.add_category_popover.addGrid)
+        # Connect to handler
+        #self.selectButton.connect("clicked", self.on_selectButton_clicked)
+        self.addCategoryButton.connect("clicked", self.add_category_popover.on_addCategoryButton_clicked, self.addCategoryPopover)
         
-        # --- Action Buttons (Right of Header Bar) ---
+        # Add Image
+        self.addCategoryIcon = Gio.ThemedIcon(name="list-add-symbolic")
+        self.addCategoryImage = Gtk.Image.new_from_gicon(self.addCategoryIcon, Gtk.IconSize.MENU)
+        self.addCategoryButton.add(self.addCategoryImage)
         
-            # Create Buttons
+        # --- Action Buttons (Right Header Bar) ---
+        # Create Buttons
         self.addButton = Gtk.Button()
         self.menuButton = Gtk.MenuButton();
         self.addPopover = Gtk.Popover.new(self.addButton)
-            # Add Image
+        # Add Image
         self.addIcon = Gio.ThemedIcon(name="list-add-symbolic")
         self.menuIcon = Gio.ThemedIcon(name="emblem-system-symbolic")
         self.addImage = Gtk.Image.new_from_gicon(self.addIcon, Gtk.IconSize.MENU)
         self.menuImage = Gtk.Image.new_from_gicon(self.menuIcon, Gtk.IconSize.MENU)
         self.addButton.add(self.addImage)
         self.menuButton.add(self.menuImage)
-            # Set Size
+        # Set Size
         self.addButton.set_size_request(32,32)
         self.menuButton.set_size_request(32,32)
-            # Create Popovers
+        # Create Popovers
         self.add_popover = Add_Popover(self.data)
         self.addPopover.add(self.add_popover.addGrid)
-           # Connect to handler
+        # Connect to handler
         self.addButton.connect("clicked", self.add_popover.on_addButton_clicked, self.addPopover)
         self.menuButton.connect("clicked", self.on_menuButton_clicked)
         
         # --- Header Bar Packing ---
-        self.hb.set_custom_title(self.navBox)
-        #self.hb.pack_start(self.rangeBox)
-        self.hb.pack_end(self.menuButton)
-        self.hb.pack_end(self.addButton)
-
-        # --- Notebook Views ---
-        self.overviewMenu = Overview_Menu(self.data)
+        self.hbLeft.pack_start(self.addCategoryButton)
+        self.hbLeft.pack_end(self.selectButton)
+        self.hbRight.pack_end(self.menuButton)
+        self.hbRight.pack_end(self.addButton)
+        
+        # --- Notebooks
+        # Initialize Views
+        self.overview = Overview(self.data)
         self.income = Income(self.data)
         self.expense = Expense(self.data)
+        self.reports = Reports()
+        self.projections = Projections()
 
-        self.notebook = Gtk.Notebook()
-        self.notebook.insert_page(self.overviewMenu.notebook, None, 0)
-        self.notebook.append_page(self.income.view.grid, None)
-        self.notebook.append_page(self.expense.view.grid, None)
-        self.notebook.set_show_tabs(False)
-        self.add(self.notebook)
+        # Create Labels
+        self.overviewLabel = Gtk.Label("Overview")
+        self.incomeLabel = Gtk.Label("Income")
+        self.expenseLabel = Gtk.Label("Expenses")
+        self.reportsLabel = Gtk.Label("Reports")
+        self.projectionsLabel = Gtk.Label("Projections")
+
+        # Style Notebook 
+        self.overviewLabel.set_hexpand(True)
+        self.incomeLabel.set_hexpand(True)
+        self.expenseLabel.set_hexpand(True)
+        self.reportsLabel.set_hexpand(True)
+        self.projectionsLabel.set_hexpand(True)
        
-        self.data.connect_data_views(self.income, self.expense, self.overviewMenu.overview)
+        # Create Notebook
+        self.notebook = Gtk.Notebook()
+        self.notebook.insert_page(self.overview.grid, self.overviewLabel, 0)
+        self.notebook.insert_page(self.income.view.grid, self.incomeLabel, 1)
+        self.notebook.insert_page(self.expense.view.grid, self.expenseLabel, 2)
+        self.notebook.insert_page(self.reports.grid, self.reportsLabel, 3)
+        self.notebook.insert_page(self.projections.grid, self.projectionsLabel, 4)
+        self.add(self.notebook)
+        
+        # Connect to handler
+        self.notebook.connect("switch-page", self.on_notebook_switch)
+      
+        # Connect views to data
+        self.data.connect_data_views(self.income, self.expense, self.overview)
         self.add_popover.addSubmitButton.connect("clicked", self.add_popover.on_addSubmitButton_clicked)
     
     def on_addButton_clicked(self, *args):
@@ -113,23 +129,24 @@ class Window(Gtk.Window):
         else:
             self.addPopover.show_all()
 
-    def on_dayButton_clicked(self, *args):
-        print("Day Button Working!")
-    
-    def on_weekButton_clicked(self, *args):
-        print("Week Button Working!")
-
-    def on_monthButton_clicked(self, *args):
-        print("Month Button Working!")
-
-    def on_overviewButton_clicked(self, *args):
-        self.notebook.set_current_page(0)
-
-    def on_incomeButton_clicked(self, *args):
-        self.notebook.set_current_page(1)
-
-    def on_expensesButton_clicked(self, *args):
-        self.notebook.set_current_page(2)
+        
+    def on_notebook_switch(self, notebook, page, index, *args):
+        if index == 0:
+            self.hbLeft.hide()
+            self.hbRight.queue_draw()
+            #self.notebook.set_current_page(0)
+        if index == 1:
+            self.hbLeft.show()
+            self.hbRight.queue_draw()
+        if index == 2:
+            self.hbLeft.show()
+            self.hbRight.queue_draw()
+        if index == 3:
+            self.hbLeft.hide()
+            self.hbRight.queue_draw()
+        if index == 4:
+            self.hbLeft.hide()
+            self.hbRight.queue_draw()
 
     def on_menuButton_clicked(self, *args):
         print("Menu Button Working!")
