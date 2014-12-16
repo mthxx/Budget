@@ -74,7 +74,7 @@ class Sidebar():
 
         # Set Styling
         self.menuScrolledWindow.set_vexpand(True)
-        self.menuScrolledWindow.set_property("width-request",150)
+        self.menuScrolledWindow.set_property("width-request",179)
         self.menuScrolledWindow.set_property("hscrollbar-policy", Gtk.PolicyType.NEVER)
 
         self.subMenuScrolledWindow.set_vexpand(True)
@@ -140,56 +140,11 @@ class Sidebar():
             self.label.set_property("height-request", 60)
             self.menuListBox.add(self.label)
         
-        # Add uncategorized and + options
-        # Create Widgets
-        self.editCategoryButton = Gtk.Button()
-        self.addCategoryButton = Gtk.Button()
-        self.newCategoryEntry = Gtk.Entry()
-        self.newCategoryCancel = Gtk.Button("Cancel")
-        self.newCategorySubmit = Gtk.Button("Submit")
-       
-        self.editCategoryBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-        self.editCategoryBox.add(self.editCategoryButton)
-        self.editCategoryBox.add(self.addCategoryButton)
-        
-        self.addCategoryBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-        self.addCategoryBox.add(self.newCategoryCancel)
-        self.addCategoryBox.add(self.newCategorySubmit)
-        
+        # Add uncategorized
         # Style Widgets
         self.uncategorizedLabel = Gtk.Label("Uncategorized")
         self.uncategorizedLabel.set_property("height-request", 60)
         self.menuListBox.add(self.uncategorizedLabel)
-        
-        self.editCategoryButton.set_property("height-request", 60)
-        self.editCategoryButton.set_property("width-request", 60)
-        self.editCategoryButton.set_relief(Gtk.ReliefStyle.NONE)
-        self.editCategoryIcon = Gio.ThemedIcon(name="list-remove-symbolic")
-        self.editCategoryImage = Gtk.Image.new_from_gicon(self.editCategoryIcon, Gtk.IconSize.MENU)
-        self.editCategoryButton.add(self.editCategoryImage)
-        
-        self.addCategoryButton.set_property("height-request", 60)
-        self.addCategoryButton.set_property("width-request", 60)
-        self.addCategoryButton.set_relief(Gtk.ReliefStyle.NONE)
-        self.addCategoryIcon = Gio.ThemedIcon(name="list-add-symbolic")
-        self.addCategoryImage = Gtk.Image.new_from_gicon(self.addCategoryIcon, Gtk.IconSize.MENU)
-        self.addCategoryButton.add(self.addCategoryImage)
-        
-        Gtk.StyleContext.add_class(self.addCategoryBox.get_style_context(), "linked")
-        self.addCategoryBox.set_property("height-request", 30)
-        self.editCategoryBox.set_margin_start(10)
-        self.addCategoryBox.set_margin_top(10)
-        self.newCategoryCancel.set_margin_start(15)
-        
-        # Connect Widgets
-        self.editCategoryButton.connect("clicked", self.editCategoryButton_clicked, menu)
-        self.addCategoryButton.connect("clicked", self.addCategoryButton_clicked, menu)
-        self.newCategoryCancel.connect("clicked", self.newCategoryCancel_clicked, menu)
-        self.newCategoryEntry.connect("activate", self.newCategorySubmit_clicked, menu, self.newCategoryEntry)
-        self.newCategorySubmit.connect("clicked", self.newCategorySubmit_clicked, menu, self.newCategoryEntry)
-        
-        # Add Widgets to container
-        self.menuListBox.add(self.editCategoryBox)
         
         # Select default option
         self.menuListBox.select_row(self.menuListBox.get_row_at_index(0))
@@ -418,52 +373,3 @@ class Sidebar():
                     if self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_label() == self.menu:
                         self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
                         self.monthTotalLabel.set_text("$" + str(self.calc.sumCategoryData(data,self.menu_index)))
-    
-    def on_editButton_clicked(self, button, editPopover):
-        if editPopover.get_visible():
-            editPopover.hide()
-        else:
-            editPopover.show_all()
-            
-    def newCategoryCancel_clicked(self, button, menu):
-        # Hide new category widgets
-        self.menuListBox.get_row_at_index(len(menu) + 1).show()
-        self.menuListBox.get_row_at_index(len(menu) + 2).hide()
-        self.menuListBox.get_row_at_index(len(menu) + 3).hide()
-
-
-    def newCategorySubmit_clicked(self, button, menu, category):
-        if category.get_text() == "":
-            self.newCategoryEntry.set_placeholder_text("Enter A Category")
-        else:
-            # Create string and add to database
-            self.entryString = self.data.create_category_string(menu, category) 
-            self.data.add_data(self.entryString, self.radio)
-
-            # Hide new category widgets
-            self.menuListBox.get_row_at_index(len(menu) + 1).show()
-            self.menuListBox.get_row_at_index(len(menu) + 2).hide()
-            self.menuListBox.get_row_at_index(len(menu) + 3).hide()
-            
-            # Refresh the menu
-            self.generate_sidebars()
-
-    def editCategoryButton_clicked(self, button, menu):
-        #checkBox = Gtk.CheckButton()
-        #self.menuListBox.add(checkBox)
-        #self.menuListBox.show_all()
-        return
-
-    def addCategoryButton_clicked(self, button, menu):
-        # Add widgets to menuList if they don't already exist
-        # This should run only on the first time the "+" button is clicked
-        if self.menuListBox.get_row_at_index(len(menu)+2) == None:
-            self.menuListBox.add(self.newCategoryEntry)
-            self.menuListBox.add(self.addCategoryBox)
-        
-        # Clear any existing text. Set focus and show new category widgets
-        self.newCategoryEntry.set_text("")
-        self.newCategoryEntry.grab_focus()
-        self.menuListBox.get_row_at_index(len(menu) + 1).hide()
-        self.menuListBox.get_row_at_index(len(menu) + 2).show_all()
-        self.menuListBox.get_row_at_index(len(menu) + 3).show_all()
