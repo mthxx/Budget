@@ -164,9 +164,9 @@ class Data():
         return self.editString
     
     def create_category_string(self, menu, category):
-        if menu == self.incomeMenu:
+        if menu == 'income':
             self.key = "incomeMenu"
-        if menu == self.expenseMenu:
+        if menu == 'expense':
             self.key = "expenseMenu"
         
         self.editString = ""
