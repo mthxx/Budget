@@ -1,3 +1,9 @@
+#hbLeft, #hbRight{
+    border-style: solid;
+    border-left-width: 1px;
+    border-left-color: #a1a1a1;
+}
+
 #layoutGrid{
     box-shadow: 0px 2px 3px rgb(153, 153, 153);    
     background-color: white;
