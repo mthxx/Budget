@@ -145,13 +145,14 @@ class Sidebar():
         self.label.set_halign(Gtk.Align.START)
         self.label.set_margin_bottom(5)
         self.menuListBox.add(self.label)
-        
-        for i in range(1,len(self.data.incomeMenu)):
-            self.label = Gtk.Label(self.data.incomeMenu[i][1])
-            self.label.set_property("height-request", 10)
-            self.label.set_halign(Gtk.Align.START)
-            self.label.set_margin_start(10)
-            self.menuListBox.add(self.label)
+       
+        for i in range(0,len(self.data.transactionsMenu)):
+            if self.data.transactionsMenu[i][2] == "income":
+                self.label = Gtk.Label(self.data.transactionsMenu[i][1])
+                self.label.set_property("height-request", 10)
+                self.label.set_halign(Gtk.Align.START)
+                self.label.set_margin_start(10)
+                self.menuListBox.add(self.label)
         
         # Expense Categories
         self.label = Gtk.Label()
@@ -162,12 +163,13 @@ class Sidebar():
         self.label.set_margin_bottom(5)
         self.menuListBox.add(self.label)
         
-        for i in range(1,len(self.data.expenseMenu)):
-            self.label = Gtk.Label(self.data.expenseMenu[i][1])
-            self.label.set_property("height-request", 10)
-            self.label.set_halign(Gtk.Align.START)
-            self.label.set_margin_start(10)
-            self.menuListBox.add(self.label)
+        for i in range(0,len(self.data.transactionsMenu)):
+            if self.data.transactionsMenu[i][2] == "expense":
+                self.label = Gtk.Label(self.data.transactionsMenu[i][1])
+                self.label.set_property("height-request", 10)
+                self.label.set_halign(Gtk.Align.START)
+                self.label.set_margin_start(10)
+                self.menuListBox.add(self.label)
         
         # Add uncategorized
         # Style Widgets

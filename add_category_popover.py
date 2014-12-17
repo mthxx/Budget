@@ -71,7 +71,7 @@ class Add_Category_Popover(Gtk.Window):
         else:
             # Create string and add to database
             self.entryString = self.data.create_category_string(self.radio, self.addEntry) 
-            self.data.add_data(self.entryString, self.radio)
+            self.data.add_data(self.entryString)
 
             # Refresh the menu
             self.data.transaction_view.view.generate_sidebars()

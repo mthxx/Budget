@@ -76,22 +76,25 @@ class Add_Popover(Gtk.Window):
         if addPopover.get_visible():
             addPopover.hide()
         else:
-            for i in range(1,len(self.data.incomeMenu)):
-                self.addCategoryComboBoxText.append_text(self.data.incomeMenu[i][1])
+            for i in range(0,len(self.data.transactionsMenu)):
+                if self.data.transactionsMenu[i][2] == "income":
+                    self.addCategoryComboBoxText.append_text(self.data.transactionsMenu[i][1])
             addPopover.show_all()
 
     def on_addRadio_toggled(self, *args):
         if args[1] != None:
-            for i in range(0, len(self.data.incomeMenu) + len(self.data.expenseMenu)):
+            for i in range(0, len(self.data.transactionsMenu)):
                 self.addCategoryComboBoxText.remove(0)
             if args[1].get_group()[0].get_active():
                 self.radioStatus = "income"
-                for i in range(1,len(self.data.incomeMenu)):
-                    self.addCategoryComboBoxText.append_text(self.data.incomeMenu[i][1])
+                for i in range(0,len(self.data.transactionsMenu)):
+                    if self.data.transactionsMenu[i][2] == "income":
+                        self.addCategoryComboBoxText.append_text(self.data.transactionsMenu[i][1])
             if args[1].get_group()[1].get_active():
                 self.radioStatus = "expense"
-                for i in range(1,len(self.data.expenseMenu)):
-                    self.addCategoryComboBoxText.append_text(self.data.expenseMenu[i][1])
+                for i in range(0,len(self.data.transactionsMenu)):
+                    if self.data.transactionsMenu[i][2] == "expense":
+                        self.addCategoryComboBoxText.append_text(self.data.transactionsMenu[i][1])
     
     def on_addSubmitButton_clicked(self, *args):
         self.entryString = ""

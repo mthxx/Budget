@@ -27,7 +27,6 @@ class Edit_Popover(Gtk.Window):
         self.unique_id = 0
         self.entryRows = 0
         self.menu = 0
-        self.radio = 0
         self.editPopover = ""
         self.contentGrid = 0
 
@@ -101,11 +100,6 @@ class Edit_Popover(Gtk.Window):
         self.menu = menu
         self.contentGrid = contentGrid
         
-        if self.menu[0][1] == self.data.incomeMenu[0][1]:
-            self.radio = "income"
-        elif self.menu[0][1] == self.data.expenseMenu[0][1]:
-            self.radio = "expense"
-
     def on_deleteButton_clicked(self, *args):
         self.selectorBox.hide()
         self.confirmLabelLine1.show()
@@ -120,7 +114,7 @@ class Edit_Popover(Gtk.Window):
     
     def on_deleteConfirmButton_clicked(self, *args):
         self.editPopover.hide()
-        self.data.delete_data(self.radio, self.unique_id)
+        self.data.delete_data(self.unique_id)
     
     def on_editButton_clicked(self, *args):
         self.editPopover.hide()
@@ -187,10 +181,7 @@ class Edit_Popover(Gtk.Window):
         self.cancelButton.set_margin_bottom(20)
        
         # Set Calendar to currently set date
-        if self.menu[0][1] == self.data.incomeMenu[0][1]:
-            self.set_calendar(self.data.income)
-        elif self.menu[0][1] == self.data.expenseMenu[0][1]:
-            self.set_calendar(self.data.expenses)
+        self.set_calendar(self.data.transactions)
         
         # Replace label widgets with editing widgets
         for i in range(0, len(self.entryRows)):
@@ -257,12 +248,12 @@ class Edit_Popover(Gtk.Window):
         self.month = str(self.dateArr[1] + 1)
         self.day = str(self.dateArr[2])
         
-        self.editString = self.data.create_data_string(self.radio, self.categoryComboBoxText.get_active(), self.categoryComboBoxText.get_active_text(),
+        self.editString = self.data.create_data_string(self.categoryComboBoxText.get_active(), self.categoryComboBoxText.get_active_text(),
                                         self.year, self.month, self.day, self.costEntry.get_text(), self.descriptionEntry.get_text(),
                                         self.unique_id)
 
-        self.data.delete_data(self.radio, self.unique_id)
-        self.data.add_data(self.editString, self.radio)
+        self.data.delete_data(self.unique_id)
+        self.data.add_data(self.editString)
         
         for i in range(0, len(self.entryRows)):
             if self.entryRows[i][self.UNIQUE_ID_INDEX] == self.unique_id:

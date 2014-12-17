@@ -45,9 +45,9 @@ class Overview():
         
         self.build_header()
         self.build_overview()    
-        self.display_info(self.data.incomeMenu, self.data.income)
+        self.display_info("income", self.data.transactions)
         self.empty_row()
-        self.display_info(self.data.expenseMenu, self.data.expenses)
+        self.display_info("expense",  self.data.transactions)
 
     def build_header(self):
         # Build Header Grid
@@ -169,9 +169,9 @@ class Overview():
             self.contentGrid.remove_row(0)
         while len(self.entryRows) > 0:
             self.entryRows.pop(0)
-        self.display_info(self.data.incomeMenu, self.data.income)
+        self.display_info("income", self.data.income)
         self.empty_row()
-        self.display_info(self.data.expenseMenu, self.data.expenses)
+        self.display_info("expense", self.data.expenses)
         self.overviewGrid.show_all()
         
         self.clear_selection(self.clearButton)
@@ -181,47 +181,51 @@ class Overview():
         self.incomeTotalValueLabel.set_text( "$" + str(self.calc.sumTotalData(self.data.income)))
         self.expensesTotalValueLabel.set_text( "$" + str(self.calc.sumTotalData(self.data.expenses)))
 
-    def display_info(self,data_cat, data_arr):
+    def display_info(self, category, data_arr):
         # Print out Categories
-        for index in range(1,len(data_cat)):
-            self.button = Gtk.Button(data_cat[index][1])
-            self.button.set_relief(Gtk.ReliefStyle.NONE)
-            self.button.set_property("height-request", 40)
-            self.contentArr = []
-            self.categoryArr.append([self.index, self.button])
-            self.button.connect("clicked", self.category_clicked, self.index)
-            self.categoryGrid.attach(self.button, 0, self.index, 1, 1)
-            
-            # Print out total values for each category for each month
-            for month in range(1,len(self.data.allMonthMenu) + 1):
-                self.total = 0
-                # Total Column
-                if month == len(self.data.allMonthMenu):
-                    for data in range(0,len(data_arr)):
-                        if data_arr[data][0][0] == index:
-                            self.total += Decimal(data_arr[data][2])
-                    self.totalLabel = Gtk.Label()
-                    self.totalLabel.set_markup("<b>$" + str(self.total) + "</b>")
-                    self.totalLabel.set_property("height-request", 40)
-                    self.totalLabel.set_property("width-request", 120)
-                    self.totalLabel.override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(self.totalColor, self.totalColor, self.totalColor, self.totalColor))
-                    self.contentArr.append(self.totalLabel)
-                    self.contentGrid.attach(self.totalLabel, month - 1, self.index, 1, 1) 
-                else:
-                    for data in range(0,len(data_arr)):
-                        if data_arr[data][self.data.CATEGORY][self.data.CATEGORY_INDEX] == index:
-                            if data_arr[data][self.data.DATE][self.data.DATE_MONTH] == self.data.allMonthMenu[month][0]:
+        for index in range(0,len(self.data.transactionsMenu)):
+            if self.data.transactionsMenu[index][2] == category:
+                self.button = Gtk.Button(self.data.transactionsMenu[index][1])
+                self.button.set_relief(Gtk.ReliefStyle.NONE)
+                self.button.set_property("height-request", 40)
+                self.contentArr = []
+                self.categoryArr.append([self.index, self.button])
+                self.button.connect("clicked", self.category_clicked, self.index)
+                self.categoryGrid.attach(self.button, 0, self.index, 1, 1)
+                
+                # Print out total values for each category for each month
+                for month in range(1,len(self.data.allMonthMenu) + 1):
+                    self.total = 0
+                    # Total Column
+                    if month == len(self.data.allMonthMenu):
+                        for data in range(0,len(data_arr)):
+                            if data_arr[data][0][0] == index:
                                 self.total += Decimal(data_arr[data][2])
-                    self.totalLabel = Gtk.Label("$" + str(self.total))
-                    self.totalLabel.set_property("height-request", 40)
-                    self.totalLabel.set_property("width-request", 120)
-                    self.contentArr.append(self.totalLabel)
-                    self.contentGrid.attach(self.totalLabel, month - 1, self.index, 1, 1) 
-            self.entryRows.append([self.index, self.contentArr])
-            self.index += 1
+                        self.totalLabel = Gtk.Label()
+                        self.totalLabel.set_markup("<b>$" + str(self.total) + "</b>")
+                        self.totalLabel.set_property("height-request", 40)
+                        self.totalLabel.set_property("width-request", 120)
+                        self.totalLabel.override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(self.totalColor, self.totalColor, self.totalColor, self.totalColor))
+                        self.contentArr.append(self.totalLabel)
+                        self.contentGrid.attach(self.totalLabel, month - 1, self.index, 1, 1) 
+                    else:
+                        for data in range(0,len(data_arr)):
+                            if data_arr[data][self.data.CATEGORY][self.data.CATEGORY_INDEX] == index:
+                                if data_arr[data][self.data.DATE][self.data.DATE_MONTH] == self.data.allMonthMenu[month][0]:
+                                    self.total += Decimal(data_arr[data][2])
+                        self.totalLabel = Gtk.Label("$" + str(self.total))
+                        self.totalLabel.set_property("height-request", 40)
+                        self.totalLabel.set_property("width-request", 120)
+                        self.contentArr.append(self.totalLabel)
+                        self.contentGrid.attach(self.totalLabel, month - 1, self.index, 1, 1) 
+                self.entryRows.append([self.index, self.contentArr])
+                self.index += 1
         
         # Print out "All" Button
-        self.AllButton = Gtk.Button(data_cat[self.data.CATEGORY][self.data.CATEGORY_TEXT])
+        if category == "income":
+            self.AllButton = Gtk.Button("All Income")
+        elif category == "expense":
+            self.AllButton = Gtk.Button("All Expenses")
         self.AllButton.set_relief(Gtk.ReliefStyle.NONE)
         self.AllButton.set_property("height-request", 40)
         self.categoryArr.append([self.index, self.AllButton])
@@ -321,9 +325,16 @@ class Overview():
             self.monthArr[i][1].set_relief(Gtk.ReliefStyle.NONE)
         for i in range(0, len(self.entryRows)):
             for j in range(0, len(self.entryRows[i][1])):
-                if self.entryRows[i][0] == self.categoryArr[len(self.data.incomeMenu) - 1][0]:
+                # Get count of income categories
+                count = 0
+                for k in range(0, len(self.data.transactionsMenu)):
+                    if self.data.transactionsMenu[k][2] == "income":
+                        count += 1
+                # Reset All Income
+                if self.entryRows[i][0] == self.categoryArr[count][0]:
                     self.entryRows[i][1][j].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(self.totalColor, self.totalColor, self.totalColor, self.totalColor))
-                elif self.entryRows[i][0] == self.categoryArr[len(self.data.incomeMenu) + len(self.data.expenseMenu)][0]:
+                # Reset All Expenses
+                elif self.entryRows[i][0] == self.categoryArr[len(self.data.transactionsMenu) + 2][0]:
                     self.entryRows[i][1][j].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(self.totalColor, self.totalColor, self.totalColor, self.totalColor))
                 else:
                     if j == len(self.data.allMonthMenu) - 1:

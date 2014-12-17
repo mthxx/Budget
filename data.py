@@ -14,59 +14,62 @@ class Data():
    
     VALUE = 2
     DESCRIPTION = 3
-    
-    UNIQUE_ID = 4 
+    UNIQUE_ID = 4
+
+    LATEST_MENU_ID = 0
     LATEST_ID = 0
 
     def __init__(self):
         #Indexes for data arrays
 
-        self.incomeMenu = []
-        self.expenseMenu = []
         self.transactionsMenu = []
-        self.allMonthMenu = []
         self.income = []
         self.expenses = []
         self.transactions = []
 
         self.transaction_view = 0
         self.overview = 0
-
+        
+        self.allMonthMenu = [[0, "All"],
+                            [1, "January"],
+                            [2, "February"],
+                            [3, "March"],
+                            [4, "April"],
+                            [5, "May"],
+                            [6, "June"],
+                            [7, "July"],
+                            [8, "August"],
+                            [9, "September"],
+                            [10, "October"],
+                            [11, "November"],
+                            [12, "December"],
+                            ]
     def import_data(self):
         if(os.path.isfile('database.txt')):
             f = open('database.txt', 'r')
             for db in f.readlines():
                 line = db.split(',')
-                if line[0] == 'incomeMenu':
+                if line[0] == 'menu':
                     self.arr = []
-                    self.arr.append(int(line[1].strip()))
+                    self.arr.append(int(line[3].strip()))
                     self.arr.append(line[2].strip())
+                    self.arr.append(line[1].strip())
+                    if self.LATEST_MENU_ID < int(line[3].strip()):
+                        self.LATEST_MENU_ID = int(line[3].strip())
                     #self.arr.append(line[3].strip())
-                    self.incomeMenu.append(self.arr)
                     self.transactionsMenu.append(self.arr)
-                elif line[0] == 'expenseMenu':
-                    self.arr = []
-                    self.arr.append(int(line[1].strip()))
-                    self.arr.append(line[2].strip())
-                    #self.arr.append(line[3].strip())
-                    self.expenseMenu.append(self.arr)
-                    self.transactionsMenu.append(self.arr)
-                elif line[0] == 'allMonthMenu':
-                    self.arr = []
-                    self.arr.append(int(line[1].strip()))
-                    self.arr.append(line[2].strip())
-                    self.allMonthMenu.append(self.arr)
-                elif line[0] == 'income':
+               
+                elif line[0] == 'transaction':
                     self.arr = []
                     self.catArr = []
-                    self.DATEArr = []
+                    self.dateArr = []
                     self.catArr.append(int(line[1].strip()))
                     self.catArr.append(line[2].strip())
-                    self.DATEArr.append(int(line[3].strip()))
-                    self.DATEArr.append(int(line[4].strip()))
-                    self.DATEArr.append(int(line[5].strip()))
+                    self.dateArr.append(int(line[3].strip()))
+                    self.dateArr.append(int(line[4].strip()))
+                    self.dateArr.append(int(line[5].strip()))
                     self.arr.append(self.catArr)
-                    self.arr.append(self.DATEArr)
+                    self.arr.append(self.dateArr)
                     self.arr.append(Decimal(line[6].strip()))
                     self.arr.append(line[7].strip())
                     self.arr.append(line[8].strip())
@@ -75,25 +78,6 @@ class Data():
                     self.sort_data(self.income, self.arr)
                     self.sort_data(self.transactions, self.arr)
 
-                elif line[0] == 'expense':
-                    self.arr = []
-                    self.catArr = []
-                    self.DATEArr = []
-                    self.catArr.append(int(line[1].strip()))
-                    self.catArr.append(line[2].strip())
-                    self.DATEArr.append(int(line[3].strip()))
-                    self.DATEArr.append(int(line[4].strip()))
-                    self.DATEArr.append(int(line[5].strip()))
-                    self.arr.append(self.catArr)
-                    self.arr.append(self.DATEArr)
-                    self.arr.append(Decimal(line[6].strip()))
-                    self.arr.append(line[7].strip())
-                    self.arr.append(line[8].strip())
-                    if self.LATEST_ID < int(line[8].strip()):
-                        self.LATEST_ID = int(line[8].strip())
-                    self.sort_data(self.expenses, self.arr)
-                    self.sort_data(self.transactions, self.arr)
-            
             f.close()
 
     def sort_data(self, data, arr):
@@ -147,9 +131,8 @@ class Data():
         self.transaction_view = transaction_view
         self.overview = overview
 
-    def create_data_string(self, radio, categoryIndex, category, year, month, day, cost, description, uniqueID):
-        self.editString = ""
-        self.editString += radio +  ", "
+    def create_data_string(self, categoryIndex, category, year, month, day, cost, description, uniqueID):
+        self.editString = "transaction" + ","
         self.editString += str(int(categoryIndex) + 1) + ", "
         self.editString += str(category) + ", "
         self.editString += str(year) + ", "
@@ -162,42 +145,27 @@ class Data():
         return self.editString
     
     def create_category_string(self, menu, category):
-        if menu == 'income':
-            self.key = "incomeMenu"
-        if menu == 'expense':
-            self.key = "expenseMenu"
-        
-        self.editString = ""
-        self.editString += str(self.key) + ", "
-        self.editString += str(len(menu)) + ", "
-        self.editString += str(category.get_text()) + "\n"
-       
+        self.editString = "menu" + ","
+        self.editString += str(menu) + ", "
+        self.editString += str(category.get_text()) + ","
+        self.LATEST_MENU_ID += 1
+        self.editString += str(self.LATEST_MENU_ID) + "\n"
+
         return self.editString
 
-    def add_data(self, entryString, radio):
+    def add_data(self, entryString):
         if(os.path.isfile('database.txt')):
-            self.incomeMenu = []
-            self.expenseMenu = []
-            self.currentMonthMenu = []
-            self.allMonthMenu = []
-            self.income = []
-            self.expenses = []
+            self.transactionsMenu = []
             self.transactions = []
             f = open('database.txt', 'a')
             f.write(entryString)
             f.close()
             self.import_data()
-            #if radio == "income":
             self.transaction_view.view.display_content()
-            #if radio == "expense":
             self.overview.redisplay_info()
     
-    def delete_data(self, radio, uniqueID):
+    def delete_data(self, uniqueID):
         if(os.path.isfile('database.txt')):
-            self.incomeMenu = []
-            self.expenseMenu = []
-            self.currentMonthMenu = []
-            self.allMonthMenu = []
             self.income = []
             self.expenses = []
             self.transactions = []
@@ -206,7 +174,7 @@ class Data():
             for line in f:
                 cur = line.split(",")
                 cur[0].strip()
-                if radio == cur[0]:
+                if cur[0] == "transaction":
                     if cur[8].strip() != uniqueID:
                         output.append(line)
                 else:
