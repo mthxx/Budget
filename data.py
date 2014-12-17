@@ -23,11 +23,13 @@ class Data():
 
         self.incomeMenu = []
         self.expenseMenu = []
+        self.transactionsMenu = []
         self.currentMonthMenu = []
         self.allMonthMenu = []
         self.income = []
         self.expenses = []
-        
+        self.transactions = []
+
         self.income_view = 0
         self.expense_view = 0
         self.overview = 0
@@ -43,12 +45,14 @@ class Data():
                     self.arr.append(line[2].strip())
                     #self.arr.append(line[3].strip())
                     self.incomeMenu.append(self.arr)
+                    self.transactionsMenu.append(self.arr)
                 elif line[0] == 'expenseMenu':
                     self.arr = []
                     self.arr.append(int(line[1].strip()))
                     self.arr.append(line[2].strip())
                     #self.arr.append(line[3].strip())
                     self.expenseMenu.append(self.arr)
+                    self.transactionsMenu.append(self.arr)
                 elif line[0] == 'currentMonthMenu':
                     self.arr = []
                     self.arr.append(int(line[1].strip()))
@@ -75,7 +79,8 @@ class Data():
                     self.arr.append(line[8].strip())
                     if self.LATEST_ID < int(line[8].strip()):
                         self.LATEST_ID = int(line[8].strip())
-                    self.sort_data(self.income)
+                    self.sort_data(self.income, self.arr)
+                    self.sort_data(self.transactions, self.arr)
 
                 elif line[0] == 'expense':
                     self.arr = []
@@ -93,56 +98,57 @@ class Data():
                     self.arr.append(line[8].strip())
                     if self.LATEST_ID < int(line[8].strip()):
                         self.LATEST_ID = int(line[8].strip())
-                    self.sort_data(self.expenses)
+                    self.sort_data(self.expenses, self.arr)
+                    self.sort_data(self.transactions, self.arr)
             
             f.close()
 
-    def sort_data(self, data):
+    def sort_data(self, data, arr):
         if len(data) == 0:
-            data.append(self.arr)
+            data.append(arr)
         else:
             flag = False
             for i in range(len(data)):
                 # If entry's year is equal to array's year
-                if data[i][self.DATE][self.DATE_YEAR] == int(self.arr[self.DATE][self.DATE_YEAR]):
+                if data[i][self.DATE][self.DATE_YEAR] == int(arr[self.DATE][self.DATE_YEAR]):
                     # If entry's month is equal to array's month
-                    if data[i][self.DATE][self.DATE_MONTH] == int(self.arr[self.DATE][self.DATE_MONTH]):
+                    if data[i][self.DATE][self.DATE_MONTH] == int(arr[self.DATE][self.DATE_MONTH]):
                         # If entry's day is equal to array's day
-                        if data[i][self.DATE][self.DATE_DAY] == int(self.arr[self.DATE][self.DATE_DAY]):
-                            data.insert(i, self.arr)
+                        if data[i][self.DATE][self.DATE_DAY] == int(arr[self.DATE][self.DATE_DAY]):
+                            data.insert(i, arr)
                             flag = True
                             break
                         # If entry's day is less than array's day
-                        elif data[i][self.DATE][self.DATE_DAY] > int(self.arr[self.DATE][self.DATE_DAY]):
+                        elif data[i][self.DATE][self.DATE_DAY] > int(arr[self.DATE][self.DATE_DAY]):
                             for j in range(i, len(data)):
-                                if data[j][self.DATE][self.DATE_MONTH] == int(self.arr[self.DATE][self.DATE_MONTH]):
-                                    if data[j][self.DATE][self.DATE_DAY] <= int(self.arr[self.DATE][self.DATE_DAY]):
-                                        data.insert(j, self.arr)
+                                if data[j][self.DATE][self.DATE_MONTH] == int(arr[self.DATE][self.DATE_MONTH]):
+                                    if data[j][self.DATE][self.DATE_DAY] <= int(arr[self.DATE][self.DATE_DAY]):
+                                        data.insert(j, arr)
                                         flag = True
                                         break
                                 else:
-                                    data.insert(j , self.arr)
+                                    data.insert(j , arr)
                                     flag = True
                                     break
                             break
                         # If entry's day is greater than array's day
-                        elif data[i][self.DATE][self.DATE_DAY] < int(self.arr[self.DATE][self.DATE_DAY]):
-                            data.insert(i , self.arr)
+                        elif data[i][self.DATE][self.DATE_DAY] < int(arr[self.DATE][self.DATE_DAY]):
+                            data.insert(i , arr)
                             flag = True
                             break
                     # If entry's month is less than array's month
-                    elif data[i][self.DATE][self.DATE_MONTH] < int(self.arr[self.DATE][self.DATE_MONTH]):
-                        data.insert(i , self.arr)
+                    elif data[i][self.DATE][self.DATE_MONTH] < int(arr[self.DATE][self.DATE_MONTH]):
+                        data.insert(i , arr)
                         flag = True
                         break
                 # If entry's year is less than income array's year
-                elif data[i][self.DATE][self.DATE_YEAR] < int(self.arr[self.DATE][self.DATE_YEAR]):
-                    data.insert(i , self.arr)
+                elif data[i][self.DATE][self.DATE_YEAR] < int(arr[self.DATE][self.DATE_YEAR]):
+                    data.insert(i , arr)
                     flag = True
                     break
 
             if flag == False:
-                data.append(self.arr)
+                data.append(arr)
             
     def connect_data_views(self, income_view, expense_view, overview):
         self.income_view = income_view
@@ -184,6 +190,7 @@ class Data():
             self.allMonthMenu = []
             self.income = []
             self.expenses = []
+            self.transactions = []
             f = open('database.txt', 'a')
             f.write(entryString)
             f.close()
@@ -202,6 +209,7 @@ class Data():
             self.allMonthMenu = []
             self.income = []
             self.expenses = []
+            self.transactions = []
             f = open('database.txt', 'r')
             output = []
             for line in f:

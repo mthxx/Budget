@@ -124,18 +124,21 @@ class Sidebar():
         self.display_content()
 
     def generate_sidebars(self):
-        if self.radio == "income":
-            menu = self.data.incomeMenu
-        elif self.radio == "expense":
-            menu = self.data.expenseMenu
-            
         #Clear existing data
         while len(self.menuListBox) > 0:
             self.menuListBox.remove(self.menuListBox.get_row_at_index(0))
-        self.menu = "<b>" +  menu[0][1] + "</b>"
+        #self.menu = "<b>" +  menu[0][1] + "</b>"
         self.subMenu = self.data.currentMonthMenu[0][1]
         
         # Generate from database
+        self.label = Gtk.Label()
+        self.label.set_markup("<span><b>Overview</b></span>")
+        self.label.set_property("height-request", 10)
+        self.label.set_halign(Gtk.Align.START)
+        self.label.set_margin_bottom(5)
+        self.menuListBox.add(self.label)
+        
+        # Income Categories
         self.label = Gtk.Label()
         self.label.set_markup("<span><b>Income</b></span>")
         self.label.set_property("height-request", 10)
@@ -150,6 +153,7 @@ class Sidebar():
             self.label.set_margin_start(10)
             self.menuListBox.add(self.label)
         
+        # Expense Categories
         self.label = Gtk.Label()
         self.label.set_markup("<span><b>Expenses</b></span>")
         self.label.set_property("height-request", 10)
@@ -175,10 +179,18 @@ class Sidebar():
         # Select default option
         self.menuListBox.select_row(self.menuListBox.get_row_at_index(0))
         
-        for i in range(0,len(self.data.currentMonthMenu)):
+        self.label = Gtk.Label()
+        self.label.set_markup("<span><b>All Months</b></span>")
+        self.label.set_property("height-request", 10)
+        self.label.set_halign(Gtk.Align.START)
+        self.label.set_margin_bottom(5)
+        self.subMenuListBox.add(self.label)
+        
+        for i in range(1,len(self.data.currentMonthMenu)):
             self.label = Gtk.Label(self.data.currentMonthMenu[i][1])
             self.label.set_property("height-request", 10)
             self.label.set_halign(Gtk.Align.START)
+            self.label.set_margin_start(10)
             self.subMenuListBox.add(self.label)
 
         self.menuListBox.show_all()
@@ -186,19 +198,15 @@ class Sidebar():
         
     
     def display_content(self):
-        if self.radio == "income":
-            menu = self.data.incomeMenu
-            data = self.data.income
-        elif self.radio == "expense":
-            menu = self.data.expenseMenu
-            data = self.data.expenses
-        
         #Clear existing data
         while len(self.contentGrid) > 0:
             self.contentGrid.remove_row(0)
             
         while len(self.entryRows) > 0:
                 self.entryRows.pop(0)
+        
+        menu = self.data.transactionsMenu
+        data = self.data.transactions
          
         self.monthTotalLabel.set_text("$" + str(self.calc.sumTotalData(data)))
         self.monthRemainingTotalLabel.set_text("$1,500")
@@ -207,93 +215,85 @@ class Sidebar():
         self.whiteSpaceLabel = Gtk.Label()
         
         self.index = 5
-        
-        for count in range(0,2):
-            if count == 0:
-                menu = self.data.incomeMenu
-                data = self.data.income
-            elif count == 1:
-                menu = self.data.expenseMenu
-                data = self.data.expenses
+        for i in range (0,len(data)):
+            
+            # Date String
+            self.dateString = ""
+            self.dateString = self.data.translate_date(data, i)
+            
+            # Create Widgets
+            self.layoutGrid = Gtk.Grid(name="layoutGrid")
+            self.entryGrid = Gtk.Grid()
+            self.costGrid = Gtk.Grid()
+            
+            self.categoryLabel = Gtk.Label()
+            self.dateLabel = Gtk.Label(self.dateString)
+            self.descriptionLabel = Gtk.Label()
+            
+            self.currencyLabel = Gtk.Label("$")
+            self.costLabel = Gtk.Label(str(data[i][self.data.VALUE]))
 
-            for i in range (0,len(data)):
-                
-                # Date String
-                self.dateString = ""
-                self.dateString = self.data.translate_date(data, i)
-                
-                # Create Widgets
-                self.layoutGrid = Gtk.Grid(name="layoutGrid")
-                self.entryGrid = Gtk.Grid()
-                self.costGrid = Gtk.Grid()
-                
-                self.categoryLabel = Gtk.Label()
-                self.dateLabel = Gtk.Label(self.dateString)
-                self.descriptionLabel = Gtk.Label()
-                
-                self.currencyLabel = Gtk.Label("$")
-                self.costLabel = Gtk.Label(str(data[i][self.data.VALUE]))
+            # Create Edit Popover
+            self.editButton = Gtk.Button()
+            self.editPopover = Gtk.Popover.new(self.editButton)
+            self.edit_popover = Edit_Popover(self.data)
+            self.editPopover.add(self.edit_popover.editGrid)
+            self.editButton.connect("clicked", self.edit_popover.on_editDropdown_clicked, self.editPopover, data[i][self.data.UNIQUE_ID], self.entryRows, menu, self.contentGrid)
 
-                # Create Edit Popover
-                self.editButton = Gtk.Button()
-                self.editPopover = Gtk.Popover.new(self.editButton)
-                self.edit_popover = Edit_Popover(self.data)
-                self.editPopover.add(self.edit_popover.editGrid)
-                self.editButton.connect("clicked", self.edit_popover.on_editDropdown_clicked, self.editPopover, data[i][self.data.UNIQUE_ID], self.entryRows, menu, self.contentGrid)
+            # Style Widgets
+            self.entryGrid.set_halign(Gtk.Align.CENTER)
+            self.entryGrid.set_hexpand(True)
+            
+           # print(data[i][self.data.CATEGORY][self.data.CATEGORY_TEXT])
+            self.categoryLabel.set_markup("<b>" + data[i][self.data.CATEGORY][self.data.CATEGORY_TEXT] + "</b>")
+            self.categoryLabel.set_property("height-request", 50)
+            self.categoryLabel.set_property("xalign", 1)
+            self.categoryLabel.set_width_chars(15)
+            
+            self.dateLabel.set_margin_start(30)
+            self.dateLabel.set_margin_end(30)
+            self.dateLabel.set_width_chars(15)
+            
+            self.costGrid.set_row_homogeneous(True)
+            self.costLabel.set_property("xalign", .05)
+            self.costLabel.set_width_chars(14)
 
-                # Style Widgets
-                self.entryGrid.set_halign(Gtk.Align.CENTER)
-                self.entryGrid.set_hexpand(True)
+            self.descriptionLabel.set_markup("<i>" + data[i][self.data.DESCRIPTION] + "</i>")
+            
+            # Style Edit Button
+            self.editIcon = Gio.ThemedIcon(name="go-down-symbolic")
+            self.editImage = Gtk.Image.new_from_gicon(self.editIcon, Gtk.IconSize.MENU)
+            self.editButton.add(self.editImage)
+            self.editButton.set_relief(Gtk.ReliefStyle.NONE)
+            self.editButton.set_valign(Gtk.Align.START)
+            self.editButton.set_opacity(.5)
 
-                self.categoryLabel.set_markup("<b>" + data[i][self.data.CATEGORY][self.data.CATEGORY_TEXT] + "</b>")
-                self.categoryLabel.set_property("height-request", 50)
-                self.categoryLabel.set_property("xalign", 1)
-                self.categoryLabel.set_width_chars(15)
-                
-                self.dateLabel.set_margin_start(30)
-                self.dateLabel.set_margin_end(30)
-                self.dateLabel.set_width_chars(15)
-                
-                self.costGrid.set_row_homogeneous(True)
-                self.costLabel.set_property("xalign", .05)
-                self.costLabel.set_width_chars(14)
-
-                self.descriptionLabel.set_markup("<i>" + data[i][self.data.DESCRIPTION] + "</i>")
-                
-                # Style Edit Button
-                self.editIcon = Gio.ThemedIcon(name="go-down-symbolic")
-                self.editImage = Gtk.Image.new_from_gicon(self.editIcon, Gtk.IconSize.MENU)
-                self.editButton.add(self.editImage)
-                self.editButton.set_relief(Gtk.ReliefStyle.NONE)
-                self.editButton.set_valign(Gtk.Align.START)
-                self.editButton.set_opacity(.5)
-
-                # Attach Labels
-                self.costGrid.attach(self.currencyLabel, 0,1,1,1)
-                self.costGrid.attach(self.costLabel, 1,1,1,1)
-                self.entryGrid.attach(self.categoryLabel, 0, 1, 1, 1)
-                self.entryGrid.attach(self.dateLabel, 1, 1, 1, 1)
-                self.entryGrid.attach(self.costGrid, 2, 0, 1, 2)
-               
-                if self.descriptionLabel.get_text() != "":
-                    self.entryGrid.attach(self.descriptionLabel, 0, 3, 3, 1)
-                    self.extraSpaceLabel = Gtk.Label()
-                    self.entryGrid.attach(self.extraSpaceLabel,0, 4, 1, 1)
-                    self.layoutGrid.attach(self.entryGrid, 0, 0, 1, 5)
-                
-                # Add Layout Grid to Content Grid. Increment index and apply whitespaces
-                else:
-                    self.layoutGrid.attach(self.entryGrid, 0, 0, 1, 2)
-                
-                self.layoutGrid.attach(self.editButton, 1, 0, 1, 1)
-                self.layoutGrid.set_margin_bottom(25)
+            # Attach Labels
+            self.costGrid.attach(self.currencyLabel, 0,1,1,1)
+            self.costGrid.attach(self.costLabel, 1,1,1,1)
+            self.entryGrid.attach(self.categoryLabel, 0, 1, 1, 1)
+            self.entryGrid.attach(self.dateLabel, 1, 1, 1, 1)
+            self.entryGrid.attach(self.costGrid, 2, 0, 1, 2)
+           
+            if self.descriptionLabel.get_text() != "":
+                self.entryGrid.attach(self.descriptionLabel, 0, 3, 3, 1)
+                self.extraSpaceLabel = Gtk.Label()
+                self.entryGrid.attach(self.extraSpaceLabel,0, 4, 1, 1)
+                self.layoutGrid.attach(self.entryGrid, 0, 0, 1, 5)
+            
+            # Add Layout Grid to Content Grid. Increment index and apply whitespaces
+            else:
+                self.layoutGrid.attach(self.entryGrid, 0, 0, 1, 2)
+            
+            self.layoutGrid.attach(self.editButton, 1, 0, 1, 1)
+            self.layoutGrid.set_margin_bottom(25)
 
 
-                self.contentGrid.attach(self.layoutGrid, 1, self.index, 3, 2)
+            self.contentGrid.attach(self.layoutGrid, 1, self.index, 3, 2)
 
-                self.index = self.index + 2
-                
-                self.entryRows.append([self.layoutGrid, [self.categoryLabel, self.dateLabel, self.currencyLabel, self.costLabel, self.descriptionLabel, self.editButton], self.entryGrid, self.costGrid, data[i][self.data.UNIQUE_ID]])
+            self.index = self.index + 2
+            
+            self.entryRows.append([self.layoutGrid, [self.categoryLabel, self.dateLabel, self.currencyLabel, self.costLabel, self.descriptionLabel, self.editButton], self.entryGrid, self.costGrid, data[i][self.data.UNIQUE_ID]])
             self.contentGrid.show_all() 
         
     def menu_clicked(self, listbox, row):
@@ -301,13 +301,9 @@ class Sidebar():
         if row == None:
             return
         else:
-            if self.radio == "income":
-                menu = self.data.incomeMenu
-                data = self.data.income
-            elif self.radio == "expense":
-                menu = self.data.expenseMenu
-                data = self.data.expenses
-            
+            menu = self.data.transactionsMenu
+            data = self.data.transactions
+
             for i in range(len(menu)):
                 if menu[i][self.data.CATEGORY_INDEX] == row.get_index():
                     self.menu = "<b>" +  menu[i][self.data.CATEGORY_TEXT] + "</b>"
@@ -319,12 +315,8 @@ class Sidebar():
         if row == None:
             return
         else:
-            if self.radio == "income":
-                menu = self.data.incomeMenu
-                data = self.data.income
-            elif self.radio == "expense":
-                menu = self.data.expenseMenu
-                data = self.data.expenses
+            menu = self.data.transactionsMenu
+            data = self.data.transactions
             
             for i in range (len(self.data.currentMonthMenu)):
                 if self.data.currentMonthMenu[i][self.data.CATEGORY_INDEX] == row.get_index():
