@@ -24,7 +24,6 @@ class Data():
         self.incomeMenu = []
         self.expenseMenu = []
         self.transactionsMenu = []
-        self.currentMonthMenu = []
         self.allMonthMenu = []
         self.income = []
         self.expenses = []
@@ -53,11 +52,6 @@ class Data():
                     #self.arr.append(line[3].strip())
                     self.expenseMenu.append(self.arr)
                     self.transactionsMenu.append(self.arr)
-                elif line[0] == 'currentMonthMenu':
-                    self.arr = []
-                    self.arr.append(int(line[1].strip()))
-                    self.arr.append(line[2].strip())
-                    self.currentMonthMenu.append(self.arr)
                 elif line[0] == 'allMonthMenu':
                     self.arr = []
                     self.arr.append(int(line[1].strip()))

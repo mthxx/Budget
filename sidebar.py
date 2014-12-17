@@ -128,7 +128,7 @@ class Sidebar():
         while len(self.menuListBox) > 0:
             self.menuListBox.remove(self.menuListBox.get_row_at_index(0))
         #self.menu = "<b>" +  menu[0][1] + "</b>"
-        self.subMenu = self.data.currentMonthMenu[0][1]
+        self.subMenu = self.data.allMonthMenu[0][1]
         
         # Generate from database
         self.label = Gtk.Label()
@@ -187,8 +187,8 @@ class Sidebar():
         self.label.set_margin_bottom(5)
         self.subMenuListBox.add(self.label)
         
-        for i in range(1,len(self.data.currentMonthMenu)):
-            self.label = Gtk.Label(self.data.currentMonthMenu[i][1])
+        for i in range(1,len(self.data.allMonthMenu)):
+            self.label = Gtk.Label(self.data.allMonthMenu[i][1])
             self.label.set_property("height-request", 10)
             self.label.set_halign(Gtk.Align.START)
             self.label.set_margin_start(10)
@@ -319,11 +319,11 @@ class Sidebar():
             menu = self.data.transactionsMenu
             data = self.data.transactions
             
-            for i in range (len(self.data.currentMonthMenu)):
-                if self.data.currentMonthMenu[i][self.data.CATEGORY_INDEX] == row.get_index():
-                    self.row = self.data.currentMonthMenu[i][self.data.CATEGORY_INDEX]
-            self.subMenu = self.data.currentMonthMenu[self.row][self.data.CATEGORY_TEXT]
-            self.subMenu_index = self.data.currentMonthMenu[self.row][self.data.CATEGORY_INDEX]
+            for i in range (len(self.data.allMonthMenu)):
+                if self.data.allMonthMenu[i][self.data.CATEGORY_INDEX] == row.get_index():
+                    self.row = self.data.allMonthMenu[i][self.data.CATEGORY_INDEX]
+            self.subMenu = self.data.allMonthMenu[self.row][self.data.CATEGORY_TEXT]
+            self.subMenu_index = self.data.allMonthMenu[self.row][self.data.CATEGORY_INDEX]
             self.filter_subMenu(data, menu)
         
     def filter_menu(self, data, menu):
@@ -335,7 +335,7 @@ class Sidebar():
             # If selected menu item is "All"
             if self.menu_index == menu[0][self.data.CATEGORY_INDEX]:
                 # If selected sub category equals "All", show row
-                if self.subMenu == self.data.currentMonthMenu[self.data.CATEGORY][self.data.CATEGORY_TEXT]:
+                if self.subMenu == self.data.allMonthMenu[self.data.CATEGORY][self.data.CATEGORY_TEXT]:
                     self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
                     self.monthTotalLabel.set_text("$" + str(self.calc.sumTotalData(data)))
                 # If selected sub category equals rows sub category, show row
@@ -351,7 +351,7 @@ class Sidebar():
                 # If selected category matches rows category
                 if self.menu == self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_label():
                     # If selected sub menu is "All", show row.
-                    if self.subMenu_index == self.data.currentMonthMenu[0][self.data.CATEGORY_INDEX]:
+                    if self.subMenu_index == self.data.allMonthMenu[0][self.data.CATEGORY_INDEX]:
                         self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
                         self.monthTotalLabel.set_text("$" + str(self.calc.sumCategoryData(data, self.menu_index)))
                     # If selected sub category matches rows sub category, show row
@@ -374,7 +374,7 @@ class Sidebar():
            # If selected category is equal to "All"
             if self.menu_index == menu[self.data.CATEGORY][self.data.CATEGORY_INDEX]:
                 # If sub category equals "All"
-                if self.subMenu_index == self.data.currentMonthMenu[self.data.CATEGORY][self.data.CATEGORY_INDEX]:
+                if self.subMenu_index == self.data.allMonthMenu[self.data.CATEGORY][self.data.CATEGORY_INDEX]:
                     self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
                     self.monthTotalLabel.set_text("$" + str(self.calc.sumTotalData(data)))
                 # If selected sub category matches rows sub category, show row
@@ -397,7 +397,7 @@ class Sidebar():
                     self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
                     self.monthTotalLabel.set_text("$" + str(self.calc.sumCategoryMonthData(data,self.menu_index, self.subMenu_index)))
                 # If selected sub category equals "All"
-                if self.subMenu_index == self.data.currentMonthMenu[0][0]:
+                if self.subMenu_index == self.data.allMonthMenu[0][0]:
                     # If selected category equals rows category, show row
                     if self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_label() == self.menu:
                         self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
