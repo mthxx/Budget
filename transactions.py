@@ -1,6 +1,6 @@
 from sidebar import Sidebar
 
-class Income():
+class Transactions():
 
     def __init__(self, data):
         # Define Sidebar Menu
