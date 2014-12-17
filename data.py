@@ -29,8 +29,7 @@ class Data():
         self.expenses = []
         self.transactions = []
 
-        self.income_view = 0
-        self.expense_view = 0
+        self.transaction_view = 0
         self.overview = 0
 
     def import_data(self):
@@ -144,9 +143,8 @@ class Data():
             if flag == False:
                 data.append(arr)
             
-    def connect_data_views(self, income_view, expense_view, overview):
-        self.income_view = income_view
-        self.expense_view = expense_view
+    def connect_data_views(self, transaction_view, overview):
+        self.transaction_view = transaction_view
         self.overview = overview
 
     def create_data_string(self, radio, categoryIndex, category, year, month, day, cost, description, uniqueID):
@@ -189,10 +187,9 @@ class Data():
             f.write(entryString)
             f.close()
             self.import_data()
-            if radio == "income":
-                self.income_view.view.display_content()
-            if radio == "expense":
-                self.expense_view.view.display_content()
+            #if radio == "income":
+            self.transaction_view.view.display_content()
+            #if radio == "expense":
             self.overview.redisplay_info()
     
     def delete_data(self, radio, uniqueID):
@@ -222,9 +219,9 @@ class Data():
             f.close()
            
             self.import_data()
-            #if radio == "income":
-            self.income_view.view.display_content()
-            #if radio == "expense":
+            
+            # Refresh Views
+            self.transaction_view.view.display_content()
             self.overview.redisplay_info()
             
 

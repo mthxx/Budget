@@ -1,7 +1,6 @@
 from gi.repository import Gtk, Gio, Gdk
 from overview import Overview
-from income import Income
-from expense import Expense
+from transactions import Transactions
 from reports import Reports
 from projections import Projections
 from sidebar import Sidebar
@@ -88,30 +87,26 @@ class Window(Gtk.Window):
         # --- Notebooks
         # Initialize Views
         self.overview = Overview(self.data)
-        self.income = Income(self.data)
-        self.expense = Expense(self.data)
+        self.transactions = Transactions(self.data)
         self.reports = Reports()
         self.projections = Projections()
 
         # Create Labels
         self.overviewLabel = Gtk.Label("Overview")
-        self.incomeLabel = Gtk.Label("Income")
-        self.expenseLabel = Gtk.Label("Expenses")
+        self.transactionsLabel = Gtk.Label("Transactions")
         self.reportsLabel = Gtk.Label("Reports")
         self.projectionsLabel = Gtk.Label("Projections")
 
         # Style Notebook 
         self.overviewLabel.set_hexpand(True)
-        self.incomeLabel.set_hexpand(True)
-        self.expenseLabel.set_hexpand(True)
+        self.transactionsLabel.set_hexpand(True)
         self.reportsLabel.set_hexpand(True)
         self.projectionsLabel.set_hexpand(True)
        
         # Create Notebook
         self.notebook = Gtk.Notebook()
         self.notebook.insert_page(self.overview.grid, self.overviewLabel, 0)
-        self.notebook.insert_page(self.income.view.grid, self.incomeLabel, 1)
-        self.notebook.insert_page(self.expense.view.grid, self.expenseLabel, 2)
+        self.notebook.insert_page(self.transactions.view.grid, self.transactionsLabel, 1)
         self.notebook.insert_page(self.reports.grid, self.reportsLabel, 3)
         self.notebook.insert_page(self.projections.grid, self.projectionsLabel, 4)
         self.add(self.notebook)
@@ -120,7 +115,7 @@ class Window(Gtk.Window):
         self.notebook.connect("switch-page", self.on_notebook_switch)
       
         # Connect views to data
-        self.data.connect_data_views(self.income, self.expense, self.overview)
+        self.data.connect_data_views(self.transactions, self.overview)
         self.add_popover.addSubmitButton.connect("clicked", self.add_popover.on_addSubmitButton_clicked)
     
     def on_addButton_clicked(self, *args):

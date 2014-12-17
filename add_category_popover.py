@@ -74,10 +74,7 @@ class Add_Category_Popover(Gtk.Window):
             self.data.add_data(self.entryString, self.radio)
 
             # Refresh the menu
-            if self.radio == "income":
-                self.data.income_view.view.generate_sidebars()
-            elif self.radio == "expense":
-                self.data.expense_view.view.generate_sidebars()
+            self.data.transaction_view.view.generate_sidebars()
             
             self.addPopover.hide()
     
