@@ -174,6 +174,7 @@ class Sidebar():
         self.uncategorizedLabel = Gtk.Label("Uncategorized")
         self.uncategorizedLabel.set_property("height-request", 10)
         self.uncategorizedLabel.set_halign(Gtk.Align.START)
+        self.uncategorizedLabel.set_margin_start(10)
         self.menuListBox.add(self.uncategorizedLabel)
         
         # Select default option
