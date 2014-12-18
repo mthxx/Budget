@@ -115,12 +115,12 @@ class Add_Popover(Gtk.Window):
             self.month = str(self.dateArr[1] + 1)
             self.day = str(self.dateArr[2])
             self.data.LATEST_ID += 1
-            
-            self.entryString = self.data.create_data_string(self.radioStatus, self.addCategoryComboBoxText.get_active(), self.addCategoryComboBoxText.get_active_text(),
+           
+            self.entryString = self.data.create_data_string(self.addCategoryComboBoxText.get_active_text(),
                                             self.year, self.month, self.day, self.addEntry.get_text(), self.addDescription.get_text(),
                                             self.data.LATEST_ID)
             
             self.addEntry.set_text("")
             self.addDescription.set_text("")
                         
-            self.data.add_data(self.entryString, self.radioStatus)
+            self.data.add_data(self.entryString)

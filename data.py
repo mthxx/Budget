@@ -131,15 +131,17 @@ class Data():
         self.transaction_view = transaction_view
         self.overview = overview
 
-    def create_data_string(self, categoryIndex, category, year, month, day, cost, description, uniqueID):
+    def create_data_string(self,category, year, month, day, cost, description, uniqueID):
         self.editString = "transaction" + ","
-        self.editString += str(int(categoryIndex) + 1) + ", "
-        self.editString += str(category) + ", "
-        self.editString += str(year) + ", "
-        self.editString += str(month) + ", "
-        self.editString += str(day) + ", "
-        self.editString += str(cost) + ", "
-        self.editString += str(description) + ", "
+        for i in range(0,len(self.transactionsMenu)):
+            if category == self.transactionsMenu[i][1]:
+                self.editString += str(self.transactionsMenu[i][0]) +","
+        self.editString += str(category) + ","
+        self.editString += str(year) + ","
+        self.editString += str(month) + ","
+        self.editString += str(day) + ","
+        self.editString += str(cost) + ","
+        self.editString += str(description) + ","
         self.editString += str(uniqueID) + "\n"
        
         return self.editString
