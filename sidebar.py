@@ -28,6 +28,11 @@ class Sidebar():
         self.calc = Calc(self.data)
         self.entryRows = []
         self.radio = radio
+        
+        self.incomeCount = 0
+        self.expenseCount = 0
+        self.incomeAllIndex = 0
+        self.expenseAllIndex = 0
         self.menu = ""
         self.menu_index = 0
         self.subMenu = ""
@@ -153,6 +158,7 @@ class Sidebar():
                 self.label.set_halign(Gtk.Align.START)
                 self.label.set_margin_start(10)
                 self.menuListBox.add(self.label)
+                self.incomeCount += 1
         
         # Expense Categories
         self.label = Gtk.Label()
@@ -170,7 +176,14 @@ class Sidebar():
                 self.label.set_halign(Gtk.Align.START)
                 self.label.set_margin_start(10)
                 self.menuListBox.add(self.label)
+                self.expenseCount += 1
+           
+        self.incomeAllIndex = 1
+        self.expenseAllIndex = self.incomeCount + 1
         
+        
+        
+
         # Add uncategorized
         # Style Widgets
         self.uncategorizedLabel = Gtk.Label("Uncategorized")
@@ -248,7 +261,7 @@ class Sidebar():
             self.entryGrid.set_hexpand(True)
             
            # print(data[i][self.data.CATEGORY][self.data.CATEGORY_TEXT])
-            self.categoryLabel.set_markup("<b>" + data[i][self.data.CATEGORY][self.data.CATEGORY_TEXT] + "</b>")
+            self.categoryLabel.set_markup(data[i][self.data.CATEGORY][self.data.CATEGORY_TEXT])
             self.categoryLabel.set_property("height-request", 50)
             self.categoryLabel.set_property("xalign", 1)
             self.categoryLabel.set_width_chars(15)
@@ -307,10 +320,20 @@ class Sidebar():
             menu = self.data.transactionsMenu
             data = self.data.transactions
 
-            for i in range(len(menu)):
-                if menu[i][self.data.CATEGORY_INDEX] == row.get_index():
-                    self.menu = "<b>" +  menu[i][self.data.CATEGORY_TEXT] + "</b>"
-                    self.menu_index = menu[i][self.data.CATEGORY_INDEX]
+            if row.get_child().get_label() == "<span><b>Overview</b></span>":
+                self.menu = "Overview"
+                self.menu_index = -1
+            elif row.get_child().get_label() == "<span><b>Income</b></span>":
+                self.menu = "Income"
+                self.menu_index = -2
+            elif row.get_child().get_label() == "<span><b>Expenses</b></span>":
+                self.menu = "Expenses"
+                self.menu_index = -3
+            else:
+                for i in range(len(menu)):
+                    if menu[i][self.data.CATEGORY_TEXT] == row.get_child().get_label():
+                        self.menu = menu[i][self.data.CATEGORY_TEXT]
+                        self.menu_index = menu[i][self.data.CATEGORY_INDEX]
             self.filter_menu(data, menu)
     
     def subMenu_clicked(self, listbox, row):
@@ -335,7 +358,35 @@ class Sidebar():
             self.month =  self.month[0]
 
             # If selected menu item is "All"
-            if self.menu_index == menu[0][self.data.CATEGORY_INDEX]:
+            if self.menu_index == -1:
+                # If selected sub category equals "All", show row
+                if self.subMenu == self.data.allMonthMenu[self.data.CATEGORY][self.data.CATEGORY_TEXT]:
+                    self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
+                    self.monthTotalLabel.set_text("$" + str(self.calc.sumTotalData(data)))
+                # If selected sub category equals rows sub category, show row
+                elif self.month == self.subMenu:
+                    self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
+                    self.monthTotalLabel.set_text("$" + str(self.calc.sumMonthData(data, self.subMenu_index)))
+                # If selected sub category does not equal rows sub category, hide row
+                elif self.month != self.subMenu:
+                    self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
+            
+            # If selected menu item is "Income"
+            elif self.menu_index == -2:
+                # If selected sub category equals "All", show row
+                if self.subMenu == self.data.allMonthMenu[self.data.CATEGORY][self.data.CATEGORY_TEXT]:
+                    self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
+                    self.monthTotalLabel.set_text("$" + str(self.calc.sumTotalData(data)))
+                # If selected sub category equals rows sub category, show row
+                elif self.month == self.subMenu:
+                    self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
+                    self.monthTotalLabel.set_text("$" + str(self.calc.sumMonthData(data, self.subMenu_index)))
+                # If selected sub category does not equal rows sub category, hide row
+                elif self.month != self.subMenu:
+                    self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
+            
+            # If selected menu item is "Expenses"
+            elif self.menu_index == -3:
                 # If selected sub category equals "All", show row
                 if self.subMenu == self.data.allMonthMenu[self.data.CATEGORY][self.data.CATEGORY_TEXT]:
                     self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
@@ -349,7 +400,7 @@ class Sidebar():
                     self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
 
             # If selected menu item is not "All"
-            elif self.menu_index != menu[0][1]:
+            elif self.menu_index != -1:
                 # If selected category matches rows category
                 if self.menu == self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_label():
                     # If selected sub menu is "All", show row.
