@@ -3,7 +3,6 @@ from overview import Overview
 from transactions import Transactions
 from reports import Reports
 from projections import Projections
-from sidebar import Sidebar
 from add_popover import Add_Popover
 from add_category_popover import Add_Category_Popover
 
@@ -106,7 +105,7 @@ class Window(Gtk.Window):
         # Create Notebook
         self.notebook = Gtk.Notebook()
         self.notebook.insert_page(self.overview.grid, self.overviewLabel, 0)
-        self.notebook.insert_page(self.transactions.view.grid, self.transactionsLabel, 1)
+        self.notebook.insert_page(self.transactions.grid, self.transactionsLabel, 1)
         self.notebook.insert_page(self.reports.grid, self.reportsLabel, 3)
         self.notebook.insert_page(self.projections.grid, self.projectionsLabel, 4)
         self.add(self.notebook)
