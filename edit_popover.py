@@ -248,7 +248,7 @@ class Edit_Popover(Gtk.Window):
         self.month = str(self.dateArr[1] + 1)
         self.day = str(self.dateArr[2])
         
-        self.editString = self.data.create_data_string(self.categoryComboBoxText.get_active(), self.categoryComboBoxText.get_active_text(),
+        self.editString = self.data.create_data_string(self.categoryComboBoxText.get_active_text(),
                                         self.year, self.month, self.day, self.costEntry.get_text(), self.descriptionEntry.get_text(),
                                         self.unique_id)
 
