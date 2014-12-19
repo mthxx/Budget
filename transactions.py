@@ -36,6 +36,10 @@ class Transactions():
         self.menu_index = 0
         self.subMenu = ""
         self.subMenu_index = 0
+                
+        self.incomeMenu = []
+        self.expenseMenu = []
+        self.dataSum = 0
 
         # Set Offsets
         self.entryOffsetTop = 8
@@ -131,57 +135,140 @@ class Transactions():
         #Clear existing data
         while len(self.menuListBox) > 0:
             self.menuListBox.remove(self.menuListBox.get_row_at_index(0))
-        #self.menu = "<b>" +  menu[0][1] + "</b>"
         self.subMenu = self.data.allMonthMenu[0][1]
         
+        # Reset Income/Expense Menu's
+        self.incomeMenu = []
+        self.expenseMenu = []
+        self.dataSum = 0
+       
+        for i in range(0, len(self.data.transactionsMenu)):
+            if self.data.transactionsMenu[i][2] == "income":
+                self.incomeMenu.append(self.data.transactionsMenu[i][0])
+            if self.data.transactionsMenu[i][2] == "expense":
+                self.expenseMenu.append(self.data.transactionsMenu[i][0])
         # Generate from database
         self.label = Gtk.Label()
-        self.label.set_markup("<span><b>Overview</b></span>")
-        self.label.set_property("height-request", 10)
+        self.label.set_markup("<span><b>All Transactions</b></span>")
         self.label.set_halign(Gtk.Align.START)
-        self.label.set_margin_bottom(5)
-        self.menuListBox.add(self.label)
+        
+        self.dataSum = 0
+        for i in range(0, len(self.data.transactions)):
+            for j in range(0, len(self.incomeMenu)):
+                if self.data.transactions[i][0][0] == self.incomeMenu[j]:
+                    self.dataSum += self.data.transactions[i][2]
+       
+        for i in range(0, len(self.data.transactions)):
+            for j in range(0, len(self.expenseMenu)):
+                if self.data.transactions[i][0][0] == self.expenseMenu[j]:
+                    self.dataSum -= self.data.transactions[i][2]
+        
+        self.label2 = Gtk.Label()
+        if self.dataSum >= 0:
+            self.label2.set_markup("<span foreground=\"green\">" + "$" + str(self.dataSum) + "</span>")
+        elif self.dataSum < 0:
+            self.label2.set_markup("<span foreground=\"red\">" + "$" + str(self.dataSum) + "</span>")
+        self.label2.set_halign(Gtk.Align.END)
+
+        self.transactionsBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+        self.transactionsBox.pack_start(self.label, False, False, 0)
+        self.transactionsBox.pack_end(self.label2, False, False, 5)
+
+        self.menuListBox.add(self.transactionsBox)
         
         # Income Categories
         self.label = Gtk.Label()
         self.label.set_markup("<span><b>Income</b></span>")
-        self.label.set_property("height-request", 10)
         self.label.set_halign(Gtk.Align.START)
-        self.label.set_margin_bottom(5)
-        self.menuListBox.add(self.label)
-       
+        
+        self.dataSum = 0
+        for i in range(0, len(self.data.transactions)):
+            for j in range(0, len(self.incomeMenu)):
+                if self.data.transactions[i][0][0] == self.incomeMenu[j]:
+                    self.dataSum += self.data.transactions[i][2]
+        
+        self.label2 = Gtk.Label()
+        self.label2.set_markup("<span foreground=\"green\">" + "$" + str(self.dataSum) + "</span>")
+        self.label2.set_halign(Gtk.Align.END)
+
+        self.incomeBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+        self.incomeBox.pack_start(self.label, False, False, 0)
+        self.incomeBox.pack_end(self.label2, False, False, 5)
+
+        self.menuListBox.add(self.incomeBox)
+        
         for i in range(0,len(self.data.transactionsMenu)):
             if self.data.transactionsMenu[i][2] == "income":
+                uniqueID = self.data.transactionsMenu[i][0]
                 self.label = Gtk.Label(self.data.transactionsMenu[i][1])
-                self.label.set_property("height-request", 10)
                 self.label.set_halign(Gtk.Align.START)
                 self.label.set_margin_start(10)
-                self.menuListBox.add(self.label)
+               
+                self.dataSum = 0
+                for j in range(0, len(self.data.transactions)):
+                    if self.data.transactions[j][0][0] == uniqueID:
+                        self.dataSum += self.data.transactions[j][2]
+                
+                self.label2 = Gtk.Label()
+                self.label2.set_markup("<span foreground=\"green\">" + "$" + str(self.dataSum) + "</span>")
+                self.label2.set_halign(Gtk.Align.END)
+
+                self.labelBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+                self.labelBox.pack_start(self.label, False, False, 0)
+                self.labelBox.pack_end(self.label2, False, False, 5)
+
+                self.menuListBox.add(self.labelBox)
+                
                 self.incomeCount += 1
         
         # Expense Categories
         self.label = Gtk.Label()
         self.label.set_markup("<span><b>Expenses</b></span>")
-        self.label.set_property("height-request", 10)
         self.label.set_halign(Gtk.Align.START)
-        self.label.set_margin_top(10)
-        self.label.set_margin_bottom(5)
-        self.menuListBox.add(self.label)
+        
+        self.dataSum = 0
+        for i in range(0, len(self.data.transactions)):
+            for j in range(0, len(self.expenseMenu)):
+                if self.data.transactions[i][0][0] == self.expenseMenu[j]:
+                    self.dataSum += self.data.transactions[i][2]
+        
+        self.label2 = Gtk.Label()
+        self.label2.set_markup("<span foreground=\"red\">" + "$" + str(self.dataSum) + "</span>")
+        self.label2.set_halign(Gtk.Align.END)
+
+        self.expenseBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+        self.expenseBox.pack_start(self.label, False, False, 0)
+        self.expenseBox.pack_end(self.label2, False, False, 5)
+        
+        self.menuListBox.add(self.expenseBox)
         
         for i in range(0,len(self.data.transactionsMenu)):
             if self.data.transactionsMenu[i][2] == "expense":
+                uniqueID = self.data.transactionsMenu[i][0]
                 self.label = Gtk.Label(self.data.transactionsMenu[i][1])
-                self.label.set_property("height-request", 10)
                 self.label.set_halign(Gtk.Align.START)
                 self.label.set_margin_start(10)
-                self.menuListBox.add(self.label)
+                
+                self.dataSum = 0
+                for j in range(0, len(self.data.transactions)):
+                    if self.data.transactions[j][0][0] == uniqueID:
+                        self.dataSum += self.data.transactions[j][2]
+                
+                self.label2 = Gtk.Label()
+                self.label2.set_markup("<span foreground=\"red\">" + "$" + str(self.dataSum) + "</span>")
+                self.label2.set_halign(Gtk.Align.END)
+
+                self.labelBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+                self.labelBox.pack_start(self.label, False, False, 0)
+                self.labelBox.pack_end(self.label2, False, False, 5)
+
+                self.menuListBox.add(self.labelBox)
+                #self.menuListBox.add(self.label)
+                
                 self.expenseCount += 1
            
         self.incomeAllIndex = 1
         self.expenseAllIndex = self.incomeCount + 1
-        
-        
-        
 
         # Add uncategorized
         # Style Widgets
@@ -189,7 +276,16 @@ class Transactions():
         self.uncategorizedLabel.set_property("height-request", 10)
         self.uncategorizedLabel.set_halign(Gtk.Align.START)
         self.uncategorizedLabel.set_margin_start(10)
-        self.menuListBox.add(self.uncategorizedLabel)
+                
+        self.uncategorizedLabel2 = Gtk.Label()
+        self.uncategorizedLabel2.set_markup("<span foreground=\"red\">" + "$" + "</span>")
+        self.uncategorizedLabel2.set_halign(Gtk.Align.END)
+
+        self.uncategorizedLabelBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+        self.uncategorizedLabelBox.pack_start(self.uncategorizedLabel, False, False, 0)
+        self.uncategorizedLabelBox.pack_end(self.uncategorizedLabel2, False, False, 5)
+
+        self.menuListBox.add(self.uncategorizedLabelBox)
         
         # Select default option
         self.menuListBox.select_row(self.menuListBox.get_row_at_index(0))
@@ -323,18 +419,18 @@ class Transactions():
             menu = self.data.transactionsMenu
             data = self.data.transactions
 
-            if row.get_child().get_label() == "<span><b>Overview</b></span>":
-                self.menu = "overview"
+            if row.get_child().get_children()[0].get_label() == "<span><b>All Transactions</b></span>":
+                self.menu = "all transactions"
                 self.menu_index = -1
-            elif row.get_child().get_label() == "<span><b>Income</b></span>":
+            elif row.get_child().get_children()[0].get_label() == "<span><b>Income</b></span>":
                 self.menu = "income"
                 self.menu_index = -2
-            elif row.get_child().get_label() == "<span><b>Expenses</b></span>":
+            elif row.get_child().get_children()[0].get_label() == "<span><b>Expenses</b></span>":
                 self.menu = "expense"
                 self.menu_index = -3
             else:
                 for i in range(len(menu)):
-                    if menu[i][self.data.CATEGORY_TEXT] == row.get_child().get_label():
+                    if menu[i][self.data.CATEGORY_TEXT] == row.get_child().get_children()[0].get_label():
                         self.menu = menu[i][self.data.CATEGORY_TEXT]
                         self.menu_index = menu[i][self.data.CATEGORY_INDEX]
             self.filter_menu(data, menu)
