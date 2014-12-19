@@ -44,6 +44,7 @@ class Add_Category_Popover(Gtk.Window):
         self.addGrid.attach(self.addSubmitButton,1,3,1,1)
         self.addCancelButton.connect("clicked", self.on_addCancelButton_clicked)
         self.addSubmitButton.connect("clicked", self.on_addSubmitButton_clicked)
+        self.addEntry.connect("activate", self.on_addSubmitButton_clicked)
     
     def add_popover_margin(self, widget, margin):
         widget.set_margin_start(margin)

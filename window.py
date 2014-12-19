@@ -116,7 +116,6 @@ class Window(Gtk.Window):
       
         # Connect views to data
         self.data.connect_data_views(self.transactions, self.overview)
-        self.add_popover.addSubmitButton.connect("clicked", self.add_popover.on_addSubmitButton_clicked)
     
     def on_addButton_clicked(self, *args):
         if self.addPopover.get_visible():
