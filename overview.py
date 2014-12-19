@@ -55,22 +55,22 @@ class Overview():
         
         self.balanceLabel = Gtk.Label("Balance:  ")
         self.balanceLabel.set_halign(Gtk.Align.END)
-        self.balanceTotalLabel = Gtk.Label( "$" + str(self.calc.sumTotalData(self.data.income) - self.calc.sumTotalData(self.data.expenses)))
+        self.balanceTotalLabel = Gtk.Label( "$" + str(self.calc.sumTotalData(self.data.transactions) - self.calc.sumTotalData(self.data.transactions)))
         self.balanceTotalLabel.set_halign(Gtk.Align.START)
         
         self.varianceLabel = Gtk.Label("Variance:  ")
         self.varianceLabel.set_halign(Gtk.Align.END)
-        self.varianceTotalLabel = Gtk.Label( "$" + str(self.calc.sumTotalData(self.data.income)))
+        self.varianceTotalLabel = Gtk.Label( "$" + str(self.calc.sumTotalData(self.data.transactions)))
         self.varianceTotalLabel.set_halign(Gtk.Align.START)
         
         self.incomeTotalLabel = Gtk.Label("Total Income:  ")
         self.incomeTotalLabel.set_halign(Gtk.Align.END)
-        self.incomeTotalValueLabel = Gtk.Label( "$" + str(self.calc.sumTotalData(self.data.income)))
+        self.incomeTotalValueLabel = Gtk.Label( "$" + str(self.calc.sumTotalData(self.data.transactions)))
         self.incomeTotalValueLabel.set_halign(Gtk.Align.START)
         
         self.expensesTotalLabel = Gtk.Label("Total Expenses:  ")
         self.expensesTotalLabel.set_halign(Gtk.Align.END)
-        self.expensesTotalValueLabel = Gtk.Label( "$" + str(self.calc.sumTotalData(self.data.expenses)))
+        self.expensesTotalValueLabel = Gtk.Label( "$" + str(self.calc.sumTotalData(self.data.transactions)))
         self.expensesTotalValueLabel.set_halign(Gtk.Align.START)
         
         self.headerGrid.attach(self.blankLabel,0,0,5,1)
@@ -169,17 +169,17 @@ class Overview():
             self.contentGrid.remove_row(0)
         while len(self.entryRows) > 0:
             self.entryRows.pop(0)
-        self.display_info("income", self.data.income)
+        self.display_info("income", self.data.transactions)
         self.empty_row()
-        self.display_info("expense", self.data.expenses)
+        self.display_info("expense", self.data.transactions)
         self.overviewGrid.show_all()
         
         self.clear_selection(self.clearButton)
         
-        self.balanceTotalLabel.set_text( "$" + str(self.calc.sumTotalData(self.data.income) - self.calc.sumTotalData(self.data.expenses)))
-        self.varianceTotalLabel.set_text( "$" + str(self.calc.sumTotalData(self.data.income)))
-        self.incomeTotalValueLabel.set_text( "$" + str(self.calc.sumTotalData(self.data.income)))
-        self.expensesTotalValueLabel.set_text( "$" + str(self.calc.sumTotalData(self.data.expenses)))
+        self.balanceTotalLabel.set_text( "$" + str(self.calc.sumTotalData(self.data.transactions) - self.calc.sumTotalData(self.data.transactions)))
+        self.varianceTotalLabel.set_text( "$" + str(self.calc.sumTotalData(self.data.transactions)))
+        self.incomeTotalValueLabel.set_text( "$" + str(self.calc.sumTotalData(self.data.transactions)))
+        self.expensesTotalValueLabel.set_text( "$" + str(self.calc.sumTotalData(self.data.transactions)))
 
     def display_info(self, category, data_arr):
         # Print out Categories
