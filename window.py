@@ -17,6 +17,13 @@ class Window(Gtk.Window):
         Gtk.Window.__init__(self, title="Budget")
         self.set_default_size(1000, 700)
         
+        # Initialize Views
+        self.overview = Overview(self.data)
+        self.transactions = Transactions(self.data)
+        self.reports = Reports()
+        self.projections = Projections()
+
+        
         # --- Header Bars ---
         self.headerBox = Gtk.Box(name="headerBox")
         self.hbLeft = Gtk.HeaderBar()
@@ -47,7 +54,7 @@ class Window(Gtk.Window):
         self.add_category_popover = Add_Category_Popover(self.data)
         self.addCategoryPopover.add(self.add_category_popover.addGrid)
         # Connect to handler
-        #self.selectButton.connect("clicked", self.on_selectButton_clicked)
+        self.selectButton.connect("clicked", self.transactions.on_selectButton_clicked)
         self.addCategoryButton.connect("clicked", self.add_category_popover.on_addCategoryButton_clicked, self.addCategoryPopover)
         
         # Add Image
@@ -84,12 +91,6 @@ class Window(Gtk.Window):
         self.hbRight.pack_end(self.addButton)
         
         # --- Notebooks
-        # Initialize Views
-        self.overview = Overview(self.data)
-        self.transactions = Transactions(self.data)
-        self.reports = Reports()
-        self.projections = Projections()
-
         # Create Labels
         self.overviewLabel = Gtk.Label("Overview")
         self.transactionsLabel = Gtk.Label("Transactions")

@@ -40,6 +40,8 @@ class Transactions():
         self.incomeMenu = []
         self.expenseMenu = []
         self.dataSum = 0
+        
+        self.editMode = 0
 
         # Set Offsets
         self.entryOffsetTop = 8
@@ -147,10 +149,6 @@ class Transactions():
                 self.incomeMenu.append(self.data.transactionsMenu[i][0])
             if self.data.transactionsMenu[i][2] == "expense":
                 self.expenseMenu.append(self.data.transactionsMenu[i][0])
-        # Generate from database
-        self.label = Gtk.Label()
-        self.label.set_markup("<span><b>All Transactions</b></span>")
-        self.label.set_halign(Gtk.Align.START)
         
         self.dataSum = 0
         for i in range(0, len(self.data.transactions)):
@@ -163,6 +161,11 @@ class Transactions():
                 if self.data.transactions[i][0][0] == self.expenseMenu[j]:
                     self.dataSum -= self.data.transactions[i][2]
         
+        # Generate from database
+        self.transactionsLabel = Gtk.Label()
+        self.transactionsLabel.set_markup("<span><b>All Transactions</b></span>")
+        self.transactionsLabel.set_halign(Gtk.Align.START)
+        
         self.label2 = Gtk.Label()
         if self.dataSum >= 0:
             self.label2.set_markup("<span foreground=\"green\">" + "$" + str(self.dataSum) + "</span>")
@@ -171,15 +174,15 @@ class Transactions():
         self.label2.set_halign(Gtk.Align.END)
 
         self.transactionsBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-        self.transactionsBox.pack_start(self.label, False, False, 0)
+        self.transactionsBox.pack_start(self.transactionsLabel, False, False, 0)
         self.transactionsBox.pack_end(self.label2, False, False, 5)
 
         self.menuListBox.add(self.transactionsBox)
         
         # Income Categories
-        self.label = Gtk.Label()
-        self.label.set_markup("<span><b>Income</b></span>")
-        self.label.set_halign(Gtk.Align.START)
+        self.incomeLabel = Gtk.Label()
+        self.incomeLabel.set_markup("<span><b>Income</b></span>")
+        self.incomeLabel.set_halign(Gtk.Align.START)
         
         self.dataSum = 0
         for i in range(0, len(self.data.transactions)):
@@ -192,7 +195,7 @@ class Transactions():
         self.label2.set_halign(Gtk.Align.END)
 
         self.incomeBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-        self.incomeBox.pack_start(self.label, False, False, 0)
+        self.incomeBox.pack_start(self.incomeLabel, False, False, 0)
         self.incomeBox.pack_end(self.label2, False, False, 5)
 
         self.menuListBox.add(self.incomeBox)
@@ -222,9 +225,9 @@ class Transactions():
                 self.incomeCount += 1
         
         # Expense Categories
-        self.label = Gtk.Label()
-        self.label.set_markup("<span><b>Expenses</b></span>")
-        self.label.set_halign(Gtk.Align.START)
+        self.expenseLabel = Gtk.Label()
+        self.expenseLabel.set_markup("<span><b>Expenses</b></span>")
+        self.expenseLabel.set_halign(Gtk.Align.START)
         
         self.dataSum = 0
         for i in range(0, len(self.data.transactions)):
@@ -237,7 +240,7 @@ class Transactions():
         self.label2.set_halign(Gtk.Align.END)
 
         self.expenseBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-        self.expenseBox.pack_start(self.label, False, False, 0)
+        self.expenseBox.pack_start(self.expenseLabel, False, False, 0)
         self.expenseBox.pack_end(self.label2, False, False, 5)
         
         self.menuListBox.add(self.expenseBox)
@@ -411,6 +414,33 @@ class Transactions():
             self.entryRows.append([self.layoutGrid, [self.categoryLabel, self.dateLabel, self.currencyLabel, self.costLabel, self.descriptionLabel, self.editButton], self.entryGrid, self.costGrid, data[i][self.data.UNIQUE_ID], self.transactionType])
             self.contentGrid.show_all() 
         
+
+    def on_selectButton_clicked(self, *args):
+        if self.editMode == 0:
+            for i in range(len(self.menuListBox)):
+                self.editMode = 1
+                if (self.menuListBox.get_row_at_index(i).get_child().get_children()[0] != self.transactionsLabel
+                    and self.menuListBox.get_row_at_index(i).get_child().get_children()[0] != self.incomeLabel
+                    and self.menuListBox.get_row_at_index(i).get_child().get_children()[0] != self.expenseLabel):
+                    self.button = Gtk.Button()
+                    self.icon = Gio.ThemedIcon(name="window-close-symbolic")
+                    self.image = Gtk.Image.new_from_gicon(self.icon, Gtk.IconSize.MENU)
+                    self.button.add(self.image)
+                    self.button.show_all()
+                    self.menuListBox.get_row_at_index(i).get_child().get_children()[1].hide()
+                    self.menuListBox.get_row_at_index(i).get_child().pack_end(self.button, False, False, 5)
+        elif self.editMode == 1:
+            self.editMode = 0
+            for i in range(len(self.menuListBox)):
+                if (self.menuListBox.get_row_at_index(i).get_child().get_children()[0] != self.transactionsLabel
+                    and self.menuListBox.get_row_at_index(i).get_child().get_children()[0] != self.incomeLabel
+                    and self.menuListBox.get_row_at_index(i).get_child().get_children()[0] != self.expenseLabel):
+                    
+                    self.menuListBox.get_row_at_index(i).get_child().get_children()[1].hide()
+                    self.menuListBox.get_row_at_index(i).get_child().get_children()[2].show()
+
+
+
     def menu_clicked(self, listbox, row):
         # To catch calls before widget exists.
         if row == None:
