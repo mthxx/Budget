@@ -82,7 +82,7 @@ class Transactions():
 
         # Set Styling
         self.menuScrolledWindow.set_vexpand(True)
-        self.menuScrolledWindow.set_property("width-request",179)
+        self.menuScrolledWindow.set_property("width-request",277)
         self.menuScrolledWindow.set_property("hscrollbar-policy", Gtk.PolicyType.NEVER)
 
         self.subMenuScrolledWindow.set_vexpand(True)
