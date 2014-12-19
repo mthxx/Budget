@@ -23,8 +23,6 @@ class Data():
         #Indexes for data arrays
 
         self.transactionsMenu = []
-        self.income = []
-        self.expenses = []
         self.transactions = []
 
         self.transaction_view = 0
@@ -75,7 +73,6 @@ class Data():
                     self.arr.append(line[8].strip())
                     if self.LATEST_ID < int(line[8].strip()):
                         self.LATEST_ID = int(line[8].strip())
-                    self.sort_data(self.income, self.arr)
                     self.sort_data(self.transactions, self.arr)
 
             f.close()
@@ -171,8 +168,7 @@ class Data():
     
     def delete_data(self, uniqueID):
         if(os.path.isfile('database.txt')):
-            self.income = []
-            self.expenses = []
+            self.transactionsMenu = []
             self.transactions = []
             f = open('database.txt', 'r')
             output = []
