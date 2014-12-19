@@ -162,8 +162,11 @@ class Data():
             f = open('database.txt', 'a')
             f.write(entryString)
             f.close()
+            
+            # Refresh data and views
             self.import_data()
-            self.transaction_view.view.display_content()
+            self.transaction_view.generate_sidebars()
+            self.transaction_view.display_content()
             self.overview.redisplay_info()
     
     def delete_data(self, uniqueID):
@@ -188,9 +191,9 @@ class Data():
             f.writelines(output)
             f.close()
            
+            # Refresh data and views
             self.import_data()
-            
-            # Refresh Views
+            self.transaction_view.generate_sidebars()
             self.transaction_view.display_content()
             self.overview.redisplay_info()
             
