@@ -191,7 +191,7 @@ class Data():
             self.import_data()
             
             # Refresh Views
-            self.transaction_view.view.display_content()
+            self.transaction_view.display_content()
             self.overview.redisplay_info()
             
 
