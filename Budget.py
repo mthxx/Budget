@@ -10,7 +10,15 @@ class main():
         self.win = Window(self.data)
         self.win.connect("delete-event", Gtk.main_quit)
         self.win.show_all()
+        
         self.win.hbLeft.hide()
+        for i in range(0, len(self.win.transactions.menuListBox) - 1):
+            if (self.win.transactions.menuListBox.get_row_at_index(i).get_child().get_children()[0] != self.win.transactions.transactionsLabel 
+                and self.win.transactions.menuListBox.get_row_at_index(i).get_child().get_children()[0] != self.win.transactions.incomeLabel
+                and self.win.transactions.menuListBox.get_row_at_index(i).get_child().get_children()[0] != self.win.transactions.expenseLabel):
+                
+                self.win.transactions.menuListBox.get_row_at_index(i).get_child().get_children()[2].hide()
+        
         self.win.connect('key-press-event', self.on_key_function)
         self.win.set_icon_from_file("logo.png")
         Gtk.main()

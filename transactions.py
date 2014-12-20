@@ -215,9 +215,12 @@ class Transactions():
                 self.label2 = Gtk.Label()
                 self.label2.set_markup("<span foreground=\"green\">" + "$" + str(self.dataSum) + "</span>")
                 self.label2.set_halign(Gtk.Align.END)
+                
+                self.button = self.create_delete_button(self.label.get_text())
 
                 self.labelBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
                 self.labelBox.pack_start(self.label, False, False, 0)
+                self.labelBox.pack_end(self.button, False, False, 5)
                 self.labelBox.pack_end(self.label2, False, False, 5)
 
                 self.menuListBox.add(self.labelBox)
@@ -260,9 +263,12 @@ class Transactions():
                 self.label2 = Gtk.Label()
                 self.label2.set_markup("<span foreground=\"red\">" + "$" + str(self.dataSum) + "</span>")
                 self.label2.set_halign(Gtk.Align.END)
+                
+                self.button = self.create_delete_button(self.label.get_text())
 
                 self.labelBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
                 self.labelBox.pack_start(self.label, False, False, 0)
+                self.labelBox.pack_end(self.button, False, False, 5)
                 self.labelBox.pack_end(self.label2, False, False, 5)
 
                 self.menuListBox.add(self.labelBox)
@@ -283,7 +289,7 @@ class Transactions():
         self.uncategorizedLabel2 = Gtk.Label()
         self.uncategorizedLabel2.set_markup("<span foreground=\"red\">" + "$" + "</span>")
         self.uncategorizedLabel2.set_halign(Gtk.Align.END)
-
+                
         self.uncategorizedLabelBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         self.uncategorizedLabelBox.pack_start(self.uncategorizedLabel, False, False, 0)
         self.uncategorizedLabelBox.pack_end(self.uncategorizedLabel2, False, False, 5)
@@ -415,20 +421,108 @@ class Transactions():
             self.contentGrid.show_all() 
         
 
+    def create_delete_button(self, label):
+        self.button = Gtk.Button()
+        self.icon = Gio.ThemedIcon(name="window-close-symbolic")
+        self.image = Gtk.Image.new_from_gicon(self.icon, Gtk.IconSize.MENU)
+        self.button.add(self.image)
+        self.button.show_all()
+        
+        self.editPopover = Gtk.Popover.new(self.button)
+        
+        self.editGrid = Gtk.Grid()
+        
+        self.editButton = Gtk.Button("Edit")
+        self.deleteButton = Gtk.Button("Delete")
+        self.selectorBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+        
+        self.confirmLabelLine1 = Gtk.Label("Are you sure?")
+        self.confirmLabelLine2 = Gtk.Label()
+        self.deleteCancelButton = Gtk.Button("Cancel")
+        self.deleteConfirmButton = Gtk.Button("Confirm")
+        self.deleteSelectorBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+        
+        # Style Widgets
+        self.editButton.set_size_request(100,32)
+        self.deleteButton.set_size_request(100,32)
+        self.deleteCancelButton.set_size_request(100,32)
+        self.deleteConfirmButton.set_size_request(100,32)
+        self.confirmLabelLine2.set_markup("<span foreground=\"red\"><b>This cannot be undone!</b></span>")
+        Gtk.StyleContext.add_class(self.selectorBox.get_style_context(), "linked")
+        Gtk.StyleContext.add_class(self.deleteSelectorBox.get_style_context(), "linked")
+        self.selectorBox.set_margin_start(10)
+        self.selectorBox.set_margin_top(10)
+        self.selectorBox.set_margin_bottom(10)
+        self.selectorBox.set_margin_end(5)
+        self.confirmLabelLine1.set_margin_top(10)
+        self.deleteSelectorBox.set_margin_start(10)
+        self.deleteSelectorBox.set_margin_top(10)
+        self.deleteSelectorBox.set_margin_bottom(10)
+        self.deleteSelectorBox.set_margin_end(5)
+
+        # Connect Widget Handlers
+        self.button.connect("clicked", self.on_categoryModifyButton_clicked, self.editPopover, self.confirmLabelLine1, self.confirmLabelLine2, self.deleteSelectorBox)
+        #self.editButton.connect("clicked", self.on_editButton_clicked, self.editPopover, self.confirmLabelLine1, self.confirmLabelLine2, self.deleteSelectorBox)
+        self.deleteButton.connect("clicked", self.on_deleteButton_clicked, self.selectorBox, self.confirmLabelLine1, self.confirmLabelLine2, self.deleteSelectorBox)
+        #self.deleteCancelButton.connect("clicked", self.on_deleteCancelButton_clicked)
+        self.deleteConfirmButton.connect("clicked", self.delete_category_confirm, label)
+
+        # Add Widgets to Grid
+        self.selectorBox.add(self.editButton)
+        self.selectorBox.add(self.deleteButton)
+
+        self.deleteSelectorBox.add(self.deleteCancelButton)
+        self.deleteSelectorBox.add(self.deleteConfirmButton)
+        
+        self.editGrid.attach(self.selectorBox,0,0,2,1)
+        self.editGrid.attach(self.confirmLabelLine1, 0, 1, 2, 1)
+        self.editGrid.attach(self.confirmLabelLine2, 0, 2, 2, 1)
+        self.editGrid.attach(self.deleteSelectorBox, 0, 3, 2, 1)
+        
+        self.editPopover.add(self.editGrid)
+
+        return self.button
+    
+    def on_categoryModifyButton_clicked(self, button, editPopover, confirmLabelLine1, confirmLabelLine2, deleteSelectorBox):
+        if editPopover.get_visible():
+            editPopover.hide()
+        else:
+            editPopover.show_all()
+            confirmLabelLine1.hide()
+            confirmLabelLine2.hide()
+            deleteSelectorBox.hide()
+
+    #def on_editButton_clicked(self, button, editPopover, confirmLabelLine1, confirmLabelLine2, deleteSelectorBox):
+    #    print(editPopover)
+    #    if editPopover.get_visible():
+    #        editPopover.hide()
+    #    else:
+    #        editPopover.show_all()
+    #        confirmLabelLine1.hide()
+     #       confirmLabelLine2.hide()
+     #       deleteSelectorBox.hide()
+    
+    def on_deleteButton_clicked(self, button, selectorBox, confirmLabelLine1, confirmLabelLine2, deleteSelectorBox):
+        selectorBox.hide()
+        confirmLabelLine1.show()
+        confirmLabelLine2.show()
+        deleteSelectorBox.show_all()
+
+    def delete_category_confirm(self, button, label):
+        for i in range(len(self.menuListBox) - 1):
+            if self.menuListBox.get_row_at_index(i).get_child().get_children()[0].get_text() == label:
+                self.menuListBox.remove(self.menuListBox.get_row_at_index(i))
+        
+
     def on_selectButton_clicked(self, *args):
         if self.editMode == 0:
-            for i in range(len(self.menuListBox)):
+            for i in range(len(self.menuListBox) - 1):
                 self.editMode = 1
                 if (self.menuListBox.get_row_at_index(i).get_child().get_children()[0] != self.transactionsLabel
                     and self.menuListBox.get_row_at_index(i).get_child().get_children()[0] != self.incomeLabel
                     and self.menuListBox.get_row_at_index(i).get_child().get_children()[0] != self.expenseLabel):
-                    self.button = Gtk.Button()
-                    self.icon = Gio.ThemedIcon(name="window-close-symbolic")
-                    self.image = Gtk.Image.new_from_gicon(self.icon, Gtk.IconSize.MENU)
-                    self.button.add(self.image)
-                    self.button.show_all()
                     self.menuListBox.get_row_at_index(i).get_child().get_children()[1].hide()
-                    self.menuListBox.get_row_at_index(i).get_child().pack_end(self.button, False, False, 5)
+                    self.menuListBox.get_row_at_index(i).get_child().get_children()[2].show()
         elif self.editMode == 1:
             self.editMode = 0
             for i in range(len(self.menuListBox)):
@@ -436,8 +530,8 @@ class Transactions():
                     and self.menuListBox.get_row_at_index(i).get_child().get_children()[0] != self.incomeLabel
                     and self.menuListBox.get_row_at_index(i).get_child().get_children()[0] != self.expenseLabel):
                     
-                    self.menuListBox.get_row_at_index(i).get_child().get_children()[1].hide()
-                    self.menuListBox.get_row_at_index(i).get_child().get_children()[2].show()
+                    self.menuListBox.get_row_at_index(i).get_child().get_children()[1].show()
+                    self.menuListBox.get_row_at_index(i).get_child().get_children()[2].hide()
 
 
 
