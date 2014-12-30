@@ -75,7 +75,7 @@ class Add_Category_Popover(Gtk.Window):
             self.data.add_data(self.entryString)
 
             # Refresh the menu
-            self.data.transaction_view.view.generate_sidebars()
+            self.data.transaction_view.generate_sidebars()
             
             self.addPopover.hide()
     

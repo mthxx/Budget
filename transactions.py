@@ -263,13 +263,14 @@ class Transactions():
                 self.label2 = Gtk.Label()
                 self.label2.set_markup("<span foreground=\"red\">" + "$" + str(self.dataSum) + "</span>")
                 self.label2.set_halign(Gtk.Align.END)
-                
+                self.label3 = "Pizza"
                 self.button = self.create_delete_button(self.label.get_text())
 
                 self.labelBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
                 self.labelBox.pack_start(self.label, False, False, 0)
                 self.labelBox.pack_end(self.button, False, False, 5)
                 self.labelBox.pack_end(self.label2, False, False, 5)
+                
 
                 self.menuListBox.add(self.labelBox)
                 #self.menuListBox.add(self.label)
@@ -314,6 +315,13 @@ class Transactions():
             self.subMenuListBox.add(self.label)
 
         self.menuListBox.show_all()
+        for i in range(len(self.menuListBox)):
+            if (self.menuListBox.get_row_at_index(i).get_child().get_children()[0] != self.transactionsLabel
+                and self.menuListBox.get_row_at_index(i).get_child().get_children()[0] != self.incomeLabel
+                and self.menuListBox.get_row_at_index(i).get_child().get_children()[0] != self.expenseLabel
+                and self.menuListBox.get_row_at_index(i).get_child().get_children()[0] != self.uncategorizedLabel):
+                self.menuListBox.get_row_at_index(i).get_child().get_children()[2].hide()
+        
         self.subMenuListBox.select_row(self.subMenuListBox.get_row_at_index(0))
         
     
@@ -528,8 +536,8 @@ class Transactions():
             for i in range(len(self.menuListBox)):
                 if (self.menuListBox.get_row_at_index(i).get_child().get_children()[0] != self.transactionsLabel
                     and self.menuListBox.get_row_at_index(i).get_child().get_children()[0] != self.incomeLabel
-                    and self.menuListBox.get_row_at_index(i).get_child().get_children()[0] != self.expenseLabel):
-                    
+                    and self.menuListBox.get_row_at_index(i).get_child().get_children()[0] != self.expenseLabel
+                    and self.menuListBox.get_row_at_index(i).get_child().get_children()[0] != self.uncategorizedLabel):
                     self.menuListBox.get_row_at_index(i).get_child().get_children()[1].show()
                     self.menuListBox.get_row_at_index(i).get_child().get_children()[2].hide()
 
