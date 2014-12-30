@@ -43,39 +43,39 @@ class Data():
                             [12, "December"],
                             ]
     def import_data(self):
-        if(os.path.isfile('database.txt')):
-            f = open('database.txt', 'r')
-            for db in f.readlines():
-                line = db.split(',')
-                if line[0] == 'menu':
-                    self.arr = []
-                    self.arr.append(int(line[3].strip()))
-                    self.arr.append(line[2].strip())
-                    self.arr.append(line[1].strip())
-                    if self.LATEST_MENU_ID < int(line[3].strip()):
-                        self.LATEST_MENU_ID = int(line[3].strip())
-                    self.transactionsMenu.append(self.arr)
-               
-                elif line[0] == 'transaction':
-                    self.arr = []
-                    self.catArr = []
-                    self.dateArr = []
-                    self.catArr.append(int(line[1].strip()))
-                    self.catArr.append(line[2].strip())
-                    self.dateArr.append(int(line[3].strip()))
-                    self.dateArr.append(int(line[4].strip()))
-                    self.dateArr.append(int(line[5].strip()))
-                    self.arr.append(self.catArr)
-                    self.arr.append(self.dateArr)
-                    self.arr.append(Decimal(line[6].strip()))
-                    self.arr.append(line[7].strip())
-                    self.arr.append(line[8].strip())
-                    if self.LATEST_ID < int(line[8].strip()):
-                        self.LATEST_ID = int(line[8].strip())
-                    self.sort_data(self.transactions, self.arr)
+        
+        f = open('database.txt', 'r')
+        for db in f.readlines():
+            line = db.split(',')
+            if line[0] == 'menu':
+                self.arr = []
+                self.arr.append(int(line[3].strip()))
+                self.arr.append(line[2].strip())
+                self.arr.append(line[1].strip())
+                if self.LATEST_MENU_ID < int(line[3].strip()):
+                    self.LATEST_MENU_ID = int(line[3].strip())
+                self.transactionsMenu.append(self.arr)
+           
+            elif line[0] == 'transaction':
+                self.arr = []
+                self.catArr = []
+                self.dateArr = []
+                self.catArr.append(int(line[1].strip()))
+                self.catArr.append(line[2].strip())
+                self.dateArr.append(int(line[3].strip()))
+                self.dateArr.append(int(line[4].strip()))
+                self.dateArr.append(int(line[5].strip()))
+                self.arr.append(self.catArr)
+                self.arr.append(self.dateArr)
+                self.arr.append(Decimal(line[6].strip()))
+                self.arr.append(line[7].strip())
+                self.arr.append(line[8].strip())
+                if self.LATEST_ID < int(line[8].strip()):
+                    self.LATEST_ID = int(line[8].strip())
+                self.sort_data(self.transactions, self.arr)
 
-            f.close()
-
+        f.close()
+        
     def sort_data(self, data, arr):
         if len(data) == 0:
             data.append(arr)

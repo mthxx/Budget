@@ -1,10 +1,22 @@
 from gi.repository import Gtk, Gio, Gdk
 from window import Window
 from data import Data
+import os.path
 
 class main():
 
     def __init__(self):
+        # If a database file doesn't exist, create one
+        # This should run only on the first launch of the application
+        if(os.path.isfile('database.txt')) == False:
+            uncategorizedIncomeString = "menu,income,Uncategorized,-1\n"
+            uncategorizedExpenseString = "menu,expense,Uncategorized,-2\n"
+            
+            f = open('database.txt', 'w')
+            f.write(uncategorizedIncomeString)
+            f.write(uncategorizedExpenseString)
+            f.close()
+
         self.data = Data()
         self.data.import_data()
         self.win = Window(self.data)
