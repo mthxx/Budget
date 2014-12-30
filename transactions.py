@@ -395,7 +395,15 @@ class Transactions():
             self.descriptionLabel = Gtk.Label()
             
             self.currencyLabel = Gtk.Label("$")
-            self.costLabel = Gtk.Label(str(data[i][self.data.VALUE]))
+            self.costLabel = Gtk.Label()
+            
+            for j in range(0, len(self.data.transactionsMenu)):
+                if int(data[i][0][0]) == int(self.data.transactionsMenu[j][0]) and self.data.transactionsMenu[j][2] == "income":
+                    self.costLabel.set_markup("<span foreground=\"green\">" + "$" + str(data[i][self.data.VALUE]) + "</span>")
+            
+            for j in range(0, len(self.data.transactionsMenu)):
+                if int(data[i][0][0]) == int(self.data.transactionsMenu[j][0]) and self.data.transactionsMenu[j][2] == "expense":
+                    self.costLabel.set_markup("<span foreground=\"red\">" + "$" + str(data[i][self.data.VALUE]) + "</span>")
 
             # Create Edit Popover
             self.editButton = Gtk.Button()
