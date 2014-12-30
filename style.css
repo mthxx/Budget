@@ -1,7 +1,8 @@
-#hbLeft, #hbRight{
+#hbLeft{
+    border-top-right-radius: 0;
     border-style: solid;
-    border-left-width: 1px;
-    border-left-color: #a1a1a1;
+    border-right-width: 1px;
+    border-right-color: #a1a1a1;
 }
 
 #layoutGrid{

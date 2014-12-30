@@ -26,7 +26,7 @@ class Window(Gtk.Window):
         
         # --- Header Bars ---
         self.headerBox = Gtk.Box(name="headerBox")
-        self.hbLeft = Gtk.HeaderBar()
+        self.hbLeft = Gtk.HeaderBar(name="hbLeft")
         self.hbRight = Gtk.HeaderBar(name="hbRight")
        
         # Style Header Bars
@@ -107,8 +107,8 @@ class Window(Gtk.Window):
         self.notebook = Gtk.Notebook()
         self.notebook.insert_page(self.overview.grid, self.overviewLabel, 0)
         self.notebook.insert_page(self.transactions.grid, self.transactionsLabel, 1)
-        self.notebook.insert_page(self.reports.grid, self.reportsLabel, 3)
-        self.notebook.insert_page(self.projections.grid, self.projectionsLabel, 4)
+        #self.notebook.insert_page(self.reports.grid, self.reportsLabel, 3)
+        #self.notebook.insert_page(self.projections.grid, self.projectionsLabel, 4)
         self.add(self.notebook)
         
         # Connect to handler
