@@ -54,7 +54,6 @@ class Data():
                     self.arr.append(line[1].strip())
                     if self.LATEST_MENU_ID < int(line[3].strip()):
                         self.LATEST_MENU_ID = int(line[3].strip())
-                    #self.arr.append(line[3].strip())
                     self.transactionsMenu.append(self.arr)
                
                 elif line[0] == 'transaction':
@@ -166,6 +165,48 @@ class Data():
             self.transaction_view.display_content()
             self.overview.redisplay_info()
     
+    def delete_category(self, uniqueID):
+        if(os.path.isfile('database.txt')):
+            f = open('database.txt', 'r')
+            output = []
+            for line in f:
+                cur = line.split(",")
+                cur[0].strip()
+                if cur[0] == "menu":
+                    if int(cur[3].strip()) != int(uniqueID):
+                        output.append(line)
+                elif cur[0] == "transaction":
+                    if int(cur[1].strip()) != int(uniqueID):
+                        output.append(line)
+                    elif int(cur[1].strip()) == int(uniqueID):
+                        newLine = line.split(",")
+                        for i in range(0, len(self.transactionsMenu)):
+                            if int(newLine[1]) == int(self.transactionsMenu[i][0]) and self.transactionsMenu[i][2] == "income":
+                                newLine[1] = -1
+                            elif int(newLine[1]) == int(self.transactionsMenu[i][0]) and self.transactionsMenu[i][2] == "expense":
+                                newLine[1] = -2
+                            newLine[2] = "Uncategorized"
+                            line = ""
+                            for j in range(0,len(newLine)):
+                                line += str(newLine[j]).strip() + ","
+                        line = line[:-1]
+                        line += "\n"
+                        output.append(line)
+           
+            
+            f.close()
+            f = open('database.txt', 'w')
+            f.writelines(output)
+            f.close()
+           
+            # Refresh data and views
+            self.transactionsMenu = []
+            self.transactions = []
+            self.import_data()
+            self.transaction_view.generate_sidebars()
+            self.transaction_view.display_content()
+            self.overview.redisplay_info()
+
     def delete_data(self, uniqueID):
         if(os.path.isfile('database.txt')):
             self.transactionsMenu = []

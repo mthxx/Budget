@@ -543,10 +543,16 @@ class Transactions():
         deleteSelectorBox.show_all()
 
     def delete_category_confirm(self, button, label):
-        for i in range(len(self.menuListBox) - 1):
-            if self.menuListBox.get_row_at_index(i).get_child().get_children()[0].get_text() == label:
-                self.menuListBox.remove(self.menuListBox.get_row_at_index(i))
-        
+        for i in range(len(self.menuListBox)):
+            if self.menuListBox.get_row_at_index(i) == None:
+                return
+            elif self.menuListBox.get_row_at_index(i).get_child().get_children()[0].get_text() == label:
+                for j in range(0, len(self.data.transactionsMenu)):
+                    # Find matching menu item and uniqueID in database
+                    if self.data.transactionsMenu[j][1] == self.menuListBox.get_row_at_index(i).get_child().get_children()[0].get_label():
+                        self.data.delete_category(self.data.transactionsMenu[j][0])
+                        # If row is found, break out of loop.
+                        return
 
     def on_selectButton_clicked(self, *args):
         if self.editMode == 0:
