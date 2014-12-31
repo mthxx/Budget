@@ -20,8 +20,9 @@ class Transactions():
         
         # Menu List Box Indexes
         self.EDIT_CATEGORY_TITLE = 0
-        self.EDIT_CATEGORY_BALANCE = 1
-        self.EDIT_CATEGORY_BUTTON = 2
+        self.EDIT_CATEGORY_ENTRY = 1
+        self.EDIT_CATEGORY_BALANCE = 2
+        self.EDIT_CATEGORY_BUTTON = 3
         
         # Additional Items
         self.ENTRY_GRID_INDEX = 2            # Element
@@ -184,7 +185,7 @@ class Transactions():
 
         self.menuListBox.add(self.transactionsBox)
         
-        # Income Categories
+        # Income Label 
         self.incomeLabel = Gtk.Label()
         self.incomeLabel.set_markup("<span><b>Income</b></span>")
         self.incomeLabel.set_halign(Gtk.Align.START)
@@ -204,7 +205,8 @@ class Transactions():
         self.incomeBox.pack_end(self.label2, False, False, 5)
 
         self.menuListBox.add(self.incomeBox)
-        
+       
+        # Income Categories 
         for i in range(0,len(self.data.transactionsMenu)):
             if self.data.transactionsMenu[i][2] == "income":
                 if self.data.transactionsMenu[i][1] != "Uncategorized":
@@ -212,7 +214,12 @@ class Transactions():
                     self.label = Gtk.Label(self.data.transactionsMenu[i][1])
                     self.label.set_halign(Gtk.Align.START)
                     self.label.set_margin_start(10)
-                   
+                    
+                    self.entry = Gtk.Entry()
+                    self.entry.set_text(self.label.get_label())
+    
+                    self.entry.connect("activate", self.on_selectButton_clicked)
+
                     self.dataSum = 0
                     for j in range(0, len(self.data.transactions)):
                         if self.data.transactions[j][0][0] == uniqueID:
@@ -226,6 +233,7 @@ class Transactions():
 
                     self.labelBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
                     self.labelBox.pack_start(self.label, False, False, 0)
+                    self.labelBox.pack_start(self.entry, False, False, 0)
                     self.labelBox.pack_end(self.button, False, False, 5)
                     self.labelBox.pack_end(self.label2, False, False, 5)
 
@@ -258,7 +266,7 @@ class Transactions():
                     
                     self.incomeCount += 1
         
-        # Expense Categories
+        # Expense Label
         self.expenseLabel = Gtk.Label()
         self.expenseLabel.set_markup("<span><b>Expenses</b></span>")
         self.expenseLabel.set_halign(Gtk.Align.START)
@@ -279,6 +287,7 @@ class Transactions():
         
         self.menuListBox.add(self.expenseBox)
         
+        # Expense Categories
         for i in range(0,len(self.data.transactionsMenu)):
             if self.data.transactionsMenu[i][2] == "expense":
                 if self.data.transactionsMenu[i][1] != "Uncategorized":
@@ -286,6 +295,9 @@ class Transactions():
                     self.label = Gtk.Label(self.data.transactionsMenu[i][1])
                     self.label.set_halign(Gtk.Align.START)
                     self.label.set_margin_start(10)
+                    
+                    self.entry = Gtk.Entry()
+                    self.entry.set_text(self.label.get_label())
                     
                     self.dataSum = 0
                     for j in range(0, len(self.data.transactions)):
@@ -299,6 +311,7 @@ class Transactions():
 
                     self.labelBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
                     self.labelBox.pack_start(self.label, False, False, 0)
+                    self.labelBox.pack_start(self.entry, False, False, 0)
                     self.labelBox.pack_end(self.button, False, False, 5)
                     self.labelBox.pack_end(self.label2, False, False, 5)
                     
@@ -579,17 +592,26 @@ class Transactions():
             for i in range(len(self.menuListBox)):
                 self.editMode = 1
                 if self.editable_category(i):
+                    self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_TITLE].hide()
                     self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_BALANCE].hide()
+                    self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_ENTRY].show()
                     self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_BUTTON].show()
         elif self.editMode == 1:
             self.editMode = 0
             for i in range(len(self.menuListBox)):
                 if self.editable_category(i):
+                    if self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_TITLE].get_label() != self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_ENTRY].get_text():
+                        for j in range(0, len(self.data.transactionsMenu)):
+                            # Find matching menu item and uniqueID in database
+                            if self.data.transactionsMenu[j][1] == self.menuListBox.get_row_at_index(i).get_child().get_children()[0].get_label():
+                                self.data.edit_category(self.data.transactionsMenu[j][0],self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_ENTRY].get_text())
+                   
+
+                    self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_TITLE].show()
                     self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_BALANCE].show()
+                    self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_ENTRY].hide()
                     self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_BUTTON].hide()
-
-
-
+                    
     def menu_clicked(self, listbox, row):
         # To catch calls before widget exists.
         if row == None:
