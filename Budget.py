@@ -24,11 +24,9 @@ class main():
         self.win.show_all()
         
         self.win.hbLeft.hide()
+
         for i in range(0, len(self.win.transactions.menuListBox)):
-            if (self.win.transactions.menuListBox.get_row_at_index(i).get_child().get_children()[0] != self.win.transactions.transactionsLabel 
-                and self.win.transactions.menuListBox.get_row_at_index(i).get_child().get_children()[0] != self.win.transactions.incomeLabel
-                and self.win.transactions.menuListBox.get_row_at_index(i).get_child().get_children()[0] != self.win.transactions.expenseLabel
-                and self.win.transactions.menuListBox.get_row_at_index(i).get_child().get_children()[0].get_label() != "Uncategorized"):
+            if self.win.transactions.editable_category(i):
                 self.win.transactions.menuListBox.get_row_at_index(i).get_child().get_children()[2].hide()
         
         self.win.connect('key-press-event', self.on_key_function)

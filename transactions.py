@@ -9,7 +9,7 @@ class Transactions():
         # Content Grid
         self.LAYOUT_GRID_INDEX = 0           # Element
 
-        # Layout Widgets
+        # Layout Widget Indexes
         self.LAYOUT_WIDGET_INDEX = 1         # Array
         self.CATEGORY_LABEL_INDEX = 0        # Element
         self.DATE_LABEL_INDEX = 1            # Element
@@ -17,6 +17,11 @@ class Transactions():
         self.COST_LABEL_INDEX = 3            # Element
         self.DESCRIPTION_LABEL_INDEX = 4     # Element
         self.EDIT_BUTTON_INDEX = 5
+        
+        # Menu List Box Indexes
+        self.EDIT_CATEGORY_TITLE = 0
+        self.EDIT_CATEGORY_BALANCE = 1
+        self.EDIT_CATEGORY_BUTTON = 2
         
         # Additional Items
         self.ENTRY_GRID_INDEX = 2            # Element
@@ -352,11 +357,8 @@ class Transactions():
 
         self.menuListBox.show_all()
         for i in range(len(self.menuListBox)):
-            if (self.menuListBox.get_row_at_index(i).get_child().get_children()[0] != self.transactionsLabel
-                and self.menuListBox.get_row_at_index(i).get_child().get_children()[0] != self.incomeLabel
-                and self.menuListBox.get_row_at_index(i).get_child().get_children()[0] != self.expenseLabel
-                and self.menuListBox.get_row_at_index(i).get_child().get_children()[0].get_label() != "Uncategorized"):
-                self.menuListBox.get_row_at_index(i).get_child().get_children()[2].hide()
+            if self.editable_category(i):
+                self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_BUTTON].hide()
         
         self.subMenuListBox.select_row(self.subMenuListBox.get_row_at_index(0))
         
@@ -535,6 +537,16 @@ class Transactions():
 
         return self.button
     
+    def editable_category(self, i):
+        if (self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_TITLE] != self.transactionsLabel
+            and self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_TITLE] != self.incomeLabel
+            and self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_TITLE] != self.expenseLabel
+            and self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_TITLE].get_label() != "Uncategorized"):
+            return True
+        else:
+            return False
+
+
     def on_categoryModifyButton_clicked(self, button, editPopover, confirmLabelLine1, confirmLabelLine2, deleteSelectorBox):
         if editPopover.get_visible():
             editPopover.hide()
@@ -566,21 +578,15 @@ class Transactions():
         if self.editMode == 0:
             for i in range(len(self.menuListBox)):
                 self.editMode = 1
-                if (self.menuListBox.get_row_at_index(i).get_child().get_children()[0] != self.transactionsLabel
-                    and self.menuListBox.get_row_at_index(i).get_child().get_children()[0] != self.incomeLabel
-                    and self.menuListBox.get_row_at_index(i).get_child().get_children()[0] != self.expenseLabel
-                    and self.menuListBox.get_row_at_index(i).get_child().get_children()[0].get_label() != "Uncategorized"):
-                    self.menuListBox.get_row_at_index(i).get_child().get_children()[1].hide()
-                    self.menuListBox.get_row_at_index(i).get_child().get_children()[2].show()
+                if self.editable_category(i):
+                    self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_BALANCE].hide()
+                    self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_BUTTON].show()
         elif self.editMode == 1:
             self.editMode = 0
             for i in range(len(self.menuListBox)):
-                if (self.menuListBox.get_row_at_index(i).get_child().get_children()[0] != self.transactionsLabel
-                    and self.menuListBox.get_row_at_index(i).get_child().get_children()[0] != self.incomeLabel
-                    and self.menuListBox.get_row_at_index(i).get_child().get_children()[0] != self.expenseLabel
-                    and self.menuListBox.get_row_at_index(i).get_child().get_children()[0].get_label() != "Uncategorized"):
-                    self.menuListBox.get_row_at_index(i).get_child().get_children()[1].show()
-                    self.menuListBox.get_row_at_index(i).get_child().get_children()[2].hide()
+                if self.editable_category(i):
+                    self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_BALANCE].show()
+                    self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_BUTTON].hide()
 
 
 
