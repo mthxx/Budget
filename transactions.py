@@ -90,7 +90,7 @@ class Transactions():
 
         # Set Styling
         self.menuScrolledWindow.set_vexpand(True)
-        self.menuScrolledWindow.set_property("width-request",277)
+        self.menuScrolledWindow.set_property("width-request",279)
         self.menuScrolledWindow.set_property("hscrollbar-policy", Gtk.PolicyType.NEVER)
 
         self.subMenuScrolledWindow.set_vexpand(True)
@@ -118,7 +118,7 @@ class Transactions():
         self.contentScrolledWindow.add(self.contentViewport)
         
         self.grid.attach(self.menuScrolledWindow,0,0,1,2)
-        self.grid.attach(self.subMenuScrolledWindow,1,0,1,2)
+        #self.grid.attach(self.subMenuScrolledWindow,1,0,1,2)
         self.grid.attach(self.headerGrid,2,0,1,1)
         self.grid.attach(self.contentScrolledWindow,2,1,1,1)
 
@@ -341,9 +341,12 @@ class Transactions():
             if (self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_TITLE] != self.transactionsLabel
                 and self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_TITLE] != self.incomeLabel
                 and self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_TITLE] != self.expenseLabel
-                and self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_TITLE].get_label() != "Uncategorized"
-                and self.menuListBox.get_row_at_index(i).get_child().get_children()[2].get_label() != "Month"):
-                return True
+                and self.menuListBox.get_row_at_index(i).get_child() != self.dateGrid):
+                if (self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_TITLE].get_label() != "Uncategorized"
+                    and self.menuListBox.get_row_at_index(i).get_child().get_children()[2].get_label() != "Month"):
+                    return True
+                else: 
+                    return False
             else:
                 return False
     
@@ -533,34 +536,54 @@ class Transactions():
             for j in range(0, len(self.expenseMenu)):
                 if self.data.transactions[i][0][0] == self.expenseMenu[j]:
                     self.dataSum -= self.data.transactions[i][2]
-       
+
         # Date Header Grid
-        #self.dateGrid = Gtk.Grid()
-        #self.dateHeaderLabel = Gtk.Label("Month")
-        #self.dateHeaderYear = Gtk.Label("Year")
+        self.dateGrid = Gtk.Grid()
+        self.dateHeaderLabel = Gtk.Label("Month")
+        self.dateHeaderYear = Gtk.Label("Year")
         #self.dateHeaderRange = Gtk.Label("Range")
         
-        #self.monthComboBoxText = Gtk.ComboBoxText()
-        #self.yearComboBoxText = Gtk.ComboBoxText()
-        #self.dateAll = Gtk.Label("Year")
+        self.monthComboBoxText = Gtk.ComboBoxText()
+        self.yearComboBoxText = Gtk.ComboBoxText()
+        self.dateAll = Gtk.Label("Year")
         #self.dateRange = Gtk.Label("Range")
         
-        #self.dateGrid.set_column_homogeneous(True)
+        self.dateGrid.set_column_homogeneous(True)
         
-        #self.dateGrid.attach(self.dateHeaderLabel,0,0,1,1)
-        #self.dateGrid.attach(self.dateHeaderYear,1,0,1,1)
+        self.dateGrid.attach(self.dateHeaderLabel,0,0,1,1)
+        self.dateGrid.attach(self.dateHeaderYear,1,0,1,1)
         #self.dateGrid.attach(self.dateHeaderRange,2,0,1,1)
         
-        #self.dateGrid.attach(self.monthComboBoxText,0,1,1,1)
-        #self.dateGrid.attach(self.yearComboBoxText,1,1,1,1)
+        self.dateGrid.attach(self.monthComboBoxText,0,1,1,1)
+        self.dateGrid.attach(self.yearComboBoxText,1,1,1,1)
         #self.dateGrid.attach(self.dateRange,2,0,1,1)
+
+        self.monthComboBoxText.append_text("All")
+        for i in range(1,len(self.data.allMonthMenu)):
+            self.monthComboBoxText.append_text(self.data.allMonthMenu[i][1])
+        
+        self.yearComboBoxText.append_text("All")
+        self.yearComboBoxText.append_text("2015")
+        self.yearComboBoxText.append_text("2014")
+        self.yearComboBoxText.append_text("2013")
+            
+        self.monthComboBoxText.set_active(0)
+        self.yearComboBoxText.set_active(0)
+        
+        self.monthComboBoxText.set_margin_start(5)
+        self.monthComboBoxText.set_margin_end(5)
+        self.monthComboBoxText.set_margin_bottom(10)
+        
+        self.yearComboBoxText.set_margin_start(5)
+        self.yearComboBoxText.set_margin_end(5)
+        self.yearComboBoxText.set_margin_bottom(10)
 
         # Date Filtering Grid
         #self.dateGrid = Gtk.Grid()
 
-        #self.menuListBox.add(self.dateGrid)
-
-
+        self.menuListBox.add(self.dateGrid)
+        self.menuListBox.get_row_at_index(0).set_property("selectable",False)
+        
         # Generate from database
         self.transactionsLabel = Gtk.Label()
         self.transactionsLabel.set_markup("<span><b>All Transactions</b></span>")
@@ -745,9 +768,6 @@ class Transactions():
         self.incomeAllIndex = 1
         self.expenseAllIndex = self.incomeCount + 1
 
-        # Select default option
-        self.menuListBox.select_row(self.menuListBox.get_row_at_index(0))
-        
         self.label = Gtk.Label()
         self.label.set_markup("<span><b>All Months</b></span>")
         self.label.set_property("height-request", 10)
@@ -767,6 +787,8 @@ class Transactions():
             if self.editable_category(i):
                 self.category_view_mode(i)
         
+        # Select default option
+        self.menuListBox.select_row(self.menuListBox.get_row_at_index(1))
         self.subMenuListBox.select_row(self.subMenuListBox.get_row_at_index(0))
     
     def menu_clicked(self, listbox, row):
