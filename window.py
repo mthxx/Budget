@@ -122,8 +122,10 @@ class Window(Gtk.Window):
             self.addPopover.hide()
         else:
             self.addPopover.show_all()
+    
+    def on_menuButton_clicked(self, *args):
+        print("Menu Button Working!")
 
-        
     def on_notebook_switch(self, notebook, page, index, *args):
         if index == 0:
             self.hbLeft.hide()
@@ -142,5 +144,3 @@ class Window(Gtk.Window):
             self.hbLeft.hide()
             self.hbRight.queue_draw()
 
-    def on_menuButton_clicked(self, *args):
-        print("Menu Button Working!")

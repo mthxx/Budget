@@ -84,22 +84,24 @@ class Edit_Popover(Gtk.Window):
         widget.set_margin_top(margin)
         widget.set_margin_bottom(margin)
     
-    def on_editDropdown_clicked(self, button, editPopover, unique_id, entryRows, menu, contentGrid):
-        if editPopover.get_visible():
-            editPopover.hide()
+    def on_calendarDropdown_clicked(self, button, calendarPopover):
+        if calendarPopover.get_visible():
+            calendarPopover.hide()
         else:
-            editPopover.show_all()
-            self.confirmLabelLine1.hide()
-            self.confirmLabelLine2.hide()
-            self.deleteSelectorBox.hide()
+            calendarPopover.show_all()
+    
+    def on_calendarDropdown_closed(self, calendarPopover):
+        dateString = self.data.translate_date(self.calendar.get_date(),"edit")
+        self.calendarButton.set_label(dateString)
 
-
-        self.editPopover = editPopover
-        self.unique_id = unique_id
-        self.entryRows = entryRows
-        self.menu = menu
-        self.contentGrid = contentGrid
-        
+    def on_cancelButton_clicked(self, button):
+        self.editGrid.hide()
+        for i in range(0, len(self.entryRows)):
+            if self.entryRows[i][self.UNIQUE_ID_INDEX] == self.unique_id:
+                self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.EDIT_BUTTON_INDEX].show_all()
+                self.entryRows[i][self.ENTRY_GRID_INDEX].show_all()
+        self.contentGrid.queue_draw()
+    
     def on_deleteButton_clicked(self, *args):
         self.selectorBox.hide()
         self.confirmLabelLine1.show()
@@ -224,23 +226,22 @@ class Edit_Popover(Gtk.Window):
                 self.entryRows[i][self.LAYOUT_GRID_INDEX].attach(self.editGrid, 0, 0, 1, 1)
                 self.contentGrid.queue_draw()
                 self.editGrid.show_all()
-
-  
-
-    def on_calendarDropdown_clicked(self, button, calendarPopover):
-        if calendarPopover.get_visible():
-            calendarPopover.hide()
-        else:
-            calendarPopover.show_all()
-
-    def on_cancelButton_clicked(self, button):
-        self.editGrid.hide()
-        for i in range(0, len(self.entryRows)):
-            if self.entryRows[i][self.UNIQUE_ID_INDEX] == self.unique_id:
-                self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.EDIT_BUTTON_INDEX].show_all()
-                self.entryRows[i][self.ENTRY_GRID_INDEX].show_all()
-        self.contentGrid.queue_draw()
     
+    def on_editDropdown_clicked(self, button, editPopover, unique_id, entryRows, menu, contentGrid):
+        if editPopover.get_visible():
+            editPopover.hide()
+        else:
+            editPopover.show_all()
+            self.confirmLabelLine1.hide()
+            self.confirmLabelLine2.hide()
+            self.deleteSelectorBox.hide()
+
+        self.editPopover = editPopover
+        self.unique_id = unique_id
+        self.entryRows = entryRows
+        self.menu = menu
+        self.contentGrid = contentGrid
+
     def on_submitButton_clicked(self, button):
         self.editGrid.hide()
         self.dateArr = self.calendar.get_date()
@@ -261,11 +262,6 @@ class Edit_Popover(Gtk.Window):
                 self.entryRows[i][self.ENTRY_GRID_INDEX].show_all()
         
         self.contentGrid.queue_draw()
-
-    
-    def on_calendarDropdown_closed(self, calendarPopover):
-        dateString = self.data.translate_date(self.calendar.get_date(),"edit")
-        self.calendarButton.set_label(dateString)
     
     def set_calendar(self,data):
         for i in range(0, len(data)):

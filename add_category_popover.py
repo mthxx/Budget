@@ -52,32 +52,8 @@ class Add_Category_Popover(Gtk.Window):
         widget.set_margin_end(margin)
         widget.set_margin_bottom(margin)
     
-    def on_addRadio_toggled(self, *args):
-        if args[1] != None:
-            if args[1].get_group()[0].get_active():
-                self.radio = "income"
-            if args[1].get_group()[1].get_active():
-                self.radio = "expense"
-        print(self.radio)
-
     def on_addCancelButton_clicked(self, button):
         self.addPopover.hide()
-    
-    def on_addSubmitButton_clicked(self, button):
-        self.entryString = ""
-        
-        if self.addEntry.get_text() == "":
-            self.addEntry.set_placeholder_text("Enter A Category")
-       
-        else:
-            # Create string and add to database
-            self.entryString = self.data.create_category_string(self.radio, self.addEntry) 
-            self.data.add_data(self.entryString)
-
-            # Refresh the menu
-            self.data.transaction_view.generate_sidebars()
-            
-            self.addPopover.hide()
     
     def on_addCategoryButton_clicked(self, button, addPopover):
         self.addPopover = addPopover
@@ -87,3 +63,26 @@ class Add_Category_Popover(Gtk.Window):
             self.addPopover.show_all()
             self.addEntry.set_text("")
             self.addEntry.grab_focus()
+    
+    def on_addRadio_toggled(self, *args):
+        if args[1] != None:
+            if args[1].get_group()[0].get_active():
+                self.radio = "income"
+            if args[1].get_group()[1].get_active():
+                self.radio = "expense"
+        print(self.radio)
+
+    def on_addSubmitButton_clicked(self, button):
+        self.entryString = ""
+        
+        if self.addEntry.get_text() == "":
+            self.addEntry.set_placeholder_text("Enter A Category")
+        else:
+            # Create string and add to database
+            self.entryString = self.data.create_category_string(self.radio, self.addEntry) 
+            self.data.add_data(self.entryString)
+
+            # Refresh the menu
+            self.data.transaction_view.generate_sidebars()
+            
+            self.addPopover.hide()

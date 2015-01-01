@@ -161,26 +161,50 @@ class Overview():
         self.contentGrid.set_column_homogeneous(True)
         self.contentGrid.set_hexpand(True)
     
-    def redisplay_info(self):
-        self.index = 0
-        while len(self.categoryArr) > 0:
-            self.categoryArr.pop(0)
-            self.categoryGrid.remove_row(0)
-            self.contentGrid.remove_row(0)
-        while len(self.entryRows) > 0:
-            self.entryRows.pop(0)
-        self.display_info("income", self.data.transactions)
-        self.empty_row()
-        self.display_info("expense", self.data.transactions)
-        self.overviewGrid.show_all()
-        
-        self.clear_selection(self.clearButton)
-        
-        self.balanceTotalLabel.set_text( "$" + str(self.calc.sumTotalData(self.data.transactions) - self.calc.sumTotalData(self.data.transactions)))
-        self.varianceTotalLabel.set_text( "$" + str(self.calc.sumTotalData(self.data.transactions)))
-        self.incomeTotalValueLabel.set_text( "$" + str(self.calc.sumTotalData(self.data.transactions)))
-        self.expensesTotalValueLabel.set_text( "$" + str(self.calc.sumTotalData(self.data.transactions)))
-
+    def category_clicked(self, button, index):
+        self.categoryIndex = index
+        for i in range (0, len(self.categoryArr)):
+            if self.categoryArr[i][0] == index:
+                self.categoryArr[i][1].set_relief(Gtk.ReliefStyle.HALF)
+                for j in range(0, len(self.entryRows[i][1])):
+                    if j == self.monthIndex:
+                        self.entryRows[i][1][j].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(self.menuColor, self.menuColor, self.menuColor, self.menuColor))
+                    else:
+                        self.entryRows[i][1][j].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(self.highlightColor, self.highlightColor, self.highlightColor, self.highlightColor))
+            else:
+                self.categoryArr[i][1].set_relief(Gtk.ReliefStyle.NONE)
+                for j in range(0, len(self.entryRows[i][1])):
+                    if j != self.monthIndex:
+                        self.entryRows[i][1][j].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(.0, .0, .0, .0));
+                    else:
+                        self.entryRows[i][1][j].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(self.highlightColor, self.highlightColor, self.highlightColor, self.highlightColor))
+    
+    def clear_selection(self, button):
+        self.categoryIndex = 10000
+        self.monthIndex = 10000
+        for i in range (0, len(self.categoryArr)):
+            self.categoryArr[i][1].set_relief(Gtk.ReliefStyle.NONE)
+        for i in range (0, len(self.monthArr)):
+            self.monthArr[i][1].set_relief(Gtk.ReliefStyle.NONE)
+        for i in range(0, len(self.entryRows)):
+            for j in range(0, len(self.entryRows[i][1])):
+                # Get count of income categories
+                count = 0
+                for k in range(0, len(self.data.transactionsMenu)):
+                    if self.data.transactionsMenu[k][2] == "income":
+                        count += 1
+                # Reset All Income
+                if self.entryRows[i][0] == self.categoryArr[count][0]:
+                    self.entryRows[i][1][j].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(self.totalColor, self.totalColor, self.totalColor, self.totalColor))
+                # Reset All Expenses
+                elif self.entryRows[i][0] == self.categoryArr[len(self.data.transactionsMenu) + 2][0]:
+                    self.entryRows[i][1][j].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(self.totalColor, self.totalColor, self.totalColor, self.totalColor))
+                else:
+                    if j == len(self.data.allMonthMenu) - 1:
+                        self.entryRows[i][1][j].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(self.totalColor, self.totalColor, self.totalColor, self.totalColor))
+                    else:
+                        self.entryRows[i][1][j].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(.0, .0, .0, .0));
+    
     def display_info(self, category, data_arr):
         # Print out Categories
         for index in range(0,len(self.data.transactionsMenu)):
@@ -279,7 +303,7 @@ class Overview():
         
         self.categoryGrid.attach(self.dummyCategoryButton, 0, self.index, 1, 1) 
         self.index += 1
-
+    
     def month_clicked(self, button, index):
         self.monthIndex = index - 1
         for i in range (0, len(self.monthArr)):
@@ -298,46 +322,22 @@ class Overview():
                     else:
                         self.entryRows[j][1][i].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(self.highlightColor, self.highlightColor, self.highlightColor, self.highlightColor))
     
-    def category_clicked(self, button, index):
-        self.categoryIndex = index
-        for i in range (0, len(self.categoryArr)):
-            if self.categoryArr[i][0] == index:
-                self.categoryArr[i][1].set_relief(Gtk.ReliefStyle.HALF)
-                for j in range(0, len(self.entryRows[i][1])):
-                    if j == self.monthIndex:
-                        self.entryRows[i][1][j].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(self.menuColor, self.menuColor, self.menuColor, self.menuColor))
-                    else:
-                        self.entryRows[i][1][j].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(self.highlightColor, self.highlightColor, self.highlightColor, self.highlightColor))
-            else:
-                self.categoryArr[i][1].set_relief(Gtk.ReliefStyle.NONE)
-                for j in range(0, len(self.entryRows[i][1])):
-                    if j != self.monthIndex:
-                        self.entryRows[i][1][j].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(.0, .0, .0, .0));
-                    else:
-                        self.entryRows[i][1][j].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(self.highlightColor, self.highlightColor, self.highlightColor, self.highlightColor))
-    
-    def clear_selection(self, button):
-        self.categoryIndex = 10000
-        self.monthIndex = 10000
-        for i in range (0, len(self.categoryArr)):
-            self.categoryArr[i][1].set_relief(Gtk.ReliefStyle.NONE)
-        for i in range (0, len(self.monthArr)):
-            self.monthArr[i][1].set_relief(Gtk.ReliefStyle.NONE)
-        for i in range(0, len(self.entryRows)):
-            for j in range(0, len(self.entryRows[i][1])):
-                # Get count of income categories
-                count = 0
-                for k in range(0, len(self.data.transactionsMenu)):
-                    if self.data.transactionsMenu[k][2] == "income":
-                        count += 1
-                # Reset All Income
-                if self.entryRows[i][0] == self.categoryArr[count][0]:
-                    self.entryRows[i][1][j].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(self.totalColor, self.totalColor, self.totalColor, self.totalColor))
-                # Reset All Expenses
-                elif self.entryRows[i][0] == self.categoryArr[len(self.data.transactionsMenu) + 2][0]:
-                    self.entryRows[i][1][j].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(self.totalColor, self.totalColor, self.totalColor, self.totalColor))
-                else:
-                    if j == len(self.data.allMonthMenu) - 1:
-                        self.entryRows[i][1][j].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(self.totalColor, self.totalColor, self.totalColor, self.totalColor))
-                    else:
-                        self.entryRows[i][1][j].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(.0, .0, .0, .0));
+    def redisplay_info(self):
+        self.index = 0
+        while len(self.categoryArr) > 0:
+            self.categoryArr.pop(0)
+            self.categoryGrid.remove_row(0)
+            self.contentGrid.remove_row(0)
+        while len(self.entryRows) > 0:
+            self.entryRows.pop(0)
+        self.display_info("income", self.data.transactions)
+        self.empty_row()
+        self.display_info("expense", self.data.transactions)
+        self.overviewGrid.show_all()
+        
+        self.clear_selection(self.clearButton)
+        
+        self.balanceTotalLabel.set_text( "$" + str(self.calc.sumTotalData(self.data.transactions) - self.calc.sumTotalData(self.data.transactions)))
+        self.varianceTotalLabel.set_text( "$" + str(self.calc.sumTotalData(self.data.transactions)))
+        self.incomeTotalValueLabel.set_text( "$" + str(self.calc.sumTotalData(self.data.transactions)))
+        self.expensesTotalValueLabel.set_text( "$" + str(self.calc.sumTotalData(self.data.transactions)))

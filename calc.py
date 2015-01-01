@@ -6,16 +6,17 @@ class Calc():
     def __init__(self, data):
         self.data = data
 
-    def sumTotalData(self,data_arr):
-        total = 0
-        for i in range (0,len(data_arr)):
-            total += Decimal(data_arr[i][self.data.VALUE])
-        return total
-    
     def sumCategoryData(self,data_arr, category):
         total = 0
         for i in range (0,len(data_arr)):
             if data_arr[i][self.data.CATEGORY][self.data.CATEGORY_INDEX] == category:
+                total += Decimal(data_arr[i][self.data.VALUE])
+        return total
+    
+    def sumCategoryMonthData(self,data_arr, category, month):
+        total = 0
+        for i in range (0,len(data_arr)):
+            if data_arr[i][self.data.CATEGORY][self.data.CATEGORY_INDEX] == category and data_arr[i][self.data.DATE][self.data.DATE_MONTH] == month:
                 total += Decimal(data_arr[i][self.data.VALUE])
         return total
     
@@ -26,9 +27,8 @@ class Calc():
                 total += Decimal(data_arr[i][self.data.VALUE])
         return total
     
-    def sumCategoryMonthData(self,data_arr, category, month):
+    def sumTotalData(self,data_arr):
         total = 0
         for i in range (0,len(data_arr)):
-            if data_arr[i][self.data.CATEGORY][self.data.CATEGORY_INDEX] == category and data_arr[i][self.data.DATE][self.data.DATE_MONTH] == month:
-                total += Decimal(data_arr[i][self.data.VALUE])
+            total += Decimal(data_arr[i][self.data.VALUE])
         return total
