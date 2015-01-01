@@ -61,7 +61,7 @@ class Transactions():
         self.grid = Gtk.Grid()
         self.headerGrid = Gtk.Grid(name="headerGrid")
         self.contentGrid = Gtk.Grid()
-       
+      
         self.menuListBox = Gtk.ListBox(name="menuListBox")
         self.subMenuListBox = Gtk.ListBox(name="subMenuListBox")
         
@@ -109,7 +109,7 @@ class Transactions():
         self.menuListBox.connect("row-selected",self.menu_clicked)
         self.subMenuListBox.connect("row-selected",self.subMenu_clicked)
 
-        # Add items to Main Grid 
+        # Add items to Main Grid
         self.menuViewport.add(self.menuListBox)
         self.subMenuViewport.add(self.subMenuListBox)
         
@@ -166,7 +166,34 @@ class Transactions():
             for j in range(0, len(self.expenseMenu)):
                 if self.data.transactions[i][0][0] == self.expenseMenu[j]:
                     self.dataSum -= self.data.transactions[i][2]
+       
+        # Date Header Grid
+        #self.dateGrid = Gtk.Grid()
+        #self.dateHeaderLabel = Gtk.Label("Month")
+        #self.dateHeaderYear = Gtk.Label("Year")
+        #self.dateHeaderRange = Gtk.Label("Range")
         
+        #self.monthComboBoxText = Gtk.ComboBoxText()
+        #self.yearComboBoxText = Gtk.ComboBoxText()
+        #self.dateAll = Gtk.Label("Year")
+        #self.dateRange = Gtk.Label("Range")
+        
+        #self.dateGrid.set_column_homogeneous(True)
+        
+        #self.dateGrid.attach(self.dateHeaderLabel,0,0,1,1)
+        #self.dateGrid.attach(self.dateHeaderYear,1,0,1,1)
+        #self.dateGrid.attach(self.dateHeaderRange,2,0,1,1)
+        
+        #self.dateGrid.attach(self.monthComboBoxText,0,1,1,1)
+        #self.dateGrid.attach(self.yearComboBoxText,1,1,1,1)
+        #self.dateGrid.attach(self.dateRange,2,0,1,1)
+
+        # Date Filtering Grid
+        #self.dateGrid = Gtk.Grid()
+
+        #self.menuListBox.add(self.dateGrid)
+
+
         # Generate from database
         self.transactionsLabel = Gtk.Label()
         self.transactionsLabel.set_markup("<span><b>All Transactions</b></span>")
@@ -371,10 +398,21 @@ class Transactions():
         self.menuListBox.show_all()
         for i in range(len(self.menuListBox)):
             if self.editable_category(i):
-                self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_BUTTON].hide()
+                self.category_view_mode(i)
         
         self.subMenuListBox.select_row(self.subMenuListBox.get_row_at_index(0))
         
+    def category_view_mode(self, index):
+            self.menuListBox.get_row_at_index(index).get_child().get_children()[self.EDIT_CATEGORY_TITLE].show()
+            self.menuListBox.get_row_at_index(index).get_child().get_children()[self.EDIT_CATEGORY_BALANCE].show()
+            self.menuListBox.get_row_at_index(index).get_child().get_children()[self.EDIT_CATEGORY_ENTRY].hide()
+            self.menuListBox.get_row_at_index(index).get_child().get_children()[self.EDIT_CATEGORY_BUTTON].hide()
+    
+    def category_edit_mode(self, index):
+            self.menuListBox.get_row_at_index(index).get_child().get_children()[self.EDIT_CATEGORY_TITLE].hide()
+            self.menuListBox.get_row_at_index(index).get_child().get_children()[self.EDIT_CATEGORY_BALANCE].hide()
+            self.menuListBox.get_row_at_index(index).get_child().get_children()[self.EDIT_CATEGORY_ENTRY].show()
+            self.menuListBox.get_row_at_index(index).get_child().get_children()[self.EDIT_CATEGORY_BUTTON].show()
     
     def display_content(self):
         #Clear existing data
@@ -551,13 +589,15 @@ class Transactions():
         return self.button
     
     def editable_category(self, i):
-        if (self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_TITLE] != self.transactionsLabel
-            and self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_TITLE] != self.incomeLabel
-            and self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_TITLE] != self.expenseLabel
-            and self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_TITLE].get_label() != "Uncategorized"):
-            return True
-        else:
-            return False
+        if i != 0:
+            if (self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_TITLE] != self.transactionsLabel
+                and self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_TITLE] != self.incomeLabel
+                and self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_TITLE] != self.expenseLabel
+                and self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_TITLE].get_label() != "Uncategorized"
+                and self.menuListBox.get_row_at_index(i).get_child().get_children()[2].get_label() != "Month"):
+                return True
+            else:
+                return False
 
 
     def on_categoryModifyButton_clicked(self, button, editPopover, confirmLabelLine1, confirmLabelLine2, deleteSelectorBox):
@@ -592,10 +632,7 @@ class Transactions():
             for i in range(len(self.menuListBox)):
                 self.editMode = 1
                 if self.editable_category(i):
-                    self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_TITLE].hide()
-                    self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_BALANCE].hide()
-                    self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_ENTRY].show()
-                    self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_BUTTON].show()
+                    self.category_edit_mode(i)
         elif self.editMode == 1:
             self.editMode = 0
             for i in range(len(self.menuListBox)):
@@ -605,12 +642,7 @@ class Transactions():
                             # Find matching menu item and uniqueID in database
                             if self.data.transactionsMenu[j][1] == self.menuListBox.get_row_at_index(i).get_child().get_children()[0].get_label():
                                 self.data.edit_category(self.data.transactionsMenu[j][0],self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_ENTRY].get_text())
-                   
-
-                    self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_TITLE].show()
-                    self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_BALANCE].show()
-                    self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_ENTRY].hide()
-                    self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_BUTTON].hide()
+                    self.category_view_mode(i)
                     
     def menu_clicked(self, listbox, row):
         # To catch calls before widget exists.

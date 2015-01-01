@@ -27,8 +27,7 @@ class main():
 
         for i in range(0, len(self.win.transactions.menuListBox)):
             if self.win.transactions.editable_category(i):
-                self.win.transactions.menuListBox.get_row_at_index(i).get_child().get_children()[self.win.transactions.EDIT_CATEGORY_ENTRY].hide()
-                self.win.transactions.menuListBox.get_row_at_index(i).get_child().get_children()[self.win.transactions.EDIT_CATEGORY_BUTTON].hide()
+                self.win.transactions.category_view_mode(i)
         
         self.win.connect('key-press-event', self.on_key_function)
         self.win.set_icon_from_file("logo.png")
