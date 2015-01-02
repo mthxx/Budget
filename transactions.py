@@ -63,14 +63,11 @@ class Transactions():
         self.contentGrid = Gtk.Grid()
       
         self.menuListBox = Gtk.ListBox(name="menuListBox")
-        self.subMenuListBox = Gtk.ListBox(name="subMenuListBox")
         
         self.menuScrolledWindow = Gtk.ScrolledWindow(name="menuScrolledWindow")
-        self.subMenuScrolledWindow = Gtk.ScrolledWindow(name="subMenuScrolledWindow")
         self.contentScrolledWindow = Gtk.ScrolledWindow(name="entryScrolledWindow")
         
         self.menuViewport = Gtk.Viewport(name="menuViewport")
-        self.subMenuViewport = Gtk.Viewport(name="subMenuViewport")
         self.contentViewport = Gtk.Viewport()
 
         # Define Widgets
@@ -93,9 +90,6 @@ class Transactions():
         self.menuScrolledWindow.set_property("width-request",279)
         self.menuScrolledWindow.set_property("hscrollbar-policy", Gtk.PolicyType.NEVER)
 
-        self.subMenuScrolledWindow.set_vexpand(True)
-        self.subMenuScrolledWindow.set_property("width-request",100)
-        
         self.headerGrid.set_column_homogeneous(True)
         self.headerGrid.set_hexpand(True)
         
@@ -107,18 +101,14 @@ class Transactions():
        
         # Connect Widgets
         self.menuListBox.connect("row-selected",self.menu_clicked)
-        self.subMenuListBox.connect("row-selected",self.subMenu_clicked)
 
         # Add items to Main Grid
         self.menuViewport.add(self.menuListBox)
-        self.subMenuViewport.add(self.subMenuListBox)
         
         self.menuScrolledWindow.add(self.menuViewport)
-        self.subMenuScrolledWindow.add(self.subMenuViewport)
         self.contentScrolledWindow.add(self.contentViewport)
         
         self.grid.attach(self.menuScrolledWindow,0,0,1,2)
-        #self.grid.attach(self.subMenuScrolledWindow,1,0,1,2)
         self.grid.attach(self.headerGrid,2,0,1,1)
         self.grid.attach(self.contentScrolledWindow,2,1,1,1)
 
@@ -558,9 +548,12 @@ class Transactions():
         self.dateGrid.attach(self.yearComboBoxText,1,1,1,1)
         #self.dateGrid.attach(self.dateRange,2,0,1,1)
 
-        self.monthComboBoxText.append_text("All")
-        for i in range(1,len(self.data.allMonthMenu)):
+        # Generate Months
+        for i in range(0,len(self.data.allMonthMenu)):
             self.monthComboBoxText.append_text(self.data.allMonthMenu[i][1])
+            
+        # Connect to handler    
+        self.monthComboBoxText.connect("changed",self.subMenu_clicked)
         
         self.yearComboBoxText.append_text("All")
         self.yearComboBoxText.append_text("2015")
@@ -768,20 +761,6 @@ class Transactions():
         self.incomeAllIndex = 1
         self.expenseAllIndex = self.incomeCount + 1
 
-        self.label = Gtk.Label()
-        self.label.set_markup("<span><b>All Months</b></span>")
-        self.label.set_property("height-request", 10)
-        self.label.set_halign(Gtk.Align.START)
-        self.label.set_margin_bottom(5)
-        self.subMenuListBox.add(self.label)
-        
-        for i in range(1,len(self.data.allMonthMenu)):
-            self.label = Gtk.Label(self.data.allMonthMenu[i][1])
-            self.label.set_property("height-request", 10)
-            self.label.set_halign(Gtk.Align.START)
-            self.label.set_margin_start(10)
-            self.subMenuListBox.add(self.label)
-
         self.menuListBox.show_all()
         for i in range(len(self.menuListBox)):
             if self.editable_category(i):
@@ -789,7 +768,6 @@ class Transactions():
         
         # Select default option
         self.menuListBox.select_row(self.menuListBox.get_row_at_index(1))
-        self.subMenuListBox.select_row(self.subMenuListBox.get_row_at_index(0))
     
     def menu_clicked(self, listbox, row):
         # To catch calls before widget exists.
@@ -853,18 +831,17 @@ class Transactions():
                                 self.data.edit_category(self.data.transactionsMenu[j][0],self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_ENTRY].get_text())
                     self.category_view_mode(i)
                     
-    def subMenu_clicked(self, listbox, row):
+    def subMenu_clicked(self, listbox, *args):
         # To catch calls before widget exists.
-        if row == None:
+        if listbox == None:
             return
         else:
             menu = self.data.transactionsMenu
             data = self.data.transactions
             
             for i in range (len(self.data.allMonthMenu)):
-                if self.data.allMonthMenu[i][self.data.CATEGORY_INDEX] == row.get_index():
+                if self.data.allMonthMenu[i][self.data.CATEGORY_INDEX] == listbox.get_active():
                     self.row = self.data.allMonthMenu[i][self.data.CATEGORY_INDEX]
             self.subMenu = self.data.allMonthMenu[self.row][self.data.CATEGORY_TEXT]
             self.subMenu_index = self.data.allMonthMenu[self.row][self.data.CATEGORY_INDEX]
             self.filter_subMenu(data, menu)
-        
