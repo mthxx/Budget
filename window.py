@@ -26,41 +26,16 @@ class Window(Gtk.Window):
         
         # --- Header Bars ---
         self.headerBox = Gtk.Box(name="headerBox")
-        self.hbLeft = Gtk.HeaderBar(name="hbLeft")
         self.hbRight = Gtk.HeaderBar(name="hbRight")
        
         # Style Header Bars
-        self.hbLeft.set_show_close_button(False)
-        self.hbLeft.set_property("width-request", 100)
-        
         self.hbRight.set_show_close_button(True)
         self.hbRight.set_hexpand(True)
         
 
-        self.headerBox.add(self.hbLeft)
         self.headerBox.add(self.hbRight)
         self.set_titlebar(self.headerBox)
 
-        # --- Action Buttons (Left Header Bar) ---
-        # Create Buttons
-        self.addCategoryButton = Gtk.Button()
-        self.selectButton = Gtk.Button()
-        self.selectIcon = Gio.ThemedIcon(name="object-select-symbolic")
-        self.selectImage = Gtk.Image.new_from_gicon(self.selectIcon, Gtk.IconSize.MENU)
-        self.selectButton.add(self.selectImage)
-        self.addCategoryPopover = Gtk.Popover.new(self.addCategoryButton)
-        
-        # Create Popover
-        self.add_category_popover = Add_Category_Popover(self.data)
-        self.addCategoryPopover.add(self.add_category_popover.addGrid)
-        # Connect to handler
-        self.selectButton.connect("clicked", self.transactions.on_selectButton_clicked)
-        self.addCategoryButton.connect("clicked", self.add_category_popover.on_addCategoryButton_clicked, self.addCategoryPopover)
-        
-        # Add Image
-        self.addCategoryIcon = Gio.ThemedIcon(name="list-add-symbolic")
-        self.addCategoryImage = Gtk.Image.new_from_gicon(self.addCategoryIcon, Gtk.IconSize.MENU)
-        self.addCategoryButton.add(self.addCategoryImage)
         
         # --- Action Buttons (Right Header Bar) ---
         # Create Buttons
@@ -69,7 +44,7 @@ class Window(Gtk.Window):
         self.addPopover = Gtk.Popover.new(self.addButton)
         # Add Image
         self.addIcon = Gio.ThemedIcon(name="list-add-symbolic")
-        self.menuIcon = Gio.ThemedIcon(name="emblem-system-symbolic")
+        self.menuIcon = Gio.ThemedIcon(name="open-menu-symbolic")
         self.addImage = Gtk.Image.new_from_gicon(self.addIcon, Gtk.IconSize.MENU)
         self.menuImage = Gtk.Image.new_from_gicon(self.menuIcon, Gtk.IconSize.MENU)
         self.addButton.add(self.addImage)
@@ -85,8 +60,6 @@ class Window(Gtk.Window):
         self.menuButton.connect("clicked", self.on_menuButton_clicked)
         
         # --- Header Bar Packing ---
-        self.hbLeft.pack_start(self.addCategoryButton)
-        self.hbLeft.pack_end(self.selectButton)
         self.hbRight.pack_end(self.menuButton)
         self.hbRight.pack_end(self.addButton)
         

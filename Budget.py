@@ -22,8 +22,6 @@ class main():
         self.win = Window(self.data)
         self.win.connect("delete-event", Gtk.main_quit)
         self.win.show_all()
-        
-        self.win.hbLeft.hide()
 
         for i in range(0, len(self.win.transactions.menuListBox)):
             if self.win.transactions.editable_category(i):

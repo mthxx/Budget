@@ -1,6 +1,7 @@
 from gi.repository import Gtk, Gio, Gdk
 from calc import Calc
 from edit_popover import Edit_Popover
+from add_category_popover import Add_Category_Popover
 
 class Transactions():
 
@@ -80,10 +81,14 @@ class Transactions():
         self.contentGrid.set_margin_left(20)
         self.contentGrid.set_margin_right(20)
        
+        # Create edit and add category buttons
+        self.editCategoryBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+        
+        
         # Connect Widgets
         self.menuListBox.connect("row-selected",self.menu_clicked)
-
-        # Generate Sidebars and Content
+        
+        # Generate Sidebar and Content
         self.generate_sidebars()
         self.create_date_grid()
         self.display_content()
@@ -362,12 +367,15 @@ class Transactions():
         
     def editable_category(self, i):
         if i != 0:
-            if (self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_TITLE] != self.transactionsLabel
-                and self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_TITLE] != self.incomeLabel
-                and self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_TITLE] != self.expenseLabel
-                and self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_TITLE].get_label() != "Uncategorized"
-                and self.menuListBox.get_row_at_index(i).get_child().get_children()[2].get_label() != "Month"):
+            if self.menuListBox.get_row_at_index(i).get_child() != self.editCategoryBox:
+                if (self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_TITLE] != self.transactionsLabel
+                    and self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_TITLE] != self.incomeLabel
+                    and self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_TITLE] != self.expenseLabel
+                    and self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_TITLE].get_label() != "Uncategorized"
+                    and self.menuListBox.get_row_at_index(i).get_child().get_children()[2].get_label() != "Month"):
                     return True
+                else:
+                    return False
             else: 
                 return False
     
@@ -727,6 +735,35 @@ class Transactions():
             if self.editable_category(i):
                 self.category_view_mode(i)
         
+        # Create Add and Edit Category Buttons
+        self.editCategoryButton = Gtk.Button()
+        self.addCategoryButton = Gtk.Button()
+        
+        self.addCategoryPopover = Gtk.Popover.new(self.addCategoryButton)
+        self.add_category_popover = Add_Category_Popover(self.data)
+        self.addCategoryPopover.add(self.add_category_popover.addGrid)
+        
+        # Style Widgets
+        self.editCategoryIcon = Gio.ThemedIcon(name="list-remove-symbolic")
+        self.editCategoryImage = Gtk.Image.new_from_gicon(self.editCategoryIcon, Gtk.IconSize.MENU)
+        self.editCategoryButton.add(self.editCategoryImage)
+        self.editCategoryButton.set_relief(Gtk.ReliefStyle.NONE)
+        
+        self.addCategoryIcon = Gio.ThemedIcon(name="list-add-symbolic")
+        self.addCategoryImage = Gtk.Image.new_from_gicon(self.addCategoryIcon, Gtk.IconSize.MENU)
+        self.addCategoryButton.add(self.addCategoryImage)
+        self.addCategoryButton.set_relief(Gtk.ReliefStyle.NONE)
+        
+        self.editCategoryBox.add(self.editCategoryButton)
+        self.editCategoryBox.add(self.addCategoryButton)
+        self.menuListBox.add(self.editCategoryBox)
+        self.editCategoryBox.show_all()
+       
+        # Connect Widgets
+        self.editCategoryButton.connect("clicked", self.on_selectButton_clicked)
+        self.addCategoryButton.connect("clicked", self.add_category_popover.on_addCategoryButton_clicked, self.addCategoryPopover)
+        
+
         # Select default option
         self.menuListBox.select_row(self.menuListBox.get_row_at_index(0))
     
