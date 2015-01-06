@@ -4,7 +4,6 @@ from transactions import Transactions
 from reports import Reports
 from projections import Projections
 from add_popover import Add_Popover
-from add_category_popover import Add_Category_Popover
 
 class Window(Gtk.Window):
 
@@ -101,19 +100,14 @@ class Window(Gtk.Window):
 
     def on_notebook_switch(self, notebook, page, index, *args):
         if index == 0:
-            self.hbLeft.hide()
             self.hbRight.queue_draw()
             #self.notebook.set_current_page(0)
         if index == 1:
-            self.hbLeft.show()
             self.hbRight.queue_draw()
         if index == 2:
-            self.hbLeft.show()
             self.hbRight.queue_draw()
         if index == 3:
-            self.hbLeft.hide()
             self.hbRight.queue_draw()
         if index == 4:
-            self.hbLeft.hide()
             self.hbRight.queue_draw()
 

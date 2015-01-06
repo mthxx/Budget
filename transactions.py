@@ -198,10 +198,6 @@ class Transactions():
         
         self.editGrid = Gtk.Grid()
         
-        self.editButton = Gtk.Button("Edit")
-        self.deleteButton = Gtk.Button("Delete")
-        self.selectorBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-        
         self.confirmLabelLine1 = Gtk.Label("Are you sure?")
         self.confirmLabelLine2 = Gtk.Label()
         self.deleteCancelButton = Gtk.Button("Cancel")
@@ -209,17 +205,10 @@ class Transactions():
         self.deleteSelectorBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         
         # Style Widgets
-        self.editButton.set_size_request(100,32)
-        self.deleteButton.set_size_request(100,32)
         self.deleteCancelButton.set_size_request(100,32)
         self.deleteConfirmButton.set_size_request(100,32)
         self.confirmLabelLine2.set_markup("<span foreground=\"red\"><b>This cannot be undone!</b></span>")
-        Gtk.StyleContext.add_class(self.selectorBox.get_style_context(), "linked")
         Gtk.StyleContext.add_class(self.deleteSelectorBox.get_style_context(), "linked")
-        self.selectorBox.set_margin_start(10)
-        self.selectorBox.set_margin_top(10)
-        self.selectorBox.set_margin_bottom(10)
-        self.selectorBox.set_margin_end(5)
         self.confirmLabelLine1.set_margin_top(10)
         self.deleteSelectorBox.set_margin_start(10)
         self.deleteSelectorBox.set_margin_top(10)
@@ -227,23 +216,16 @@ class Transactions():
         self.deleteSelectorBox.set_margin_end(5)
 
         # Connect Widget Handlers
-        self.button.connect("clicked", self.on_categoryModifyButton_clicked, self.editPopover, self.confirmLabelLine1, self.confirmLabelLine2, self.deleteSelectorBox)
-        #self.editButton.connect("clicked", self.on_editButton_clicked, self.editPopover, self.confirmLabelLine1, self.confirmLabelLine2, self.deleteSelectorBox)
-        self.deleteButton.connect("clicked", self.on_deleteButton_clicked, self.selectorBox, self.confirmLabelLine1, self.confirmLabelLine2, self.deleteSelectorBox)
-        #self.deleteCancelButton.connect("clicked", self.on_deleteCancelButton_clicked)
+        self.button.connect("clicked", self.on_deleteButton_clicked, self.editPopover)
+        self.deleteCancelButton.connect("clicked", self.on_deleteButton_clicked, self.editPopover)
         self.deleteConfirmButton.connect("clicked", self.delete_category_confirm, label)
-
-        # Add Widgets to Grid
-        self.selectorBox.add(self.editButton)
-        self.selectorBox.add(self.deleteButton)
 
         self.deleteSelectorBox.add(self.deleteCancelButton)
         self.deleteSelectorBox.add(self.deleteConfirmButton)
         
-        self.editGrid.attach(self.selectorBox,0,0,2,1)
-        self.editGrid.attach(self.confirmLabelLine1, 0, 1, 2, 1)
-        self.editGrid.attach(self.confirmLabelLine2, 0, 2, 2, 1)
-        self.editGrid.attach(self.deleteSelectorBox, 0, 3, 2, 1)
+        self.editGrid.attach(self.confirmLabelLine1, 0, 0, 2, 1)
+        self.editGrid.attach(self.confirmLabelLine2, 0, 1, 2, 1)
+        self.editGrid.attach(self.deleteSelectorBox, 0, 2, 2, 1)
         
         self.editPopover.add(self.editGrid)
 
@@ -797,20 +779,11 @@ class Transactions():
                         self.menu_index = menu[i][self.data.CATEGORY_INDEX]
             self.filter_menu(data, menu)
     
-    def on_categoryModifyButton_clicked(self, button, editPopover, confirmLabelLine1, confirmLabelLine2, deleteSelectorBox):
+    def on_deleteButton_clicked(self, button, editPopover):
         if editPopover.get_visible():
             editPopover.hide()
         else:
             editPopover.show_all()
-            confirmLabelLine1.hide()
-            confirmLabelLine2.hide()
-            deleteSelectorBox.hide()
-
-    def on_deleteButton_clicked(self, button, selectorBox, confirmLabelLine1, confirmLabelLine2, deleteSelectorBox):
-        selectorBox.hide()
-        confirmLabelLine1.show()
-        confirmLabelLine2.show()
-        deleteSelectorBox.show_all()
 
     def on_selectButton_clicked(self, *args):
         if self.editMode == 0:
