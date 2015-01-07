@@ -26,7 +26,6 @@ class Edit_Popover(Gtk.Window):
         #Initialize Data
         self.unique_id = 0
         self.entryRows = 0
-        self.menu = 0
         self.editPopover = ""
         self.contentGrid = 0
 
@@ -188,10 +187,11 @@ class Edit_Popover(Gtk.Window):
         # Replace label widgets with editing widgets
         for i in range(0, len(self.entryRows)):
             if self.entryRows[i][self.UNIQUE_ID_INDEX] == self.unique_id:
-                for j in range(1,len(self.menu)):
-                    self.categoryComboBoxText.append_text(self.menu[j][1])
-                    if self.menu[j][1] == self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_text():
-                        self.categoryComboBoxText.set_active(j-1)
+                for j in range(0,len(self.data.transactionsMenu)):
+                    if self.data.transactionsMenu[j][1] != "Uncategorized":
+                        self.categoryComboBoxText.append_text(self.data.transactionsMenu[j][1])
+                    if self.data.transactionsMenu[j][1] == self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_text():
+                        self.categoryComboBoxText.set_active(j)
                 
                 # Style Edit Grid, Hide Entry Grid
                 self.editGrid.set_halign(Gtk.Align.CENTER)
@@ -227,7 +227,7 @@ class Edit_Popover(Gtk.Window):
                 self.contentGrid.queue_draw()
                 self.editGrid.show_all()
     
-    def on_editDropdown_clicked(self, button, editPopover, unique_id, entryRows, menu, contentGrid):
+    def on_editDropdown_clicked(self, button, editPopover, unique_id, entryRows, contentGrid):
         if editPopover.get_visible():
             editPopover.hide()
         else:
@@ -239,7 +239,6 @@ class Edit_Popover(Gtk.Window):
         self.editPopover = editPopover
         self.unique_id = unique_id
         self.entryRows = entryRows
-        self.menu = menu
         self.contentGrid = contentGrid
 
     def on_submitButton_clicked(self, button):
