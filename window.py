@@ -22,58 +22,79 @@ class Window(Gtk.Window):
         self.reports = Reports()
         self.projections = Projections()
 
-        
-        # --- Header Bars ---
+        # --- Header Bar ---
+        # Create Header Bar
         self.headerBox = Gtk.Box(name="headerBox")
-        self.hbRight = Gtk.HeaderBar(name="hbRight")
+        self.hb = Gtk.HeaderBar(name="hb")
        
-        # Style Header Bars
-        self.hbRight.set_show_close_button(True)
-        self.hbRight.set_hexpand(True)
-        
+        # Style Header Bar
+        self.hb.set_show_close_button(True)
+        self.hb.set_hexpand(True)
 
-        self.headerBox.add(self.hbRight)
+        self.headerBox.add(self.hb)
         self.set_titlebar(self.headerBox)
 
+        # --- Navigation Buttons ---
+        # Create Navigation Buttons
+        self.overviewButton = Gtk.Button("Overview")
+        self.transactionsButton = Gtk.Button("Transactions")
+        self.navBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+
+        # Style Navigation Buttons
+        self.overviewButton.set_size_request(100,32)
+        self.transactionsButton.set_size_request(100,32)
+        Gtk.StyleContext.add_class(self.navBox.get_style_context(), "linked")
+
+        # Connect Buttons to handler
+        self.overviewButton.connect("clicked", self.on_overviewButton_clicked)
+        self.transactionsButton.connect("clicked", self.on_transactionsButton_clicked)
+
+        # Add Buttons to Navigation Box
+        self.navBox.add(self.overviewButton)
+        self.navBox.add(self.transactionsButton)
+        self.hb.set_custom_title(self.navBox)
         
-        # --- Action Buttons (Right Header Bar) ---
-        # Create Buttons
+        # --- Action Buttons ---
+        # Create Widgets
         self.addButton = Gtk.Button()
         self.menuButton = Gtk.MenuButton();
+        
         self.addPopover = Gtk.Popover.new(self.addButton)
-        # Add Image
+        self.add_popover = Add_Popover(self.data)
+        self.addPopover.add(self.add_popover.addGrid)
+       
+        # Add Images
         self.addIcon = Gio.ThemedIcon(name="list-add-symbolic")
         self.menuIcon = Gio.ThemedIcon(name="open-menu-symbolic")
         self.addImage = Gtk.Image.new_from_gicon(self.addIcon, Gtk.IconSize.MENU)
         self.menuImage = Gtk.Image.new_from_gicon(self.menuIcon, Gtk.IconSize.MENU)
         self.addButton.add(self.addImage)
         self.menuButton.add(self.menuImage)
-        # Set Size
+       
+        # Style Action Buttons
         self.addButton.set_size_request(32,32)
         self.menuButton.set_size_request(32,32)
-        # Create Popovers
-        self.add_popover = Add_Popover(self.data)
-        self.addPopover.add(self.add_popover.addGrid)
+        
         # Connect to handler
         self.addButton.connect("clicked", self.add_popover.on_addButton_clicked, self.addPopover)
         self.menuButton.connect("clicked", self.on_menuButton_clicked)
         
-        # --- Header Bar Packing ---
-        self.hbRight.pack_end(self.menuButton)
-        self.hbRight.pack_end(self.addButton)
+        # Pack Header Bar 
+        self.hb.pack_end(self.menuButton)
+        self.hb.pack_end(self.addButton)
         
-        # --- Notebooks
+        # --- Notebooks ---
         # Create Labels
         self.overviewLabel = Gtk.Label("Overview")
         self.transactionsLabel = Gtk.Label("Transactions")
-        self.reportsLabel = Gtk.Label("Reports")
-        self.projectionsLabel = Gtk.Label("Projections")
+        #self.reportsLabel = Gtk.Label("Reports")
+        #self.projectionsLabel = Gtk.Label("Projections")
 
         # Style Notebook 
         self.overviewLabel.set_hexpand(True)
         self.transactionsLabel.set_hexpand(True)
-        self.reportsLabel.set_hexpand(True)
-        self.projectionsLabel.set_hexpand(True)
+        #self.reportsLabel.set_hexpand(True)
+        #self.projectionsLabel.set_hexpand(True)
        
         # Create Notebook
         self.notebook = Gtk.Notebook()
@@ -82,6 +103,7 @@ class Window(Gtk.Window):
         #self.notebook.insert_page(self.reports.grid, self.reportsLabel, 3)
         #self.notebook.insert_page(self.projections.grid, self.projectionsLabel, 4)
         self.add(self.notebook)
+        self.notebook.set_show_tabs(False)
         
         # Connect to handler
         self.notebook.connect("switch-page", self.on_notebook_switch)
@@ -100,14 +122,19 @@ class Window(Gtk.Window):
 
     def on_notebook_switch(self, notebook, page, index, *args):
         if index == 0:
-            self.hbRight.queue_draw()
+            self.hb.queue_draw()
             #self.notebook.set_current_page(0)
         if index == 1:
-            self.hbRight.queue_draw()
+            self.hb.queue_draw()
         if index == 2:
-            self.hbRight.queue_draw()
+            self.hb.queue_draw()
         if index == 3:
-            self.hbRight.queue_draw()
+            self.hb.queue_draw()
         if index == 4:
-            self.hbRight.queue_draw()
+            self.hb.queue_draw()
 
+    def on_overviewButton_clicked(self, *args):
+        self.notebook.set_current_page(0)
+     
+    def on_transactionsButton_clicked(self, *args):
+        self.notebook.set_current_page(1)
