@@ -42,7 +42,12 @@ class Data():
                             [11, "November"],
                             [12, "December"],
                             ]
-    
+
+        self.yearMenu = [[0, "All"],
+                        [1, "2015"],
+                        [2,"2014"],
+                        [3,"2013"]]
+
     def add_data(self, entryString):
         if(os.path.isfile('database.txt')):
             self.transactionsMenu = []
@@ -376,4 +381,9 @@ class Data():
                 dateString += ("rd")
             else:
                 dateString += ("th")
+
+            dateString += ", "
+            dateString += str(data[index][self.DATE][self.DATE_YEAR])
+                
+                    
         return dateString
