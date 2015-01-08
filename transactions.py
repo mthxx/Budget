@@ -39,11 +39,14 @@ class Transactions():
         self.expenseCount = 0
         self.incomeAllIndex = 0
         self.expenseAllIndex = 0
-        self.menu = ""
-        self.menu_index = 0
-        self.subMenu = ""
-        self.subMenu_index = 0
-                
+        
+        self.selected_category = ""
+        self.selected_category_index = 0
+        self.selected_month = ""
+        self.selected_month_index = 0
+        self.selected_year = 0
+        self.selected_year_index = 0
+
         self.incomeMenu = []
         self.expenseMenu = []
         self.dataSum = 0
@@ -86,7 +89,7 @@ class Transactions():
         
         
         # Connect Widgets
-        self.menuListBox.connect("row-selected",self.menu_clicked)
+        self.menuListBox.connect("row-selected",self.category_selected)
         
         # Generate Sidebar and Content
         self.generate_sidebars()
@@ -110,6 +113,34 @@ class Transactions():
             self.menuListBox.get_row_at_index(index).get_child().get_children()[self.EDIT_CATEGORY_BALANCE].hide()
             self.menuListBox.get_row_at_index(index).get_child().get_children()[self.EDIT_CATEGORY_ENTRY].show()
             self.menuListBox.get_row_at_index(index).get_child().get_children()[self.EDIT_CATEGORY_BUTTON].show()
+    
+    def category_selected(self, listbox, row):
+        # To catch calls before widget exists.
+        if row == None:
+            return
+        else:
+            if row.get_child().get_children()[0].get_label() == "<span><b>All Transactions</b></span>":
+                self.selected_category = "all transactions"
+                self.selected_category_index = -1
+            elif row.get_child().get_children()[0].get_label() == "<span><b>Income</b></span>":
+                self.selected_category = "income"
+                self.selected_category_index = -2
+            elif row.get_child().get_children()[0].get_label() == "<span><b>Expenses</b></span>":
+                self.selected_category = "expense"
+                self.selected_category_index = -3
+            elif row.get_child().get_children()[0].get_label() == "Uncategorized" and row.get_index() < (len(self.menuListBox) - 1):
+                self.selected_category = "income"
+                self.selected_category_index = -4
+            elif row.get_child().get_children()[0].get_label() == "Uncategorized" and row.get_index() == (len(self.menuListBox) - 1):
+                self.selected_category = "expense"
+                self.selected_category_index = -5
+            else:
+                for i in range(len(self.data.transactionsMenu)):
+                    if self.data.transactionsMenu[i][self.data.CATEGORY_TEXT] == row.get_child().get_children()[0].get_label():
+                        self.selected_category = self.data.transactionsMenu[i][self.data.CATEGORY_TEXT]
+                        self.selected_category_index = self.data.transactionsMenu[i][self.data.CATEGORY_INDEX]
+            #self.filter_menu()
+            self.filter_entries()
     
     def category_view_mode(self, index):
             self.menuListBox.get_row_at_index(index).get_child().get_children()[self.EDIT_CATEGORY_TITLE].show()
@@ -152,7 +183,8 @@ class Transactions():
         self.dateButtonTo.set_label("1/1/2016")
         
         # Connect to handler    
-        self.dateComboMonth.connect("changed",self.subMenu_clicked)
+        self.dateComboMonth.connect("changed",self.month_selected)
+        self.dateComboYear.connect("changed",self.year_selected)
         
         self.dateComboYear.append_text("All")
         self.dateComboYear.append_text("2015")
@@ -361,145 +393,136 @@ class Transactions():
             else: 
                 return False
     
-    def filter_menu(self, data, menu):
-        count = 0
-        for i in range (0,len(self.entryRows)):
-            self.month = self.entryRows[i][1][1].get_label().split()
-            self.month =  self.month[0]
 
-            # If selected menu item is "All"
-            if self.menu_index == -1:
-                # If selected sub category equals "All", show row
-                if self.subMenu == self.data.allMonthMenu[self.data.CATEGORY][self.data.CATEGORY_TEXT]:
-                    self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
-                    self.contentGrid.queue_draw()
-                # If selected sub category equals rows sub category, show row
-                elif self.month == self.subMenu:
-                    self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
-                    self.contentGrid.queue_draw()
-                # If selected sub category does not equal rows sub category, hide row
-                elif self.month != self.subMenu:
-                    self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
-                    self.contentGrid.queue_draw()
+    def filter_entries(self):
+        for i in range (0,len(self.entryRows)):
+            self.date = self.entryRows[i][1][1].get_label().split()
+            self.entry_month =  self.date[0]
+            self.entry_day = self.date[1]
+            self.entry_year = self.date[2]
             
-            # If selected menu item is "Income" or "Expenses"
-            elif self.menu_index == -2 or self.menu_index == -3:
-                # If selected category matches rows category
-                if self.menu == self.entryRows[i][5]:
-                    # If selected sub menu is "All", show row.
-                    if self.subMenu_index == self.data.allMonthMenu[0][self.data.CATEGORY_INDEX]:
+            self.entry_day = self.entry_day.rstrip(",") 
+            self.entry_day = self.entry_day.rstrip("st") 
+            self.entry_day = self.entry_day.rstrip("th") 
+            self.entry_day = self.entry_day.rstrip("nd") 
+            self.entry_day = self.entry_day.rstrip("rd") 
+                
+            # If selected category item is "All"
+            if self.selected_category_index == -1:
+                # If selected month equals "All"
+                if self.selected_month == self.data.allMonthMenu[self.data.CATEGORY][self.data.CATEGORY_TEXT]:
+                    # if selected year equals "All", show row
+                    if self.selected_year == self.data.yearMenu[self.data.CATEGORY][self.data.CATEGORY_TEXT]:
                         self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
                         self.contentGrid.queue_draw()
-                    # If selected sub category matches rows sub category, show row
-                    elif self.subMenu == self.month:
-                        self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
-                        self.contentGrid.queue_draw()
-                    # If row's category is not the selected category, hide row
-                    elif self.menu != self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_label():
+                    # if selected year does not equal "All"
+                    elif self.selected_year != self.data.yearMenu[self.data.CATEGORY][self.data.CATEGORY_TEXT]:
+                        if self.selected_year == self.entry_year:
+                            self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
+                            self.contentGrid.queue_draw()
+                        else:
+                            self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
+                            self.contentGrid.queue_draw()
+                # If selected month does not equal "All"
+                elif self.selected_month != self.data.allMonthMenu[self.data.CATEGORY][self.data.CATEGORY_TEXT]:
+                    # If selected month equals entry's month
+                    if self.selected_month == self.entry_month:
+                        # If selected year equals all or entry's year
+                        if (self.selected_year == self.data.yearMenu[self.data.CATEGORY][self.data.CATEGORY_TEXT]
+                            or self.selected_year == self.entry_year):
+                            self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
+                            self.contentGrid.queue_draw()
+                        # If selected year does not equal all or entry's year
+                        else:
+                            self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
+                            self.contentGrid.queue_draw()
+                    # If selected month does not equal entry's month
+                    else:
                         self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
                         self.contentGrid.queue_draw()
-                        #self.entryRows[i][0][1].hide()
-                # If Row's category does not match selected category, hide row 
-                elif self.menu != self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_label():
-                    self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
-                    self.contentGrid.queue_draw()
-            
-            # If selected menu item is "Uncategorized" Income
-            elif self.menu_index == -4 or self.menu_index == -5:
+
+            # If selected category item is "Income" or "Expenses"
+            elif self.selected_category_index == -2 or self.selected_category_index == -3:
                 # If selected category matches rows category
-                if self.menu == self.entryRows[i][5] and self.entryRows[i][1][0].get_label() == "Uncategorized":
-                    # If selected sub menu is "All", show row.
-                    if self.subMenu_index == self.data.allMonthMenu[0][self.data.CATEGORY_INDEX]:
-                        self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
-                        self.contentGrid.queue_draw()
-                    # If selected sub category matches rows sub category, show row
-                    elif self.subMenu == self.month:
-                        self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
-                        self.contentGrid.queue_draw()
-                    # If row's category is not the selected category, hide row
-                    elif self.menu != self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_label():
-                        self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
-                        self.contentGrid.queue_draw()
-                        #self.entryRows[i][0][1].hide()
-                # If Row's category does not match selected category, hide row 
-                elif self.menu != self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_label():
+                if self.selected_category == self.entryRows[i][5]:
+                    # If selected month is "All"
+                    if self.selected_month_index == self.data.allMonthMenu[0][self.data.CATEGORY_INDEX]:
+                        # If selected year is "All"
+                        if self.selected_year == self.data.yearMenu[self.data.CATEGORY][self.data.CATEGORY_TEXT]:
+                            self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
+                            self.contentGrid.queue_draw()
+                        # if selected year does not equal "All"
+                        elif self.selected_year != self.data.yearMenu[self.data.CATEGORY][self.data.CATEGORY_TEXT]:
+                            if self.selected_year == self.entry_year:
+                                self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
+                                self.contentGrid.queue_draw()
+                            else:
+                                self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
+                                self.contentGrid.queue_draw()
+                    # If selected month does not equal "All"
+                    elif self.selected_month != self.data.allMonthMenu[self.data.CATEGORY][self.data.CATEGORY_TEXT]:
+                        # If selected month equals entry's month
+                        if self.selected_month == self.entry_month:
+                            # If selected year equals all or entry's year
+                            if (self.selected_year == self.data.yearMenu[self.data.CATEGORY][self.data.CATEGORY_TEXT]
+                                or self.selected_year == self.entry_year):
+                                self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
+                                self.contentGrid.queue_draw()
+                            # If selected year does not equal all or entry's year
+                            else:
+                                self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
+                                self.contentGrid.queue_draw()
+                        # If selected month does not equal entry's month
+                        else:
+                            self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
+                            self.contentGrid.queue_draw()
+                # If selected transactions type is not equal to entry's transactions type
+                elif self.selected_category != self.entryRows[i][5]:
                     self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
                     self.contentGrid.queue_draw()
             
             # If selected menu item is not "All"
-            elif self.menu_index != -1:
+            elif self.selected_category_index != -1:
                 # If selected category matches rows category
-                if self.menu == self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_label():
-                    # If selected sub menu is "All", show row.
-                    if self.subMenu_index == self.data.allMonthMenu[0][self.data.CATEGORY_INDEX]:
-                        self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
-                        self.contentGrid.queue_draw()
-                    # If selected sub category matches rows sub category, show row
-                    elif self.subMenu == self.month:
-                        self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
-                        self.contentGrid.queue_draw()
-                    # If row's category is not the selected category, hide row
-                    elif self.menu != self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_label():
-                        self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
-                        self.contentGrid.queue_draw()
-                # If Row's category does not match selected category, hide row 
-                elif self.menu != self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_label():
+                print(self.selected_category)
+                if self.selected_category == self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_label():
+                    print("Category")
+                    # If selected month is "All"
+                    if self.selected_month_index == self.data.allMonthMenu[0][self.data.CATEGORY_INDEX]:
+                        # If selected year is "All"
+                        if self.selected_year == self.data.yearMenu[self.data.CATEGORY][self.data.CATEGORY_TEXT]:
+                            self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
+                            self.contentGrid.queue_draw()
+                        # if selected year does not equal "All"
+                        elif self.selected_year != self.data.yearMenu[self.data.CATEGORY][self.data.CATEGORY_TEXT]:
+                            if self.selected_year == self.entry_year:
+                                self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
+                                self.contentGrid.queue_draw()
+                            else:
+                                self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
+                                self.contentGrid.queue_draw()
+                    # If selected month does not equal "All"
+                    elif self.selected_month != self.data.allMonthMenu[self.data.CATEGORY][self.data.CATEGORY_TEXT]:
+                        # If selected month equals entry's month
+                        if self.selected_month == self.entry_month:
+                            # If selected year equals all or entry's year
+                            if (self.selected_year == self.data.yearMenu[self.data.CATEGORY][self.data.CATEGORY_TEXT]
+                                or self.selected_year == self.entry_year):
+                                self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
+                                self.contentGrid.queue_draw()
+                            # If selected year does not equal all or entry's year
+                            else:
+                                self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
+                                self.contentGrid.queue_draw()
+                        # If selected month does not equal entry's month
+                        else:
+                            self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
+                            self.contentGrid.queue_draw()
+                # If selected category is not equal to entry category
+                if self.selected_category != self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_label():
                     self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
                     self.contentGrid.queue_draw()
-
-    def filter_subMenu(self, data, menu):
-        for i in range (0,len(self.entryRows)):
-            self.month = self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.DATE_LABEL_INDEX].get_label().split()
-            self.month = self.month[0]
-           # If selected category is equal to "All"
-            if self.menu_index == -1 :
-                # If sub category equals "All"
-                if self.subMenu_index == self.data.allMonthMenu[self.data.CATEGORY][self.data.CATEGORY_INDEX]:
-                    self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
-                    self.contentGrid.queue_draw()
-                # If selected sub category matches rows sub category, show row
-                elif self.month == self.subMenu:
-                    self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
-                    self.contentGrid.queue_draw()
-                # If selected sub category does not match rows sub category, hide row
-                elif self.month != self.subMenu:
-                    self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
-                    self.contentGrid.queue_draw()
-            
-           # If selected category is equal to "Income or Expenses"
-            elif self.menu_index == -2 or self.menu_index == -3 :
-                # If sub category equals "All"
-                if self.subMenu_index == self.data.allMonthMenu[self.data.CATEGORY][self.data.CATEGORY_INDEX]:
-                    if self.entryRows[i][5] == self.menu:
-                        self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
-                        self.contentGrid.queue_draw()
-                # If selected sub category matches rows sub category, show row
-                elif self.month == self.subMenu:
-                    if self.entryRows[i][5] == self.menu:
-                        self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
-                        self.contentGrid.queue_draw()
-                # If selected sub category does not match rows sub category, hide row
-                elif self.month != self.subMenu:
-                    self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
-                    self.contentGrid.queue_draw()
-           
-            # If selected category is not equal to "All"
-            elif self.menu_index != -1:
-                # If selected sub category equals "All" and selected category equals rows category, show row
-                if self.month == self.subMenu and self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_label() == self.menu:
-                    self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
-                    self.contentGrid.queue_draw()
-                # If selected sub category does not equal rows sub category, or selected category doesn't equal rows category, hide row.
-                elif self.month != self.subMenu or self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_label() != self.menu:
-                    self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
-                    self.contentGrid.queue_draw()
-                # If selected sub category equals "All"
-                if self.subMenu_index == self.data.allMonthMenu[0][0]:
-                    # If selected category equals rows category, show row
-                    if self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_label() == self.menu:
-                        self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
-                        self.contentGrid.queue_draw()
-    
+                    
     def generate_sidebars(self):
         #Clear existing data
         while len(self.menuListBox) > 0:
@@ -749,35 +772,18 @@ class Transactions():
         # Select default option
         self.menuListBox.select_row(self.menuListBox.get_row_at_index(0))
     
-    def menu_clicked(self, listbox, row):
+    def month_selected(self, listbox, *args):
         # To catch calls before widget exists.
-        if row == None:
+        if listbox == None:
             return
         else:
-            menu = self.data.transactionsMenu
-            data = self.data.transactions
-
-            if row.get_child().get_children()[0].get_label() == "<span><b>All Transactions</b></span>":
-                self.menu = "all transactions"
-                self.menu_index = -1
-            elif row.get_child().get_children()[0].get_label() == "<span><b>Income</b></span>":
-                self.menu = "income"
-                self.menu_index = -2
-            elif row.get_child().get_children()[0].get_label() == "<span><b>Expenses</b></span>":
-                self.menu = "expense"
-                self.menu_index = -3
-            elif row.get_child().get_children()[0].get_label() == "Uncategorized" and row.get_index() < (len(self.menuListBox) - 1):
-                self.menu = "income"
-                self.menu_index = -4
-            elif row.get_child().get_children()[0].get_label() == "Uncategorized" and row.get_index() == (len(self.menuListBox) - 1):
-                self.menu = "expense"
-                self.menu_index = -5
-            else:
-                for i in range(len(menu)):
-                    if menu[i][self.data.CATEGORY_TEXT] == row.get_child().get_children()[0].get_label():
-                        self.menu = menu[i][self.data.CATEGORY_TEXT]
-                        self.menu_index = menu[i][self.data.CATEGORY_INDEX]
-            self.filter_menu(data, menu)
+            for i in range (len(self.data.allMonthMenu)):
+                if self.data.allMonthMenu[i][self.data.CATEGORY_INDEX] == listbox.get_active():
+                    self.row = self.data.allMonthMenu[i][self.data.CATEGORY_INDEX]
+            self.selected_month = self.data.allMonthMenu[self.row][self.data.CATEGORY_TEXT]
+            self.selected_month_index = self.data.allMonthMenu[self.row][self.data.CATEGORY_INDEX]
+            #self.filter_subMenu()
+            self.filter_entries()
     
     def on_deleteButton_clicked(self, button, editPopover):
         if editPopover.get_visible():
@@ -802,17 +808,15 @@ class Transactions():
                                 self.data.edit_category(self.data.transactionsMenu[j][0],self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_ENTRY].get_text())
                     self.category_view_mode(i)
                     
-    def subMenu_clicked(self, listbox, *args):
+    def year_selected(self, listbox, *args):
         # To catch calls before widget exists.
         if listbox == None:
             return
         else:
-            menu = self.data.transactionsMenu
-            data = self.data.transactions
-            
-            for i in range (len(self.data.allMonthMenu)):
-                if self.data.allMonthMenu[i][self.data.CATEGORY_INDEX] == listbox.get_active():
-                    self.row = self.data.allMonthMenu[i][self.data.CATEGORY_INDEX]
-            self.subMenu = self.data.allMonthMenu[self.row][self.data.CATEGORY_TEXT]
-            self.subMenu_index = self.data.allMonthMenu[self.row][self.data.CATEGORY_INDEX]
-            self.filter_subMenu(data, menu)
+            for i in range (len(self.data.yearMenu)):
+                if self.data.yearMenu[i][self.data.CATEGORY_INDEX] == listbox.get_active():
+                    self.row = self.data.yearMenu[i][self.data.CATEGORY_INDEX]
+            self.selected_year = self.data.yearMenu[self.row][self.data.CATEGORY_TEXT]
+            self.selected_year_index = self.data.yearMenu[self.row][self.data.CATEGORY_INDEX]
+            #self.filter_subMenu()
+            self.filter_entries()
