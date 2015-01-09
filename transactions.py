@@ -800,12 +800,12 @@ class Transactions():
         self.editCategoryBox.add(self.editCategoryButton)
         self.editCategoryBox.add(self.addCategoryButton)
         self.menuListBox.add(self.editCategoryBox)
+        self.menuListBox.get_row_at_index(len(self.menuListBox)-1).set_selectable(False)
         self.editCategoryBox.show_all()
        
         # Connect Widgets
         self.editCategoryButton.connect("clicked", self.on_selectButton_clicked)
         self.addCategoryButton.connect("clicked", self.add_category_popover.on_addCategoryButton_clicked, self.addCategoryPopover)
-        
 
         # Select default option
         self.menuListBox.select_row(self.menuListBox.get_row_at_index(0))
