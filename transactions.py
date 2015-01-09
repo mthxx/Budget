@@ -271,6 +271,7 @@ class Transactions():
                     # Find matching menu item and uniqueID in database
                     if self.data.transactionsMenu[j][1] == self.menuListBox.get_row_at_index(i).get_child().get_children()[0].get_label():
                         self.data.delete_category(self.data.transactionsMenu[j][0])
+                        self.editMode = 0
                         # If row is found, break out of loop.
                         return
     
