@@ -128,10 +128,10 @@ class Transactions():
             elif row.get_child().get_children()[0].get_label() == "<span><b>Expenses</b></span>":
                 self.selected_category = "expense"
                 self.selected_category_index = -3
-            elif row.get_child().get_children()[0].get_label() == "Uncategorized" and row.get_index() < (len(self.menuListBox) - 1):
+            elif row.get_child().get_children()[0].get_label() == "Uncategorized" and row.get_index() < (len(self.menuListBox) - 2):
                 self.selected_category = "income"
                 self.selected_category_index = -4
-            elif row.get_child().get_children()[0].get_label() == "Uncategorized" and row.get_index() == (len(self.menuListBox) - 1):
+            elif row.get_child().get_children()[0].get_label() == "Uncategorized" and row.get_index() >= (len(self.menuListBox) - 2):
                 self.selected_category = "expense"
                 self.selected_category_index = -5
             else:
@@ -139,7 +139,6 @@ class Transactions():
                     if self.data.transactionsMenu[i][self.data.CATEGORY_TEXT] == row.get_child().get_children()[0].get_label():
                         self.selected_category = self.data.transactionsMenu[i][self.data.CATEGORY_TEXT]
                         self.selected_category_index = self.data.transactionsMenu[i][self.data.CATEGORY_INDEX]
-            #self.filter_menu()
             self.filter_entries()
     
     def category_view_mode(self, index):
@@ -481,12 +480,50 @@ class Transactions():
                     self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
                     self.contentGrid.queue_draw()
             
+            # If selected category item is "Uncategorized"
+            elif (self.selected_category_index == -4 or self.selected_category_index == -5):
+                # If selected category matches rows category
+                if (self.selected_category == self.entryRows[i][5] and self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_label() == "Uncategorized"):
+                    # If selected month is "All"
+                    if self.selected_month_index == self.data.allMonthMenu[0][self.data.CATEGORY_INDEX]:
+                        # If selected year is "All"
+                        if self.selected_year == self.data.yearMenu[self.data.CATEGORY][self.data.CATEGORY_TEXT]:
+                            self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
+                            self.contentGrid.queue_draw()
+                        # if selected year does not equal "All"
+                        elif self.selected_year != self.data.yearMenu[self.data.CATEGORY][self.data.CATEGORY_TEXT]:
+                            if self.selected_year == self.entry_year:
+                                self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
+                                self.contentGrid.queue_draw()
+                            else:
+                                self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
+                                self.contentGrid.queue_draw()
+                    # If selected month does not equal "All"
+                    elif self.selected_month != self.data.allMonthMenu[self.data.CATEGORY][self.data.CATEGORY_TEXT]:
+                        # If selected month equals entry's month
+                        if self.selected_month == self.entry_month:
+                            # If selected year equals all or entry's year
+                            if (self.selected_year == self.data.yearMenu[self.data.CATEGORY][self.data.CATEGORY_TEXT]
+                                or self.selected_year == self.entry_year):
+                                self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
+                                self.contentGrid.queue_draw()
+                            # If selected year does not equal all or entry's year
+                            else:
+                                self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
+                                self.contentGrid.queue_draw()
+                        # If selected month does not equal entry's month
+                        else:
+                            self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
+                            self.contentGrid.queue_draw()
+                # If selected transactions type is not equal to entry's transactions type
+                elif (self.selected_category != self.entryRows[i][5] or self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_label() != "Uncategorized"):
+                    self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
+                    self.contentGrid.queue_draw()
+            
             # If selected menu item is not "All"
             elif self.selected_category_index != -1:
                 # If selected category matches rows category
-                print(self.selected_category)
                 if self.selected_category == self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_label():
-                    print("Category")
                     # If selected month is "All"
                     if self.selected_month_index == self.data.allMonthMenu[0][self.data.CATEGORY_INDEX]:
                         # If selected year is "All"
@@ -782,7 +819,6 @@ class Transactions():
                     self.row = self.data.allMonthMenu[i][self.data.CATEGORY_INDEX]
             self.selected_month = self.data.allMonthMenu[self.row][self.data.CATEGORY_TEXT]
             self.selected_month_index = self.data.allMonthMenu[self.row][self.data.CATEGORY_INDEX]
-            #self.filter_subMenu()
             self.filter_entries()
     
     def on_deleteButton_clicked(self, button, editPopover):
@@ -818,5 +854,4 @@ class Transactions():
                     self.row = self.data.yearMenu[i][self.data.CATEGORY_INDEX]
             self.selected_year = self.data.yearMenu[self.row][self.data.CATEGORY_TEXT]
             self.selected_year_index = self.data.yearMenu[self.row][self.data.CATEGORY_INDEX]
-            #self.filter_subMenu()
             self.filter_entries()
