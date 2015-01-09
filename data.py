@@ -83,7 +83,7 @@ class Data():
         self.editString += str(cost) + ","
         self.editString += str(description) + ","
         self.editString += str(uniqueID) + "\n"
-       
+
         return self.editString
     
     def connect_data_views(self, transaction_view, overview):
@@ -335,6 +335,10 @@ class Data():
                 dateString += ("rd")
             else:
                 dateString += ("th")
+            
+            dateString += ", "
+            dateString += str(data[0])
+        
         else:
             if data[index][self.DATE][self.DATE_MONTH] == 1:
                 dateString += ("January")

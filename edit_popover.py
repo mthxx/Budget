@@ -242,25 +242,28 @@ class Edit_Popover(Gtk.Window):
         self.contentGrid = contentGrid
 
     def on_submitButton_clicked(self, button):
-        self.editGrid.hide()
-        self.dateArr = self.calendar.get_date()
-        self.year = str(self.dateArr[0])
-        self.month = str(self.dateArr[1] + 1)
-        self.day = str(self.dateArr[2])
-        
-        self.editString = self.data.create_data_string(self.categoryComboBoxText.get_active_text(),
-                                        self.year, self.month, self.day, self.costEntry.get_text(), self.descriptionEntry.get_text(),
-                                        self.unique_id)
+        if self.categoryComboBoxText.get_active() < 0:
+            self.categoryLabel.set_markup("<span foreground=\"red\"><b>* Category</b></span>")
+        else:
+            self.editGrid.hide()
+            self.dateArr = self.calendar.get_date()
+            self.year = str(self.dateArr[0])
+            self.month = str(self.dateArr[1] + 1)
+            self.day = str(self.dateArr[2])
+            
+            self.editString = self.data.create_data_string(self.categoryComboBoxText.get_active_text(),
+                                            self.year, self.month, self.day, self.costEntry.get_text(), self.descriptionEntry.get_text(),
+                                            self.unique_id)
 
-        self.data.delete_data(self.unique_id)
-        self.data.add_data(self.editString)
+            self.data.delete_data(self.unique_id)
+            self.data.add_data(self.editString)
         
-        for i in range(0, len(self.entryRows)):
-            if self.entryRows[i][self.UNIQUE_ID_INDEX] == self.unique_id:
-                self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.EDIT_BUTTON_INDEX].show_all()
-                self.entryRows[i][self.ENTRY_GRID_INDEX].show_all()
-        
-        self.contentGrid.queue_draw()
+            for i in range(0, len(self.entryRows)):
+                if self.entryRows[i][self.UNIQUE_ID_INDEX] == self.unique_id:
+                    self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.EDIT_BUTTON_INDEX].show_all()
+                    self.entryRows[i][self.ENTRY_GRID_INDEX].show_all()
+            
+            self.contentGrid.queue_draw()
     
     def set_calendar(self,data):
         for i in range(0, len(data)):
