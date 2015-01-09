@@ -8,22 +8,26 @@ class Add_Category_Popover(Gtk.Window):
         self.data = data
         # Create Widgets
         self.addGrid = Gtk.Grid()
-        self.addIncomeRadio = Gtk.RadioButton(None, "Income")
-        self.addExpenseRadio = Gtk.RadioButton(self.addIncomeRadio, "Expense")
-        self.addStack = Gtk.Stack()
-        self.addStackSwitcher = Gtk.StackSwitcher()
-        self.addStack.add_titled(self.addIncomeRadio, "Income", "Income")
-        self.addStack.add_titled(self.addExpenseRadio, "Expense", "Expense")
-        self.addStackSwitcher.set_stack(self.addStack)
+        self.addIncomeRadio = Gtk.RadioButton.new_with_label(None, "Income")
+        self.addExpenseRadio = Gtk.RadioButton.new_with_label(None, "Expense")
+        self.addExpenseRadio.join_group(self.addIncomeRadio)
+        self.radioBox = Gtk.Box(Gtk.Orientation.HORIZONTAL,1)
+        self.radioBox.pack_start(self.addIncomeRadio, True, True, 0)
+        self.radioBox.pack_start(self.addExpenseRadio, True, True, 0)
         self.addEntryLabel = Gtk.Label("Category")
         self.addEntry = Gtk.Entry()
         self.addCancelButton = Gtk.Button("Cancel")
         self.addSubmitButton = Gtk.Button("Submit")
         
         # Style Widgets
-        self.addStackSwitcher.set_homogeneous(True)
-        self.addStack.set_hexpand(True)        
-        self.add_popover_margin(self.addStackSwitcher, 10)
+        self.radioBox.set_homogeneous(True)
+        self.radioBox.set_hexpand(True)        
+        self.radioBox.set_vexpand(True)        
+        self.radioBox.set_property("height-request", 34)
+        self.add_popover_margin(self.radioBox, 10)
+        self.addIncomeRadio.set_property("draw-indicator",False)
+        self.addExpenseRadio.set_property("draw-indicator",False)
+        Gtk.StyleContext.add_class(self.radioBox.get_style_context(), "linked")
         self.add_popover_margin(self.addEntryLabel, 1)
         self.add_popover_margin(self.addEntry, 10)
         self.addEntry.set_margin_top(0)
@@ -33,10 +37,10 @@ class Add_Category_Popover(Gtk.Window):
         self.radio = "income"
         
         # Connect Widget Handlers
-        self.addStackSwitcher.connect("set-focus-child", self.on_addRadio_toggled)
+        self.addIncomeRadio.connect("toggled", self.on_addRadio_toggled)
         
         # Add Widgets to Grid
-        self.addGrid.attach(self.addStackSwitcher,0,0,2,1)
+        self.addGrid.attach(self.radioBox,0,0,2,1)
         
         self.addGrid.attach(self.addEntryLabel,0,1,2,1)
         self.addGrid.attach(self.addEntry,0,2,2,1)
@@ -65,11 +69,10 @@ class Add_Category_Popover(Gtk.Window):
             self.addEntry.grab_focus()
     
     def on_addRadio_toggled(self, *args):
-        if args[1] != None:
-            if args[1].get_group()[0].get_active():
-                self.radio = "income"
-            if args[1].get_group()[1].get_active():
-                self.radio = "expense"
+        if self.addIncomeRadio.get_active() == True:
+            self.radio = "income"
+        elif self.addExpenseRadio.get_active() == True:
+            self.radio = "expense"
         print(self.radio)
 
     def on_addSubmitButton_clicked(self, button):
