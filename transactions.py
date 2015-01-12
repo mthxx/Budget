@@ -159,32 +159,48 @@ class Transactions():
         
         self.dateButtonFrom = Gtk.Button()
         self.dateCalendarFrom = Gtk.Calendar()
-       
+        self.datePopoverFrom = Gtk.Popover.new(self.dateButtonFrom)
+        self.datePopoverFrom.add(self.dateCalendarFrom)
+
         self.dateLabelTo = Gtk.Label("to")
        
         self.dateButtonTo = Gtk.Button()
         self.dateCalendarTo = Gtk.Calendar()
+        self.datePopoverTo = Gtk.Popover.new(self.dateButtonTo)
+        self.datePopoverTo.add(self.dateCalendarTo)
         
-        self.dateGrid.attach(self.dateLabelMonth,0,0,1,1)
-        self.dateGrid.attach(self.dateComboMonth,1,0,1,1)
-        self.dateGrid.attach(self.dateLabelYear,2,0,1,1)
-        self.dateGrid.attach(self.dateComboYear,3,0,1,1)
-        self.dateGrid.attach(self.dateLabelRange,4,0,1,1)
-        self.dateGrid.attach(self.dateButtonFrom,5,0,1,1) 
-        self.dateGrid.attach(self.dateLabelTo,6,0,1,1) 
-        self.dateGrid.attach(self.dateButtonTo,7,0,1,1) 
+        self.monthYearRadio = Gtk.RadioButton.new(None)
+        self.rangeRadio = Gtk.RadioButton.new(None)
+        self.rangeRadio.join_group(self.monthYearRadio)
+
+        self.dateGrid.attach(self.monthYearRadio,0,0,1,1)
+        self.dateGrid.attach(self.dateLabelMonth,1,0,1,1)
+        self.dateGrid.attach(self.dateComboMonth,2,0,1,1)
+        self.dateGrid.attach(self.dateLabelYear,3,0,1,1)
+        self.dateGrid.attach(self.dateComboYear,4,0,1,1)
+        self.dateGrid.attach(self.rangeRadio,5,0,1,1)
+        self.dateGrid.attach(self.dateLabelRange,6,0,1,1)
+        self.dateGrid.attach(self.dateButtonFrom,7,0,1,1) 
+        self.dateGrid.attach(self.dateLabelTo,8,0,1,1) 
+        self.dateGrid.attach(self.dateButtonTo,9,0,1,1) 
         
         # Generate Months
         for i in range(0,len(self.data.allMonthMenu)):
             self.dateComboMonth.append_text(self.data.allMonthMenu[i][1])
-            
-        self.dateButtonFrom.set_label("1/1/2013")
-        self.dateButtonTo.set_label("1/1/2016")
+
+        self.dateButtonFrom.set_property("width-request",100)
+        self.dateButtonTo.set_property("width-request",100)
         
         # Connect to handler    
         self.dateComboMonth.connect("changed",self.month_selected)
         self.dateComboYear.connect("changed",self.year_selected)
-        
+        self.monthYearRadio.connect("toggled", self.on_dateRadio_toggled)
+        self.dateButtonFrom.connect("clicked", self.on_datePopover_clicked, self.datePopoverFrom)
+        self.dateButtonTo.connect("clicked", self.on_datePopover_clicked, self.datePopoverTo)
+        self.datePopoverFrom.connect("closed", self.on_datePopover_closed, self.dateCalendarFrom, self.dateButtonFrom)
+        self.datePopoverTo.connect("closed", self.on_datePopover_closed, self.dateCalendarTo, self.dateButtonTo)
+
+
         self.dateComboYear.append_text("All")
         self.dateComboYear.append_text("2015")
         self.dateComboYear.append_text("2014")
@@ -192,8 +208,10 @@ class Transactions():
             
         self.dateComboMonth.set_active(0)
         self.dateComboYear.set_active(0)
-        
-        self.dateLabelMonth.set_margin_start(20)
+       
+        self.monthYearRadio.set_margin_start(20)
+
+        self.dateLabelMonth.set_margin_start(5)
         self.dateLabelMonth.set_margin_end(5)
         
         self.dateComboMonth.set_margin_top(10)
@@ -205,10 +223,11 @@ class Transactions():
         
         self.dateComboYear.set_margin_top(10) 
         self.dateComboYear.set_margin_bottom(10)
-        self.dateComboYear.set_margin_end(100)
+        self.dateComboYear.set_margin_end(50)
         
+        self.dateLabelRange.set_margin_start(5)
         self.dateLabelRange.set_margin_end(5)
-        
+
         self.dateButtonFrom.set_margin_top(10)
         self.dateButtonFrom.set_margin_bottom(10)
         self.dateButtonFrom.set_margin_end(5)
@@ -217,6 +236,19 @@ class Transactions():
         
         self.dateButtonTo.set_margin_top(10)
         self.dateButtonTo.set_margin_bottom(10)
+        
+        self.month_year_sensitive(True)
+        self.range_sensitive(False)
+    
+    def on_datePopover_clicked(self, button, datePopover):
+        if datePopover.get_visible():
+            datePopover.hide()
+        else:
+            datePopover.show_all()
+    
+    def on_datePopover_closed(self, datePopover, dateCalendar, dateButton):
+        dateString = self.data.translate_date(dateCalendar.get_date(),"edit")
+        dateButton.set_label(dateString)
 
     def create_delete_button(self, label):
         self.button = Gtk.Button()
@@ -262,6 +294,14 @@ class Transactions():
 
         return self.button
     
+    def on_dateRadio_toggled(self, *args):
+        if self.monthYearRadio.get_active() == True:
+            self.month_year_sensitive(True)
+            self.range_sensitive(False)
+        if self.rangeRadio.get_active() == True:
+            self.month_year_sensitive(False)
+            self.range_sensitive(True)
+
     def delete_category_confirm(self, button, label):
         for i in range(len(self.menuListBox)):
             if self.menuListBox.get_row_at_index(i) == None:
@@ -393,6 +433,55 @@ class Transactions():
             else: 
                 return False
    
+    def filter_entries(self):
+        if hasattr(self, "monthYearRadio"):
+            if self.monthYearRadio.get_active() == True:
+                for i in range (0,len(self.entryRows)):
+                    self.date = self.entryRows[i][1][1].get_label().split()
+                    self.entry_month =  self.date[0]
+                    self.entry_day = self.date[1]
+                    self.entry_year = self.date[2]
+                    
+                    self.entry_day = self.entry_day.rstrip(",") 
+                    self.entry_day = self.entry_day.rstrip("st") 
+                    self.entry_day = self.entry_day.rstrip("th") 
+                    self.entry_day = self.entry_day.rstrip("nd") 
+                    self.entry_day = self.entry_day.rstrip("rd") 
+                        
+                    # If selected category item is "All"
+                    if self.selected_category_index == -1:
+                        # Check Month Filter
+                        self.filter_month(i)
+                     # If selected category item is "Income" or "Expenses"
+                    elif self.selected_category_index == -2 or self.selected_category_index == -3:
+                        # If selected category matches rows category
+                        if self.selected_category == self.entryRows[i][5]:
+                            self.filter_month(i)
+                        # If selected transactions type is not equal to entry's transactions type
+                        elif self.selected_category != self.entryRows[i][5]:
+                            self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
+                            self.contentGrid.queue_draw()
+                    
+                    # If selected category item is "Uncategorized"
+                    elif (self.selected_category_index == -4 or self.selected_category_index == -5):
+                        # If selected category matches rows category
+                        if (self.selected_category == self.entryRows[i][5] and self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_label() == "Uncategorized"):
+                            self.filter_month(i)
+                        # If selected transactions type is not equal to entry's transactions type
+                        elif (self.selected_category != self.entryRows[i][5] or self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_label() != "Uncategorized"):
+                            self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
+                            self.contentGrid.queue_draw()
+                    
+                    # If selected menu item is not "All"
+                    elif self.selected_category_index != -1:
+                        # If selected category matches rows category
+                        if self.selected_category == self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_label():
+                            self.filter_month(i)
+                        # If selected category is not equal to entry category
+                        if self.selected_category != self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_label():
+                            self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
+                            self.contentGrid.queue_draw()
+    
     def filter_month(self, i):
         # If selected month equals "All"
         if self.selected_month == self.data.allMonthMenu[self.data.CATEGORY][self.data.CATEGORY_TEXT]:
@@ -423,53 +512,6 @@ class Transactions():
                 self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
                 self.contentGrid.queue_draw()
 
-    def filter_entries(self):
-        for i in range (0,len(self.entryRows)):
-            self.date = self.entryRows[i][1][1].get_label().split()
-            self.entry_month =  self.date[0]
-            self.entry_day = self.date[1]
-            self.entry_year = self.date[2]
-            
-            self.entry_day = self.entry_day.rstrip(",") 
-            self.entry_day = self.entry_day.rstrip("st") 
-            self.entry_day = self.entry_day.rstrip("th") 
-            self.entry_day = self.entry_day.rstrip("nd") 
-            self.entry_day = self.entry_day.rstrip("rd") 
-                
-            # If selected category item is "All"
-            if self.selected_category_index == -1:
-                # Check Month Filter
-                self.filter_month(i)
-             # If selected category item is "Income" or "Expenses"
-            elif self.selected_category_index == -2 or self.selected_category_index == -3:
-                # If selected category matches rows category
-                if self.selected_category == self.entryRows[i][5]:
-                    self.filter_month(i)
-                # If selected transactions type is not equal to entry's transactions type
-                elif self.selected_category != self.entryRows[i][5]:
-                    self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
-                    self.contentGrid.queue_draw()
-            
-            # If selected category item is "Uncategorized"
-            elif (self.selected_category_index == -4 or self.selected_category_index == -5):
-                # If selected category matches rows category
-                if (self.selected_category == self.entryRows[i][5] and self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_label() == "Uncategorized"):
-                    self.filter_month(i)
-                # If selected transactions type is not equal to entry's transactions type
-                elif (self.selected_category != self.entryRows[i][5] or self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_label() != "Uncategorized"):
-                    self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
-                    self.contentGrid.queue_draw()
-            
-            # If selected menu item is not "All"
-            elif self.selected_category_index != -1:
-                # If selected category matches rows category
-                if self.selected_category == self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_label():
-                    self.filter_month(i)
-                # If selected category is not equal to entry category
-                if self.selected_category != self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_label():
-                    self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
-                    self.contentGrid.queue_draw()
-                    
     def generate_sidebars(self):
         #Clear existing data
         while len(self.menuListBox) > 0:
@@ -731,6 +773,12 @@ class Transactions():
             self.selected_month_index = self.data.allMonthMenu[self.row][self.data.CATEGORY_INDEX]
             self.filter_entries()
     
+    def month_year_sensitive(self, boolean):
+        self.dateLabelMonth.set_sensitive(boolean)
+        self.dateComboMonth.set_sensitive(boolean)
+        self.dateLabelYear.set_sensitive(boolean)
+        self.dateComboYear.set_sensitive(boolean)
+    
     def on_deleteButton_clicked(self, button, editPopover):
         if editPopover.get_visible():
             editPopover.hide()
@@ -753,7 +801,13 @@ class Transactions():
                             if self.data.transactionsMenu[j][1] == self.menuListBox.get_row_at_index(i).get_child().get_children()[0].get_label():
                                 self.data.edit_category(self.data.transactionsMenu[j][0],self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_ENTRY].get_text())
                     self.category_view_mode(i)
-                    
+    
+    def range_sensitive(self, boolean):
+        self.dateLabelRange.set_sensitive(boolean)
+        self.dateButtonFrom.set_sensitive(boolean)
+        self.dateLabelTo.set_sensitive(boolean)
+        self.dateButtonTo.set_sensitive(boolean)
+
     def year_selected(self, listbox, *args):
         # To catch calls before widget exists.
         if listbox == None:
