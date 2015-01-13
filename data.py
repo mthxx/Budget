@@ -339,6 +339,34 @@ class Data():
             dateString += ", "
             dateString += str(data[0])
         
+        elif index == "month":
+            if data == "January":
+                dateString = 1
+            elif data == "February":
+                dateString = 2
+            elif data == "March":
+                dateString = 3
+            elif data == "April":
+                dateString = 4
+            elif data == "May":
+                dateString = 5
+            elif data == "June":
+                dateString = 6
+            elif data == "July":
+                dateString = 7
+            elif data == "August":
+                dateString = 8
+            elif data == "September":
+                dateString = 9
+            elif data == "October":
+                dateString = 10
+            elif data == "November":
+                dateString = 11
+            elif data == "December":
+                dateString  = 12
+            else:
+                dateString = ("Month Fail")
+            
         else:
             if data[index][self.DATE][self.DATE_MONTH] == 1:
                 dateString += ("January")

@@ -249,6 +249,8 @@ class Transactions():
     def on_datePopover_closed(self, datePopover, dateCalendar, dateButton):
         dateString = self.data.translate_date(dateCalendar.get_date(),"edit")
         dateButton.set_label(dateString)
+        if self.dateButtonFrom.get_label() != None and self.dateButtonTo.get_label() != None:
+            self.filter_entries()
 
     def create_delete_button(self, label):
         self.button = Gtk.Button()
@@ -435,19 +437,19 @@ class Transactions():
    
     def filter_entries(self):
         if hasattr(self, "monthYearRadio"):
-            if self.monthYearRadio.get_active() == True:
-                for i in range (0,len(self.entryRows)):
-                    self.date = self.entryRows[i][1][1].get_label().split()
-                    self.entry_month =  self.date[0]
-                    self.entry_day = self.date[1]
-                    self.entry_year = self.date[2]
+            for i in range (0,len(self.entryRows)):
+                self.date = self.entryRows[i][1][1].get_label().split()
+                self.entry_month =  self.date[0]
+                self.entry_day = self.date[1]
+                self.entry_year = self.date[2]
+                
+                self.entry_day = self.entry_day.rstrip(",") 
+                self.entry_day = self.entry_day.rstrip("st") 
+                self.entry_day = self.entry_day.rstrip("th") 
+                self.entry_day = self.entry_day.rstrip("nd") 
+                self.entry_day = self.entry_day.rstrip("rd") 
                     
-                    self.entry_day = self.entry_day.rstrip(",") 
-                    self.entry_day = self.entry_day.rstrip("st") 
-                    self.entry_day = self.entry_day.rstrip("th") 
-                    self.entry_day = self.entry_day.rstrip("nd") 
-                    self.entry_day = self.entry_day.rstrip("rd") 
-                        
+                if self.monthYearRadio.get_active() == True:
                     # If selected category item is "All"
                     if self.selected_category_index == -1:
                         # Check Month Filter
@@ -479,6 +481,39 @@ class Transactions():
                             self.filter_month(i)
                         # If selected category is not equal to entry category
                         if self.selected_category != self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_label():
+                            self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
+                            self.contentGrid.queue_draw()
+            
+                elif self.rangeRadio.get_active() == True:
+                    self.fromArr = self.dateCalendarFrom.get_date()
+                    self.toArr = self.dateCalendarTo.get_date()
+                    
+                    self.fromYear = self.fromArr[0]
+                    self.fromMonth = self.fromArr[1]
+                    self.fromMonth += 1
+                    self.fromDay= self.fromArr[2]
+                    
+                    self.entry_month = self.data.translate_date(self.entry_month, "month")
+                    
+                    self.toYear = self.toArr[0]
+                    self.toMonth = self.toArr[1]
+                    self.toMonth += 1
+                    self.toDay= self.toArr[2]
+                    # If selected category item is "All"
+                    if self.selected_category_index == -1:
+                        # Check Month Filter
+                        if int(self.entry_year) >= int(self.fromYear) and int(self.entry_year) <= int(self.toYear):
+                            if int(self.entry_month) >= int(self.fromMonth) and int(self.entry_month) <= int(self.toMonth):
+                                if int(self.entry_day) >= int(self.fromDay) and int(self.entry_day) <= int(self.toDay):
+                                    self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
+                                    self.contentGrid.queue_draw()
+                                else:
+                                    self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
+                                    self.contentGrid.queue_draw()
+                            else:
+                                self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
+                                self.contentGrid.queue_draw()
+                        else:
                             self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
                             self.contentGrid.queue_draw()
     
