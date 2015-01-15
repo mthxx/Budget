@@ -450,41 +450,33 @@ class Transactions():
                 self.entry_day = self.entry_day.rstrip("rd") 
                     
                 if self.monthYearRadio.get_active() == True:
+                    
                     # If selected category item is "All"
                     if self.selected_category_index == -1:
-                        # Check Month Filter
                         self.filter_month(i)
                      # If selected category item is "Income" or "Expenses"
                     elif self.selected_category_index == -2 or self.selected_category_index == -3:
-                        # If selected category matches rows category
                         if self.selected_category == self.entryRows[i][5]:
                             self.filter_month(i)
-                        # If selected transactions type is not equal to entry's transactions type
                         elif self.selected_category != self.entryRows[i][5]:
-                            self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
-                            self.contentGrid.queue_draw()
+                            self.hide_entry(i)
                     
                     # If selected category item is "Uncategorized"
                     elif (self.selected_category_index == -4 or self.selected_category_index == -5):
-                        # If selected category matches rows category
                         if (self.selected_category == self.entryRows[i][5] and self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_label() == "Uncategorized"):
                             self.filter_month(i)
-                        # If selected transactions type is not equal to entry's transactions type
                         elif (self.selected_category != self.entryRows[i][5] or self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_label() != "Uncategorized"):
-                            self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
-                            self.contentGrid.queue_draw()
+                            self.hide_entry(i)
                     
                     # If selected menu item is not "All"
                     elif self.selected_category_index != -1:
-                        # If selected category matches rows category
                         if self.selected_category == self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_label():
                             self.filter_month(i)
-                        # If selected category is not equal to entry category
                         if self.selected_category != self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_label():
-                            self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
-                            self.contentGrid.queue_draw()
+                            self.hide_entry(i)
             
                 elif self.rangeRadio.get_active() == True:
+                    
                     self.fromArr = self.dateCalendarFrom.get_date()
                     self.toArr = self.dateCalendarTo.get_date()
                     
@@ -499,24 +491,35 @@ class Transactions():
                     self.toMonth = self.toArr[1]
                     self.toMonth += 1
                     self.toDay= self.toArr[2]
+    
                     # If selected category item is "All"
                     if self.selected_category_index == -1:
-                        # Check Month Filter
-                        if int(self.entry_year) >= int(self.fromYear) and int(self.entry_year) <= int(self.toYear):
-                            if int(self.entry_month) >= int(self.fromMonth) and int(self.entry_month) <= int(self.toMonth):
-                                if int(self.entry_day) >= int(self.fromDay) and int(self.entry_day) <= int(self.toDay):
-                                    self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
-                                    self.contentGrid.queue_draw()
-                                else:
-                                    self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
-                                    self.contentGrid.queue_draw()
-                            else:
-                                self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
-                                self.contentGrid.queue_draw()
-                        else:
-                            self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
-                            self.contentGrid.queue_draw()
+                        self.filter_range(i)
+                    # If selected category item is "Income" or "Expenses"
+                    elif self.selected_category_index == -2 or self.selected_category_index == -3:
+                        if self.selected_category == self.entryRows[i][5]:
+                            self.filter_range(i)
+                        elif self.selected_category != self.entryRows[i][5]:
+                            self.hide_entry(i)
+                    
+                    # If selected category item is "Uncategorized"
+                    elif (self.selected_category_index == -4 or self.selected_category_index == -5):
+                        if (self.selected_category == self.entryRows[i][5] and self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_label() == "Uncategorized"):
+                            self.filter_range(i)
+                        elif (self.selected_category != self.entryRows[i][5] or self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_label() != "Uncategorized"):
+                            self.hide_entry(i)
+                            
+                    # If selected menu item is not "All"
+                    elif self.selected_category_index != -1:
+                        if self.selected_category == self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_label():
+                            self.filter_range(i)
+                        if self.selected_category != self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_label():
+                            self.hide_entry(i)
     
+    def hide_entry(self, i):
+        self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
+        self.contentGrid.queue_draw()
+
     def filter_month(self, i):
         # If selected month equals "All"
         if self.selected_month == self.data.allMonthMenu[self.data.CATEGORY][self.data.CATEGORY_TEXT]:
@@ -532,6 +535,22 @@ class Transactions():
             else:
                 self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
                 self.contentGrid.queue_draw()
+    
+    def filter_range(self,i):
+        if int(self.entry_year) >= int(self.fromYear) and int(self.entry_year) <= int(self.toYear):
+            if int(self.entry_month) >= int(self.fromMonth) and int(self.entry_month) <= int(self.toMonth):
+                if int(self.entry_day) >= int(self.fromDay) and int(self.entry_day) <= int(self.toDay):
+                    self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
+                    self.contentGrid.queue_draw()
+                else:
+                    self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
+                    self.contentGrid.queue_draw()
+            else:
+                self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
+                self.contentGrid.queue_draw()
+        else:
+            self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
+            self.contentGrid.queue_draw()
 
     def filter_year(self, i):
         # if selected year equals "All", show row
