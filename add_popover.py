@@ -79,11 +79,20 @@ class Add_Popover(Gtk.Window):
         widget.set_margin_bottom(margin)
     
     def on_addButton_clicked(self, button, addPopover):
+        print("test")
         if addPopover.get_visible():
             addPopover.hide()
         else:
+            for i in range(0, len(self.data.transactionsMenu)):
+                self.addCategoryComboBoxText.remove(0)
+            
+            if self.addIncomeRadio.get_active() == True:
+                self.selected = "income"
+            elif self.addExpenseRadio.get_active() == True:
+                self.selected = "expense"
+            
             for i in range(0,len(self.data.transactionsMenu)):
-                if self.data.transactionsMenu[i][2] == "income":
+                if self.data.transactionsMenu[i][2] == self.selected:
                     if self.data.transactionsMenu[i][1] != "Uncategorized":
                         self.addCategoryComboBoxText.append_text(self.data.transactionsMenu[i][1])
             addPopover.show_all()
