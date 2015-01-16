@@ -36,11 +36,6 @@ class Transactions():
         self.calc = Calc(self.data)
         self.entryRows = []
         
-        self.incomeCount = 0
-        self.expenseCount = 0
-        self.incomeAllIndex = 0
-        self.expenseAllIndex = 0
-        
         self.selected_category = ""
         self.selected_category_index = 0
         self.selected_month = ""
@@ -107,7 +102,57 @@ class Transactions():
         self.grid.attach(self.menuScrolledWindow,0,0,1,2)
         self.grid.attach(self.dateGrid,2,0,1,1)
         self.grid.attach(self.contentScrolledWindow,2,1,1,1)
+    
+    def add_menu_item(self, i):
+        uniqueID = self.data.transactionsMenu[i][self.data.MENU_ID_INDEX]
+        self.label = Gtk.Label(self.data.transactionsMenu[i][self.data.MENU_NAME_INDEX])
+        self.label.set_halign(Gtk.Align.START)
+        self.label.set_margin_start(10)
         
+        self.entry = Gtk.Entry()
+        self.entry.set_text(self.label.get_label())
+
+        self.entry.connect("activate", self.on_selectButton_clicked)
+
+        self.dataSum = 0
+        for j in range(0, len(self.data.transactions)):
+            if self.data.transactions[j][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == uniqueID:
+                self.dataSum += self.data.transactions[j][self.data.TRANSACTION_VALUE_INDEX]
+        
+        self.label2 = Gtk.Label()
+        self.label2.set_markup("<span foreground=\"green\">" + "$" + str(self.dataSum) + "</span>")
+        self.label2.set_halign(Gtk.Align.END)
+        
+        self.button = self.create_delete_button(self.label.get_text())
+
+        self.labelBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+        self.labelBox.pack_start(self.label, False, False, 0)
+        self.labelBox.pack_start(self.entry, False, False, 0)
+        self.labelBox.pack_end(self.button, False, False, 5)
+        self.labelBox.pack_end(self.label2, False, False, 5)
+
+        self.menuListBox.add(self.labelBox)
+   
+    def add_menu_item_uncategorized(self, i):
+        uniqueID = self.data.transactionsMenu[i][self.data.MENU_ID_INDEX]
+        self.label = Gtk.Label(self.data.transactionsMenu[i][self.data.MENU_NAME_INDEX])
+        self.label.set_halign(Gtk.Align.START)
+        self.label.set_margin_start(10)
+       
+        self.dataSum = 0
+        for j in range(0, len(self.data.transactions)):
+            if self.data.transactions[j][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == uniqueID:
+                self.dataSum += self.data.transactions[j][self.data.TRANSACTION_VALUE_INDEX]
+        
+        self.label2 = Gtk.Label()
+        self.label2.set_markup("<span foreground=\"green\">" + "$" + str(self.dataSum) + "</span>")
+        self.label2.set_halign(Gtk.Align.END)
+        
+        self.labelBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+        self.labelBox.pack_start(self.label, False, False, 0)
+        self.labelBox.pack_end(self.label2, False, False, 5)
+
+        self.menuListBox.add(self.labelBox)
 
     def category_edit_mode(self, index):
             self.menuListBox.get_row_at_index(index).get_child().get_children()[self.EDIT_CATEGORY_TITLE].hide()
@@ -137,9 +182,9 @@ class Transactions():
                 self.selected_category_index = -5
             else:
                 for i in range(len(self.data.transactionsMenu)):
-                    if self.data.transactionsMenu[i][self.data.CATEGORY_TEXT] == row.get_child().get_children()[0].get_label():
-                        self.selected_category = self.data.transactionsMenu[i][self.data.CATEGORY_TEXT]
-                        self.selected_category_index = self.data.transactionsMenu[i][self.data.CATEGORY_INDEX]
+                    if self.data.transactionsMenu[i][self.data.TRANSACTION_MENU_NAME_INDEX] == row.get_child().get_children()[0].get_label():
+                        self.selected_category = self.data.transactionsMenu[i][self.data.TRANSACTION_MENU_NAME_INDEX]
+                        self.selected_category_index = self.data.transactionsMenu[i][self.data.TRANSACTION_MENU_ID_INDEX]
             self.filter_entries()
     
     def category_view_mode(self, index):
@@ -321,8 +366,8 @@ class Transactions():
             elif self.menuListBox.get_row_at_index(i).get_child().get_children()[0].get_text() == label:
                 for j in range(0, len(self.data.transactionsMenu)):
                     # Find matching menu item and uniqueID in database
-                    if self.data.transactionsMenu[j][1] == self.menuListBox.get_row_at_index(i).get_child().get_children()[0].get_label():
-                        self.data.delete_category(self.data.transactionsMenu[j][0])
+                    if self.data.transactionsMenu[j][self.data.MENU_NAME_INDEX] == self.menuListBox.get_row_at_index(i).get_child().get_children()[0].get_label():
+                        self.data.delete_category(self.data.transactionsMenu[j][self.data.MENU_ID_INDEX])
                         self.editMode = 0
                         # If row is found, break out of loop.
                         return
@@ -357,25 +402,24 @@ class Transactions():
             self.costLabel = Gtk.Label()
             
             for j in range(0, len(self.data.transactionsMenu)):
-                if int(self.data.transactions[i][0][0]) == int(self.data.transactionsMenu[j][0]) and self.data.transactionsMenu[j][2] == "income":
-                    self.costLabel.set_markup("<span foreground=\"green\">" + str(self.data.transactions[i][self.data.VALUE]) + "</span>")
+                if int(self.data.transactions[i][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX]) == int(self.data.transactionsMenu[j][self.data.MENU_ID_INDEX]) and self.data.transactionsMenu[j][self.data.MENU_TYPE_INDEX] == "income":
+                    self.costLabel.set_markup("<span foreground=\"green\">" + str(self.data.transactions[i][self.data.TRANSACTION_VALUE_INDEX]) + "</span>")
            
             for j in range(0, len(self.data.transactionsMenu)):
-                if int(self.data.transactions[i][0][0]) == int(self.data.transactionsMenu[j][0]) and self.data.transactionsMenu[j][2] == "expense":
-                    self.costLabel.set_markup("<span foreground=\"red\">" + str(self.data.transactions[i][self.data.VALUE]) + "</span>")
+                if int(self.data.transactions[i][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX]) == int(self.data.transactionsMenu[j][self.data.MENU_ID_INDEX]) and self.data.transactionsMenu[j][self.data.MENU_TYPE_INDEX] == "expense":
+                    self.costLabel.set_markup("<span foreground=\"red\">" + str(self.data.transactions[i][self.data.TRANSACTION_VALUE_INDEX]) + "</span>")
 
             # Create Edit Popover
             self.editButton = Gtk.Button()
             self.editPopover = Gtk.Popover.new(self.editButton)
             self.edit_popover = Edit_Popover(self.data)
             self.editPopover.add(self.edit_popover.editGrid)
-            self.editButton.connect("clicked", self.edit_popover.on_editDropdown_clicked, self.editPopover, self.data.transactions[i][self.data.UNIQUE_ID], self.entryRows,  self.contentGrid)
+            self.editButton.connect("clicked", self.edit_popover.on_editDropdown_clicked, self.editPopover, self.data.transactions[i][self.data.TRANSACTION_ID_INDEX], self.entryRows,  self.contentGrid)
 
             # Style Widgets
             self.entryGrid.set_halign(Gtk.Align.CENTER)
             self.entryGrid.set_hexpand(True)
-            
-            self.categoryLabel.set_markup(self.data.transactions[i][self.data.CATEGORY][self.data.CATEGORY_TEXT])
+            self.categoryLabel.set_markup(self.data.transactions[i][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_NAME_INDEX])
             self.categoryLabel.set_property("height-request", 50)
             self.categoryLabel.set_property("xalign", 1)
             self.categoryLabel.set_width_chars(15)
@@ -388,7 +432,7 @@ class Transactions():
             self.costLabel.set_property("xalign", .05)
             self.costLabel.set_width_chars(14)
 
-            self.descriptionLabel.set_markup("<i>" + self.data.transactions[i][self.data.DESCRIPTION] + "</i>")
+            self.descriptionLabel.set_markup("<i>" + self.data.transactions[i][self.data.TRANSACTION_DESCRIPTION_INDEX] + "</i>")
             
             # Style Edit Button
             self.editIcon = Gio.ThemedIcon(name="go-down-symbolic")
@@ -425,10 +469,10 @@ class Transactions():
 
             self.transactionType = ""
             for j in range(0, len(self.data.transactionsMenu)):
-                if self.data.transactionsMenu[j][0] == self.data.transactions[i][self.data.CATEGORY][self.data.CATEGORY_INDEX]:
-                    self.transactionType = self.data.transactionsMenu[j][2]
+                if self.data.transactionsMenu[j][self.data.MENU_ID_INDEX] == self.data.transactions[i][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX]:
+                    self.transactionType = self.data.transactionsMenu[j][self.data.MENU_TYPE_INDEX]
             
-            self.entryRows.append([self.layoutGrid, [self.categoryLabel, self.dateLabel, self.currencyLabel, self.costLabel, self.descriptionLabel, self.editButton], self.entryGrid, self.costGrid, self.data.transactions[i][self.data.UNIQUE_ID], self.transactionType])
+            self.entryRows.append([self.layoutGrid, [self.categoryLabel, self.dateLabel, self.currencyLabel, self.costLabel, self.descriptionLabel, self.editButton], self.entryGrid, self.costGrid, self.data.transactions[i][self.data.TRANSACTION_ID_INDEX], self.transactionType])
             self.contentGrid.show_all() 
         
     def editable_category(self, i):
@@ -528,11 +572,11 @@ class Transactions():
     
     def filter_month(self, i):
         # If selected month equals "All"
-        if self.selected_month == self.data.allMonthMenu[self.data.CATEGORY][self.data.CATEGORY_TEXT]:
+        if self.selected_month == self.data.allMonthMenu[self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_NAME_INDEX]:
             # Check Year Filter
             self.filter_year(i)
         # If selected month does not equal "All"
-        elif self.selected_month != self.data.allMonthMenu[self.data.CATEGORY][self.data.CATEGORY_TEXT]:
+        elif self.selected_month != self.data.allMonthMenu[self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_NAME_INDEX]:
             # If selected month equals entry's month
             if self.selected_month == self.entry_month:
                 # Check Year Filter
@@ -560,11 +604,11 @@ class Transactions():
 
     def filter_year(self, i):
         # if selected year equals "All", show row
-        if self.selected_year == self.data.yearMenu[self.data.CATEGORY][self.data.CATEGORY_TEXT]:
+        if self.selected_year == self.data.yearMenu[self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_NAME_INDEX]:
             self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
             self.contentGrid.queue_draw()
         # if selected year does not equal "All"
-        elif self.selected_year != self.data.yearMenu[self.data.CATEGORY][self.data.CATEGORY_TEXT]:
+        elif self.selected_year != self.data.yearMenu[self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_NAME_INDEX]:
             if self.selected_year == self.entry_year:
                 self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
                 self.contentGrid.queue_draw()
@@ -584,21 +628,22 @@ class Transactions():
         self.dataSum = 0
        
         for i in range(0, len(self.data.transactionsMenu)):
-            if self.data.transactionsMenu[i][2] == "income":
-                self.incomeMenu.append(self.data.transactionsMenu[i][0])
-            if self.data.transactionsMenu[i][2] == "expense":
-                self.expenseMenu.append(self.data.transactionsMenu[i][0])
+            if self.data.transactionsMenu[i][self.data.MENU_TYPE_INDEX] == "income":
+                self.incomeMenu.append(self.data.transactionsMenu[i][self.data.MENU_ID_INDEX])
+            if self.data.transactionsMenu[i][self.data.MENU_TYPE_INDEX] == "expense":
+                self.expenseMenu.append(self.data.transactionsMenu[i][self.data.MENU_ID_INDEX])
         
+        # Get Current Balance
         self.dataSum = 0
         for i in range(0, len(self.data.transactions)):
             for j in range(0, len(self.incomeMenu)):
-                if self.data.transactions[i][0][0] == self.incomeMenu[j]:
-                    self.dataSum += self.data.transactions[i][2]
+                if self.data.transactions[i][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.incomeMenu[j]:
+                    self.dataSum += self.data.transactions[i][self.data.TRANSACTION_VALUE_INDEX]
        
         for i in range(0, len(self.data.transactions)):
             for j in range(0, len(self.expenseMenu)):
-                if self.data.transactions[i][0][0] == self.expenseMenu[j]:
-                    self.dataSum -= self.data.transactions[i][2]
+                if self.data.transactions[i][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.expenseMenu[j]:
+                    self.dataSum -= self.data.transactions[i][self.data.TRANSACTION_VALUE_INDEX]
 
         # Generate from database
         self.transactionsLabel = Gtk.Label()
@@ -626,8 +671,8 @@ class Transactions():
         self.dataSum = 0
         for i in range(0, len(self.data.transactions)):
             for j in range(0, len(self.incomeMenu)):
-                if self.data.transactions[i][0][0] == self.incomeMenu[j]:
-                    self.dataSum += self.data.transactions[i][2]
+                if self.data.transactions[i][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.incomeMenu[j]:
+                    self.dataSum += self.data.transactions[i][self.data.TRANSACTION_VALUE_INDEX]
         
         self.label2 = Gtk.Label()
         self.label2.set_markup("<span foreground=\"green\">" + "$" + str(self.dataSum) + "</span>")
@@ -641,63 +686,14 @@ class Transactions():
        
         # Income Categories 
         for i in range(0,len(self.data.transactionsMenu)):
-            if self.data.transactionsMenu[i][2] == "income":
-                if self.data.transactionsMenu[i][1] != "Uncategorized":
-                    uniqueID = self.data.transactionsMenu[i][0]
-                    self.label = Gtk.Label(self.data.transactionsMenu[i][1])
-                    self.label.set_halign(Gtk.Align.START)
-                    self.label.set_margin_start(10)
-                    
-                    self.entry = Gtk.Entry()
-                    self.entry.set_text(self.label.get_label())
-    
-                    self.entry.connect("activate", self.on_selectButton_clicked)
-
-                    self.dataSum = 0
-                    for j in range(0, len(self.data.transactions)):
-                        if self.data.transactions[j][0][0] == uniqueID:
-                            self.dataSum += self.data.transactions[j][2]
-                    
-                    self.label2 = Gtk.Label()
-                    self.label2.set_markup("<span foreground=\"green\">" + "$" + str(self.dataSum) + "</span>")
-                    self.label2.set_halign(Gtk.Align.END)
-                    
-                    self.button = self.create_delete_button(self.label.get_text())
-
-                    self.labelBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-                    self.labelBox.pack_start(self.label, False, False, 0)
-                    self.labelBox.pack_start(self.entry, False, False, 0)
-                    self.labelBox.pack_end(self.button, False, False, 5)
-                    self.labelBox.pack_end(self.label2, False, False, 5)
-
-                    self.menuListBox.add(self.labelBox)
-                    
-                    self.incomeCount += 1
+            if self.data.transactionsMenu[i][self.data.MENU_TYPE_INDEX] == "income":
+                if self.data.transactionsMenu[i][self.data.MENU_NAME_INDEX] != "Uncategorized":
+                    self.add_menu_item(i)
         
         for i in range(0,len(self.data.transactionsMenu)):
-            if self.data.transactionsMenu[i][2] == "income":
-                if self.data.transactionsMenu[i][1] == "Uncategorized":
-                    uniqueID = self.data.transactionsMenu[i][0]
-                    self.label = Gtk.Label(self.data.transactionsMenu[i][1])
-                    self.label.set_halign(Gtk.Align.START)
-                    self.label.set_margin_start(10)
-                   
-                    self.dataSum = 0
-                    for j in range(0, len(self.data.transactions)):
-                        if self.data.transactions[j][0][0] == uniqueID:
-                            self.dataSum += self.data.transactions[j][2]
-                    
-                    self.label2 = Gtk.Label()
-                    self.label2.set_markup("<span foreground=\"green\">" + "$" + str(self.dataSum) + "</span>")
-                    self.label2.set_halign(Gtk.Align.END)
-                    
-                    self.labelBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-                    self.labelBox.pack_start(self.label, False, False, 0)
-                    self.labelBox.pack_end(self.label2, False, False, 5)
-
-                    self.menuListBox.add(self.labelBox)
-                    
-                    self.incomeCount += 1
+            if self.data.transactionsMenu[i][self.data.MENU_TYPE_INDEX] == "income":
+                if self.data.transactionsMenu[i][self.data.MENU_NAME_INDEX] == "Uncategorized":
+                    self.add_menu_item_uncategorized(i)
         
         # Expense Label
         self.expenseLabel = Gtk.Label()
@@ -707,8 +703,8 @@ class Transactions():
         self.dataSum = 0
         for i in range(0, len(self.data.transactions)):
             for j in range(0, len(self.expenseMenu)):
-                if self.data.transactions[i][0][0] == self.expenseMenu[j]:
-                    self.dataSum += self.data.transactions[i][2]
+                if self.data.transactions[i][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.expenseMenu[j]:
+                    self.dataSum += self.data.transactions[i][self.data.TRANSACTION_VALUE_INDEX]
         
         self.label2 = Gtk.Label()
         self.label2.set_markup("<span foreground=\"red\">" + "$" + str(self.dataSum) + "</span>")
@@ -722,67 +718,14 @@ class Transactions():
         
         # Expense Categories
         for i in range(0,len(self.data.transactionsMenu)):
-            if self.data.transactionsMenu[i][2] == "expense":
-                if self.data.transactionsMenu[i][1] != "Uncategorized":
-                    uniqueID = self.data.transactionsMenu[i][0]
-                    self.label = Gtk.Label(self.data.transactionsMenu[i][1])
-                    self.label.set_halign(Gtk.Align.START)
-                    self.label.set_margin_start(10)
-                    
-                    self.entry = Gtk.Entry()
-                    self.entry.set_text(self.label.get_label())
-                    
-                    self.dataSum = 0
-                    for j in range(0, len(self.data.transactions)):
-                        if self.data.transactions[j][0][0] == uniqueID:
-                            self.dataSum += self.data.transactions[j][2]
-                    
-                    self.label2 = Gtk.Label()
-                    self.label2.set_markup("<span foreground=\"red\">" + "$" + str(self.dataSum) + "</span>")
-                    self.label2.set_halign(Gtk.Align.END)
-                    self.button = self.create_delete_button(self.label.get_text())
-
-                    self.labelBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-                    self.labelBox.pack_start(self.label, False, False, 0)
-                    self.labelBox.pack_start(self.entry, False, False, 0)
-                    self.labelBox.pack_end(self.button, False, False, 5)
-                    self.labelBox.pack_end(self.label2, False, False, 5)
-                    
-
-                    self.menuListBox.add(self.labelBox)
-                    #self.menuListBox.add(self.label)
-                    
-                    self.expenseCount += 1
+            if self.data.transactionsMenu[i][self.data.MENU_TYPE_INDEX] == "expense":
+                if self.data.transactionsMenu[i][self.data.MENU_NAME_INDEX] != "Uncategorized":
+                    self.add_menu_item(i)
         
         for i in range(0,len(self.data.transactionsMenu)):
-            if self.data.transactionsMenu[i][2] == "expense":
-                if self.data.transactionsMenu[i][1] == "Uncategorized":
-                    uniqueID = self.data.transactionsMenu[i][0]
-                    self.label = Gtk.Label(self.data.transactionsMenu[i][1])
-                    self.label.set_halign(Gtk.Align.START)
-                    self.label.set_margin_start(10)
-                    
-                    self.dataSum = 0
-                    for j in range(0, len(self.data.transactions)):
-                        if self.data.transactions[j][0][0] == uniqueID:
-                            self.dataSum += self.data.transactions[j][2]
-                    
-                    self.label2 = Gtk.Label()
-                    self.label2.set_markup("<span foreground=\"red\">" + "$" + str(self.dataSum) + "</span>")
-                    self.label2.set_halign(Gtk.Align.END)
-
-                    self.labelBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-                    self.labelBox.pack_start(self.label, False, False, 0)
-                    self.labelBox.pack_end(self.label2, False, False, 5)
-                    
-
-                    self.menuListBox.add(self.labelBox)
-                    #self.menuListBox.add(self.label)
-                    
-                    self.expenseCount += 1
-           
-        self.incomeAllIndex = 1
-        self.expenseAllIndex = self.incomeCount + 1
+            if self.data.transactionsMenu[i][self.data.MENU_TYPE_INDEX] == "expense":
+                if self.data.transactionsMenu[i][self.data.MENU_NAME_INDEX] == "Uncategorized":
+                    self.add_menu_item_uncategorized(i)
 
         self.menuListBox.show_all()
         for i in range(len(self.menuListBox)):
@@ -831,10 +774,10 @@ class Transactions():
             return
         else:
             for i in range (len(self.data.allMonthMenu)):
-                if self.data.allMonthMenu[i][self.data.CATEGORY_INDEX] == listbox.get_active():
-                    self.row = self.data.allMonthMenu[i][self.data.CATEGORY_INDEX]
-            self.selected_month = self.data.allMonthMenu[self.row][self.data.CATEGORY_TEXT]
-            self.selected_month_index = self.data.allMonthMenu[self.row][self.data.CATEGORY_INDEX]
+                if self.data.allMonthMenu[i][self.data.TRANSACTION_MENU_ID_INDEX] == listbox.get_active():
+                    self.row = self.data.allMonthMenu[i][self.data.TRANSACTION_MENU_ID_INDEX]
+            self.selected_month = self.data.allMonthMenu[self.row][self.data.TRANSACTION_MENU_NAME_INDEX]
+            self.selected_month_index = self.data.allMonthMenu[self.row][self.data.TRANSACTION_MENU_ID_INDEX]
             self.filter_entries()
     
     def month_year_sensitive(self, boolean):
@@ -860,8 +803,8 @@ class Transactions():
                     if self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_TITLE].get_label() != self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_ENTRY].get_text():
                         for j in range(0, len(self.data.transactionsMenu)):
                             # Find matching menu item and uniqueID in database
-                            if self.data.transactionsMenu[j][1] == self.menuListBox.get_row_at_index(i).get_child().get_children()[0].get_label():
-                                self.data.edit_category(self.data.transactionsMenu[j][0],self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_ENTRY].get_text())
+                            if self.data.transactionsMenu[j][self.data.MENU_NAME_INDEX] == self.menuListBox.get_row_at_index(i).get_child().get_children()[0].get_label():
+                                self.data.edit_category(self.data.transactionsMenu[j][self.data.MENU_ID_INDEX],self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_ENTRY].get_text())
                     self.category_view_mode(i)
     
     def range_sensitive(self, boolean):
@@ -874,8 +817,8 @@ class Transactions():
             return
         else:
             for i in range (len(self.data.yearMenu)):
-                if self.data.yearMenu[i][self.data.CATEGORY_INDEX] == listbox.get_active():
-                    self.row = self.data.yearMenu[i][self.data.CATEGORY_INDEX]
-            self.selected_year = self.data.yearMenu[self.row][self.data.CATEGORY_TEXT]
-            self.selected_year_index = self.data.yearMenu[self.row][self.data.CATEGORY_INDEX]
+                if self.data.yearMenu[i][self.data.TRANSACTION_MENU_ID_INDEX] == listbox.get_active():
+                    self.row = self.data.yearMenu[i][self.data.TRANSACTION_MENU_ID_INDEX]
+            self.selected_year = self.data.yearMenu[self.row][self.data.TRANSACTION_MENU_NAME_INDEX]
+            self.selected_year_index = self.data.yearMenu[self.row][self.data.TRANSACTION_MENU_ID_INDEX]
             self.filter_entries()

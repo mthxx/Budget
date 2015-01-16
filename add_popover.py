@@ -79,7 +79,6 @@ class Add_Popover(Gtk.Window):
         widget.set_margin_bottom(margin)
     
     def on_addButton_clicked(self, button, addPopover):
-        print("test")
         if addPopover.get_visible():
             addPopover.hide()
         else:
@@ -92,9 +91,9 @@ class Add_Popover(Gtk.Window):
                 self.selected = "expense"
             
             for i in range(0,len(self.data.transactionsMenu)):
-                if self.data.transactionsMenu[i][2] == self.selected:
-                    if self.data.transactionsMenu[i][1] != "Uncategorized":
-                        self.addCategoryComboBoxText.append_text(self.data.transactionsMenu[i][1])
+                if self.data.transactionsMenu[i][self.data.MENU_TYPE_INDEX] == self.selected:
+                    if self.data.transactionsMenu[i][self.data.MENU_NAME_INDEX] != "Uncategorized":
+                        self.addCategoryComboBoxText.append_text(self.data.transactionsMenu[i][self.data.MENU_NAME_INDEX])
             addPopover.show_all()
 
     def on_addRadio_toggled(self, *args):
@@ -103,15 +102,15 @@ class Add_Popover(Gtk.Window):
         if self.addIncomeRadio.get_active() == True:
             self.radioStatus = "income"
             for i in range(0,len(self.data.transactionsMenu)):
-                if self.data.transactionsMenu[i][2] == "income":
-                    if self.data.transactionsMenu[i][1] != "Uncategorized":
-                        self.addCategoryComboBoxText.append_text(self.data.transactionsMenu[i][1])
+                if self.data.transactionsMenu[i][self.data.MENU_TYPE_INDEX] == "income":
+                    if self.data.transactionsMenu[i][self.data.MENU_NAME_INDEX] != "Uncategorized":
+                        self.addCategoryComboBoxText.append_text(self.data.transactionsMenu[i][self.data.MENU_NAME_INDEX])
         elif self.addExpenseRadio.get_active() == True:
             self.radioStatus = "expense"
             for i in range(0,len(self.data.transactionsMenu)):
-                if self.data.transactionsMenu[i][2] == "expense":
-                    if self.data.transactionsMenu[i][1] != "Uncategorized":
-                        self.addCategoryComboBoxText.append_text(self.data.transactionsMenu[i][1])
+                if self.data.transactionsMenu[i][self.data.MENU_TYPE_INDEX] == "expense":
+                    if self.data.transactionsMenu[i][self.data.MENU_NAME_INDEX] != "Uncategorized":
+                        self.addCategoryComboBoxText.append_text(self.data.transactionsMenu[i][self.data.MENU_NAME_INDEX])
     
     def on_addSubmitButton_clicked(self, *args):
         self.entryString = ""
@@ -133,11 +132,13 @@ class Add_Popover(Gtk.Window):
             self.day = str(self.dateArr[2])
             self.data.LATEST_ID += 1
            
-            self.entryString = self.data.create_data_string(self.addCategoryComboBoxText.get_active_text(),
-                                            self.year, self.month, self.day, self.addEntry.get_text(), self.addDescription.get_text(),
-                                            self.data.LATEST_ID)
+            #self.entryString = self.data.create_data_string(self.addCategoryComboBoxText.get_active_text(),
+            #                                self.year, self.month, self.day, self.addEntry.get_text(), self.addDescription.get_text(),
+            #                                self.data.LATEST_ID)
+            
+            self.data.add_data(self.addCategoryComboBoxText.get_active_text(), self.year, self.month, self.day, 
+                                self.addEntry.get_text(), self.addDescription.get_text(), self.data.LATEST_ID)
             
             self.addEntry.set_text("")
             self.addDescription.set_text("")
-                        
-            self.data.add_data(self.entryString)
+            #self.data.add_data(self.entryString)
