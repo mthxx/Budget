@@ -75,6 +75,25 @@ class Data():
                         [2,"2014"],
                         [3,"2013"]]
 
+    def add_category(self, menuType, category):
+        self.LATEST_MENU_ID += 1
+        if(os.path.isfile('budget.db')):
+            con = lite.connect('budget.db')
+            row = [(str(menuType),str(category),"10",str(self.LATEST_MENU_ID))]
+        
+            cur = con.cursor()
+            cur.execute('insert into menu values(?,?,?,?)', row[0])
+            con.commit()
+
+            self.transactionsMenu = []
+            self.transactions = []
+            
+            # Refresh data and views
+            self.import_data()
+            self.transaction_view.generate_sidebars()
+            self.transaction_view.display_content()
+            self.overview.redisplay_info()
+    
     def add_data(self, category, year, month, day, value, description, transactionID):
         for i in range(0,len(self.transactionsMenu)):
             if category == self.transactionsMenu[i][self.MENU_NAME_INDEX]:
@@ -87,151 +106,72 @@ class Data():
             cur = con.cursor()
             cur.execute('insert into transactions values(?,?,?,?,?,?,?)', row[0])
             con.commit()
+
+            self.transactionsMenu = []
+            self.transactions = []
             
             # Refresh data and views
             self.import_data()
             self.transaction_view.generate_sidebars()
             self.transaction_view.display_content()
             self.overview.redisplay_info()
-    
-    def create_category_string(self, menu, category):
-        self.editString = "menu" + ","
-        self.editString += str(menu) + ", "
-        self.editString += str(category.get_text()) + ","
-        self.LATEST_MENU_ID += 1
-        self.editString += str(self.LATEST_MENU_ID) + "\n"
 
-        return self.editString
-
-    def create_data_string(self,category, year, month, day, cost, description, uniqueID):
-        self.editString = "transaction" + ","
-        for i in range(0,len(self.transactionsMenu)):
-            if category == self.transactionsMenu[i][1]:
-                self.editString += str(self.transactionsMenu[i][0]) +","
-        self.editString += str(category) + ","
-        self.editString += str(year) + ","
-        self.editString += str(month) + ","
-        self.editString += str(day) + ","
-        self.editString += str(cost) + ","
-        self.editString += str(description) + ","
-        self.editString += str(uniqueID) + "\n"
-
-        return self.editString
-    
     def connect_data_views(self, transaction_view, overview):
         self.transaction_view = transaction_view
         self.overview = overview
 
     def delete_category(self, uniqueID):
-        if(os.path.isfile('database.txt')):
-            f = open('database.txt', 'r')
-            output = []
-            for line in f:
-                cur = line.split(",")
-                cur[0].strip()
-                if cur[0] == "menu":
-                    if int(cur[3].strip()) != int(uniqueID):
-                        output.append(line)
-                elif cur[0] == "transaction":
-                    if int(cur[1].strip()) != int(uniqueID):
-                        output.append(line)
-                    elif int(cur[1].strip()) == int(uniqueID):
-                        newLine = line.split(",")
-                        for i in range(0, len(self.transactionsMenu)):
-                            if int(newLine[1]) == int(self.transactionsMenu[i][0]) and self.transactionsMenu[i][2] == "income":
-                                newLine[1] = -1
-                            elif int(newLine[1]) == int(self.transactionsMenu[i][0]) and self.transactionsMenu[i][2] == "expense":
-                                newLine[1] = -2
-                            newLine[2] = "Uncategorized"
-                            line = ""
-                            for j in range(0,len(newLine)):
-                                line += str(newLine[j]).strip() + ","
-                        line = line[:-1]
-                        line += "\n"
-                        output.append(line)
-           
-            f.close()
-            f = open('database.txt', 'w')
-            f.writelines(output)
-            f.close()
-           
-            # Refresh data and views
+        if(os.path.isfile('budget.db')):
+            con = lite.connect('budget.db')
+        
+            cur = con.cursor()
+            cur.execute('select type from menu where menuID = '+ str(uniqueID))
+            row = cur.fetchone()
+            if row[0] == "income":
+                cur.execute('update transactions set menuID = -1 where menuID = ' + str(uniqueID))
+            elif row[0] == "expense":
+                cur.execute('update transactions set menuID = -2 where menuID = ' + str(uniqueID))
+            cur.execute('delete from menu where menuID = ' + str(uniqueID))
+            con.commit()
+                
             self.transactionsMenu = []
             self.transactions = []
+            
+            # Refresh data and views
             self.import_data()
             self.transaction_view.generate_sidebars()
             self.transaction_view.display_content()
             self.overview.redisplay_info()
-
+    
     def delete_data(self, uniqueID):
-        if(os.path.isfile('database.txt')):
+        if(os.path.isfile('budget.db')):
+            con = lite.connect('budget.db')
+            cur = con.cursor()
+            cur.execute('delete from transactions where transactionsID = ' + str(uniqueID))
+            con.commit()
+
             self.transactionsMenu = []
             self.transactions = []
-            f = open('database.txt', 'r')
-            output = []
-            for line in f:
-                cur = line.split(",")
-                cur[0].strip()
-                if cur[0] == "transaction":
-                    if cur[8].strip() != uniqueID:
-                        output.append(line)
-                else:
-                    output.append(line)
             
-            f.close()
-            
-            f = open('database.txt', 'w')
-            f.writelines(output)
-            f.close()
-           
             # Refresh data and views
             self.import_data()
             self.transaction_view.generate_sidebars()
             self.transaction_view.display_content()
             self.overview.redisplay_info()
-            
+    
     def edit_category(self, uniqueID, newLabel):
-        if(os.path.isfile('database.txt')):
-            f = open('database.txt', 'r')
-            output = []
-            for line in f:
-                cur = line.split(",")
-                cur[0].strip()
-                if cur[0] == "menu":
-                    if int(cur[3].strip()) != int(uniqueID):
-                        output.append(line)
-                    elif int(cur[3].strip()) == int(uniqueID):
-                        newLine = line.split(",")
-                        for i in range(0, len(self.transactionsMenu)):
-                            newLine[2] = newLabel
-                            line = ""
-                            for j in range(0,len(newLine)):
-                                line += str(newLine[j]).strip() + ","
-                        line = line[:-1]
-                        line += "\n"
-                        output.append(line)
-                elif cur[0] == "transaction":
-                    if int(cur[1].strip()) != int(uniqueID):
-                        output.append(line)
-                    elif int(cur[1].strip()) == int(uniqueID):
-                        newLine = line.split(",")
-                        for i in range(0, len(self.transactionsMenu)):
-                            newLine[2] = newLabel
-                            line = ""
-                            for j in range(0,len(newLine)):
-                                line += str(newLine[j]).strip() + ","
-                        line = line[:-1]
-                        line += "\n"
-                        output.append(line)
-            
-            f.close()
-            f = open('database.txt', 'w')
-            f.writelines(output)
-            f.close()
-           
-            # Refresh data and views
+        if(os.path.isfile('budget.db')):
+            con = lite.connect('budget.db')
+            row = [(str(newLabel),str(uniqueID))]
+        
+            cur = con.cursor()
+            cur.execute('update menu set name = ? where menuID = ?', row[0])
+            con.commit()
+
             self.transactionsMenu = []
             self.transactions = []
+            
+            # Refresh data and views
             self.import_data()
             self.transaction_view.generate_sidebars()
             self.transaction_view.display_content()
@@ -455,5 +395,28 @@ class Data():
             dateString += ", "
             dateString += str(data[index][self.TRANSACTION_DATE_INDEX][self.TRANSACTION_DATE_YEAR_INDEX])
                 
-                    
         return dateString
+    
+    def update_data(self, category, year, month, day, value, description, transactionID):
+        for i in range(0,len(self.transactionsMenu)):
+            if category == self.transactionsMenu[i][self.MENU_NAME_INDEX]:
+                category = self.transactionsMenu[i][self.MENU_ID_INDEX]
+
+        if(os.path.isfile('budget.db')):
+            con = lite.connect('budget.db')
+            row = [(str(category),str(year),str(month),str(day),str(value),str(description),str(transactionID))]
+        
+            cur = con.cursor()
+            cur.execute('update transactions set menuID = ?, year = ?, month = ?, day = ?, value = ?, description = ? where transactionsID = ?', row[0])
+            con.commit()
+
+            self.transactionsMenu = []
+            self.transactions = []
+            
+            # Refresh data and views
+            self.import_data()
+            self.transaction_view.generate_sidebars()
+            self.transaction_view.display_content()
+            self.overview.redisplay_info()
+    
+

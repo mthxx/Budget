@@ -191,7 +191,7 @@ class Overview():
                 # Get count of income categories
                 count = 0
                 for k in range(0, len(self.data.transactionsMenu)):
-                    if self.data.transactionsMenu[k][2] == "income":
+                    if self.data.transactionsMenu[k][self.data.MENU_TYPE_INDEX] == "income":
                         count += 1
                 # Reset All Income
                 if self.entryRows[i][0] == self.categoryArr[count][0]:
@@ -208,8 +208,8 @@ class Overview():
     def display_info(self, category, data_arr):
         # Print out Categories
         for index in range(0,len(self.data.transactionsMenu)):
-            if self.data.transactionsMenu[index][2] == category:
-                self.button = Gtk.Button(self.data.transactionsMenu[index][1])
+            if self.data.transactionsMenu[index][self.data.MENU_TYPE_INDEX] == category:
+                self.button = Gtk.Button(self.data.transactionsMenu[index][self.data.MENU_NAME_INDEX])
                 self.button.set_relief(Gtk.ReliefStyle.NONE)
                 self.button.set_property("height-request", 40)
                 self.contentArr = []
@@ -234,8 +234,8 @@ class Overview():
                         self.contentGrid.attach(self.totalLabel, month - 1, self.index, 1, 1) 
                     else:
                         for data in range(0,len(data_arr)):
-                            if data_arr[data][self.data.CATEGORY][self.data.CATEGORY_INDEX] == index:
-                                if data_arr[data][self.data.DATE][self.data.DATE_MONTH] == self.data.allMonthMenu[month][0]:
+                            if data_arr[data][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_NAME_INDEX] == index:
+                                if data_arr[data][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_MONTH] == self.data.allMonthMenu[month][0]:
                                     self.total += Decimal(data_arr[data][2])
                         self.totalLabel = Gtk.Label("$" + str(self.total))
                         self.totalLabel.set_property("height-request", 40)

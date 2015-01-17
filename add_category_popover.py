@@ -81,9 +81,7 @@ class Add_Category_Popover(Gtk.Window):
         if self.addEntry.get_text() == "":
             self.addEntry.set_placeholder_text("Enter A Category")
         else:
-            # Create string and add to database
-            self.entryString = self.data.create_category_string(self.radio, self.addEntry) 
-            self.data.add_data(self.entryString)
+            self.data.add_category(self.radio, self.addEntry.get_text())
 
             # Refresh the menu
             self.data.transaction_view.generate_sidebars()

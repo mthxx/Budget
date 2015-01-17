@@ -188,9 +188,9 @@ class Edit_Popover(Gtk.Window):
         for i in range(0, len(self.entryRows)):
             if self.entryRows[i][self.UNIQUE_ID_INDEX] == self.unique_id:
                 for j in range(0,len(self.data.transactionsMenu)):
-                    if self.data.transactionsMenu[j][1] != "Uncategorized":
-                        self.categoryComboBoxText.append_text(self.data.transactionsMenu[j][1])
-                    if self.data.transactionsMenu[j][1] == self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_text():
+                    if self.data.transactionsMenu[j][self.data.MENU_NAME_INDEX] != "Uncategorized":
+                        self.categoryComboBoxText.append_text(self.data.transactionsMenu[j][self.data.MENU_NAME_INDEX])
+                    if self.data.transactionsMenu[j][self.data.MENU_NAME_INDEX] == self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_text():
                         self.categoryComboBoxText.set_active(j)
                 
                 # Style Edit Grid, Hide Entry Grid
@@ -250,13 +250,9 @@ class Edit_Popover(Gtk.Window):
             self.year = str(self.dateArr[0])
             self.month = str(self.dateArr[1] + 1)
             self.day = str(self.dateArr[2])
-            
-            self.editString = self.data.create_data_string(self.categoryComboBoxText.get_active_text(),
-                                            self.year, self.month, self.day, self.costEntry.get_text(), self.descriptionEntry.get_text(),
-                                            self.unique_id)
 
-            self.data.delete_data(self.unique_id)
-            self.data.add_data(self.editString)
+            self.data.update_data(self.categoryComboBoxText.get_active_text(), self.year, self.month, self.day, 
+                                self.costEntry.get_text(), self.descriptionEntry.get_text(), self.unique_id)
         
             for i in range(0, len(self.entryRows)):
                 if self.entryRows[i][self.UNIQUE_ID_INDEX] == self.unique_id:
@@ -267,7 +263,7 @@ class Edit_Popover(Gtk.Window):
     
     def set_calendar(self,data):
         for i in range(0, len(data)):
-            if data[i][self.data.UNIQUE_ID] == self.unique_id:
-                self.calendar.select_month(data[i][self.data.DATE][self.data.DATE_MONTH] - 1,
-                                            data[i][self.data.DATE][self.data.DATE_YEAR])
-                self.calendar.select_day(data[i][self.data.DATE][self.data.DATE_DAY])
+            if data[i][self.data.TRANSACTION_ID_INDEX] == self.unique_id:
+                self.calendar.select_month(data[i][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_MONTH_INDEX] - 1,
+                                            data[i][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_YEAR_INDEX])
+                self.calendar.select_day(data[i][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_DAY_INDEX])
