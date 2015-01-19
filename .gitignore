@@ -3,4 +3,5 @@
 *.pyc
 *.swp
 database.txt
+budget.db
 local_settings.py
