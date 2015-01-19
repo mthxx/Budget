@@ -31,4 +31,6 @@ class Calc():
         total = 0
         for i in range (0,len(data_arr)):
             total += Decimal(data_arr[i][self.data.TRANSACTION_VALUE_INDEX])
+            print(total)
+            #total = "%.2f" % total
         return total

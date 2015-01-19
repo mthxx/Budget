@@ -55,45 +55,45 @@ class Overview():
         
         self.balanceLabel = Gtk.Label("Balance:  ")
         self.balanceLabel.set_halign(Gtk.Align.END)
-        self.balanceTotalLabel = Gtk.Label( "$" + str(self.calc.sumTotalData(self.data.transactions) - self.calc.sumTotalData(self.data.transactions)))
-        self.balanceTotalLabel.set_halign(Gtk.Align.START)
+        #self.balanceTotalLabel = Gtk.Label( "$" + str(self.calc.sumTotalData(self.data.transactions) - self.calc.sumTotalData(self.data.transactions)))
+        #self.balanceTotalLabel.set_halign(Gtk.Align.START)
         
         self.varianceLabel = Gtk.Label("Variance:  ")
         self.varianceLabel.set_halign(Gtk.Align.END)
-        self.varianceTotalLabel = Gtk.Label( "$" + str(self.calc.sumTotalData(self.data.transactions)))
-        self.varianceTotalLabel.set_halign(Gtk.Align.START)
+        #self.varianceTotalLabel = Gtk.Label( "$" + str(self.calc.sumTotalData(self.data.transactions)))
+        #self.varianceTotalLabel.set_halign(Gtk.Align.START)
         
         self.incomeTotalLabel = Gtk.Label("Total Income:  ")
         self.incomeTotalLabel.set_halign(Gtk.Align.END)
-        self.incomeTotalValueLabel = Gtk.Label( "$" + str(self.calc.sumTotalData(self.data.transactions)))
-        self.incomeTotalValueLabel.set_halign(Gtk.Align.START)
+        #self.incomeTotalValueLabel = Gtk.Label( "$" + str(self.calc.sumTotalData(self.data.transactions)))
+        #self.incomeTotalValueLabel.set_halign(Gtk.Align.START)
         
         self.expensesTotalLabel = Gtk.Label("Total Expenses:  ")
         self.expensesTotalLabel.set_halign(Gtk.Align.END)
-        self.expensesTotalValueLabel = Gtk.Label( "$" + str(self.calc.sumTotalData(self.data.transactions)))
-        self.expensesTotalValueLabel.set_halign(Gtk.Align.START)
+        #self.expensesTotalValueLabel = Gtk.Label( "$" + str(self.calc.sumTotalData(self.data.transactions)))
+        #self.expensesTotalValueLabel.set_halign(Gtk.Align.START)
         
-        self.headerGrid.attach(self.blankLabel,0,0,5,1)
+        #self.headerGrid.attach(self.blankLabel,0,0,5,1)
         
-        self.headerGrid.attach(self.balanceLabel,0,1,1,1)
-        self.headerGrid.attach(self.balanceTotalLabel,1,1,1,1)
+        #self.headerGrid.attach(self.balanceLabel,0,1,1,1)
+        #self.headerGrid.attach(self.balanceTotalLabel,1,1,1,1)
         
-        self.headerGrid.attach(self.varianceLabel,0,2,1,1)
-        self.headerGrid.attach(self.varianceTotalLabel,1,2,1,1)
+        #self.headerGrid.attach(self.varianceLabel,0,2,1,1)
+        #self.headerGrid.attach(self.varianceTotalLabel,1,2,1,1)
         
-        self.headerGrid.attach(self.expensesTotalLabel,3,1,1,1)
-        self.headerGrid.attach(self.expensesTotalValueLabel,4,1,1,1)
+        #self.headerGrid.attach(self.expensesTotalLabel,3,1,1,1)
+        #self.headerGrid.attach(self.expensesTotalValueLabel,4,1,1,1)
         
-        self.headerGrid.attach(self.incomeTotalLabel,3,2,1,1)
-        self.headerGrid.attach(self.incomeTotalValueLabel,4,2,1,1)
+        #self.headerGrid.attach(self.incomeTotalLabel,3,2,1,1)
+        #self.headerGrid.attach(self.incomeTotalValueLabel,4,2,1,1)
         
-        for i in range(0,5):
-            self.dummyHeaderLabel = Gtk.Label()
-            self.headerGrid.attach(self.dummyHeaderLabel,i,4,1,1)
+        #for i in range(0,5):
+        #    self.dummyHeaderLabel = Gtk.Label()
+        #    self.headerGrid.attach(self.dummyHeaderLabel,i,4,1,1)
         
         # Style Header Grid
-        self.headerGrid.set_column_homogeneous(True)
-        self.headerGrid.set_hexpand(True)
+        #self.headerGrid.set_column_homogeneous(True)
+        #self.headerGrid.set_hexpand(True)
        
 
     def build_overview(self):
@@ -158,7 +158,7 @@ class Overview():
         self.monthHScrollBar.set_property("visible",False)
         
         self.contentScrolledWindow.set_vexpand(True)
-        self.contentGrid.set_column_homogeneous(True)
+        #self.contentGrid.set_column_homogeneous(True)
         self.contentGrid.set_hexpand(True)
     
     def category_clicked(self, button, index):
@@ -337,7 +337,7 @@ class Overview():
         
         self.clear_selection(self.clearButton)
         
-        self.balanceTotalLabel.set_text( "$" + str(self.calc.sumTotalData(self.data.transactions) - self.calc.sumTotalData(self.data.transactions)))
-        self.varianceTotalLabel.set_text( "$" + str(self.calc.sumTotalData(self.data.transactions)))
-        self.incomeTotalValueLabel.set_text( "$" + str(self.calc.sumTotalData(self.data.transactions)))
-        self.expensesTotalValueLabel.set_text( "$" + str(self.calc.sumTotalData(self.data.transactions)))
+        #self.balanceTotalLabel.set_text( "$" + str(self.calc.sumTotalData(self.data.transactions) - self.calc.sumTotalData(self.data.transactions)))
+        #self.varianceTotalLabel.set_text( "$" + str(self.calc.sumTotalData(self.data.transactions)))
+        #self.incomeTotalValueLabel.set_text( "$" + str(self.calc.sumTotalData(self.data.transactions)))
+        #self.expensesTotalValueLabel.set_text( "$" + str(self.calc.sumTotalData(self.data.transactions)))
