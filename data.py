@@ -51,6 +51,7 @@ class Data():
 
         self.transactionsMenu = []
         self.transactions = []
+        self.yearMenu = []
 
         self.transaction_view = 0
         self.overview = 0
@@ -70,11 +71,6 @@ class Data():
                             [12, "December"],
                             ]
 
-        self.yearMenu = [[0, "All"],
-                        [1, "2015"],
-                        [2,"2014"],
-                        [3,"2013"]]
-
     def add_category(self, menuType, category):
         self.LATEST_MENU_ID += 1
         if(os.path.isfile('budget.db')):
@@ -82,7 +78,7 @@ class Data():
             row = [(str(menuType),str(category),"10",str(self.LATEST_MENU_ID))]
         
             cur = con.cursor()
-            cur.execute('insert into menu values(?,?,?,?)', row[0])
+            cur.execute('INSERT INTO menu VALUES(?,?,?,?)', row[0])
             con.commit()
 
             self.transactionsMenu = []
@@ -104,7 +100,7 @@ class Data():
             row = [(str(category),str(year),str(month),str(day),str(value),str(description),str(transactionID))]
         
             cur = con.cursor()
-            cur.execute('insert into transactions values(?,?,?,?,?,?,?)', row[0])
+            cur.execute('INSERT INTO transactions VALUES(?,?,?,?,?,?,?)', row[0])
             con.commit()
 
             self.transactionsMenu = []
@@ -125,12 +121,12 @@ class Data():
             con = lite.connect('budget.db')
         
             cur = con.cursor()
-            cur.execute('select type from menu where menuID = '+ str(uniqueID))
+            cur.execute('SELECT type FROM menu WHERE menuID = '+ str(uniqueID))
             row = cur.fetchone()
             if row[0] == "income":
-                cur.execute('update transactions set menuID = -1 where menuID = ' + str(uniqueID))
+                cur.execute('UPDATE transactions SET menuID = -1 WHERE menuID = ' + str(uniqueID))
             elif row[0] == "expense":
-                cur.execute('update transactions set menuID = -2 where menuID = ' + str(uniqueID))
+                cur.execute('UPDATE transactions SET menuID = -2 WHERE menuID = ' + str(uniqueID))
             cur.execute('delete from menu where menuID = ' + str(uniqueID))
             con.commit()
                 
@@ -147,7 +143,7 @@ class Data():
         if(os.path.isfile('budget.db')):
             con = lite.connect('budget.db')
             cur = con.cursor()
-            cur.execute('delete from transactions where transactionsID = ' + str(uniqueID))
+            cur.execute('DELETE FROM transactions WHERE transactionsID = ' + str(uniqueID))
             con.commit()
 
             self.transactionsMenu = []
@@ -165,7 +161,7 @@ class Data():
             row = [(str(newLabel),str(uniqueID))]
         
             cur = con.cursor()
-            cur.execute('update menu set name = ? where menuID = ?', row[0])
+            cur.execute('UPDATE menu SET name = ? WHERE menuID = ?', row[0])
             con.commit()
 
             self.transactionsMenu = []
@@ -183,7 +179,7 @@ class Data():
             con = lite.connect('budget.db')
 
             cur = con.cursor()
-            cur.execute('select * from menu;')
+            cur.execute('SELECT * FROM menu;')
             rows = cur.fetchall()
             for row in rows:
                 self.arr = []
@@ -195,7 +191,7 @@ class Data():
                     self.LATEST_MENU_ID = row[3]
                 self.transactionsMenu.append(self.arr)
             
-            cur.execute('select * from transactions;')    
+            cur.execute('SELECT * FROM transactions;')    
             rows = cur.fetchall()
             for row in rows:
                 self.arr = []
@@ -216,6 +212,14 @@ class Data():
                 if self.LATEST_ID < row[6]:
                     self.LATEST_ID = row[6]
                 self.sort_data(self.transactions, self.arr)
+            
+            cur = con.cursor()
+            cur.execute('SELECT DISTINCT year FROM transactions ORDER BY year DESC;') 
+            rows = cur.fetchall()
+            
+            self.yearMenu.append("All")
+            for row in rows:
+                self.yearMenu.append(str(row[0]))
 
     def sort_data(self, data, arr):
         if len(data) == 0:

@@ -1,5 +1,4 @@
 from gi.repository import Gtk, Gio, Gdk
-from calc import Calc
 from edit_popover import Edit_Popover
 from add_category_popover import Add_Category_Popover
 import datetime
@@ -33,7 +32,6 @@ class Transactions():
         
         # Initialize Variables
         self.data = data
-        self.calc = Calc(self.data)
         self.entryRows = []
         
         self.selected_category = ""
@@ -254,12 +252,9 @@ class Transactions():
         self.datePopoverFrom.connect("closed", self.on_datePopover_closed, self.dateCalendarFrom, self.dateButtonFrom)
         self.datePopoverTo.connect("closed", self.on_datePopover_closed, self.dateCalendarTo, self.dateButtonTo)
 
+        for i in range(0,len(self.data.yearMenu)):
+            self.dateComboYear.append_text(self.data.yearMenu[i])
 
-        self.dateComboYear.append_text("All")
-        self.dateComboYear.append_text("2015")
-        self.dateComboYear.append_text("2014")
-        self.dateComboYear.append_text("2013")
-            
         self.dateComboMonth.set_active(0)
         self.dateComboYear.set_active(0)
        
@@ -604,11 +599,11 @@ class Transactions():
 
     def filter_year(self, i):
         # if selected year equals "All", show row
-        if self.selected_year == self.data.yearMenu[self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_NAME_INDEX]:
+        if self.selected_year == self.data.yearMenu[0]:
             self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
             self.contentGrid.queue_draw()
         # if selected year does not equal "All"
-        elif self.selected_year != self.data.yearMenu[self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_NAME_INDEX]:
+        elif self.selected_year != self.data.yearMenu[0]:
             if self.selected_year == self.entry_year:
                 self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
                 self.contentGrid.queue_draw()
@@ -816,9 +811,7 @@ class Transactions():
         if listbox == None:
             return
         else:
-            for i in range (len(self.data.yearMenu)):
-                if self.data.yearMenu[i][self.data.TRANSACTION_MENU_ID_INDEX] == listbox.get_active():
-                    self.row = self.data.yearMenu[i][self.data.TRANSACTION_MENU_ID_INDEX]
-            self.selected_year = self.data.yearMenu[self.row][self.data.TRANSACTION_MENU_NAME_INDEX]
-            self.selected_year_index = self.data.yearMenu[self.row][self.data.TRANSACTION_MENU_ID_INDEX]
+            self.row = listbox.get_active()
+            self.selected_year = self.data.yearMenu[self.row]
+            self.selected_year_index = self.row
             self.filter_entries()
