@@ -582,17 +582,70 @@ class Transactions():
                 self.contentGrid.queue_draw()
     
     def filter_range(self,i):
-        if int(self.entry_year) >= int(self.fromYear) and int(self.entry_year) <= int(self.toYear):
-            if int(self.entry_month) >= int(self.fromMonth) and int(self.entry_month) <= int(self.toMonth):
+        # Same from and to year
+        if int(self.entry_year) == int(self.fromYear) and int(self.entry_year) == int(self.toYear):
+            # Same from and to month
+            if int(self.entry_month) == int(self.fromMonth) and int(self.entry_month) == int(self.toMonth):
                 if int(self.entry_day) >= int(self.fromDay) and int(self.entry_day) <= int(self.toDay):
                     self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
                     self.contentGrid.queue_draw()
                 else:
                     self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
                     self.contentGrid.queue_draw()
+            # Different from and to month
+            elif int(self.entry_month) >= int(self.fromMonth) and int(self.entry_month) <= int(self.toMonth):
+                if int(self.entry_month) == int(self.fromMonth):# and int(self.entry_month) != int(self.toMonth):
+                    if int(self.entry_day) >= int(self.fromDay):
+                        self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
+                        self.contentGrid.queue_draw()
+                    else:
+                        self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
+                        self.contentGrid.queue_draw()
+                elif int(self.entry_month) == int(self.toMonth):
+                    if int(self.entry_day) <= int(self.toDay):
+                        self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
+                        self.contentGrid.queue_draw()
+                    else:
+                        self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
+                        self.contentGrid.queue_draw()
             else:
                 self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
                 self.contentGrid.queue_draw()
+        elif (int(self.entry_year) != int(self.fromYear) or int(self.entry_year) != int(self.toYear)) and (int(self.entry_year) >= int(self.fromYear) and int(self.entry_year) <= int(self.toYear)):
+            if int(self.entry_year) == int(self.fromYear):
+                if int(self.entry_month >= self.fromMonth):
+                    if int(self.entry_day) >= int(self.fromDay):
+                        self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
+                        self.contentGrid.queue_draw()
+                    else:
+                        self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
+                        self.contentGrid.queue_draw()
+                else:
+                    self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
+                    self.contentGrid.queue_draw()
+            elif int(self.entry_year) == int(self.toYear):
+                if int(self.entry_month <= self.toMonth):
+                    if int(self.entry_day) <= int(self.toDay):
+                        self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
+                        self.contentGrid.queue_draw()
+                    else:
+                        self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
+                        self.contentGrid.queue_draw()
+                else:
+                    self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
+                    self.contentGrid.queue_draw()
+            elif int(self.entry_year) != int(self.fromYear) and int(self.entry_year) != int(self.toYear):
+                self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
+                self.contentGrid.queue_draw()
+            else:
+                self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
+                self.contentGrid.queue_draw()
+
+
+
+
+
+
         else:
             self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
             self.contentGrid.queue_draw()
