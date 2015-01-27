@@ -38,20 +38,24 @@ class Window(Gtk.Window):
         # Create Navigation Buttons
         self.overviewButton = Gtk.Button("Overview")
         self.transactionsButton = Gtk.Button("Transactions")
+        self.projectionsButton = Gtk.Button("Projections")
         self.navBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
 
         # Style Navigation Buttons
         self.overviewButton.set_size_request(100,32)
         self.transactionsButton.set_size_request(100,32)
+        self.projectionsButton.set_size_request(100,32)
         Gtk.StyleContext.add_class(self.navBox.get_style_context(), "linked")
 
         # Connect Buttons to handler
         self.overviewButton.connect("clicked", self.on_overviewButton_clicked)
         self.transactionsButton.connect("clicked", self.on_transactionsButton_clicked)
+        self.projectionsButton.connect("clicked", self.on_projectionsButton_clicked)
 
         # Add Buttons to Navigation Box
         self.navBox.add(self.overviewButton)
         self.navBox.add(self.transactionsButton)
+        self.navBox.add(self.projectionsButton)
         self.hb.set_custom_title(self.navBox)
         
         # --- Action Buttons ---
@@ -87,21 +91,18 @@ class Window(Gtk.Window):
         # Create Labels
         self.overviewLabel = Gtk.Label("Overview")
         self.transactionsLabel = Gtk.Label("Transactions")
-        #self.reportsLabel = Gtk.Label("Reports")
-        #self.projectionsLabel = Gtk.Label("Projections")
+        self.projectionsLabel = Gtk.Label("Projections")
 
         # Style Notebook 
         self.overviewLabel.set_hexpand(True)
         self.transactionsLabel.set_hexpand(True)
-        #self.reportsLabel.set_hexpand(True)
-        #self.projectionsLabel.set_hexpand(True)
+        self.projectionsLabel.set_hexpand(True)
        
         # Create Notebook
         self.notebook = Gtk.Notebook()
         self.notebook.insert_page(self.overview.grid, self.overviewLabel, 0)
         self.notebook.insert_page(self.transactions.grid, self.transactionsLabel, 1)
-        #self.notebook.insert_page(self.reports.grid, self.reportsLabel, 3)
-        #self.notebook.insert_page(self.projections.grid, self.projectionsLabel, 4)
+        self.notebook.insert_page(self.projections.grid, self.projectionsLabel, 3)
         self.add(self.notebook)
         self.notebook.set_show_tabs(False)
         
@@ -123,7 +124,6 @@ class Window(Gtk.Window):
     def on_notebook_switch(self, notebook, page, index, *args):
         if index == 0:
             self.hb.queue_draw()
-            #self.notebook.set_current_page(0)
         if index == 1:
             self.hb.queue_draw()
         if index == 2:
@@ -138,3 +138,6 @@ class Window(Gtk.Window):
      
     def on_transactionsButton_clicked(self, *args):
         self.notebook.set_current_page(1)
+    
+    def on_projectionsButton_clicked(self, *args):
+        self.notebook.set_current_page(2)
