@@ -43,6 +43,9 @@ class Data():
     TRANSACTION_DESCRIPTION_INDEX = 3
     TRANSACTION_ID_INDEX = 4
 
+    INCOME_ORDER_ID = 0
+    EXPENSE_ORDER_ID = 0
+
     LATEST_MENU_ID = 0
     LATEST_ID = 0
 
@@ -72,10 +75,17 @@ class Data():
                             ]
 
     def add_category(self, menuType, category):
+        if menuType == "income":
+            self.INCOME_ORDER_ID += 1
+        if menuType == "expense":
+            self.EXPENSE_ORDER_ID += 1
         self.LATEST_MENU_ID += 1
         if(os.path.isfile('budget.db')):
             con = lite.connect('budget.db')
-            row = [(str(menuType),str(category),"10",str(self.LATEST_MENU_ID))]
+            if menuType == "income":
+                row = [(str(menuType),str(category),str(self.INCOME_ORDER_ID),str(self.LATEST_MENU_ID))]
+            if menuType == "expense":
+                row = [(str(menuType),str(category),str(self.EXPENSE_ORDER_ID),str(self.LATEST_MENU_ID))]
         
             cur = con.cursor()
             cur.execute('INSERT INTO menu VALUES(?,?,?,?)', row[0])
@@ -179,7 +189,7 @@ class Data():
             con = lite.connect('budget.db')
 
             cur = con.cursor()
-            cur.execute('SELECT * FROM menu;')
+            cur.execute('SELECT * FROM menu WHERE type = "income" ORDER BY menuOrder;')
             rows = cur.fetchall()
             for row in rows:
                 self.arr = []
@@ -187,8 +197,30 @@ class Data():
                 self.arr.append(row[1].strip())             # Name
                 self.arr.append(row[2])                     # Order
                 self.arr.append(row[3])                     # menuID
+            
+                if self.INCOME_ORDER_ID < row[2]:
+                    self.INCOME_ORDER_ID = row[2]
+           
                 if self.LATEST_MENU_ID < row[3]:
                     self.LATEST_MENU_ID = row[3]
+                self.transactionsMenu.append(self.arr)
+           
+            cur = con.cursor()
+            cur.execute('SELECT * FROM menu WHERE type = "expense" ORDER BY menuOrder;')
+            rows = cur.fetchall()
+            for row in rows:
+                self.arr = []
+                self.arr.append(row[0].strip())             # Type
+                self.arr.append(row[1].strip())             # Name
+                self.arr.append(row[2])                     # Order
+                self.arr.append(row[3])                     # menuID
+            
+                if self.EXPENSE_ORDER_ID < row[2]:
+                    self.EXPENSE_ORDER_ID = row[2]
+           
+                if self.LATEST_MENU_ID < row[3]:
+                    self.LATEST_MENU_ID = row[3]
+                
                 self.transactionsMenu.append(self.arr)
             
             cur.execute('SELECT * FROM transactions;')    
