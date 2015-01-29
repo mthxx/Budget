@@ -2,6 +2,9 @@
 *.pot
 *.pyc
 *.swp
+Budget.egg-info/
+build/
+dist/
 database.txt
 budget.db
 local_settings.py
