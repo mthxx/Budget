@@ -107,7 +107,7 @@ class Window(Gtk.Window):
         self.notebook.set_show_tabs(False)
         
         # Connect to handler
-        self.notebook.connect("switch-page", self.on_notebook_switch)
+        # self.notebook.connect("switch-page", self.on_notebook_switch)
       
         # Connect views to data
         self.data.connect_data_views(self.transactions, self.overview)
@@ -121,17 +121,17 @@ class Window(Gtk.Window):
     def on_menuButton_clicked(self, *args):
         print("Menu Button Working!")
 
-    def on_notebook_switch(self, notebook, page, index, *args):
-        if index == 0:
-            self.hb.queue_draw()
-        if index == 1:
-            self.hb.queue_draw()
-        if index == 2:
-            self.hb.queue_draw()
-        if index == 3:
-            self.hb.queue_draw()
-        if index == 4:
-            self.hb.queue_draw()
+    # def on_notebook_switch(self, notebook, page, index, *args):
+    #     if index == 0:
+    #         self.hb.queue_draw()
+    #     if index == 1:
+    #         self.hb.queue_draw()
+    #     if index == 2:
+    #         self.hb.queue_draw()
+    #     if index == 3:
+    #         self.hb.queue_draw()
+    #     if index == 4:
+    #         self.hb.queue_draw()
 
     def on_overviewButton_clicked(self, *args):
         self.notebook.set_current_page(0)
