@@ -3,26 +3,30 @@
     background-color: white;
 }
 
-#monthGrid, #monthGridRight, #monthGridBottom, #monthGridLast{
+#monthGridActive, #monthGridRightActive, #monthGridBottomActive, #monthGridLastActive, #monthGridInactive, #monthGridRightInactive, #monthGridBottomInactive, #monthGridLastInactive{
+
     border-color: gray;
     border-style: solid;
     border-top-width: 1px;
     border-left-width: 1px;
+}
+
+#monthGridRightActive, #monthGridLastActive, #monthGridRightInactive, #monthGridLastInactive{
+    border-right-width: 1px;
+}
+
+#monthGridBottomActive, #monthGridLastActive, #monthGridBottomInactive, #monthGridLastInactive{
+    border-bottom-width: 1px;
+}
+
+#monthGridActive, #monthGridRightActive, #monthGridBottomActive, #monthGridLastActive{
     background-color: white;
 }
 
-#monthGridRight{
-    border-right-width: 1px;
+#monthGridInactive, #monthGridRightInactive, #monthGridBottomInactive, #monthGridLastInactive{
+    background-color: #E5E5E5;
 }
 
-#monthGridBottom{
-    border-bottom-width: 1px;
-}
-
-#monthGridLast{
-    border-right-width: 1px;
-    border-bottom-width: 1px;
-}
 
 #menuViewport, #subMenuViewport{
     border-style: solid;
