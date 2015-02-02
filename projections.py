@@ -59,31 +59,7 @@ class Projections():
 
     def generate_month_view(self):
         
-        if datetime.datetime.now().month == 1:
-            self.monthTitleLabel = Gtk.Label("January")
-        elif datetime.datetime.now().month == 2:
-            self.monthTitleLabel = Gtk.Label("February")
-        elif datetime.datetime.now().month == 3:
-            self.monthTitleLabel = Gtk.Label("March")
-        elif datetime.datetime.now().month == 4:
-            self.monthTitleLabel = Gtk.Label("April")
-        elif datetime.datetime.now().month == 5:
-            self.monthTitleLabel = Gtk.Label("May")
-        elif datetime.datetime.now().month == 6:
-            self.monthTitleLabel = Gtk.Label("June")
-        elif datetime.datetime.now().month == 7:
-            self.monthTitleLabel = Gtk.Label("July")
-        elif datetime.datetime.now().month == 8:
-            self.monthTitleLabel = Gtk.Label("August")
-        elif datetime.datetime.now().month == 9:
-            self.monthTitleLabel = Gtk.Label("September")
-        elif datetime.datetime.now().month == 10:
-            self.monthTitleLabel = Gtk.Label("October")
-        elif datetime.datetime.now().month == 11:
-            self.monthTitleLabel = Gtk.Label("November")
-        elif datetime.datetime.now().month == 12:
-            self.monthTitleLabel = Gtk.Label("December")
-
+        self.monthTitleLabel = Gtk.Label()
         self.monthPreviousButton = Gtk.Button()
         self.monthNextButton = Gtk.Button()
         
@@ -116,6 +92,7 @@ class Projections():
         self.monthViewGrid.attach(self.monthCalendarGrid, 0,1,7,1)
          
         self.currentMonth = datetime.datetime.now().month
+        self.selectedMonth = self.currentMonth
         self.currentMonthStartDate = calendar.monthrange(datetime.datetime.now().year, datetime.datetime.now().month)[0]
         self.currentMonthEndDate = calendar.monthrange(datetime.datetime.now().year, datetime.datetime.now().month)[1] 
 
@@ -177,18 +154,43 @@ class Projections():
         self.projectionsNotebook.set_current_page(4)
         
     def on_monthPreviousButton_clicked(self, *args):
-        month = datetime.datetime.now().month - 1
-        start = calendar.monthrange(datetime.datetime.now().year, datetime.datetime.now().month - 1)[0]
-        end = calendar.monthrange(datetime.datetime.now().year, datetime.datetime.now().month - 1)[1] 
-        self.populate_month_grid(month, start, end)
+        self.selectedMonth = self.selectedMonth - 1
+        start = calendar.monthrange(datetime.datetime.now().year, self.selectedMonth)[0]
+        end = calendar.monthrange(datetime.datetime.now().year, self.selectedMonth)[1] 
+        self.populate_month_grid(self.selectedMonth, start, end)
 
     def on_monthNextButton_clicked(self, *args):
-        month = datetime.datetime.now().month + 1
-        start = calendar.monthrange(datetime.datetime.now().year, datetime.datetime.now().month + 1)[0]
-        end = calendar.monthrange(datetime.datetime.now().year, datetime.datetime.now().month + 1)[1] 
-        self.populate_month_grid(month, start, end)
+        self.selectedMonth = self.selectedMonth + 1
+        start = calendar.monthrange(datetime.datetime.now().year, self.selectedMonth)[0]
+        end = calendar.monthrange(datetime.datetime.now().year, self.selectedMonth)[1] 
+        self.populate_month_grid(self.selectedMonth, start, end)
     
     def populate_month_grid(self, month, start, end):
+        if month == 1:
+            self.monthTitleLabel.set_text("January")
+        elif month == 2:
+            self.monthTitleLabel.set_text("February")
+        elif month == 3:
+            self.monthTitleLabel.set_text("March")
+        elif month == 4:
+            self.monthTitleLabel.set_text("April")
+        elif month == 5:
+            self.monthTitleLabel.set_text("May")
+        elif month == 6:
+            self.monthTitleLabel.set_text("June")
+        elif month == 7:
+            self.monthTitleLabel.set_text("July")
+        elif month == 8:
+            self.monthTitleLabel.set_text("August")
+        elif month == 9:
+            self.monthTitleLabel.set_text("September")
+        elif month == 10:
+            self.monthTitleLabel.set_text("October")
+        elif month == 11:
+            self.monthTitleLabel.set_text("November")
+        elif month == 12:
+            self.monthTitleLabel.set_text("December")
+
         
         if self.monthCalendarGrid.get_child_at(1,1) != None:
             for i in range(1,8):
