@@ -59,65 +59,68 @@ class Projections():
 
     def generate_month_view(self):
         
-        self.label = Gtk.Label("Janaury 1st, 2015")        
+        if datetime.datetime.now().month == 1:
+            self.monthTitleLabel = Gtk.Label("January")
+        elif datetime.datetime.now().month == 2:
+            self.monthTitleLabel = Gtk.Label("February")
+        elif datetime.datetime.now().month == 3:
+            self.monthTitleLabel = Gtk.Label("March")
+        elif datetime.datetime.now().month == 4:
+            self.monthTitleLabel = Gtk.Label("April")
+        elif datetime.datetime.now().month == 5:
+            self.monthTitleLabel = Gtk.Label("May")
+        elif datetime.datetime.now().month == 6:
+            self.monthTitleLabel = Gtk.Label("June")
+        elif datetime.datetime.now().month == 7:
+            self.monthTitleLabel = Gtk.Label("July")
+        elif datetime.datetime.now().month == 8:
+            self.monthTitleLabel = Gtk.Label("August")
+        elif datetime.datetime.now().month == 9:
+            self.monthTitleLabel = Gtk.Label("September")
+        elif datetime.datetime.now().month == 10:
+            self.monthTitleLabel = Gtk.Label("October")
+        elif datetime.datetime.now().month == 11:
+            self.monthTitleLabel = Gtk.Label("November")
+        elif datetime.datetime.now().month == 12:
+            self.monthTitleLabel = Gtk.Label("December")
+
+        self.monthPreviousButton = Gtk.Button()
+        self.monthNextButton = Gtk.Button()
+        
+        self.backIcon = Gio.ThemedIcon(name="go-previous-symbolic")
+        self.backImage = Gtk.Image.new_from_gicon(self.backIcon, Gtk.IconSize.MENU)
+        self.monthPreviousButton.add(self.backImage)
+        
+        self.forwardIcon = Gio.ThemedIcon(name="go-next-symbolic")
+        self.forwardImage = Gtk.Image.new_from_gicon(self.forwardIcon, Gtk.IconSize.MENU)
+        self.monthNextButton.add(self.forwardImage)
+        
+        self.monthPreviousButton.connect("clicked", self.on_monthPreviousButton_clicked)
+        self.monthNextButton.connect("clicked", self.on_monthNextButton_clicked)
+
+        self.monthPreviousButton.set_margin_top(10)
+        self.monthPreviousButton.set_relief(Gtk.ReliefStyle.NONE)
+        
+        self.monthNextButton.set_margin_top(10)
+        self.monthNextButton.set_relief(Gtk.ReliefStyle.NONE)
+
+        self.monthTitleLabel.set_margin_top(10)
+        self.monthTitleLabel.set_halign(Gtk.Align.CENTER)
+        self.monthTitleLabel.set_hexpand(True)
+
         self.monthCalendarGrid = Gtk.Grid()        
-        self.label.set_margin_top(10)
-        self.label.set_halign(Gtk.Align.CENTER)
-        self.label.set_hexpand(True)
-        self.monthViewGrid.attach(self.label, 0,0,7,1)
+
+        self.monthViewGrid.attach(self.monthPreviousButton, 2,0,1,1)
+        self.monthViewGrid.attach(self.monthTitleLabel, 1,0,5,1)
+        self.monthViewGrid.attach(self.monthNextButton, 4,0,1,1)
         self.monthViewGrid.attach(self.monthCalendarGrid, 0,1,7,1)
          
-        self.startDate = calendar.monthrange(datetime.datetime.now().year, datetime.datetime.now().month)[0]
-        self.endDate = calendar.monthrange(datetime.datetime.now().year, datetime.datetime.now().month)[1] 
-        self.dayText = 1
+        self.currentMonth = datetime.datetime.now().month
+        self.currentMonthStartDate = calendar.monthrange(datetime.datetime.now().year, datetime.datetime.now().month)[0]
+        self.currentMonthEndDate = calendar.monthrange(datetime.datetime.now().year, datetime.datetime.now().month)[1] 
 
-        for i in range(1, 36):
-            # Create Widgets 
-            if i - 2 >= self.startDate and self.dayText <= self.endDate:
-                if i == 7 or i == 14 or i == 21 or i == 28:
-                    self.monthGrid = Gtk.Grid(name="monthGridRightActive")
-                elif i > 28 and i < 35:
-                    self.monthGrid = Gtk.Grid(name="monthGridBottomActive")
-                elif i == 35:
-                    self.monthGrid = Gtk.Grid(name="monthGridLastActive")
-                else:            
-                    self.monthGrid = Gtk.Grid(name="monthGridActive")
-                self.dayLabel = Gtk.Label(self.dayText)
-                self.monthGrid.attach(self.dayLabel,0,0,1,1)
-                self.dayText += 1
-            else:
-                if i == 7 or i == 14 or i == 21 or i == 28:
-                    self.monthGrid = Gtk.Grid(name="monthGridRightInactive")
-                elif i > 28 and i < 35:
-                    self.monthGrid = Gtk.Grid(name="monthGridBottomInactive")
-                elif i == 35:
-                    self.monthGrid = Gtk.Grid(name="monthGridLastInactive")
-                else:            
-                    self.monthGrid = Gtk.Grid(name="monthGridInactive")
+        self.populate_month_grid(self.currentMonth, self.currentMonthStartDate, self.currentMonthEndDate)
 
-            # Style Widgets
-            self.monthGrid.set_column_homogeneous(True)
-            self.dayLabel.set_margin_end(10)
-            self.dayLabel.set_margin_top(5)
-            self.dayLabel.set_halign(Gtk.Align.END)
-            self.monthCalendarGrid.set_column_homogeneous(True)
-            self.monthCalendarGrid.set_row_homogeneous(True)
-            self.monthCalendarGrid.set_vexpand(True)
-            self.monthCalendarGrid.set_margin_top(20)
-        
-            if i <= 7:
-                self.monthCalendarGrid.attach(self.monthGrid,i,1,1,1)
-            elif i > 7 and i <= 14:
-                self.monthCalendarGrid.attach(self.monthGrid,(i-7),2,1,1)
-            elif i > 14 and i <= 21:
-                self.monthCalendarGrid.attach(self.monthGrid,(i-14),3,1,1)
-            elif i > 21 and i <= 28:
-                self.monthCalendarGrid.attach(self.monthGrid,(i-21),4,1,1)
-            elif i > 28:# and i <= 34:
-                self.monthCalendarGrid.attach(self.monthGrid,(i-28),5,1,1)
-            #elif i > 34:
-            #    self.monthCalendarGrid.attach(self.monthGrid,(i-35),6,1,1)
- 
     def generate_sidebar(self):
         self.dayButton = Gtk.Button("Day")
         self.weekButton = Gtk.Button("Week")
@@ -172,3 +175,82 @@ class Projections():
      
     def on_transactionsButton_clicked(self, *args):
         self.projectionsNotebook.set_current_page(4)
+        
+    def on_monthPreviousButton_clicked(self, *args):
+        month = datetime.datetime.now().month - 1
+        start = calendar.monthrange(datetime.datetime.now().year, datetime.datetime.now().month - 1)[0]
+        end = calendar.monthrange(datetime.datetime.now().year, datetime.datetime.now().month - 1)[1] 
+        self.populate_month_grid(month, start, end)
+
+    def on_monthNextButton_clicked(self, *args):
+        month = datetime.datetime.now().month + 1
+        start = calendar.monthrange(datetime.datetime.now().year, datetime.datetime.now().month + 1)[0]
+        end = calendar.monthrange(datetime.datetime.now().year, datetime.datetime.now().month + 1)[1] 
+        self.populate_month_grid(month, start, end)
+    
+    def populate_month_grid(self, month, start, end):
+        
+        if self.monthCalendarGrid.get_child_at(1,1) != None:
+            for i in range(1,8):
+                self.monthCalendarGrid.get_child_at(i,1).destroy()
+                self.monthCalendarGrid.get_child_at(i,2).destroy()
+                self.monthCalendarGrid.get_child_at(i,3).destroy()
+                self.monthCalendarGrid.get_child_at(i,4).destroy()
+                self.monthCalendarGrid.get_child_at(i,5).destroy()
+        
+        self.dayText = 1
+
+        for i in range(1, 36):
+            # Create Widgets 
+            if i - 2 >= start and self.dayText <= end:
+                if i == 7 or i == 14 or i == 21 or i == 28:
+                    self.monthGrid = Gtk.Grid(name="monthGridRightActive")
+                elif i > 28 and i < 35:
+                    self.monthGrid = Gtk.Grid(name="monthGridBottomActive")
+                elif i == 35:
+                    self.monthGrid = Gtk.Grid(name="monthGridLastActive")
+                else:            
+                    self.monthGrid = Gtk.Grid(name="monthGridActive")
+                self.dayLabel = Gtk.Label(self.dayText)
+                self.monthGrid.attach(self.dayLabel,0,0,1,1)
+                self.dayText += 1
+            else:
+                if i == 7 or i == 14 or i == 21 or i == 28:
+                    self.monthGrid = Gtk.Grid(name="monthGridRightInactive")
+                elif i > 28 and i < 35:
+                    self.monthGrid = Gtk.Grid(name="monthGridBottomInactive")
+                elif i == 35:
+                    self.monthGrid = Gtk.Grid(name="monthGridLastInactive")
+                else:            
+                    self.monthGrid = Gtk.Grid(name="monthGridInactive")
+                
+                if i - 2 < start: 
+
+                    if month != 1:
+                        self.prevMonthEndDate = calendar.monthrange(datetime.datetime.now().year, month - 1)[1]
+                        self.prevMonthDate = self.prevMonthEndDate - start + i - 1
+                        self.dayLabel = Gtk.Label(self.prevMonthDate)
+                        self.monthGrid.attach(self.dayLabel,0,0,1,1)
+
+            # Style Widgets
+            self.monthGrid.set_column_homogeneous(True)
+            self.dayLabel.set_margin_end(10)
+            self.dayLabel.set_margin_top(5)
+            self.dayLabel.set_halign(Gtk.Align.END)
+            self.monthCalendarGrid.set_column_homogeneous(True)
+            self.monthCalendarGrid.set_row_homogeneous(True)
+            self.monthCalendarGrid.set_vexpand(True)
+            self.monthCalendarGrid.set_margin_top(20)
+        
+            if i <= 7:
+                self.monthCalendarGrid.attach(self.monthGrid,i,1,1,1)
+            elif i > 7 and i <= 14:
+                self.monthCalendarGrid.attach(self.monthGrid,(i-7),2,1,1)
+            elif i > 14 and i <= 21:
+                self.monthCalendarGrid.attach(self.monthGrid,(i-14),3,1,1)
+            elif i > 21 and i <= 28:
+                self.monthCalendarGrid.attach(self.monthGrid,(i-21),4,1,1)
+            elif i > 28:# and i <= 34:
+                self.monthCalendarGrid.attach(self.monthGrid,(i-28),5,1,1)
+
+            self.monthCalendarGrid.show_all()
