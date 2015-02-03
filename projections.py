@@ -213,30 +213,44 @@ class Projections():
                 self.monthCalendarGrid.get_child_at(i,3).destroy()
                 self.monthCalendarGrid.get_child_at(i,4).destroy()
                 self.monthCalendarGrid.get_child_at(i,5).destroy()
+                self.monthCalendarGrid.get_child_at(i,6).destroy()
         
         self.dayText = 1
         self.nextMonthDate = 1
-
-        for i in range(1, 36):
+        for i in range(1, 43):
             # Create Widgets 
             if i - 2 >= start and self.dayText <= end:
-                if i == 7 or i == 14 or i == 21 or i == 28:
+                if i == 7 or i == 14 or i == 21 or i == 28 or i == 35:
                     self.monthGrid = Gtk.Grid(name="monthGridRightActive")
-                elif i > 28 and i < 35:
+                elif i > 35 and i < 42:
                     self.monthGrid = Gtk.Grid(name="monthGridBottomActive")
-                elif i == 35:
+                elif i == 42:
                     self.monthGrid = Gtk.Grid(name="monthGridLastActive")
                 else:            
                     self.monthGrid = Gtk.Grid(name="monthGridActive")
+                
                 self.dayLabel = Gtk.Label(self.dayText)
-                self.monthGrid.attach(self.dayLabel,0,0,1,1)
                 self.dayText += 1
+
+                # self.expenseLabel = Gtk.Label()
+                # self.incomeLabel = Gtk.Label()
+                # self.totalLabel = Gtk.Label()
+                #
+                # self.expenseLabel.set_markup("<span foreground=\"red\">" + "-" + "$125" + "</span>")
+                # self.incomeLabel.set_markup("<span foreground=\"green\">" + "+" + "$600" + "</span>")
+                # self.totalLabel.set_markup("<span foreground=\"green\">" + "=" + "$1250" + "</span>")
+                #
+                self.monthGrid.attach(self.dayLabel,0,0,1,1)
+                # self.monthGrid.attach(self.expenseLabel,0,1,1,1)            
+                # self.monthGrid.attach(self.incomeLabel,0,2,1,1)
+                # self.monthGrid.attach(self.totalLabel,0,3,1,1)
+
             else:
-                if i == 7 or i == 14 or i == 21 or i == 28:
+                if i == 7 or i == 14 or i == 21 or i == 28 or i == 35:
                     self.monthGrid = Gtk.Grid(name="monthGridRightInactive")
-                elif i > 28 and i < 35:
+                elif i > 35 and i < 42:
                     self.monthGrid = Gtk.Grid(name="monthGridBottomInactive")
-                elif i == 35:
+                elif i == 42:
                     self.monthGrid = Gtk.Grid(name="monthGridLastInactive")
                 else:            
                     self.monthGrid = Gtk.Grid(name="monthGridInactive")
@@ -259,6 +273,7 @@ class Projections():
                     self.monthGrid.attach(self.dayLabel,0,0,1,1)
                     self.nextMonthDate += 1
                     
+                    
 
             # Style Widgets
             self.monthGrid.set_column_homogeneous(True)
@@ -278,7 +293,9 @@ class Projections():
                 self.monthCalendarGrid.attach(self.monthGrid,(i-14),3,1,1)
             elif i > 21 and i <= 28:
                 self.monthCalendarGrid.attach(self.monthGrid,(i-21),4,1,1)
-            elif i > 28:# and i <= 34:
+            elif i > 28 and i <= 35:
                 self.monthCalendarGrid.attach(self.monthGrid,(i-28),5,1,1)
+            elif i > 35:
+                self.monthCalendarGrid.attach(self.monthGrid,(i-35),6,1,1)
 
             self.monthCalendarGrid.show_all()
