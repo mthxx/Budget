@@ -1,4 +1,8 @@
 Budget
 ======
 
-A project to create a desktop based personal budgeting application native on Linux using GTK+ and Python.
+
+Budget is your own personal financial assistant. With Budget, you can record income and expenses into separate categories. Set a limit on each individual category and notifications when you are approaching your limits. Budget can also help predict your financial future. Plan your long term financial health with monthly and yearly projections. Plan your immediate future with the daily and weekly projections.
+
+
+<a href="www.mthx.org/projects/budget">Project Home Page</a>
