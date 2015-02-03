@@ -92,11 +92,15 @@ class Projections():
         self.monthViewGrid.attach(self.monthCalendarGrid, 0,1,7,1)
          
         self.currentMonth = datetime.datetime.now().month
+        self.currentYear = datetime.datetime.now().year
+
         self.selectedMonth = self.currentMonth
+        self.selectedYear = self.currentYear
+
         self.currentMonthStartDate = calendar.monthrange(datetime.datetime.now().year, datetime.datetime.now().month)[0]
         self.currentMonthEndDate = calendar.monthrange(datetime.datetime.now().year, datetime.datetime.now().month)[1] 
 
-        self.populate_month_grid(self.currentMonth, self.currentMonthStartDate, self.currentMonthEndDate)
+        self.populate_month_grid(self.currentMonth, self.currentYear, self.currentMonthStartDate, self.currentMonthEndDate)
 
     def generate_sidebar(self):
         self.dayButton = Gtk.Button("Day")
@@ -154,18 +158,27 @@ class Projections():
         self.projectionsNotebook.set_current_page(4)
         
     def on_monthPreviousButton_clicked(self, *args):
-        self.selectedMonth = self.selectedMonth - 1
-        start = calendar.monthrange(datetime.datetime.now().year, self.selectedMonth)[0]
-        end = calendar.monthrange(datetime.datetime.now().year, self.selectedMonth)[1] 
-        self.populate_month_grid(self.selectedMonth, start, end)
+        if self.selectedMonth == 1:
+            self.selectedYear = self.selectedYear - 1
+            self.selectedMonth = 12
+        else:
+            self.selectedMonth = self.selectedMonth - 1
+        
+        start = calendar.monthrange(self.selectedYear, self.selectedMonth)[0]
+        end = calendar.monthrange(self.selectedYear, self.selectedMonth)[1] 
+        self.populate_month_grid(self.selectedMonth, self.selectedYear, start, end)
 
     def on_monthNextButton_clicked(self, *args):
-        self.selectedMonth = self.selectedMonth + 1
-        start = calendar.monthrange(datetime.datetime.now().year, self.selectedMonth)[0]
-        end = calendar.monthrange(datetime.datetime.now().year, self.selectedMonth)[1] 
-        self.populate_month_grid(self.selectedMonth, start, end)
+        if self.selectedMonth == 12:
+            self.selectedYear = self.selectedYear + 1
+            self.selectedMonth = 1
+        else:
+            self.selectedMonth = self.selectedMonth + 1
+        start = calendar.monthrange(self.selectedYear, self.selectedMonth)[0]
+        end = calendar.monthrange(self.selectedYear, self.selectedMonth)[1] 
+        self.populate_month_grid(self.selectedMonth, self.selectedYear, start, end)
     
-    def populate_month_grid(self, month, start, end):
+    def populate_month_grid(self, month, year, start, end):
         if month == 1:
             self.monthTitleLabel.set_text("January")
         elif month == 2:
@@ -201,6 +214,7 @@ class Projections():
                 self.monthCalendarGrid.get_child_at(i,5).destroy()
         
         self.dayText = 1
+        self.nextMonthDate = 1
 
         for i in range(1, 36):
             # Create Widgets 
@@ -229,10 +243,21 @@ class Projections():
                 if i - 2 < start: 
 
                     if month != 1:
-                        self.prevMonthEndDate = calendar.monthrange(datetime.datetime.now().year, month - 1)[1]
+                        self.prevMonthEndDate = calendar.monthrange(year, month - 1)[1]
                         self.prevMonthDate = self.prevMonthEndDate - start + i - 1
                         self.dayLabel = Gtk.Label(self.prevMonthDate)
                         self.monthGrid.attach(self.dayLabel,0,0,1,1)
+                    else:
+                        self.prevMonthEndDate = calendar.monthrange(year, 12)[1]
+                        self.prevMonthDate = self.prevMonthEndDate - start + i - 1
+                        self.dayLabel = Gtk.Label(self.prevMonthDate)
+                        self.monthGrid.attach(self.dayLabel,0,0,1,1)
+                        
+                elif self.dayText > end:
+                    self.dayLabel = Gtk.Label(self.nextMonthDate)
+                    self.monthGrid.attach(self.dayLabel,0,0,1,1)
+                    self.nextMonthDate += 1
+                    
 
             # Style Widgets
             self.monthGrid.set_column_homogeneous(True)
