@@ -204,6 +204,7 @@ class Projections():
         elif month == 12:
             self.monthTitleLabel.set_text("December")
 
+        self.monthTitleLabel.set_text(self.monthTitleLabel.get_text() + " " + str(self.selectedYear))
         
         if self.monthCalendarGrid.get_child_at(1,1) != None:
             for i in range(1,8):
