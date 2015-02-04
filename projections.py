@@ -19,7 +19,6 @@ class Projections():
         self.contentGrid.set_column_homogeneous(True)
         self.contentGrid.set_row_homogeneous(True)
     
-
         # --- Notebooks ---
         # Create Grids
         self.dayViewGrid = Gtk.Grid()
@@ -33,6 +32,14 @@ class Projections():
         self.monthViewGrid.set_margin_start(55)
         self.monthViewGrid.set_margin_end(55)
         self.monthViewGrid.set_margin_bottom(55)
+
+        self.transactionViewGrid.set_hexpand(True)
+        self.transactionViewGrid.set_halign(Gtk.Align.CENTER)
+        # self.transactionViewGrid.set_column_homogeneous(True)
+        self.transactionViewGrid.set_margin_start(55)
+        self.transactionViewGrid.set_margin_top(20)
+        self.transactionViewGrid.set_margin_end(55)
+        self.transactionViewGrid.set_margin_bottom(55)
 
         # Create Labels
         self.dayLabel = Gtk.Label("Day")
@@ -53,9 +60,32 @@ class Projections():
         self.contentGrid.add(self.projectionsNotebook)
         self.generate_sidebar()
         self.generate_month_view()
+        self.generate_transactions_view()
 
         self.grid.attach(self.sideGrid, 0, 0, 1, 1)
         self.grid.attach(self.contentGrid, 1, 0, 1, 1)
+
+    def add_view_mode(self, boolean):
+        if boolean == True:
+            self.transactionTitleLabel.show()
+            self.transactionTitleEntry.show()
+            self.transactionCostLabel.show()
+            self.transactionCostEntry.show()
+            self.transactionTypeLabel.show()
+            self.radioBox.show()
+            self.categoryLabel.show()
+            self.categoryComboBoxText.show()
+            self.cancelButton.show()
+        else:
+            self.transactionTitleLabel.hide()
+            self.transactionTitleEntry.hide()
+            self.transactionCostLabel.hide()
+            self.transactionCostEntry.hide()
+            self.transactionTypeLabel.hide()
+            self.radioBox.hide()
+            self.categoryLabel.hide()
+            self.categoryComboBoxText.hide()
+            self.cancelButton.hide()
 
     def generate_month_view(self):
         
@@ -141,6 +171,15 @@ class Projections():
         self.sideGrid.attach(self.monthButton, 0,2,1,1)
         self.sideGrid.attach(self.yearButton, 0,3,1,1)
         self.sideGrid.attach(self.transactionsButton, 0,4,1,1)
+
+    def on_addButton_clicked(self, *args):
+        if self.cancelButton.get_visible():
+            self.add_view_mode(False)
+        else:
+            self.add_view_mode(True)
+    
+    def on_cancelButton_clicked(self, *args):
+        self.add_view_mode(False)
 
     def on_dayButton_clicked(self, *args):
         self.projectionsNotebook.set_current_page(0)
@@ -299,3 +338,67 @@ class Projections():
                 self.monthCalendarGrid.attach(self.monthGrid,(i-35),6,1,1)
 
             self.monthCalendarGrid.show_all()
+
+    def generate_transactions_view(self):
+        
+
+        self.transactionTitleLabel = Gtk.Label("Title:")
+        self.transactionTitleEntry = Gtk.Entry()
+        
+        self.transactionCostLabel = Gtk.Label("Cost:")
+        self.transactionCostEntry = Gtk.Entry()
+
+        self.transactionTypeLabel = Gtk.Label("Type:")
+        self.addIncomeRadio = Gtk.RadioButton.new_with_label(None, "Income")
+        self.addExpenseRadio = Gtk.RadioButton.new_with_label(None, "Expense")
+        self.addExpenseRadio.join_group(self.addIncomeRadio)
+        self.radioBox = Gtk.Box(Gtk.Orientation.HORIZONTAL,1)
+        self.radioBox.pack_start(self.addIncomeRadio, True, True, 0)
+        self.radioBox.pack_start(self.addExpenseRadio, True, True, 0)
+        
+        self.categoryLabel = Gtk.Label("Category:")
+        self.categoryComboBoxText = Gtk.ComboBoxText()
+        
+        self.cancelButton = Gtk.Button("Cancel")
+        self.addButton = Gtk.Button("Add")
+
+        self.transactionTitleLabel.set_halign(Gtk.Align.END)
+        self.transactionTitleEntry.set_margin_start(20)
+        
+        self.transactionCostLabel.set_halign(Gtk.Align.END)
+        self.transactionCostLabel.set_margin_top(10)
+        self.transactionCostEntry.set_margin_start(20)
+        self.transactionCostEntry.set_margin_top(10)
+        
+        self.transactionTypeLabel.set_halign(Gtk.Align.END)
+        self.transactionTypeLabel.set_margin_top(10)
+        self.radioBox.set_margin_start(20)
+        self.radioBox.set_margin_top(10)
+        self.radioBox.set_property("height-request", 34)
+        self.addIncomeRadio.set_property("draw-indicator",False)
+        self.addExpenseRadio.set_property("draw-indicator",False)
+        Gtk.StyleContext.add_class(self.radioBox.get_style_context(), "linked")
+
+        self.categoryLabel.set_halign(Gtk.Align.END)
+        self.categoryLabel.set_margin_top(10)
+        self.categoryComboBoxText.set_margin_start(20)
+        self.categoryComboBoxText.set_margin_top(10)
+        self.categoryComboBoxText.set_property("height-request", 34)
+        
+        self.cancelButton.set_margin_top(10)
+        self.addButton.set_margin_start(20)
+        self.addButton.set_margin_top(10)
+        
+        self.cancelButton.connect("clicked", self.on_cancelButton_clicked)
+        self.addButton.connect("clicked", self.on_addButton_clicked)
+        
+        self.transactionViewGrid.attach(self.transactionTitleLabel,0,0,1,1)
+        self.transactionViewGrid.attach(self.transactionTitleEntry,1,0,1,1)
+        self.transactionViewGrid.attach(self.transactionCostLabel,0,1,1,1)
+        self.transactionViewGrid.attach(self.transactionCostEntry,1,1,1,1)
+        self.transactionViewGrid.attach(self.transactionTypeLabel,0,2,1,1)
+        self.transactionViewGrid.attach(self.radioBox,1,2,1,1)
+        self.transactionViewGrid.attach(self.categoryLabel,0,3,1,1)
+        self.transactionViewGrid.attach(self.categoryComboBoxText,1,3,1,1)
+        self.transactionViewGrid.attach(self.cancelButton,0,4,1,1)
+        self.transactionViewGrid.attach(self.addButton,1,4,1,1)
