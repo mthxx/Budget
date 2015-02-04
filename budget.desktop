@@ -1,0 +1,11 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Version=0.1
+Name=Budget
+Comment=Personal Finance
+Exec=/home/mat/Development/Budget/budget
+Icon=/home/mat/Development/Budget/logo.png
+Terminal=false
+Type=Application
+Categories=Application;Finance;Money;Budget;
+ 
