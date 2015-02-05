@@ -130,6 +130,7 @@ class Projections():
         self.monthViewGrid.attach(self.monthNextButton, 4,0,1,1)
         self.monthViewGrid.attach(self.monthCalendarGrid, 0,1,7,1)
          
+        self.currentDay = datetime.datetime.now().day
         self.currentMonth = datetime.datetime.now().month
         self.currentYear = datetime.datetime.now().year
 
@@ -183,7 +184,9 @@ class Projections():
 
     def on_addButton_clicked(self, *args):
         if self.cancelButton.get_visible():
-            self.add_view_mode(False)
+            self.transactionTitleEntry.set_text("")
+            self.transactionCostEntry.set_text("")
+
         else:
             self.add_view_mode(True)
             for i in range(0, len(self.data.transactionsMenu)):
@@ -216,6 +219,15 @@ class Projections():
     
     def on_cancelButton_clicked(self, *args):
         self.add_view_mode(False)
+        
+        # Reset fields to default
+        self.transactionTitleEntry.set_text("")
+        self.transactionCostEntry.set_text("")
+        self.addIncomeRadio.set_active(True)
+        self.addCategoryComboBoxText.set_active(-1)
+        self.startDate.select_month(self.currentMonth - 1, self.currentYear)
+        self.startDate.select_day(self.currentDay)
+        self.frequencyComboBoxText.set_active(-1)
 
     def on_dayButton_clicked(self, *args):
         self.projectionsNotebook.set_current_page(0)
