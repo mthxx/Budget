@@ -9,10 +9,26 @@ class Data():
         try:
             con = lite.connect('budget.db')
 
+            # Create Database Tables
             cur = con.cursor()
             cur.execute('create table menu(type VARCHAR(30), name VARCHAR(50), menuOrder INT, menuID INT PRIMARY KEY);')
             cur.execute('create table transactions(menuID INT, year INT, month INT, day INT, value REAL, description VARCHAR(100), transactionsID INT PRIMARY KEY);')
-                           
+            cur.execute('create table projections(title VARCHAR(30), value REAL, description VARCHAR(50), type INT, year INT, month INT, day INT, projectionsID INT PRIMARY KEY);')
+            cur.execute('create table frequency(type VARCHAR(30), frequencyID INT PRIMARY KEY);')
+            cur.execute('create table menuType(type VARCHAR(30), typeID INT PRIMARY KEY);')
+
+            # Initialize with data
+            # cur.execute('INSERT INTO menuType VALUES("income", "1");')
+            # cur.execute('INSERT INTO menuType VALUES("expense", 2);')
+            #
+            # cur.execute('INSERT INTO frequency VALUES("One Time", 0);')
+            # cur.execute('INSERT INTO frequency VALUES("Daily", 1);')
+            # cur.execute('INSERT INTO frequency VALUES("Weekly", 2);')
+            # cur.execute('INSERT INTO frequency VALUES("Bi-Weekly", 3);')
+            # cur.execute('INSERT INTO frequency VALUES("Monthly on Date", 4);')
+            # cur.execute('INSERT INTO frequency VALUES("Monthly on Weekday", 5);')
+            # cur.execute('INSERT INTO frequency VALUES("Monthly on Yearly", 6);')
+
             data = cur.fetchone()
 
         except (lite.Error, e): 
@@ -111,6 +127,28 @@ class Data():
         
             cur = con.cursor()
             cur.execute('INSERT INTO transactions VALUES(?,?,?,?,?,?,?)', row[0])
+            con.commit()
+
+            self.transactionsMenu = []
+            self.transactions = []
+            
+            # Refresh data and views
+            self.import_data()
+            self.transaction_view.generate_sidebars()
+            self.transaction_view.display_content()
+            self.overview.redisplay_info()
+    
+    def add_projection_data(self, title, value, description, category, year, month, day, frequency, projectionID):
+        for i in range(0,len(self.transactionsMenu)):
+            if category == self.transactionsMenu[i][self.MENU_NAME_INDEX]:
+                category = self.transactionsMenu[i][self.MENU_ID_INDEX]
+
+        if(os.path.isfile('budget.db')):
+            con = lite.connect('budget.db')
+            row = [(str(title),str(value),str(description),str(category),str(year),str(month),str(day),str(frequency),str(projectionID))]
+        
+            cur = con.cursor()
+            cur.execute('INSERT INTO projections VALUES(?,?,?,?,?,?,?,?,?)', row[0])
             con.commit()
 
             self.transactionsMenu = []
