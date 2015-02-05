@@ -3,7 +3,8 @@ import datetime, calendar
 
 class Projections():
         
-    def __init__(self):
+    def __init__(self, data):
+        self.data = data
         self.grid = Gtk.Grid(name="projectionsGrid")
         
         self.sideGrid = Gtk.Grid()
@@ -73,8 +74,12 @@ class Projections():
             self.transactionCostEntry.show()
             self.transactionTypeLabel.show()
             self.radioBox.show()
-            self.categoryLabel.show()
-            self.categoryComboBoxText.show()
+            self.addCategoryLabel.show()
+            self.addCategoryComboBoxText.show()
+            self.startDateLabel.show()
+            self.startDate.show()
+            self.frequencyLabel.show()
+            self.frequencyComboBoxText.show()
             self.cancelButton.show()
         else:
             self.transactionTitleLabel.hide()
@@ -83,8 +88,12 @@ class Projections():
             self.transactionCostEntry.hide()
             self.transactionTypeLabel.hide()
             self.radioBox.hide()
-            self.categoryLabel.hide()
-            self.categoryComboBoxText.hide()
+            self.addCategoryLabel.hide()
+            self.addCategoryComboBoxText.hide()
+            self.startDateLabel.hide()
+            self.startDate.hide()
+            self.frequencyLabel.hide()
+            self.frequencyComboBoxText.hide()
             self.cancelButton.hide()
 
     def generate_month_view(self):
@@ -177,6 +186,33 @@ class Projections():
             self.add_view_mode(False)
         else:
             self.add_view_mode(True)
+            for i in range(0, len(self.data.transactionsMenu)):
+                self.addCategoryComboBoxText.remove(0)
+
+            if self.addIncomeRadio.get_active() == True:
+                self.selected = "income"
+            elif self.addExpenseRadio.get_active() == True:
+                self.selected = "expense"
+            for i in range(0,len(self.data.transactionsMenu)):
+                if self.data.transactionsMenu[i][self.data.MENU_TYPE_INDEX] == self.selected:
+                    if self.data.transactionsMenu[i][self.data.MENU_NAME_INDEX] != "Uncategorized":
+                        self.addCategoryComboBoxText.append_text(self.data.transactionsMenu[i][self.data.MENU_NAME_INDEX])
+    
+    def on_addRadio_toggled(self, *args):
+        for i in range(0, len(self.data.transactionsMenu)):
+            self.addCategoryComboBoxText.remove(0)
+        if self.addIncomeRadio.get_active() == True:
+            self.radioStatus = "income"
+            for i in range(0,len(self.data.transactionsMenu)):
+                if self.data.transactionsMenu[i][self.data.MENU_TYPE_INDEX] == "income":
+                    if self.data.transactionsMenu[i][self.data.MENU_NAME_INDEX] != "Uncategorized":
+                        self.addCategoryComboBoxText.append_text(self.data.transactionsMenu[i][self.data.MENU_NAME_INDEX])
+        elif self.addExpenseRadio.get_active() == True:
+            self.radioStatus = "expense"
+            for i in range(0,len(self.data.transactionsMenu)):
+                if self.data.transactionsMenu[i][self.data.MENU_TYPE_INDEX] == "expense":
+                    if self.data.transactionsMenu[i][self.data.MENU_NAME_INDEX] != "Uncategorized":
+                        self.addCategoryComboBoxText.append_text(self.data.transactionsMenu[i][self.data.MENU_NAME_INDEX])
     
     def on_cancelButton_clicked(self, *args):
         self.add_view_mode(False)
@@ -340,8 +376,7 @@ class Projections():
             self.monthCalendarGrid.show_all()
 
     def generate_transactions_view(self):
-        
-
+        # Create Widgets
         self.transactionTitleLabel = Gtk.Label("Title:")
         self.transactionTitleEntry = Gtk.Entry()
         
@@ -356,12 +391,28 @@ class Projections():
         self.radioBox.pack_start(self.addIncomeRadio, True, True, 0)
         self.radioBox.pack_start(self.addExpenseRadio, True, True, 0)
         
-        self.categoryLabel = Gtk.Label("Category:")
-        self.categoryComboBoxText = Gtk.ComboBoxText()
+        self.addCategoryLabel = Gtk.Label("Category:")
+        self.addCategoryComboBoxText = Gtk.ComboBoxText()
         
+        self.startDateLabel = Gtk.Label("Start Date:")
+        self.startDate = Gtk.Calendar()
+
+        self.frequencyLabel = Gtk.Label("Frequency:")
+        self.frequencyComboBoxText = Gtk.ComboBoxText()
+
         self.cancelButton = Gtk.Button("Cancel")
         self.addButton = Gtk.Button("Add")
+            
+        # Add data to frequency
+        self.frequencyComboBoxText.append_text("One Time")
+        self.frequencyComboBoxText.append_text("Daily")
+        self.frequencyComboBoxText.append_text("Weekly")
+        self.frequencyComboBoxText.append_text("Bi-Weekly")
+        self.frequencyComboBoxText.append_text("Monthly on Date")
+        self.frequencyComboBoxText.append_text("Monthly on Weekday")
+        self.frequencyComboBoxText.append_text("Yearly")
 
+        # Style Widgets
         self.transactionTitleLabel.set_halign(Gtk.Align.END)
         self.transactionTitleEntry.set_margin_start(20)
         
@@ -379,26 +430,44 @@ class Projections():
         self.addExpenseRadio.set_property("draw-indicator",False)
         Gtk.StyleContext.add_class(self.radioBox.get_style_context(), "linked")
 
-        self.categoryLabel.set_halign(Gtk.Align.END)
-        self.categoryLabel.set_margin_top(10)
-        self.categoryComboBoxText.set_margin_start(20)
-        self.categoryComboBoxText.set_margin_top(10)
-        self.categoryComboBoxText.set_property("height-request", 34)
+        self.addCategoryLabel.set_halign(Gtk.Align.END)
+        self.addCategoryLabel.set_margin_top(10)
+        self.addCategoryComboBoxText.set_margin_start(20)
+        self.addCategoryComboBoxText.set_margin_top(10)
+        self.addCategoryComboBoxText.set_property("height-request", 34)
+        
+        self.startDateLabel.set_halign(Gtk.Align.END)
+        self.startDateLabel.set_margin_top(10)
+        self.startDate.set_margin_start(20)
+        self.startDate.set_margin_top(10)
+        
+        self.frequencyLabel.set_halign(Gtk.Align.END)
+        self.frequencyLabel.set_margin_top(10)
+        self.frequencyComboBoxText.set_margin_start(20)
+        self.frequencyComboBoxText.set_margin_top(10)
+        self.frequencyComboBoxText.set_property("height-request", 34)
         
         self.cancelButton.set_margin_top(10)
         self.addButton.set_margin_start(20)
         self.addButton.set_margin_top(10)
         
+        # Connect Widgets
         self.cancelButton.connect("clicked", self.on_cancelButton_clicked)
         self.addButton.connect("clicked", self.on_addButton_clicked)
+        self.addIncomeRadio.connect("toggled", self.on_addRadio_toggled)
         
+        # Attach Widgets
         self.transactionViewGrid.attach(self.transactionTitleLabel,0,0,1,1)
         self.transactionViewGrid.attach(self.transactionTitleEntry,1,0,1,1)
         self.transactionViewGrid.attach(self.transactionCostLabel,0,1,1,1)
         self.transactionViewGrid.attach(self.transactionCostEntry,1,1,1,1)
         self.transactionViewGrid.attach(self.transactionTypeLabel,0,2,1,1)
         self.transactionViewGrid.attach(self.radioBox,1,2,1,1)
-        self.transactionViewGrid.attach(self.categoryLabel,0,3,1,1)
-        self.transactionViewGrid.attach(self.categoryComboBoxText,1,3,1,1)
-        self.transactionViewGrid.attach(self.cancelButton,0,4,1,1)
-        self.transactionViewGrid.attach(self.addButton,1,4,1,1)
+        self.transactionViewGrid.attach(self.addCategoryLabel,0,3,1,1)
+        self.transactionViewGrid.attach(self.addCategoryComboBoxText,1,3,1,1)
+        self.transactionViewGrid.attach(self.startDateLabel,0,4,1,1)
+        self.transactionViewGrid.attach(self.startDate,1,4,1,1)
+        self.transactionViewGrid.attach(self.frequencyLabel,0,5,1,1)
+        self.transactionViewGrid.attach(self.frequencyComboBoxText,1,5,1,1)
+        self.transactionViewGrid.attach(self.cancelButton,0,6,1,1)
+        self.transactionViewGrid.attach(self.addButton,1,6,1,1)

@@ -20,7 +20,7 @@ class Window(Gtk.Window):
         self.overview = Overview(self.data)
         self.transactions = Transactions(self.data)
         self.reports = Reports()
-        self.projections = Projections()
+        self.projections = Projections(self.data)
 
         # --- Header Bar ---
         # Create Header Bar
