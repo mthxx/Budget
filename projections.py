@@ -70,8 +70,10 @@ class Projections():
         if boolean == True:
             self.transactionTitleLabel.show()
             self.transactionTitleEntry.show()
-            self.transactionCostLabel.show()
-            self.transactionCostEntry.show()
+            self.transactionAmountLabel.show()
+            self.transactionAmountEntry.show()
+            self.transactionDescriptionLabel.show()
+            self.transactionDescriptionEntry.show()
             self.transactionTypeLabel.show()
             self.radioBox.show()
             self.addCategoryLabel.show()
@@ -84,8 +86,10 @@ class Projections():
         else:
             self.transactionTitleLabel.hide()
             self.transactionTitleEntry.hide()
-            self.transactionCostLabel.hide()
-            self.transactionCostEntry.hide()
+            self.transactionAmountLabel.hide()
+            self.transactionAmountEntry.hide()
+            self.transactionDescriptionLabel.hide()
+            self.transactionDescriptionEntry.hide()
             self.transactionTypeLabel.hide()
             self.radioBox.hide()
             self.addCategoryLabel.hide()
@@ -184,8 +188,37 @@ class Projections():
 
     def on_addButton_clicked(self, *args):
         if self.cancelButton.get_visible():
-            self.transactionTitleEntry.set_text("")
-            self.transactionCostEntry.set_text("")
+            # self.transactionTitleEntry.set_text("")
+            # self.transactionAmountEntry.set_text("")
+        
+            if self.transactionTitleEntry.get_text() == "":
+                self.transactionTitleLabel.set_markup("<span foreground=\"red\"><b>* Title</b></span>")
+            else:
+                self.transactionTitleLabel.set_text("Title")
+
+            if self.transactionAmountEntry.get_text() == "":
+                self.transactionAmountLabel.set_markup("<span foreground=\"red\"><b>* Amount</b></span>")
+            else:
+                self.transactionAmountLabel.set_text("Amount")
+            
+            if self.addCategoryComboBoxText.get_active() < 0:
+                self.addCategoryLabel.set_markup("<span foreground=\"red\"><b>* Category</b></span>")
+            else:
+                self.addCategoryLabel.set_text("Category")
+            
+            if self.frequencyComboBoxText.get_active() < 0:
+                self.frequencyLabel.set_markup("<span foreground=\"red\"><b>* Frequency</b></span>")
+            else:
+                self.frequencyLabel.set_text("Frequency")
+            
+            if (self.transactionTitleEntry != "" 
+                and self.transactionAmountEntry != "" 
+                and self.addCategoryComboBoxText.get_active() >= 0 
+                and self.frequencyComboBoxText.get_active() >= 0):
+                self.dateArr = self.startDate.get_date()
+                self.year = str(self.dateArr[0])
+                self.month = str(self.dateArr[1] + 1)
+                self.day = str(self.dateArr[2])
 
         else:
             self.add_view_mode(True)
@@ -222,7 +255,7 @@ class Projections():
         
         # Reset fields to default
         self.transactionTitleEntry.set_text("")
-        self.transactionCostEntry.set_text("")
+        self.transactionAmountEntry.set_text("")
         self.addIncomeRadio.set_active(True)
         self.addCategoryComboBoxText.set_active(-1)
         self.startDate.select_month(self.currentMonth - 1, self.currentYear)
@@ -392,8 +425,11 @@ class Projections():
         self.transactionTitleLabel = Gtk.Label("Title:")
         self.transactionTitleEntry = Gtk.Entry()
         
-        self.transactionCostLabel = Gtk.Label("Cost:")
-        self.transactionCostEntry = Gtk.Entry()
+        self.transactionAmountLabel = Gtk.Label("Cost:")
+        self.transactionAmountEntry = Gtk.Entry()
+        
+        self.transactionDescriptionLabel = Gtk.Label("Description:")
+        self.transactionDescriptionEntry = Gtk.Entry()
 
         self.transactionTypeLabel = Gtk.Label("Type:")
         self.addIncomeRadio = Gtk.RadioButton.new_with_label(None, "Income")
@@ -413,7 +449,7 @@ class Projections():
         self.frequencyComboBoxText = Gtk.ComboBoxText()
 
         self.cancelButton = Gtk.Button("Cancel")
-        self.addButton = Gtk.Button("Add")
+        self.addButton = Gtk.Button("Add Transaction")
             
         # Add data to frequency
         self.frequencyComboBoxText.append_text("One Time")
@@ -428,10 +464,15 @@ class Projections():
         self.transactionTitleLabel.set_halign(Gtk.Align.END)
         self.transactionTitleEntry.set_margin_start(20)
         
-        self.transactionCostLabel.set_halign(Gtk.Align.END)
-        self.transactionCostLabel.set_margin_top(10)
-        self.transactionCostEntry.set_margin_start(20)
-        self.transactionCostEntry.set_margin_top(10)
+        self.transactionAmountLabel.set_halign(Gtk.Align.END)
+        self.transactionAmountLabel.set_margin_top(10)
+        self.transactionAmountEntry.set_margin_start(20)
+        self.transactionAmountEntry.set_margin_top(10)
+        
+        self.transactionDescriptionLabel.set_halign(Gtk.Align.END)
+        self.transactionDescriptionLabel.set_margin_top(10)
+        self.transactionDescriptionEntry.set_margin_start(20)
+        self.transactionDescriptionEntry.set_margin_top(10)
         
         self.transactionTypeLabel.set_halign(Gtk.Align.END)
         self.transactionTypeLabel.set_margin_top(10)
@@ -471,15 +512,17 @@ class Projections():
         # Attach Widgets
         self.transactionViewGrid.attach(self.transactionTitleLabel,0,0,1,1)
         self.transactionViewGrid.attach(self.transactionTitleEntry,1,0,1,1)
-        self.transactionViewGrid.attach(self.transactionCostLabel,0,1,1,1)
-        self.transactionViewGrid.attach(self.transactionCostEntry,1,1,1,1)
-        self.transactionViewGrid.attach(self.transactionTypeLabel,0,2,1,1)
-        self.transactionViewGrid.attach(self.radioBox,1,2,1,1)
-        self.transactionViewGrid.attach(self.addCategoryLabel,0,3,1,1)
-        self.transactionViewGrid.attach(self.addCategoryComboBoxText,1,3,1,1)
-        self.transactionViewGrid.attach(self.startDateLabel,0,4,1,1)
-        self.transactionViewGrid.attach(self.startDate,1,4,1,1)
-        self.transactionViewGrid.attach(self.frequencyLabel,0,5,1,1)
-        self.transactionViewGrid.attach(self.frequencyComboBoxText,1,5,1,1)
-        self.transactionViewGrid.attach(self.cancelButton,0,6,1,1)
-        self.transactionViewGrid.attach(self.addButton,1,6,1,1)
+        self.transactionViewGrid.attach(self.transactionAmountLabel,0,1,1,1)
+        self.transactionViewGrid.attach(self.transactionAmountEntry,1,1,1,1)
+        self.transactionViewGrid.attach(self.transactionDescriptionLabel,0,2,1,1)
+        self.transactionViewGrid.attach(self.transactionDescriptionEntry,1,2,1,1)
+        self.transactionViewGrid.attach(self.transactionTypeLabel,0,3,1,1)
+        self.transactionViewGrid.attach(self.radioBox,1,3,1,1)
+        self.transactionViewGrid.attach(self.addCategoryLabel,0,4,1,1)
+        self.transactionViewGrid.attach(self.addCategoryComboBoxText,1,4,1,1)
+        self.transactionViewGrid.attach(self.startDateLabel,0,5,1,1)
+        self.transactionViewGrid.attach(self.startDate,1,5,1,1)
+        self.transactionViewGrid.attach(self.frequencyLabel,0,6,1,1)
+        self.transactionViewGrid.attach(self.frequencyComboBoxText,1,6,1,1)
+        self.transactionViewGrid.attach(self.cancelButton,0,7,1,1)
+        self.transactionViewGrid.attach(self.addButton,1,7,1,1)
