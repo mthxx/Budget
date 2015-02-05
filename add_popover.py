@@ -113,7 +113,6 @@ class Add_Popover(Gtk.Window):
                         self.addCategoryComboBoxText.append_text(self.data.transactionsMenu[i][self.data.MENU_NAME_INDEX])
     
     def on_addSubmitButton_clicked(self, *args):
-        self.entryString = ""
         
         if self.addCategoryComboBoxText.get_active() < 0:
             self.addCategoryLabel.set_markup("<span foreground=\"red\"><b>* Category</b></span>")
@@ -132,13 +131,8 @@ class Add_Popover(Gtk.Window):
             self.day = str(self.dateArr[2])
             self.data.LATEST_ID += 1
            
-            #self.entryString = self.data.create_data_string(self.addCategoryComboBoxText.get_active_text(),
-            #                                self.year, self.month, self.day, self.addEntry.get_text(), self.addDescription.get_text(),
-            #                                self.data.LATEST_ID)
-            
             self.data.add_data(self.addCategoryComboBoxText.get_active_text(), self.year, self.month, self.day, 
                                 self.addEntry.get_text(), self.addDescription.get_text(), self.data.LATEST_ID)
             
             self.addEntry.set_text("")
             self.addDescription.set_text("")
-            #self.data.add_data(self.entryString)
