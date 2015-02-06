@@ -219,6 +219,14 @@ class Projections():
                 self.year = str(self.dateArr[0])
                 self.month = str(self.dateArr[1] + 1)
                 self.day = str(self.dateArr[2])
+                if self.addIncomeRadio.get_active() == True:
+                    self.selected = "income"
+                elif self.addExpenseRadio.get_active() == True:
+                    self.selected = "expense"
+                self.data.add_projection_data(self.transactionTitleEntry.get_text(),
+                    self.transactionAmountEntry.get_text(), self.transactionDescriptionEntry.get_text(),
+                    self.selected, self.addCategoryComboBoxText.get_active(), self.year, self.month, self.day, 
+                    self.frequencyComboBoxText.get_active(), 1)
 
         else:
             self.add_view_mode(True)
