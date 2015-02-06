@@ -13,21 +13,25 @@ class Data():
             cur = con.cursor()
             cur.execute('create table menu(type VARCHAR(30), name VARCHAR(50), menuOrder INT, menuID INT PRIMARY KEY);')
             cur.execute('create table transactions(menuID INT, year INT, month INT, day INT, value REAL, description VARCHAR(100), transactionsID INT PRIMARY KEY);')
-            cur.execute('create table projections(title VARCHAR(30), value REAL, description VARCHAR(50), type INT, year INT, month INT, day INT, projectionsID INT PRIMARY KEY);')
+            cur.execute('create table projections(title VARCHAR(30), value REAL, description VARCHAR(50), type INT, start_year INT, start_month INT, start_day INT, end_year INT, end_month INT, end_day INT, frequencyID INT, projectionsID INT PRIMARY KEY);')
             cur.execute('create table frequency(type VARCHAR(30), frequencyID INT PRIMARY KEY);')
             cur.execute('create table menuType(type VARCHAR(30), typeID INT PRIMARY KEY);')
 
             # Initialize with data
-            # cur.execute('INSERT INTO menuType VALUES("income", "1");')
-            # cur.execute('INSERT INTO menuType VALUES("expense", 2);')
-            #
-            # cur.execute('INSERT INTO frequency VALUES("One Time", 0);')
-            # cur.execute('INSERT INTO frequency VALUES("Daily", 1);')
-            # cur.execute('INSERT INTO frequency VALUES("Weekly", 2);')
-            # cur.execute('INSERT INTO frequency VALUES("Bi-Weekly", 3);')
-            # cur.execute('INSERT INTO frequency VALUES("Monthly on Date", 4);')
-            # cur.execute('INSERT INTO frequency VALUES("Monthly on Weekday", 5);')
-            # cur.execute('INSERT INTO frequency VALUES("Monthly on Yearly", 6);')
+            row = [("income", "0"),("expense","1")]
+            cur.execute('INSERT INTO menuType VALUES(?, ?)', row[0])
+            cur.execute('INSERT INTO menuType VALUES(?, ?)', row[1])
+            
+            row = [("One Time", "0"),("Daily","1"),("Weekly","2"),("Bi-Weekly","3"),("Monthly on Date", "4"),("Monthly on Weekday","5"),("Yearly","6")]
+            cur.execute('INSERT INTO frequency VALUES(?,?)', row[0])
+            cur.execute('INSERT INTO frequency VALUES(?,?)', row[1])
+            cur.execute('INSERT INTO frequency VALUES(?,?)', row[2])
+            cur.execute('INSERT INTO frequency VALUES(?,?)', row[3])
+            cur.execute('INSERT INTO frequency VALUES(?,?)', row[4])
+            cur.execute('INSERT INTO frequency VALUES(?,?)', row[5])
+            cur.execute('INSERT INTO frequency VALUES(?,?)', row[6])
+            
+            con.commit()
 
             data = cur.fetchone()
 
@@ -110,12 +114,8 @@ class Data():
             self.transactionsMenu = []
             self.transactions = []
             
-            # Refresh data and views
-            self.import_data()
-            self.transaction_view.generate_sidebars()
-            self.transaction_view.display_content()
-            self.overview.redisplay_info()
-    
+            self.refresh_data()   
+ 
     def add_data(self, category, year, month, day, value, description, transactionID):
         for i in range(0,len(self.transactionsMenu)):
             if category == self.transactionsMenu[i][self.MENU_NAME_INDEX]:
@@ -132,33 +132,23 @@ class Data():
             self.transactionsMenu = []
             self.transactions = []
             
-            # Refresh data and views
-            self.import_data()
-            self.transaction_view.generate_sidebars()
-            self.transaction_view.display_content()
-            self.overview.redisplay_info()
+            self.refresh_data()
     
-    def add_projection_data(self, title, value, description, category, year, month, day, frequency, projectionID):
+    def add_projection_data(self, title, value, description, selected, category, year, month, day, frequency, projectionID):
         for i in range(0,len(self.transactionsMenu)):
             if category == self.transactionsMenu[i][self.MENU_NAME_INDEX]:
                 category = self.transactionsMenu[i][self.MENU_ID_INDEX]
 
         if(os.path.isfile('budget.db')):
             con = lite.connect('budget.db')
-            row = [(str(title),str(value),str(description),str(category),str(year),str(month),str(day),str(frequency),str(projectionID))]
-        
             cur = con.cursor()
-            cur.execute('INSERT INTO projections VALUES(?,?,?,?,?,?,?,?,?)', row[0])
+            self.select = [(str(selected),str(category + 1))] 
+            cur.execute("SELECT menuID FROM menu WHERE menu.type = ? AND menu.menuOrder = ?", self.select[0])
+            self.categoryID = cur.fetchall()
+            self.categoryID = self.categoryID[0][0]
+            row = [(str(title),str(value),str(description),str(self.categoryID),str(year),str(month),str(day),str(year),str(month),str(day),str(frequency),str(projectionID))]
+            cur.execute('INSERT INTO projections VALUES(?,?,?,?,?,?,?,?,?,?,?,?)', row[0])
             con.commit()
-
-            self.transactionsMenu = []
-            self.transactions = []
-            
-            # Refresh data and views
-            self.import_data()
-            self.transaction_view.generate_sidebars()
-            self.transaction_view.display_content()
-            self.overview.redisplay_info()
 
     def connect_data_views(self, transaction_view, overview):
         self.transaction_view = transaction_view
@@ -181,11 +171,7 @@ class Data():
             self.transactionsMenu = []
             self.transactions = []
             
-            # Refresh data and views
-            self.import_data()
-            self.transaction_view.generate_sidebars()
-            self.transaction_view.display_content()
-            self.overview.redisplay_info()
+            self.refresh_data()   
     
     def delete_data(self, uniqueID):
         if(os.path.isfile('budget.db')):
@@ -197,11 +183,7 @@ class Data():
             self.transactionsMenu = []
             self.transactions = []
             
-            # Refresh data and views
-            self.import_data()
-            self.transaction_view.generate_sidebars()
-            self.transaction_view.display_content()
-            self.overview.redisplay_info()
+            self.refresh_data()
     
     def edit_category(self, uniqueID, newLabel):
         if(os.path.isfile('budget.db')):
@@ -215,7 +197,9 @@ class Data():
             self.transactionsMenu = []
             self.transactions = []
             
-            # Refresh data and views
+            self.refresh_data()
+    
+    def refresh_data(self):
             self.import_data()
             self.transaction_view.generate_sidebars()
             self.transaction_view.display_content()
@@ -487,10 +471,6 @@ class Data():
             self.transactionsMenu = []
             self.transactions = []
             
-            # Refresh data and views
-            self.import_data()
-            self.transaction_view.generate_sidebars()
-            self.transaction_view.display_content()
-            self.overview.redisplay_info()
+            self.refresh_data()            
     
 
