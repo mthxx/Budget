@@ -73,7 +73,6 @@ class Add_Category_Popover(Gtk.Window):
             self.radio = "income"
         elif self.addExpenseRadio.get_active() == True:
             self.radio = "expense"
-        print(self.radio)
 
     def on_addSubmitButton_clicked(self, button):
         self.entryString = ""
