@@ -223,10 +223,13 @@ class Projections():
                     self.selected = "income"
                 elif self.addExpenseRadio.get_active() == True:
                     self.selected = "expense"
+
+                self.data.LATEST_PROJECTION_ID += 1
+                
                 self.data.add_projection_data(self.transactionTitleEntry.get_text(),
                     self.transactionAmountEntry.get_text(), self.transactionDescriptionEntry.get_text(),
                     self.selected, self.addCategoryComboBoxText.get_active(), self.year, self.month, self.day, 
-                    self.frequencyComboBoxText.get_active(), 1)
+                    self.frequencyComboBoxText.get_active(), self.data.LATEST_PROJECTION_ID)
 
         else:
             self.add_view_mode(True)
@@ -433,7 +436,7 @@ class Projections():
         self.transactionTitleLabel = Gtk.Label("Title:")
         self.transactionTitleEntry = Gtk.Entry()
         
-        self.transactionAmountLabel = Gtk.Label("Cost:")
+        self.transactionAmountLabel = Gtk.Label("Amount:")
         self.transactionAmountEntry = Gtk.Entry()
         
         self.transactionDescriptionLabel = Gtk.Label("Description:")
