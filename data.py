@@ -66,14 +66,16 @@ class Data():
     INCOME_ORDER_ID = 0
     EXPENSE_ORDER_ID = 0
 
-    LATEST_MENU_ID = 0
     LATEST_ID = 0
+    LATEST_MENU_ID = 0
+    LATEST_PROJECTION_ID = 0
 
     def __init__(self):
         #Indexes for data arrays
 
         self.transactionsMenu = []
         self.transactions = []
+        self.projectionsMenu = []
         self.yearMenu = []
 
         self.transaction_view = 0
@@ -266,6 +268,34 @@ class Data():
                 if self.LATEST_ID < row[6]:
                     self.LATEST_ID = row[6]
                 self.sort_data(self.transactions, self.arr)
+            
+            cur = con.cursor()
+            cur_frequency = con.cursor()
+            cur.execute('SELECT * FROM projections;')
+            rows = cur.fetchall()
+            for row in rows:
+                cur_frequency.execute('SELECT frequency.type from frequency, projections where frequency.frequencyID = projections.frequencyID and projections.projectionsID = ?;', str(row[11]))
+                self.frequency = cur_frequency.fetchall()
+                self.frequency = self.frequency[0][0]
+                self.arr = []
+                self.arr.append(row[0].strip())             # Title
+                self.arr.append(row[1])                     # Value
+                self.arr.append(row[2].strip())             # Description
+                self.arr.append(row[3])                     # Type ID
+                self.arr.append(row[4])                     # Start Year
+                self.arr.append(row[5])                     # Start Month
+                self.arr.append(row[6])                     # Start Day
+                self.arr.append(row[7])                     # End Year
+                self.arr.append(row[8])                     # End Month
+                self.arr.append(row[9])                     # End Day
+                self.arr.append(self.frequency)             # Frequency ID
+                self.arr.append(row[11])                    # Projection ID
+                
+           
+                if self.LATEST_PROJECTION_ID < row[11]:
+                    self.LATEST_PROJECTION_ID = row[11]
+            
+                self.projectionsMenu.append(self.arr)
             
             cur = con.cursor()
             cur.execute('SELECT DISTINCT year FROM transactions ORDER BY year DESC;') 
