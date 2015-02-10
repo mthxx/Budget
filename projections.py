@@ -9,6 +9,7 @@ class Projections():
         
         self.sideGrid = Gtk.Grid()
         self.contentGrid = Gtk.Grid()
+        self.entryRows = []
         
         # Side Grid Styling 
         self.sideGrid.set_vexpand(True)
@@ -35,7 +36,7 @@ class Projections():
         self.monthViewGrid.set_margin_bottom(55)
 
         self.transactionViewGrid.set_hexpand(True)
-        self.transactionViewGrid.set_halign(Gtk.Align.CENTER)
+        self.transactionViewGrid.set_halign(Gtk.Align.FILL)
         # self.transactionViewGrid.set_column_homogeneous(True)
         self.transactionViewGrid.set_margin_start(55)
         self.transactionViewGrid.set_margin_top(20)
@@ -99,7 +100,7 @@ class Projections():
             self.frequencyLabel.hide()
             self.frequencyComboBoxText.hide()
             self.cancelButton.hide()
-
+    
     def generate_month_view(self):
         
         self.monthTitleLabel = Gtk.Label()
@@ -363,18 +364,18 @@ class Projections():
                 self.dayLabel = Gtk.Label(self.dayText)
                 self.dayText += 1
 
-                # self.expenseLabel = Gtk.Label()
-                # self.incomeLabel = Gtk.Label()
-                # self.totalLabel = Gtk.Label()
-                #
-                # self.expenseLabel.set_markup("<span foreground=\"red\">" + "-" + "$125" + "</span>")
-                # self.incomeLabel.set_markup("<span foreground=\"green\">" + "+" + "$600" + "</span>")
-                # self.totalLabel.set_markup("<span foreground=\"green\">" + "=" + "$1250" + "</span>")
+                self.expenseLabel = Gtk.Label()
+                self.incomeLabel = Gtk.Label()
+                self.totalLabel = Gtk.Label()
+
+                self.expenseLabel.set_markup("<span foreground=\"red\">" + "-" + "$125" + "</span>")
+                self.incomeLabel.set_markup("<span foreground=\"green\">" + "+" + "$600" + "</span>")
+                self.totalLabel.set_markup("<span foreground=\"green\">" + "=" + "$1250" + "</span>")
                 #
                 self.monthGrid.attach(self.dayLabel,0,0,1,1)
-                # self.monthGrid.attach(self.expenseLabel,0,1,1,1)            
-                # self.monthGrid.attach(self.incomeLabel,0,2,1,1)
-                # self.monthGrid.attach(self.totalLabel,0,3,1,1)
+                self.monthGrid.attach(self.expenseLabel,0,1,1,1)            
+                self.monthGrid.attach(self.incomeLabel,0,2,1,1)
+                self.monthGrid.attach(self.totalLabel,0,3,1,1)
 
             else:
                 if i == 7 or i == 14 or i == 21 or i == 28 or i == 35:
@@ -432,6 +433,11 @@ class Projections():
             self.monthCalendarGrid.show_all()
 
     def generate_transactions_view(self):
+        while len(self.transactionViewGrid) > 0:
+            self.transactionViewGrid.remove_row(0)
+            
+        while len(self.entryRows) > 0:
+                self.entryRows.pop(0)
         # Create Widgets
         self.transactionTitleLabel = Gtk.Label("Title:")
         self.transactionTitleEntry = Gtk.Entry()
@@ -512,8 +518,10 @@ class Projections():
         self.frequencyComboBoxText.set_property("height-request", 34)
         
         self.cancelButton.set_margin_top(10)
+        self.cancelButton.set_margin_bottom(20)
         self.addButton.set_margin_start(20)
         self.addButton.set_margin_top(10)
+        self.addButton.set_margin_bottom(20)
         
         # Connect Widgets
         self.cancelButton.connect("clicked", self.on_cancelButton_clicked)
@@ -521,19 +529,104 @@ class Projections():
         self.addIncomeRadio.connect("toggled", self.on_addRadio_toggled)
         
         # Attach Widgets
-        self.transactionViewGrid.attach(self.transactionTitleLabel,0,0,1,1)
-        self.transactionViewGrid.attach(self.transactionTitleEntry,1,0,1,1)
-        self.transactionViewGrid.attach(self.transactionAmountLabel,0,1,1,1)
-        self.transactionViewGrid.attach(self.transactionAmountEntry,1,1,1,1)
-        self.transactionViewGrid.attach(self.transactionDescriptionLabel,0,2,1,1)
-        self.transactionViewGrid.attach(self.transactionDescriptionEntry,1,2,1,1)
-        self.transactionViewGrid.attach(self.transactionTypeLabel,0,3,1,1)
-        self.transactionViewGrid.attach(self.radioBox,1,3,1,1)
-        self.transactionViewGrid.attach(self.addCategoryLabel,0,4,1,1)
-        self.transactionViewGrid.attach(self.addCategoryComboBoxText,1,4,1,1)
-        self.transactionViewGrid.attach(self.startDateLabel,0,5,1,1)
-        self.transactionViewGrid.attach(self.startDate,1,5,1,1)
-        self.transactionViewGrid.attach(self.frequencyLabel,0,6,1,1)
-        self.transactionViewGrid.attach(self.frequencyComboBoxText,1,6,1,1)
-        self.transactionViewGrid.attach(self.cancelButton,0,7,1,1)
-        self.transactionViewGrid.attach(self.addButton,1,7,1,1)
+        if len(self.data.projectionsMenu) == 0:
+            self.transactionViewGrid.set_halign(Gtk.Align.CENTER)
+        else:
+            self.transactionViewGrid.set_halign(Gtk.Align.FILL)
+
+        self.transactionViewGrid.attach(self.transactionTitleLabel,1,0,1,1)
+        self.transactionViewGrid.attach(self.transactionTitleEntry,2,0,1,1)
+        self.transactionViewGrid.attach(self.transactionAmountLabel,1,1,1,1)
+        self.transactionViewGrid.attach(self.transactionAmountEntry,2,1,1,1)
+        self.transactionViewGrid.attach(self.transactionDescriptionLabel,1,2,1,1)
+        self.transactionViewGrid.attach(self.transactionDescriptionEntry,2,2,1,1)
+        self.transactionViewGrid.attach(self.transactionTypeLabel,1,3,1,1)
+        self.transactionViewGrid.attach(self.radioBox,2,3,1,1)
+        self.transactionViewGrid.attach(self.addCategoryLabel,1,4,1,1)
+        self.transactionViewGrid.attach(self.addCategoryComboBoxText,2,4,1,1)
+        self.transactionViewGrid.attach(self.startDateLabel,1,5,1,1)
+        self.transactionViewGrid.attach(self.startDate,2,5,1,1)
+        self.transactionViewGrid.attach(self.frequencyLabel,1,6,1,1)
+        self.transactionViewGrid.attach(self.frequencyComboBoxText,2,6,1,1)
+        self.transactionViewGrid.attach(self.cancelButton,1,7,1,1)
+        self.transactionViewGrid.attach(self.addButton,2,7,1,1)
+        
+        self.index = 8
+        for i in range (0,len(self.data.projectionsMenu)):
+            # Date String
+            self.dateString = [self.data.projectionsMenu[i][4],self.data.projectionsMenu[i][5] - 1,self.data.projectionsMenu[i][6]]
+            self.dateString = self.data.translate_date(self.dateString, "edit")
+            
+            self.layoutGrid = Gtk.Grid(name="layoutGrid")
+            self.entryGrid = Gtk.Grid()
+            self.costGrid = Gtk.Grid()
+     
+            self.categoryLabel = Gtk.Label()
+            self.dateLabel = Gtk.Label(self.dateString)
+            self.descriptionLabel = Gtk.Label()
+            
+            self.currencyLabel = Gtk.Label("$")
+            self.costLabel = Gtk.Label()
+            
+            # Style Widgets
+            self.entryGrid.set_halign(Gtk.Align.CENTER)
+            self.entryGrid.set_hexpand(True)
+            self.categoryLabel.set_markup(self.data.projectionsMenu[i][self.data.PROJECTIONS_TITLE])
+            self.categoryLabel.set_property("height-request", 50)
+            self.categoryLabel.set_property("xalign", 1)
+            self.categoryLabel.set_width_chars(15)
+            
+            self.dateLabel.set_margin_start(30)
+            self.dateLabel.set_margin_end(30)
+            self.dateLabel.set_width_chars(15)
+            
+            self.costGrid.set_row_homogeneous(True)
+            self.costLabel.set_property("xalign", .05)
+            self.costLabel.set_width_chars(14)
+            
+            #if int(self.data.projections[i][self.data.PROJECTIONS_TYPE = ransactions[i][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX]) == int(self.data.transactionsMenu[j][self.data.MENU_ID_INDEX]) and self.data.transactionsMenu[j][self.data.MENU_TYPE_INDEX] == "income":
+            self.costLabel.set_markup("<span foreground=\"green\">" + str(self.data.projectionsMenu[i][self.data.PROJECTIONS_VALUE]) + "</span>")
+           
+            # for j in range(0, len(self.data.transactionsMenu)):
+            #     if int(self.data.transactions[i][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX]) == int(self.data.transactionsMenu[j][self.data.MENU_ID_INDEX]) and self.data.transactionsMenu[j][self.data.MENU_TYPE_INDEX] == "expense":
+            #         self.costLabel.set_markup("<span foreground=\"red\">" + str(self.data.transactions[i][self.data.TRANSACTION_VALUE_INDEX]) + "</span>")
+
+            self.descriptionLabel.set_markup("<i>" + self.data.projectionsMenu[i][self.data.PROJECTIONS_DESCRIPTION] + "</i>")
+
+            # Attach Labels
+            self.costGrid.attach(self.currencyLabel, 0,1,1,1)
+            self.costGrid.attach(self.costLabel, 1,1,1,1)
+            self.entryGrid.attach(self.categoryLabel, 0, 1, 1, 1)
+            self.entryGrid.attach(self.dateLabel, 1, 1, 1, 1)
+            self.entryGrid.attach(self.costGrid, 2, 0, 1, 2)
+
+            if self.descriptionLabel.get_text() != "":
+                self.entryGrid.attach(self.descriptionLabel, 0, 3, 3, 1)
+                self.extraSpaceLabel = Gtk.Label()
+                self.entryGrid.attach(self.extraSpaceLabel,0, 4, 1, 1)
+                self.layoutGrid.attach(self.entryGrid, 0, 0, 1, 5)
+            
+            # Add Layout Grid to Content Grid. Increment index and apply whitespaces
+            else:
+                self.layoutGrid.attach(self.entryGrid, 0, 0, 1, 2)
+            
+            # self.layoutGrid.attach(self.editButton, 1, 0, 1, 1)
+            self.layoutGrid.set_margin_bottom(25)
+
+
+            self.transactionViewGrid.attach(self.layoutGrid, 1, self.index, 3, 2)
+
+            self.index = self.index + 2
+
+            self.transactionType = ""
+            # for j in range(0, len(self.data.projectionsMenu)):
+            #     if self.data.projectionsMenu[j][self.data.MENU_ID_INDEX] == self.data.transactions[i][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX]:
+            #         self.transactionType = self.data.transactionsMenu[j][self.data.MENU_TYPE_INDEX]
+            
+            self.entryRows.append([self.layoutGrid, [self.categoryLabel, self.dateLabel, self.currencyLabel, self.costLabel, self.descriptionLabel], self.entryGrid, self.costGrid, self.data.projectionsMenu[i][self.data.PROJECTIONS_ID]])
+            self.transactionViewGrid.show_all() 
+       
+    def redisplay_info(self):
+        self.generate_transactions_view()
+        self.add_view_mode(False)
+        self.transactionViewGrid.queue_draw()
