@@ -65,7 +65,20 @@ class Data():
 
     INCOME_ORDER_ID = 0
     EXPENSE_ORDER_ID = 0
-
+                
+    PROJECTIONS_TITLE = 0
+    PROJECTIONS_VALUE = 1
+    PROJECTIONS_DESCRIPTION = 2
+    PROJECTIONS_TYPE = 3
+    PROJECTIONS_START_YEAR = 4
+    PROJECTIONS_START_MONTH = 5
+    PROJECTIONS_START_DAY = 6
+    PROJECTIONS_END_YEAR = 7
+    PROJECTIONS_END_MONTH = 8
+    PROJECTIONS_END_DAY = 9
+    PROJECTIONS_FREQUENCY = 10
+    PROJECTIONS_ID = 11
+    
     LATEST_ID = 0
     LATEST_MENU_ID = 0
     LATEST_PROJECTION_ID = 0
@@ -80,6 +93,7 @@ class Data():
 
         self.transaction_view = 0
         self.overview = 0
+        self.projections = 0
         
         self.allMonthMenu = [[0, "All"],
                             [1, "January"],
@@ -151,11 +165,16 @@ class Data():
             row = [(str(title),str(value),str(description),str(self.categoryID),str(year),str(month),str(day),str(year),str(month),str(day),str(frequency),str(projectionID))]
             cur.execute('INSERT INTO projections VALUES(?,?,?,?,?,?,?,?,?,?,?,?)', row[0])
             con.commit()
+            
+            self.projectionsMenu = []
 
-    def connect_data_views(self, transaction_view, overview):
+            self.refresh_data()
+
+    def connect_data_views(self, transaction_view, overview, projections):
         self.transaction_view = transaction_view
         self.overview = overview
-
+        self.projections = projections
+        
     def delete_category(self, uniqueID):
         if(os.path.isfile('budget.db')):
             con = lite.connect('budget.db')
@@ -206,6 +225,7 @@ class Data():
             self.transaction_view.generate_sidebars()
             self.transaction_view.display_content()
             self.overview.redisplay_info()
+            self.projections.redisplay_info()
 
     def import_data(self):
         
@@ -296,7 +316,6 @@ class Data():
                     self.LATEST_PROJECTION_ID = row[11]
             
                 self.projectionsMenu.append(self.arr)
-            
             cur = con.cursor()
             cur.execute('SELECT DISTINCT year FROM transactions ORDER BY year DESC;') 
             rows = cur.fetchall()
