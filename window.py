@@ -110,7 +110,7 @@ class Window(Gtk.Window):
         # self.notebook.connect("switch-page", self.on_notebook_switch)
       
         # Connect views to data
-        self.data.connect_data_views(self.transactions, self.overview)
+        self.data.connect_data_views(self.transactions, self.overview, self.projections)
     
     def on_addButton_clicked(self, *args):
         if self.addPopover.get_visible():
