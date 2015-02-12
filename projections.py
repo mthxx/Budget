@@ -29,7 +29,13 @@ class Projections():
         self.monthViewGrid = Gtk.Grid()
         self.yearViewGrid = Gtk.Grid()
         self.transactionViewGrid = Gtk.Grid()
-            
+        
+        self.transactionScrolledWindow = Gtk.ScrolledWindow()
+        self.transactionViewport = Gtk.Viewport()
+
+        self.transactionScrolledWindow.add(self.transactionViewport) 
+        self.transactionViewport.add(self.transactionViewGrid)    
+    
         # Style Grids
         self.monthViewGrid.set_column_homogeneous(True)
         self.monthViewGrid.set_margin_start(55)
@@ -57,7 +63,7 @@ class Projections():
         self.projectionsNotebook.insert_page(self.weekViewGrid, self.weekLabel,1)
         self.projectionsNotebook.insert_page(self.monthViewGrid, self.monthLabel,2)
         self.projectionsNotebook.insert_page(self.yearViewGrid, self.yearLabel,3)
-        self.projectionsNotebook.insert_page(self.transactionViewGrid, self.transactionLabel,4)
+        self.projectionsNotebook.insert_page(self.transactionScrolledWindow, self.transactionLabel,4)
         self.projectionsNotebook.set_show_tabs(False)
         
         self.contentGrid.add(self.projectionsNotebook)
