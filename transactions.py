@@ -404,12 +404,14 @@ class Transactions():
                 if int(self.data.transactions[i][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX]) == int(self.data.transactionsMenu[j][self.data.MENU_ID_INDEX]) and self.data.transactionsMenu[j][self.data.MENU_TYPE_INDEX] == "expense":
                     self.costLabel.set_markup("<span foreground=\"red\">" + str(self.data.transactions[i][self.data.TRANSACTION_VALUE_INDEX]) + "</span>")
 
+            self.descriptionLabel.set_markup("<i>" + self.data.transactions[i][self.data.TRANSACTION_DESCRIPTION_INDEX] + "</i>")
+            
             # Create Edit Popover
             self.editButton = Gtk.Button()
             self.editPopover = Gtk.Popover.new(self.editButton)
             self.edit_popover = Edit_Popover(self.data)
             self.editPopover.add(self.edit_popover.editGrid)
-            self.editButton.connect("clicked", self.edit_popover.on_editDropdown_clicked, self.editPopover, self.data.transactions[i][self.data.TRANSACTION_ID_INDEX], self.entryRows,  self.contentGrid)
+            self.editButton.connect("clicked", self.edit_popover.on_editDropdown_clicked, self.editPopover, self.data.transactions[i][self.data.TRANSACTION_ID_INDEX], self.entryRows,  self.contentGrid, "transaction")
 
             # Style Widgets
             self.entryGrid.set_halign(Gtk.Align.CENTER)
@@ -426,8 +428,6 @@ class Transactions():
             self.costGrid.set_row_homogeneous(True)
             self.costLabel.set_property("xalign", .05)
             self.costLabel.set_width_chars(14)
-
-            self.descriptionLabel.set_markup("<i>" + self.data.transactions[i][self.data.TRANSACTION_DESCRIPTION_INDEX] + "</i>")
             
             # Style Edit Button
             self.editIcon = Gio.ThemedIcon(name="go-down-symbolic")
