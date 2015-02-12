@@ -73,15 +73,16 @@ class Data():
     PROJECTIONS_TITLE = 0
     PROJECTIONS_VALUE = 1
     PROJECTIONS_DESCRIPTION = 2
-    PROJECTIONS_TYPE = 3
-    PROJECTIONS_START_YEAR = 4
-    PROJECTIONS_START_MONTH = 5
-    PROJECTIONS_START_DAY = 6
-    PROJECTIONS_END_YEAR = 7
-    PROJECTIONS_END_MONTH = 8
-    PROJECTIONS_END_DAY = 9
-    PROJECTIONS_FREQUENCY = 10
-    PROJECTIONS_ID = 11
+    PROJECTIONS_CATEGORY_ID = 3
+    PROJECTIONS_CATEGORY_NAME = 4
+    PROJECTIONS_START_YEAR = 5
+    PROJECTIONS_START_MONTH = 6
+    PROJECTIONS_START_DAY = 7
+    PROJECTIONS_END_YEAR = 8
+    PROJECTIONS_END_MONTH = 9
+    PROJECTIONS_END_DAY = 10
+    PROJECTIONS_FREQUENCY = 11
+    PROJECTIONS_ID = 12
     
     LATEST_ID = 0
     LATEST_MENU_ID = 0
@@ -309,17 +310,25 @@ class Data():
             
             cur = con.cursor()
             cur_frequency = con.cursor()
+            cur_categoryName = con.cursor()
+
             cur.execute('SELECT * FROM projections;')
             rows = cur.fetchall()
             for row in rows:
                 cur_frequency.execute('SELECT frequency.type from frequency, projections where frequency.frequencyID = projections.frequencyID and projections.projectionID = ?;', str(row[11]))
                 self.frequency = cur_frequency.fetchall()
                 self.frequency = self.frequency[0][0]
+                
+                cur_categoryName.execute("SELECT name FROM categories WHERE categoryID = ?", str(row[3]))
+                self.categoryName = cur_categoryName.fetchall()
+                self.categoryName = self.categoryName[0][0]
+
                 self.arr = []
                 self.arr.append(row[0].strip())             # Title
                 self.arr.append(row[1])                     # Value
                 self.arr.append(row[2].strip())             # Description
                 self.arr.append(row[3])                     # Category ID
+                self.arr.append(self.categoryName)          # Category Name
                 self.arr.append(row[4])                     # Start Year
                 self.arr.append(row[5])                     # Start Month
                 self.arr.append(row[6])                     # Start Day
