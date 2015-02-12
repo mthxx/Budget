@@ -1,5 +1,6 @@
 from gi.repository import Gtk, Gio
 import datetime, calendar
+from edit_popover import Edit_Popover
 
 class Projections():
         
@@ -568,6 +569,22 @@ class Projections():
             self.currencyLabel = Gtk.Label("$")
             self.costLabel = Gtk.Label()
             
+            #if int(self.data.projections[i][self.data.PROJECTIONS_TYPE = ransactions[i][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX]) == int(self.data.transactionsMenu[j][self.data.MENU_ID_INDEX]) and self.data.transactionsMenu[j][self.data.MENU_TYPE_INDEX] == "income":
+            self.costLabel.set_markup("<span foreground=\"green\">" + str(self.data.projectionsMenu[i][self.data.PROJECTIONS_VALUE]) + "</span>")
+           
+            # for j in range(0, len(self.data.transactionsMenu)):
+            #     if int(self.data.transactions[i][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX]) == int(self.data.transactionsMenu[j][self.data.MENU_ID_INDEX]) and self.data.transactionsMenu[j][self.data.MENU_TYPE_INDEX] == "expense":
+            #         self.costLabel.set_markup("<span foreground=\"red\">" + str(self.data.transactions[i][self.data.TRANSACTION_VALUE_INDEX]) + "</span>")
+
+            self.descriptionLabel.set_markup("<i>" + self.data.projectionsMenu[i][self.data.PROJECTIONS_DESCRIPTION] + "</i>")
+            
+            # Create Edit Popover
+            self.editButton = Gtk.Button()
+            self.editPopover = Gtk.Popover.new(self.editButton)
+            self.edit_popover = Edit_Popover(self.data)
+            self.editPopover.add(self.edit_popover.editGrid)
+            # self.editButton.connect("clicked", self.edit_popover.on_editDropdown_clicked, self.editPopover, self.data.projectionsMenu[i][self.data.PROJECTIONS_ID], self.entryRows,  self.contentGrid, "projection")
+            
             # Style Widgets
             self.entryGrid.set_halign(Gtk.Align.CENTER)
             self.entryGrid.set_hexpand(True)
@@ -584,14 +601,13 @@ class Projections():
             self.costLabel.set_property("xalign", .05)
             self.costLabel.set_width_chars(14)
             
-            #if int(self.data.projections[i][self.data.PROJECTIONS_TYPE = ransactions[i][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX]) == int(self.data.transactionsMenu[j][self.data.MENU_ID_INDEX]) and self.data.transactionsMenu[j][self.data.MENU_TYPE_INDEX] == "income":
-            self.costLabel.set_markup("<span foreground=\"green\">" + str(self.data.projectionsMenu[i][self.data.PROJECTIONS_VALUE]) + "</span>")
-           
-            # for j in range(0, len(self.data.transactionsMenu)):
-            #     if int(self.data.transactions[i][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX]) == int(self.data.transactionsMenu[j][self.data.MENU_ID_INDEX]) and self.data.transactionsMenu[j][self.data.MENU_TYPE_INDEX] == "expense":
-            #         self.costLabel.set_markup("<span foreground=\"red\">" + str(self.data.transactions[i][self.data.TRANSACTION_VALUE_INDEX]) + "</span>")
-
-            self.descriptionLabel.set_markup("<i>" + self.data.projectionsMenu[i][self.data.PROJECTIONS_DESCRIPTION] + "</i>")
+            # Style Edit Button
+            self.editIcon = Gio.ThemedIcon(name="go-down-symbolic")
+            self.editImage = Gtk.Image.new_from_gicon(self.editIcon, Gtk.IconSize.MENU)
+            self.editButton.add(self.editImage)
+            self.editButton.set_relief(Gtk.ReliefStyle.NONE)
+            self.editButton.set_valign(Gtk.Align.START)
+            self.editButton.set_opacity(.5)
 
             # Attach Labels
             self.costGrid.attach(self.currencyLabel, 0,1,1,1)
@@ -610,7 +626,7 @@ class Projections():
             else:
                 self.layoutGrid.attach(self.entryGrid, 0, 0, 1, 2)
             
-            # self.layoutGrid.attach(self.editButton, 1, 0, 1, 1)
+            self.layoutGrid.attach(self.editButton, 1, 0, 1, 1)
             self.layoutGrid.set_margin_bottom(25)
 
 
@@ -623,7 +639,7 @@ class Projections():
             #     if self.data.projectionsMenu[j][self.data.MENU_ID_INDEX] == self.data.transactions[i][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX]:
             #         self.transactionType = self.data.transactionsMenu[j][self.data.MENU_TYPE_INDEX]
             
-            self.entryRows.append([self.layoutGrid, [self.categoryLabel, self.dateLabel, self.currencyLabel, self.costLabel, self.descriptionLabel], self.entryGrid, self.costGrid, self.data.projectionsMenu[i][self.data.PROJECTIONS_ID]])
+            self.entryRows.append([self.layoutGrid, [self.categoryLabel, self.dateLabel, self.currencyLabel, self.costLabel, self.descriptionLabel, self.editButton], self.entryGrid, self.costGrid, self.data.projectionsMenu[i][self.data.PROJECTIONS_ID]])
             self.transactionViewGrid.show_all() 
        
     def redisplay_info(self):
