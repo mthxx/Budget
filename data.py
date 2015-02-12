@@ -11,16 +11,20 @@ class Data():
 
             # Create Database Tables
             cur = con.cursor()
-            cur.execute('create table menu(type VARCHAR(30), name VARCHAR(50), menuOrder INT, menuID INT PRIMARY KEY);')
-            cur.execute('create table transactions(menuID INT, year INT, month INT, day INT, value REAL, description VARCHAR(100), transactionsID INT PRIMARY KEY);')
-            cur.execute('create table projections(title VARCHAR(30), value REAL, description VARCHAR(50), type INT, start_year INT, start_month INT, start_day INT, end_year INT, end_month INT, end_day INT, frequencyID INT, projectionsID INT PRIMARY KEY);')
+            cur.execute('create table categories(type INT, name VARCHAR(50), categoryOrder INT, categoryID INT PRIMARY KEY);')
+            cur.execute('create table transactions(categoryID INT, year INT, month INT, day INT, value REAL, description VARCHAR(100), transactionID INT PRIMARY KEY);')
+            cur.execute('create table projections(title VARCHAR(30), value REAL, description VARCHAR(50), categoryID INT, start_year INT, start_month INT, start_day INT, end_year INT, end_month INT, end_day INT, frequencyID INT, projectionID INT PRIMARY KEY);')
             cur.execute('create table frequency(type VARCHAR(30), frequencyID INT PRIMARY KEY);')
-            cur.execute('create table menuType(type VARCHAR(30), typeID INT PRIMARY KEY);')
+            cur.execute('create table categoryType(type VARCHAR(30), typeID INT PRIMARY KEY);')
 
             # Initialize with data
             row = [("income", "0"),("expense","1")]
-            cur.execute('INSERT INTO menuType VALUES(?, ?)', row[0])
-            cur.execute('INSERT INTO menuType VALUES(?, ?)', row[1])
+            cur.execute('INSERT INTO categoryType VALUES(?, ?)', row[0])
+            cur.execute('INSERT INTO categoryType VALUES(?, ?)', row[1])
+            
+            row = [("0", "Uncategorized","-1","-1"),("1","Uncategorized","-2","-2")]
+            cur.execute('INSERT INTO categories VALUES(?, ?, ?, ?)', row[0])
+            cur.execute('INSERT INTO categories VALUES(?, ?, ?, ?)', row[1])
             
             row = [("One Time", "0"),("Daily","1"),("Weekly","2"),("Bi-Weekly","3"),("Monthly on Date", "4"),("Monthly on Weekday","5"),("Yearly","6")]
             cur.execute('INSERT INTO frequency VALUES(?,?)', row[0])
@@ -118,13 +122,21 @@ class Data():
         self.LATEST_MENU_ID += 1
         if(os.path.isfile('budget.db')):
             con = lite.connect('budget.db')
+            cur = con.cursor()
+            
+            typeID = []
+            typeID.append(menuType)
+            cur.execute("SELECT typeID from categoryType where type = ?", typeID)
+            typeID = cur.fetchall()
+            typeID = typeID[0][0]
+            
             if menuType == "income":
-                row = [(str(menuType),str(category),str(self.INCOME_ORDER_ID),str(self.LATEST_MENU_ID))]
+                row = [(str(typeID),str(category),str(self.INCOME_ORDER_ID),str(self.LATEST_MENU_ID))]
             if menuType == "expense":
-                row = [(str(menuType),str(category),str(self.EXPENSE_ORDER_ID),str(self.LATEST_MENU_ID))]
+                row = [(str(typeID),str(category),str(self.EXPENSE_ORDER_ID),str(self.LATEST_MENU_ID))]
         
             cur = con.cursor()
-            cur.execute('INSERT INTO menu VALUES(?,?,?,?)', row[0])
+            cur.execute('INSERT INTO categories VALUES(?,?,?,?)', row[0])
             con.commit()
 
             self.transactionsMenu = []
@@ -159,7 +171,7 @@ class Data():
             con = lite.connect('budget.db')
             cur = con.cursor()
             self.select = [(str(selected),str(category + 1))] 
-            cur.execute("SELECT menuID FROM menu WHERE menu.type = ? AND menu.menuOrder = ?", self.select[0])
+            cur.execute("SELECT categoryID FROM categories WHERE categories.type = ? AND categories.categoryOrder = ?", self.select[0])
             self.categoryID = cur.fetchall()
             self.categoryID = self.categoryID[0][0]
             row = [(str(title),str(value),str(description),str(self.categoryID),str(year),str(month),str(day),str(year),str(month),str(day),str(frequency),str(projectionID))]
@@ -180,13 +192,13 @@ class Data():
             con = lite.connect('budget.db')
         
             cur = con.cursor()
-            cur.execute('SELECT type FROM menu WHERE menuID = '+ str(uniqueID))
+            cur.execute('SELECT type FROM categories WHERE categoryID = '+ str(uniqueID))
             row = cur.fetchone()
-            if row[0] == "income":
-                cur.execute('UPDATE transactions SET menuID = -1 WHERE menuID = ' + str(uniqueID))
-            elif row[0] == "expense":
-                cur.execute('UPDATE transactions SET menuID = -2 WHERE menuID = ' + str(uniqueID))
-            cur.execute('delete from menu where menuID = ' + str(uniqueID))
+            if row[0] == 0:
+                cur.execute('UPDATE transactions SET categoryID = -1 WHERE categoryID = ' + str(uniqueID))
+            elif row[0] == 1:
+                cur.execute('UPDATE transactions SET categoryID = -2 WHERE categoryID = ' + str(uniqueID))
+            cur.execute('delete from categories where categoryID = ' + str(uniqueID))
             con.commit()
                 
             self.transactionsMenu = []
@@ -198,7 +210,7 @@ class Data():
         if(os.path.isfile('budget.db')):
             con = lite.connect('budget.db')
             cur = con.cursor()
-            cur.execute('DELETE FROM transactions WHERE transactionsID = ' + str(uniqueID))
+            cur.execute('DELETE FROM transactions WHERE transactionID = ' + str(uniqueID))
             con.commit()
 
             self.transactionsMenu = []
@@ -212,7 +224,7 @@ class Data():
             row = [(str(newLabel),str(uniqueID))]
         
             cur = con.cursor()
-            cur.execute('UPDATE menu SET name = ? WHERE menuID = ?', row[0])
+            cur.execute('UPDATE categories SET name = ? WHERE categoryID = ?', row[0])
             con.commit()
 
             self.transactionsMenu = []
@@ -233,14 +245,14 @@ class Data():
             con = lite.connect('budget.db')
 
             cur = con.cursor()
-            cur.execute('SELECT * FROM menu WHERE type = "income" ORDER BY menuOrder;')
+            cur.execute('SELECT * FROM categories WHERE type = 0 ORDER BY categoryOrder;')
             rows = cur.fetchall()
             for row in rows:
                 self.arr = []
-                self.arr.append(row[0].strip())             # Type
+                self.arr.append("income")                   # Type
                 self.arr.append(row[1].strip())             # Name
                 self.arr.append(row[2])                     # Order
-                self.arr.append(row[3])                     # menuID
+                self.arr.append(row[3])                     # categoryID
             
                 if self.INCOME_ORDER_ID < row[2]:
                     self.INCOME_ORDER_ID = row[2]
@@ -250,14 +262,14 @@ class Data():
                 self.transactionsMenu.append(self.arr)
            
             cur = con.cursor()
-            cur.execute('SELECT * FROM menu WHERE type = "expense" ORDER BY menuOrder;')
+            cur.execute('SELECT * FROM categories WHERE type = 1 ORDER BY categoryOrder;')
             rows = cur.fetchall()
             for row in rows:
                 self.arr = []
-                self.arr.append(row[0].strip())             # Type
+                self.arr.append("expense")                  # Type
                 self.arr.append(row[1].strip())             # Name
                 self.arr.append(row[2])                     # Order
-                self.arr.append(row[3])                     # menuID
+                self.arr.append(row[3])                     # categoryID
             
                 if self.EXPENSE_ORDER_ID < row[2]:
                     self.EXPENSE_ORDER_ID = row[2]
@@ -266,14 +278,14 @@ class Data():
                     self.LATEST_MENU_ID = row[3]
                 
                 self.transactionsMenu.append(self.arr)
-            
+                 
             cur.execute('SELECT * FROM transactions;')    
             rows = cur.fetchall()
             for row in rows:
                 self.arr = []
                 self.catArr = []
                 self.dateArr = []
-                self.catArr.append(row[0])                  # menuID
+                self.catArr.append(row[0])                  # categoryID
                 for i in range(0, len(self.transactionsMenu)):
                     if row[0] == self.transactionsMenu[i][3]:
                         self.catArr.append(self.transactionsMenu[i][1])     # Name
@@ -294,14 +306,14 @@ class Data():
             cur.execute('SELECT * FROM projections;')
             rows = cur.fetchall()
             for row in rows:
-                cur_frequency.execute('SELECT frequency.type from frequency, projections where frequency.frequencyID = projections.frequencyID and projections.projectionsID = ?;', str(row[11]))
+                cur_frequency.execute('SELECT frequency.type from frequency, projections where frequency.frequencyID = projections.frequencyID and projections.projectionID = ?;', str(row[11]))
                 self.frequency = cur_frequency.fetchall()
                 self.frequency = self.frequency[0][0]
                 self.arr = []
                 self.arr.append(row[0].strip())             # Title
                 self.arr.append(row[1])                     # Value
                 self.arr.append(row[2].strip())             # Description
-                self.arr.append(row[3])                     # Type ID
+                self.arr.append(row[3])                     # Category ID
                 self.arr.append(row[4])                     # Start Year
                 self.arr.append(row[5])                     # Start Month
                 self.arr.append(row[6])                     # Start Day
@@ -311,7 +323,6 @@ class Data():
                 self.arr.append(self.frequency)             # Frequency ID
                 self.arr.append(row[11])                    # Projection ID
                 
-           
                 if self.LATEST_PROJECTION_ID < row[11]:
                     self.LATEST_PROJECTION_ID = row[11]
             
@@ -514,7 +525,7 @@ class Data():
             row = [(str(category),str(year),str(month),str(day),str(value),str(description),str(transactionID))]
         
             cur = con.cursor()
-            cur.execute('update transactions set menuID = ?, year = ?, month = ?, day = ?, value = ?, description = ? where transactionsID = ?', row[0])
+            cur.execute('update transactions set categoryID = ?, year = ?, month = ?, day = ?, value = ?, description = ? where transactionID = ?', row[0])
             con.commit()
 
             self.transactionsMenu = []
@@ -522,4 +533,22 @@ class Data():
             
             self.refresh_data()            
     
+    # def update_projection(self, category, year, month, day, value, description, projectionID):
+    #     for i in range(0,len(self.transactionsMenu)):
+    #         if category == self.transactionsMenu[i][self.MENU_NAME_INDEX]:
+    #             category = self.transactionsMenu[i][self.MENU_ID_INDEX]
+    #
+    #     if(os.path.isfile('budget.db')):
+    #         con = lite.connect('budget.db')
+    #         row = [(str(category),str(year),str(month),str(day),str(value),str(description),str(projectionID))]
+    #     
+    #         cur = con.cursor()
+    #         cur.execute('update projections set categoryID = ?, year = ?, month = ?, day = ?, value = ?, description = ? where projectionID = ?', row[0])
+    #         con.commit()
+    #
+    #         self.transactionsMenu = []
+    #         self.transactions = []
+    #         
+    #         self.refresh_data()            
+    #
 
