@@ -555,13 +555,14 @@ class Projections():
         self.index = 8
         for i in range (0,len(self.data.projections)):
             # Date String
-            self.dateString = [self.data.projections[i][4],self.data.projections[i][5] - 1,self.data.projections[i][6]]
+            self.dateString = [self.data.projections[i][self.data.PROJECTIONS_START_YEAR],self.data.projections[i][self.data.PROJECTIONS_START_MONTH] - 1,self.data.projections[i][self.data.PROJECTIONS_START_DAY]]
             self.dateString = self.data.translate_date(self.dateString, "edit")
             
             self.layoutGrid = Gtk.Grid(name="layoutGrid")
             self.entryGrid = Gtk.Grid()
             self.costGrid = Gtk.Grid()
      
+            self.titleLabel = Gtk.Label()
             self.categoryLabel = Gtk.Label()
             self.dateLabel = Gtk.Label(self.dateString)
             self.descriptionLabel = Gtk.Label()
@@ -576,19 +577,20 @@ class Projections():
             #     if int(self.data.transactions[i][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX]) == int(self.data.transactionsMenu[j][self.data.MENU_ID_INDEX]) and self.data.transactionsMenu[j][self.data.MENU_TYPE_INDEX] == "expense":
             #         self.costLabel.set_markup("<span foreground=\"red\">" + str(self.data.transactions[i][self.data.TRANSACTION_VALUE_INDEX]) + "</span>")
 
+            self.titleLabel.set_markup("<b>" + self.data.projections[i][self.data.PROJECTIONS_TITLE] + "</b>")
             self.descriptionLabel.set_markup("<i>" + self.data.projections[i][self.data.PROJECTIONS_DESCRIPTION] + "</i>")
+            self.categoryLabel.set_markup(self.data.projections[i][self.data.PROJECTIONS_CATEGORY_NAME])
             
             # Create Edit Popover
             self.editButton = Gtk.Button()
             self.editPopover = Gtk.Popover.new(self.editButton)
             self.edit_popover = Edit_Popover(self.data)
             self.editPopover.add(self.edit_popover.editGrid)
-            # self.editButton.connect("clicked", self.edit_popover.on_editDropdown_clicked, self.editPopover, self.data.projections[i][self.data.PROJECTIONS_ID], self.entryRows,  self.contentGrid, "projection")
+            self.editButton.connect("clicked", self.edit_popover.on_editDropdown_clicked, self.editPopover, self.data.projections[i][self.data.PROJECTIONS_ID], self.entryRows,  self.contentGrid, "projection")
             
             # Style Widgets
             self.entryGrid.set_halign(Gtk.Align.CENTER)
             self.entryGrid.set_hexpand(True)
-            self.categoryLabel.set_markup(self.data.projections[i][self.data.PROJECTIONS_TITLE])
             self.categoryLabel.set_property("height-request", 50)
             self.categoryLabel.set_property("xalign", 1)
             self.categoryLabel.set_width_chars(15)
@@ -612,9 +614,11 @@ class Projections():
             # Attach Labels
             self.costGrid.attach(self.currencyLabel, 0,1,1,1)
             self.costGrid.attach(self.costLabel, 1,1,1,1)
-            self.entryGrid.attach(self.categoryLabel, 0, 1, 1, 1)
-            self.entryGrid.attach(self.dateLabel, 1, 1, 1, 1)
-            self.entryGrid.attach(self.costGrid, 2, 0, 1, 2)
+            
+            self.entryGrid.attach(self.titleLabel, 0, 0, 3, 1)
+            self.entryGrid.attach(self.categoryLabel, 0, 2, 1, 1)
+            self.entryGrid.attach(self.dateLabel, 1, 2, 1, 1)
+            self.entryGrid.attach(self.costGrid, 2, 1, 1, 2)
 
             if self.descriptionLabel.get_text() != "":
                 self.entryGrid.attach(self.descriptionLabel, 0, 3, 3, 1)
