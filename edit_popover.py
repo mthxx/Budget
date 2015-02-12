@@ -1,5 +1,4 @@
 from gi.repository import Gtk, Gio, Gdk
-from overview_menu import Overview_Menu
 
 class Edit_Popover(Gtk.Window):
 
@@ -227,7 +226,7 @@ class Edit_Popover(Gtk.Window):
                 self.contentGrid.queue_draw()
                 self.editGrid.show_all()
     
-    def on_editDropdown_clicked(self, button, editPopover, unique_id, entryRows, contentGrid):
+    def on_editDropdown_clicked(self, button, editPopover, unique_id, entryRows, contentGrid, view):
         if editPopover.get_visible():
             editPopover.hide()
         else:
@@ -240,6 +239,7 @@ class Edit_Popover(Gtk.Window):
         self.unique_id = unique_id
         self.entryRows = entryRows
         self.contentGrid = contentGrid
+        self.view = view
 
     def on_submitButton_clicked(self, button):
         if self.categoryComboBoxText.get_active() < 0:
@@ -251,9 +251,13 @@ class Edit_Popover(Gtk.Window):
             self.month = str(self.dateArr[1] + 1)
             self.day = str(self.dateArr[2])
 
-            self.data.update_data(self.categoryComboBoxText.get_active_text(), self.year, self.month, self.day, 
-                                self.costEntry.get_text(), self.descriptionEntry.get_text(), self.unique_id)
-        
+            if self.view == "transaction":
+                self.data.update_data(self.categoryComboBoxText.get_active_text(), self.year, self.month, self.day, 
+                                    self.costEntry.get_text(), self.descriptionEntry.get_text(), self.unique_id)
+            elif self.view == "projection":
+                self.data.update_data(self.categoryComboBoxText.get_active_text(), self.year, self.month, self.day, 
+                                    self.costEntry.get_text(), self.descriptionEntry.get_text(), self.unique_id)
+ 
             for i in range(0, len(self.entryRows)):
                 if self.entryRows[i][self.UNIQUE_ID_INDEX] == self.unique_id:
                     self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.EDIT_BUTTON_INDEX].show_all()
