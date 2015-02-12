@@ -92,12 +92,12 @@ class Data():
 
         self.transactionsMenu = []
         self.transactions = []
-        self.projectionsMenu = []
+        self.projections = []
         self.yearMenu = []
 
         self.transaction_view = 0
         self.overview = 0
-        self.projections = 0
+        self.projections_view = 0
         
         self.allMonthMenu = [[0, "All"],
                             [1, "January"],
@@ -170,6 +170,12 @@ class Data():
         if(os.path.isfile('budget.db')):
             con = lite.connect('budget.db')
             cur = con.cursor()
+
+            if selected == "income":
+                selected = 0
+            elif selected == "expense":
+                selected = 1
+
             self.select = [(str(selected),str(category + 1))] 
             cur.execute("SELECT categoryID FROM categories WHERE categories.type = ? AND categories.categoryOrder = ?", self.select[0])
             self.categoryID = cur.fetchall()
@@ -178,14 +184,14 @@ class Data():
             cur.execute('INSERT INTO projections VALUES(?,?,?,?,?,?,?,?,?,?,?,?)', row[0])
             con.commit()
             
-            self.projectionsMenu = []
+            self.projections = []
 
             self.refresh_data()
 
     def connect_data_views(self, transaction_view, overview, projections):
         self.transaction_view = transaction_view
         self.overview = overview
-        self.projections = projections
+        self.projections_view = projections
         
     def delete_category(self, uniqueID):
         if(os.path.isfile('budget.db')):
@@ -237,7 +243,7 @@ class Data():
             self.transaction_view.generate_sidebars()
             self.transaction_view.display_content()
             self.overview.redisplay_info()
-            self.projections.redisplay_info()
+            self.projections_view.redisplay_info()
 
     def import_data(self):
         
@@ -326,7 +332,7 @@ class Data():
                 if self.LATEST_PROJECTION_ID < row[11]:
                     self.LATEST_PROJECTION_ID = row[11]
             
-                self.projectionsMenu.append(self.arr)
+                self.projections.append(self.arr)
             cur = con.cursor()
             cur.execute('SELECT DISTINCT year FROM transactions ORDER BY year DESC;') 
             rows = cur.fetchall()

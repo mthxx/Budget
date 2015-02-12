@@ -530,7 +530,7 @@ class Projections():
         self.addIncomeRadio.connect("toggled", self.on_addRadio_toggled)
         
         # Attach Widgets
-        if len(self.data.projectionsMenu) == 0:
+        if len(self.data.projections) == 0:
             self.transactionViewGrid.set_halign(Gtk.Align.CENTER)
         else:
             self.transactionViewGrid.set_halign(Gtk.Align.FILL)
@@ -553,9 +553,9 @@ class Projections():
         self.transactionViewGrid.attach(self.addButton,2,7,1,1)
         
         self.index = 8
-        for i in range (0,len(self.data.projectionsMenu)):
+        for i in range (0,len(self.data.projections)):
             # Date String
-            self.dateString = [self.data.projectionsMenu[i][4],self.data.projectionsMenu[i][5] - 1,self.data.projectionsMenu[i][6]]
+            self.dateString = [self.data.projections[i][4],self.data.projections[i][5] - 1,self.data.projections[i][6]]
             self.dateString = self.data.translate_date(self.dateString, "edit")
             
             self.layoutGrid = Gtk.Grid(name="layoutGrid")
@@ -570,25 +570,25 @@ class Projections():
             self.costLabel = Gtk.Label()
             
             #if int(self.data.projections[i][self.data.PROJECTIONS_TYPE = ransactions[i][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX]) == int(self.data.transactionsMenu[j][self.data.MENU_ID_INDEX]) and self.data.transactionsMenu[j][self.data.MENU_TYPE_INDEX] == "income":
-            self.costLabel.set_markup("<span foreground=\"green\">" + str(self.data.projectionsMenu[i][self.data.PROJECTIONS_VALUE]) + "</span>")
+            self.costLabel.set_markup("<span foreground=\"green\">" + str(self.data.projections[i][self.data.PROJECTIONS_VALUE]) + "</span>")
            
             # for j in range(0, len(self.data.transactionsMenu)):
             #     if int(self.data.transactions[i][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX]) == int(self.data.transactionsMenu[j][self.data.MENU_ID_INDEX]) and self.data.transactionsMenu[j][self.data.MENU_TYPE_INDEX] == "expense":
             #         self.costLabel.set_markup("<span foreground=\"red\">" + str(self.data.transactions[i][self.data.TRANSACTION_VALUE_INDEX]) + "</span>")
 
-            self.descriptionLabel.set_markup("<i>" + self.data.projectionsMenu[i][self.data.PROJECTIONS_DESCRIPTION] + "</i>")
+            self.descriptionLabel.set_markup("<i>" + self.data.projections[i][self.data.PROJECTIONS_DESCRIPTION] + "</i>")
             
             # Create Edit Popover
             self.editButton = Gtk.Button()
             self.editPopover = Gtk.Popover.new(self.editButton)
             self.edit_popover = Edit_Popover(self.data)
             self.editPopover.add(self.edit_popover.editGrid)
-            # self.editButton.connect("clicked", self.edit_popover.on_editDropdown_clicked, self.editPopover, self.data.projectionsMenu[i][self.data.PROJECTIONS_ID], self.entryRows,  self.contentGrid, "projection")
+            # self.editButton.connect("clicked", self.edit_popover.on_editDropdown_clicked, self.editPopover, self.data.projections[i][self.data.PROJECTIONS_ID], self.entryRows,  self.contentGrid, "projection")
             
             # Style Widgets
             self.entryGrid.set_halign(Gtk.Align.CENTER)
             self.entryGrid.set_hexpand(True)
-            self.categoryLabel.set_markup(self.data.projectionsMenu[i][self.data.PROJECTIONS_TITLE])
+            self.categoryLabel.set_markup(self.data.projections[i][self.data.PROJECTIONS_TITLE])
             self.categoryLabel.set_property("height-request", 50)
             self.categoryLabel.set_property("xalign", 1)
             self.categoryLabel.set_width_chars(15)
@@ -635,11 +635,11 @@ class Projections():
             self.index = self.index + 2
 
             self.transactionType = ""
-            # for j in range(0, len(self.data.projectionsMenu)):
-            #     if self.data.projectionsMenu[j][self.data.MENU_ID_INDEX] == self.data.transactions[i][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX]:
+            # for j in range(0, len(self.data.projections)):
+            #     if self.data.projections[j][self.data.MENU_ID_INDEX] == self.data.transactions[i][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX]:
             #         self.transactionType = self.data.transactionsMenu[j][self.data.MENU_TYPE_INDEX]
             
-            self.entryRows.append([self.layoutGrid, [self.categoryLabel, self.dateLabel, self.currencyLabel, self.costLabel, self.descriptionLabel, self.editButton], self.entryGrid, self.costGrid, self.data.projectionsMenu[i][self.data.PROJECTIONS_ID]])
+            self.entryRows.append([self.layoutGrid, [self.categoryLabel, self.dateLabel, self.currencyLabel, self.costLabel, self.descriptionLabel, self.editButton], self.entryGrid, self.costGrid, self.data.projections[i][self.data.PROJECTIONS_ID]])
             self.transactionViewGrid.show_all() 
        
     def redisplay_info(self):
