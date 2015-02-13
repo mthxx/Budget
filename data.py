@@ -530,7 +530,7 @@ class Data():
                 
         return dateString
     
-    def update_data(self, category, year, month, day, value, description, transactionID):
+    def update_transaction(self, category, year, month, day, value, description, transactionID):
         for i in range(0,len(self.transactionsMenu)):
             if category == self.transactionsMenu[i][self.MENU_NAME_INDEX]:
                 category = self.transactionsMenu[i][self.MENU_ID_INDEX]
@@ -538,32 +538,34 @@ class Data():
         if(os.path.isfile('budget.db')):
             con = lite.connect('budget.db')
             row = [(str(category),str(year),str(month),str(day),str(value),str(description),str(transactionID))]
-        
+
             cur = con.cursor()
             cur.execute('update transactions set categoryID = ?, year = ?, month = ?, day = ?, value = ?, description = ? where transactionID = ?', row[0])
             con.commit()
 
             self.transactionsMenu = []
             self.transactions = []
-            
+            self.projections = []
+
             self.refresh_data()            
     
-    # def update_projection(self, category, year, month, day, value, description, projectionID):
-    #     for i in range(0,len(self.transactionsMenu)):
-    #         if category == self.transactionsMenu[i][self.MENU_NAME_INDEX]:
-    #             category = self.transactionsMenu[i][self.MENU_ID_INDEX]
-    #
-    #     if(os.path.isfile('budget.db')):
-    #         con = lite.connect('budget.db')
-    #         row = [(str(category),str(year),str(month),str(day),str(value),str(description),str(projectionID))]
-    #     
-    #         cur = con.cursor()
-    #         cur.execute('update projections set categoryID = ?, year = ?, month = ?, day = ?, value = ?, description = ? where projectionID = ?', row[0])
-    #         con.commit()
-    #
-    #         self.transactionsMenu = []
-    #         self.transactions = []
-    #         
-    #         self.refresh_data()            
-    #
+    def update_projection(self, title, category, year, month, day, value, description, projectionID):
+        for i in range(0,len(self.transactionsMenu)):
+            if category == self.transactionsMenu[i][self.MENU_NAME_INDEX]:
+                category = self.transactionsMenu[i][self.MENU_ID_INDEX]
+
+        if(os.path.isfile('budget.db')):
+            con = lite.connect('budget.db')
+            row = [(str(title),str(category),str(year),str(month),str(day),str(value),str(description),str(projectionID))]
+
+            cur = con.cursor()
+            cur.execute('update projections set title=?, categoryID = ?, start_year = ?, start_month = ?, start_day = ?, value = ?, description = ? where projectionID = ?', row[0])
+            con.commit()
+
+            self.transactionsMenu = []
+            self.transactions = []
+            self.projections = []
+            
+            self.refresh_data()            
+
 

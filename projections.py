@@ -590,9 +590,9 @@ class Projections():
             # Create Edit Popover
             self.editButton = Gtk.Button()
             self.editPopover = Gtk.Popover.new(self.editButton)
-            self.edit_popover = Edit_Popover(self.data)
+            self.edit_popover = Edit_Popover(self.data, "projection")
             self.editPopover.add(self.edit_popover.editGrid)
-            self.editButton.connect("clicked", self.edit_popover.on_editDropdown_clicked, self.editPopover, self.data.projections[i][self.data.PROJECTIONS_ID], self.entryRows,  self.contentGrid, "projection")
+            self.editButton.connect("clicked", self.edit_popover.on_editDropdown_clicked, self.editPopover, self.data.projections[i][self.data.PROJECTIONS_ID], self.entryRows,  self.contentGrid)
             
             # Style Widgets
             self.entryGrid.set_halign(Gtk.Align.CENTER)
@@ -649,7 +649,7 @@ class Projections():
             #     if self.data.projections[j][self.data.MENU_ID_INDEX] == self.data.transactions[i][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX]:
             #         self.transactionType = self.data.transactionsMenu[j][self.data.MENU_TYPE_INDEX]
             
-            self.entryRows.append([self.layoutGrid, [self.categoryLabel, self.dateLabel, self.currencyLabel, self.costLabel, self.descriptionLabel, self.editButton], self.entryGrid, self.costGrid, self.data.projections[i][self.data.PROJECTIONS_ID]])
+            self.entryRows.append([self.layoutGrid, [self.categoryLabel, self.dateLabel, self.currencyLabel, self.costLabel, self.descriptionLabel, self.editButton, self.titleLabel], self.entryGrid, self.costGrid, self.data.projections[i][self.data.PROJECTIONS_ID]])
             self.transactionViewGrid.show_all() 
        
     def redisplay_info(self):
