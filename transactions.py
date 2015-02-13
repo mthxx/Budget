@@ -409,9 +409,9 @@ class Transactions():
             # Create Edit Popover
             self.editButton = Gtk.Button()
             self.editPopover = Gtk.Popover.new(self.editButton)
-            self.edit_popover = Edit_Popover(self.data)
+            self.edit_popover = Edit_Popover(self.data, "transaction")
             self.editPopover.add(self.edit_popover.editGrid)
-            self.editButton.connect("clicked", self.edit_popover.on_editDropdown_clicked, self.editPopover, self.data.transactions[i][self.data.TRANSACTION_ID_INDEX], self.entryRows,  self.contentGrid, "transaction")
+            self.editButton.connect("clicked", self.edit_popover.on_editDropdown_clicked, self.editPopover, self.data.transactions[i][self.data.TRANSACTION_ID_INDEX], self.entryRows,  self.contentGrid)
 
             # Style Widgets
             self.entryGrid.set_halign(Gtk.Align.CENTER)
