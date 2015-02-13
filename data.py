@@ -75,14 +75,15 @@ class Data():
     PROJECTIONS_DESCRIPTION = 2
     PROJECTIONS_CATEGORY_ID = 3
     PROJECTIONS_CATEGORY_NAME = 4
-    PROJECTIONS_START_YEAR = 5
-    PROJECTIONS_START_MONTH = 6
-    PROJECTIONS_START_DAY = 7
-    PROJECTIONS_END_YEAR = 8
-    PROJECTIONS_END_MONTH = 9
-    PROJECTIONS_END_DAY = 10
-    PROJECTIONS_FREQUENCY = 11
-    PROJECTIONS_ID = 12
+    PROJECTIONS_CATEGORY_TYPE = 5
+    PROJECTIONS_START_YEAR = 6
+    PROJECTIONS_START_MONTH = 7
+    PROJECTIONS_START_DAY = 8
+    PROJECTIONS_END_YEAR = 9
+    PROJECTIONS_END_MONTH = 10
+    PROJECTIONS_END_DAY = 11
+    PROJECTIONS_FREQUENCY = 12
+    PROJECTIONS_ID = 13
     
     LATEST_ID = 0
     LATEST_MENU_ID = 0
@@ -310,7 +311,7 @@ class Data():
             
             cur = con.cursor()
             cur_frequency = con.cursor()
-            cur_categoryName = con.cursor()
+            cur_categoryNameType = con.cursor()
 
             cur.execute('SELECT * FROM projections;')
             rows = cur.fetchall()
@@ -319,9 +320,15 @@ class Data():
                 self.frequency = cur_frequency.fetchall()
                 self.frequency = self.frequency[0][0]
                 
-                cur_categoryName.execute("SELECT name FROM categories WHERE categoryID = ?", str(row[3]))
-                self.categoryName = cur_categoryName.fetchall()
-                self.categoryName = self.categoryName[0][0]
+                cur_categoryNameType.execute("SELECT name, type FROM categories WHERE categoryID = ?", str(row[3]))
+                self.categoryNameType = cur_categoryNameType.fetchall()
+                self.categoryName = self.categoryNameType[0][0]
+                self.categoryType = self.categoryNameType[0][1]
+                #self.categoryType = self.categoryName[0][0]
+                
+                # cur_categoryType.execute("SELECT type FROM categories WHERE categoryID = ?", str(row[3]))
+                # self.categoryName = cur_categoryName.fetchall()
+                # self.categoryName = self.categoryName[0][0]
 
                 self.arr = []
                 self.arr.append(row[0].strip())             # Title
@@ -329,6 +336,7 @@ class Data():
                 self.arr.append(row[2].strip())             # Description
                 self.arr.append(row[3])                     # Category ID
                 self.arr.append(self.categoryName)          # Category Name
+                self.arr.append(self.categoryType)          # Category Type
                 self.arr.append(row[4])                     # Start Year
                 self.arr.append(row[5])                     # Start Month
                 self.arr.append(row[6])                     # Start Day
