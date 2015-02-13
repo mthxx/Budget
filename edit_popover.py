@@ -2,8 +2,9 @@ from gi.repository import Gtk, Gio, Gdk
 
 class Edit_Popover(Gtk.Window):
 
-    def __init__(self, data):
+    def __init__(self, data, view):
         self.data = data
+        self.view = view
 
         # Content Grid
         self.LAYOUT_GRID_INDEX = 0           # Element
@@ -15,7 +16,8 @@ class Edit_Popover(Gtk.Window):
         self.CURRENCY_LABEL_INDEX = 2        # Element
         self.COST_LABEL_INDEX = 3            # Element
         self.DESCRIPTION_LABEL_INDEX = 4     # Element
-        self.EDIT_BUTTON_INDEX = 5
+        self.EDIT_BUTTON_INDEX = 5           # Element
+        self.TITLE_LABEL_INDEX = 6           # Element
         
         # Additional Items
         self.ENTRY_GRID_INDEX = 2            # Element
@@ -121,6 +123,11 @@ class Edit_Popover(Gtk.Window):
         
         # Create editing widgets
         self.editGrid = Gtk.Grid()
+        
+        if self.view == "projection":
+            self.titleLabel = Gtk.Label("Title")
+            self.titleEntry = Gtk.Entry()
+
         self.categoryLabel = Gtk.Label("Category:")
         self.calendarLabel = Gtk.Label("Date:")
         self.costLabel = Gtk.Label("Cost:")
@@ -144,11 +151,25 @@ class Edit_Popover(Gtk.Window):
         self.submitButton.connect("clicked", self.on_submitButton_clicked)
 
         # Style Editing Widgets
-        self.categoryLabel.set_halign(Gtk.Align.END)
-        self.categoryLabel.set_margin_top(20)
+        if self.view == "projection":
+            self.titleLabel.set_halign(Gtk.Align.END)
+            self.titleLabel.set_margin_top(20)
+            
+            self.titleEntry.set_margin_start(32)
+            self.titleEntry.set_margin_top(20)        
+            
+            self.categoryLabel.set_halign(Gtk.Align.END)
+            self.categoryLabel.set_margin_top(8)
         
-        self.categoryComboBoxText.set_margin_start(32)
-        self.categoryComboBoxText.set_margin_top(20)
+            self.categoryComboBoxText.set_margin_start(32)
+            self.categoryComboBoxText.set_margin_top(8)
+        
+        if self.view == "transaction":
+            self.categoryLabel.set_halign(Gtk.Align.END)
+            self.categoryLabel.set_margin_top(20)
+            
+            self.categoryComboBoxText.set_margin_start(32)
+            self.categoryComboBoxText.set_margin_top(20)
         
         self.calendarLabel.set_halign(Gtk.Align.END)
         self.calendarLabel.set_margin_top(8)
@@ -197,15 +218,21 @@ class Edit_Popover(Gtk.Window):
                 self.editGrid.set_hexpand(True)
                 self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.EDIT_BUTTON_INDEX].hide()
                 self.entryRows[i][self.ENTRY_GRID_INDEX].hide()
+               
+                # Title
+                if self.view == "projection":
+                    self.titleEntry.set_text(self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.TITLE_LABEL_INDEX].get_text())
+                    self.editGrid.attach(self.titleLabel, 1,0,1,1)
+                    self.editGrid.attach(self.titleEntry,2,0,1,1)
                 
                 # Category
-                self.editGrid.attach(self.categoryLabel, 1,0,1,1)
-                self.editGrid.attach(self.categoryComboBoxText,2,0,1,1)
+                self.editGrid.attach(self.categoryLabel, 1,1,1,1)
+                self.editGrid.attach(self.categoryComboBoxText,2,1,1,1)
                 
                 # Date
                 self.calendarButton.set_label(self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.DATE_LABEL_INDEX].get_text())
-                self.editGrid.attach(self.calendarLabel,1,1,1,1)
-                self.editGrid.attach(self.calendarButton,2,1,1,1)
+                self.editGrid.attach(self.calendarLabel,1,2,1,1)
+                self.editGrid.attach(self.calendarButton,2,2,1,1)
                 
                 # Cost
                 self.costEntry.set_text(self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.COST_LABEL_INDEX].get_text())
@@ -226,7 +253,7 @@ class Edit_Popover(Gtk.Window):
                 self.contentGrid.queue_draw()
                 self.editGrid.show_all()
     
-    def on_editDropdown_clicked(self, button, editPopover, unique_id, entryRows, contentGrid, view):
+    def on_editDropdown_clicked(self, button, editPopover, unique_id, entryRows, contentGrid):
         if editPopover.get_visible():
             editPopover.hide()
         else:
@@ -239,7 +266,6 @@ class Edit_Popover(Gtk.Window):
         self.unique_id = unique_id
         self.entryRows = entryRows
         self.contentGrid = contentGrid
-        self.view = view
 
     def on_submitButton_clicked(self, button):
         if self.categoryComboBoxText.get_active() < 0:
@@ -252,10 +278,10 @@ class Edit_Popover(Gtk.Window):
             self.day = str(self.dateArr[2])
 
             if self.view == "transaction":
-                self.data.update_data(self.categoryComboBoxText.get_active_text(), self.year, self.month, self.day, 
+                self.data.update_transaction(self.categoryComboBoxText.get_active_text(), self.year, self.month, self.day, 
                                     self.costEntry.get_text(), self.descriptionEntry.get_text(), self.unique_id)
             elif self.view == "projection":
-                self.data.update_data(self.categoryComboBoxText.get_active_text(), self.year, self.month, self.day, 
+                self.data.update_projection(self.titleEntry.get_text(), self.categoryComboBoxText.get_active_text(), self.year, self.month, self.day, 
                                     self.costEntry.get_text(), self.descriptionEntry.get_text(), self.unique_id)
  
             for i in range(0, len(self.entryRows)):
