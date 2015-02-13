@@ -109,7 +109,6 @@ class Projections():
             self.cancelButton.hide()
     
     def generate_month_view(self):
-        
         self.monthTitleLabel = Gtk.Label()
         self.monthPreviousButton = Gtk.Button()
         self.monthNextButton = Gtk.Button()
@@ -374,14 +373,34 @@ class Projections():
                 self.expenseLabel = Gtk.Label()
                 self.incomeLabel = Gtk.Label()
                 self.totalLabel = Gtk.Label()
+                
+                self.incomeSum = 0
+                self.expenseSum = 0
+                self.totalSum = 0                
 
-                self.expenseLabel.set_markup("<span foreground=\"red\">" + "-" + "$125" + "</span>")
-                self.incomeLabel.set_markup("<span foreground=\"green\">" + "+" + "$600" + "</span>")
-                self.totalLabel.set_markup("<span foreground=\"green\">" + "=" + "$1250" + "</span>")
-                #
+                for j in range(0,len(self.data.projections)):
+                    if self.data.projections[j][self.data.PROJECTIONS_START_YEAR] == self.selectedYear:
+                        if self.data.projections[j][self.data.PROJECTIONS_START_MONTH] == self.selectedMonth:
+                            if self.data.projections[j][self.data.PROJECTIONS_START_DAY] == self.dayText - 1:
+                                if self.data.projections[j][self.data.PROJECTIONS_CATEGORY_TYPE] == 0:
+                                    self.incomeSum += self.data.projections[j][self.data.PROJECTIONS_VALUE]
+                                if self.data.projections[j][self.data.PROJECTIONS_CATEGORY_TYPE] == 1:
+                                    self.expenseSum += self.data.projections[j][self.data.PROJECTIONS_VALUE]
+                
+                if self.incomeSum != 0:
+                    self.incomeLabel.set_markup("<span foreground=\"green\">" + "+" + str(self.incomeSum) + "</span>")
+                if self.expenseSum != 0:
+                    self.expenseLabel.set_markup("<span foreground=\"red\">" + "-" + str(self.expenseSum) + "</span>")
+                if self.incomeSum != 0 or self.expenseSum !=0:
+                    self.totalSum = self.incomeSum - self.expenseSum
+                    if self.totalSum < 0:
+                        self.totalLabel.set_markup("<span foreground=\"red\">" + "=" + str(self.totalSum) + "</span>")
+                    if self.totalSum >= 0:
+                        self.totalLabel.set_markup("<span foreground=\"green\">" + "=" + str(self.totalSum) + "</span>")
+                
                 self.monthGrid.attach(self.dayLabel,0,0,1,1)
-                self.monthGrid.attach(self.expenseLabel,0,1,1,1)            
-                self.monthGrid.attach(self.incomeLabel,0,2,1,1)
+                self.monthGrid.attach(self.incomeLabel,0,1,1,1)
+                self.monthGrid.attach(self.expenseLabel,0,2,1,1)            
                 self.monthGrid.attach(self.totalLabel,0,3,1,1)
 
             else:
@@ -411,8 +430,6 @@ class Projections():
                     self.dayLabel = Gtk.Label(self.nextMonthDate)
                     self.monthGrid.attach(self.dayLabel,0,0,1,1)
                     self.nextMonthDate += 1
-                    
-                    
 
             # Style Widgets
             self.monthGrid.set_column_homogeneous(True)
