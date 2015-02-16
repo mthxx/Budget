@@ -11,6 +11,7 @@ class Projections():
         self.sideGrid = Gtk.Grid()
         self.contentGrid = Gtk.Grid()
         self.entryRows = []
+        self.totalSum = 0  
         
         # Side Grid Styling 
         self.sideGrid.set_vexpand(True)
@@ -74,6 +75,19 @@ class Projections():
         self.grid.attach(self.sideGrid, 0, 0, 1, 1)
         self.grid.attach(self.contentGrid, 1, 0, 1, 1)
 
+    def active_day_cell(self, dayText, incomeSum, expenseSum, totalSum, incomeLabel, expenseLabel, totalLabel):
+        if incomeSum != 0:
+            incomeLabel.set_markup("<span foreground=\"green\">" + "+" + str(incomeSum) + "</span>")
+        if expenseSum != 0:
+            expenseLabel.set_markup("<span foreground=\"red\">" + "-" + str(expenseSum) + "</span>")
+        if incomeSum != 0 or expenseSum != 0:
+            self.totalSum += incomeSum 
+            self.totalSum -= expenseSum
+            if self.totalSum < 0:
+                totalLabel.set_markup("<span foreground=\"red\">" + "=" + str(self.totalSum) + "</span>")
+            if self.totalSum >= 0:
+                totalLabel.set_markup("<span foreground=\"green\">" + "=" + str(self.totalSum) + "</span>")
+    
     def add_view_mode(self, boolean):
         if boolean == True:
             self.transactionTitleLabel.show()
@@ -192,12 +206,21 @@ class Projections():
         self.sideGrid.attach(self.monthButton, 0,2,1,1)
         self.sideGrid.attach(self.yearButton, 0,3,1,1)
         self.sideGrid.attach(self.transactionsButton, 0,4,1,1)
+    
+    def inactive_day_cell(self, dayText, incomeSum, expenseSum, totalSum, incomeLabel, expenseLabel, totalLabel):
+        if incomeSum != 0:
+            incomeLabel.set_markup("<span foreground=\"gray\">" + "+" + str(incomeSum) + "</span>")
+        if expenseSum != 0:
+            expenseLabel.set_markup("<span foreground=\"gray\">" + "-" + str(expenseSum) + "</span>")
+        # if incomeSum != 0 or expenseSum !=0:
+        #     totalSum = incomeSum - expenseSum
+        #     if totalSum < 0:
+        #         totalLabel.set_markup("<span foreground=\"gray\">" + "=" + str(totalSum) + "</span>")
+        #     if totalSum >= 0:
+        #         totalLabel.set_markup("<span foreground=\"gray\">" + "=" + str(totalSum) + "</span>")
 
     def on_addButton_clicked(self, *args):
         if self.cancelButton.get_visible():
-            # self.transactionTitleEntry.set_text("")
-            # self.transactionAmountEntry.set_text("")
-        
             if self.transactionTitleEntry.get_text() == "":
                 self.transactionTitleLabel.set_markup("<span foreground=\"red\"><b>* Title</b></span>")
             else:
@@ -355,17 +378,38 @@ class Projections():
         
         self.dayText = 1
         self.nextMonthDate = 1
+
+        for i in range(0, len(self.data.transactions)):
+            for j in range(0, len(self.data.incomeMenu)):
+                if self.data.transactions[i][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.data.incomeMenu[j]:
+                    self.totalSum += self.data.transactions[i][self.data.TRANSACTION_VALUE_INDEX]
+       
+        for i in range(0, len(self.data.transactions)):
+            for j in range(0, len(self.data.expenseMenu)):
+                if self.data.transactions[i][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.data.expenseMenu[j]:
+                    self.totalSum -= self.data.transactions[i][self.data.TRANSACTION_VALUE_INDEX]
+
         for i in range(1, 43):
             # Create Widgets 
             if i - 2 >= start and self.dayText <= end:
-                if i == 7 or i == 14 or i == 21 or i == 28 or i == 35:
-                    self.monthGrid = Gtk.Grid(name="monthGridRightActive")
-                elif i > 35 and i < 42:
-                    self.monthGrid = Gtk.Grid(name="monthGridBottomActive")
-                elif i == 42:
-                    self.monthGrid = Gtk.Grid(name="monthGridLastActive")
-                else:            
-                    self.monthGrid = Gtk.Grid(name="monthGridActive")
+                if int(self.dayText) == self.currentDay:
+                    if i == 7 or i == 14 or i == 21 or i == 28 or i == 35:
+                        self.monthGrid = Gtk.Grid(name="monthGridRightCurrent")
+                    elif i > 35 and i < 42:
+                        self.monthGrid = Gtk.Grid(name="monthGridBottomCurrent")
+                    elif i == 42:
+                        self.monthGrid = Gtk.Grid(name="monthGridLastCurrent")
+                    else:            
+                        self.monthGrid = Gtk.Grid(name="monthGridCurrent")
+                else:
+                    if i == 7 or i == 14 or i == 21 or i == 28 or i == 35:
+                        self.monthGrid = Gtk.Grid(name="monthGridRightActive")
+                    elif i > 35 and i < 42:
+                        self.monthGrid = Gtk.Grid(name="monthGridBottomActive")
+                    elif i == 42:
+                        self.monthGrid = Gtk.Grid(name="monthGridLastActive")
+                    else:            
+                        self.monthGrid = Gtk.Grid(name="monthGridActive")
                 
                 self.dayLabel = Gtk.Label(self.dayText)
                 self.dayText += 1
@@ -376,7 +420,6 @@ class Projections():
                 
                 self.incomeSum = 0
                 self.expenseSum = 0
-                self.totalSum = 0                
 
                 for j in range(0,len(self.data.projections)):
                     if self.data.projections[j][self.data.PROJECTIONS_START_YEAR] == self.selectedYear:
@@ -387,17 +430,21 @@ class Projections():
                                 if self.data.projections[j][self.data.PROJECTIONS_CATEGORY_TYPE] == 1:
                                     self.expenseSum += self.data.projections[j][self.data.PROJECTIONS_VALUE]
                 
-                if self.incomeSum != 0:
-                    self.incomeLabel.set_markup("<span foreground=\"green\">" + "+" + str(self.incomeSum) + "</span>")
-                if self.expenseSum != 0:
-                    self.expenseLabel.set_markup("<span foreground=\"red\">" + "-" + str(self.expenseSum) + "</span>")
-                if self.incomeSum != 0 or self.expenseSum !=0:
-                    self.totalSum = self.incomeSum - self.expenseSum
-                    if self.totalSum < 0:
-                        self.totalLabel.set_markup("<span foreground=\"red\">" + "=" + str(self.totalSum) + "</span>")
-                    if self.totalSum >= 0:
-                        self.totalLabel.set_markup("<span foreground=\"green\">" + "=" + str(self.totalSum) + "</span>")
-                
+                if self.currentYear == self.selectedYear:
+                    if self.currentMonth == self.selectedMonth:
+                        if int(self.dayText) >= self.currentDay:
+                            self.active_day_cell(self.dayText, self.incomeSum, self.expenseSum, self.totalSum, self.incomeLabel, self.expenseLabel, self.totalLabel)
+                        elif int(self.dayText) < self.currentDay:
+                            self.inactive_day_cell(self.dayText, self.incomeSum, self.expenseSum, self.totalSum, self.incomeLabel, self.expenseLabel, self.totalLabel)
+                    if self.currentMonth < self.selectedMonth:                
+                        self.active_day_cell(self.dayText, self.incomeSum, self.expenseSum, self.totalSum, self.incomeLabel, self.expenseLabel, self.totalLabel)
+                    elif self.currentMonth > self.selectedMonth:                
+                        self.inactive_day_cell(self.dayText, self.incomeSum, self.expenseSum, self.totalSum, self.incomeLabel, self.expenseLabel, self.totalLabel)
+                elif self.currentYear < self.selectedYear: 
+                    self.active_day_cell(self.dayText, self.incomeSum, self.expenseSum, self.totalSum, self.incomeLabel, self.expenseLabel, self.totalLabel)
+                elif self.currentYear > self.selectedYear:
+                    self.inactive_day_cell(self.dayText, self.incomeSum, self.expenseSum, self.totalSum, self.incomeLabel, self.expenseLabel, self.totalLabel)
+
                 self.monthGrid.attach(self.dayLabel,0,0,1,1)
                 self.monthGrid.attach(self.incomeLabel,0,1,1,1)
                 self.monthGrid.attach(self.expenseLabel,0,2,1,1)            

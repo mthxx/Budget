@@ -3,7 +3,7 @@
     background-color: white;
 }
 
-#monthGridActive, #monthGridRightActive, #monthGridBottomActive, #monthGridLastActive, #monthGridInactive, #monthGridRightInactive, #monthGridBottomInactive, #monthGridLastInactive{
+#monthGridActive, #monthGridCurrent, #monthGridRightCurrent, #monthGridBottomCurrent, #monthGridLastCurrent, #monthGridRightActive, #monthGridBottomActive, #monthGridLastActive, #monthGridInactive, #monthGridRightInactive, #monthGridBottomInactive, #monthGridLastInactive{
 
     border-color: gray;
     border-style: solid;
@@ -11,11 +11,11 @@
     border-left-width: 1px;
 }
 
-#monthGridRightActive, #monthGridLastActive, #monthGridRightInactive, #monthGridLastInactive{
+#monthGridRightActive, #monthGridRightCurrent, #monthGridLastActive, #monthGridLastCurrent, #monthGridRightInactive, #monthGridLastInactive{
     border-right-width: 1px;
 }
 
-#monthGridBottomActive, #monthGridLastActive, #monthGridBottomInactive, #monthGridLastInactive{
+#monthGridBottomActive, #monthGridBottomCurrent, #monthGridLastActive, #monthGridLastCurrent, #monthGridBottomInactive, #monthGridLastInactive{
     border-bottom-width: 1px;
 }
 
@@ -27,6 +27,9 @@
     background-color: #E5E5E5;
 }
 
+#monthGridCurrent, #monthGridRightCurrent, #monthGridBottomCurrent, #monthGridLastCurrent{
+    background-color: #F5FFFA;
+}
 
 #menuViewport, #subMenuViewport{
     border-style: solid;

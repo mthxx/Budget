@@ -41,8 +41,6 @@ class Transactions():
         self.selected_year = 0
         self.selected_year_index = 0
 
-        self.incomeMenu = []
-        self.expenseMenu = []
         self.dataSum = 0
         
         self.editMode = 0
@@ -669,28 +667,17 @@ class Transactions():
         while len(self.menuListBox) > 0:
             self.menuListBox.remove(self.menuListBox.get_row_at_index(0))
         self.subMenu = self.data.allMonthMenu[0][1]
-        
-        # Reset Income/Expense Menu's
-        self.incomeMenu = []
-        self.expenseMenu = []
-        self.dataSum = 0
        
-        for i in range(0, len(self.data.transactionsMenu)):
-            if self.data.transactionsMenu[i][self.data.MENU_TYPE_INDEX] == "income":
-                self.incomeMenu.append(self.data.transactionsMenu[i][self.data.MENU_ID_INDEX])
-            if self.data.transactionsMenu[i][self.data.MENU_TYPE_INDEX] == "expense":
-                self.expenseMenu.append(self.data.transactionsMenu[i][self.data.MENU_ID_INDEX])
-        
         # Get Current Balance
         self.dataSum = 0
         for i in range(0, len(self.data.transactions)):
-            for j in range(0, len(self.incomeMenu)):
-                if self.data.transactions[i][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.incomeMenu[j]:
+            for j in range(0, len(self.data.incomeMenu)):
+                if self.data.transactions[i][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.data.incomeMenu[j]:
                     self.dataSum += self.data.transactions[i][self.data.TRANSACTION_VALUE_INDEX]
        
         for i in range(0, len(self.data.transactions)):
-            for j in range(0, len(self.expenseMenu)):
-                if self.data.transactions[i][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.expenseMenu[j]:
+            for j in range(0, len(self.data.expenseMenu)):
+                if self.data.transactions[i][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.data.expenseMenu[j]:
                     self.dataSum -= self.data.transactions[i][self.data.TRANSACTION_VALUE_INDEX]
 
         # Generate from database
@@ -718,8 +705,8 @@ class Transactions():
         
         self.dataSum = 0
         for i in range(0, len(self.data.transactions)):
-            for j in range(0, len(self.incomeMenu)):
-                if self.data.transactions[i][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.incomeMenu[j]:
+            for j in range(0, len(self.data.incomeMenu)):
+                if self.data.transactions[i][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.data.incomeMenu[j]:
                     self.dataSum += self.data.transactions[i][self.data.TRANSACTION_VALUE_INDEX]
         
         self.label2 = Gtk.Label()
@@ -750,8 +737,8 @@ class Transactions():
         
         self.dataSum = 0
         for i in range(0, len(self.data.transactions)):
-            for j in range(0, len(self.expenseMenu)):
-                if self.data.transactions[i][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.expenseMenu[j]:
+            for j in range(0, len(self.data.expenseMenu)):
+                if self.data.transactions[i][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.data.expenseMenu[j]:
                     self.dataSum += self.data.transactions[i][self.data.TRANSACTION_VALUE_INDEX]
         
         self.label2 = Gtk.Label()
