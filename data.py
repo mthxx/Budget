@@ -94,6 +94,8 @@ class Data():
 
         self.transactionsMenu = []
         self.transactions = []
+        self.incomeMenu = []
+        self.expenseMenu = []
         self.projections = []
         self.yearMenu = []
 
@@ -141,9 +143,6 @@ class Data():
             cur.execute('INSERT INTO categories VALUES(?,?,?,?)', row[0])
             con.commit()
 
-            self.transactionsMenu = []
-            self.transactions = []
-            
             self.refresh_data()   
  
     def add_data(self, category, year, month, day, value, description, transactionID):
@@ -159,9 +158,6 @@ class Data():
             cur.execute('INSERT INTO transactions VALUES(?,?,?,?,?,?,?)', row[0])
             con.commit()
 
-            self.transactionsMenu = []
-            self.transactions = []
-            
             self.refresh_data()
     
     def add_projection_data(self, title, value, description, selected, category, year, month, day, frequency, projectionID):
@@ -186,8 +182,6 @@ class Data():
             cur.execute('INSERT INTO projections VALUES(?,?,?,?,?,?,?,?,?,?,?,?)', row[0])
             con.commit()
             
-            self.projections = []
-
             self.refresh_data()
 
     def connect_data_views(self, transaction_view, overview, projections):
@@ -208,9 +202,6 @@ class Data():
                 cur.execute('UPDATE transactions SET categoryID = -2 WHERE categoryID = ' + str(uniqueID))
             cur.execute('delete from categories where categoryID = ' + str(uniqueID))
             con.commit()
-                
-            self.transactionsMenu = []
-            self.transactions = []
             
             self.refresh_data()   
     
@@ -221,9 +212,6 @@ class Data():
             cur.execute('DELETE FROM transactions WHERE transactionID = ' + str(uniqueID))
             con.commit()
 
-            self.transactionsMenu = []
-            self.transactions = []
-            
             self.refresh_data()
     
     def edit_category(self, uniqueID, newLabel):
@@ -235,13 +223,17 @@ class Data():
             cur.execute('UPDATE categories SET name = ? WHERE categoryID = ?', row[0])
             con.commit()
 
-            self.transactionsMenu = []
-            self.transactions = []
-            
             self.refresh_data()
     
     def refresh_data(self):
+            self.transactionsMenu = []
+            self.transactions = []
+            self.incomeMenu = []
+            self.expenseMenu = []
+            self.projections = []
+            
             self.import_data()
+            
             self.transaction_view.generate_sidebars()
             self.transaction_view.display_content()
             self.overview.redisplay_info()
@@ -267,8 +259,9 @@ class Data():
            
                 if self.LATEST_MENU_ID < row[3]:
                     self.LATEST_MENU_ID = row[3]
+
                 self.transactionsMenu.append(self.arr)
-           
+                
             cur = con.cursor()
             cur.execute('SELECT * FROM categories WHERE type = 1 ORDER BY categoryOrder;')
             rows = cur.fetchall()
@@ -286,6 +279,13 @@ class Data():
                     self.LATEST_MENU_ID = row[3]
                 
                 self.transactionsMenu.append(self.arr)
+                
+            for i in range(0, len(self.transactionsMenu)):
+                if self.transactionsMenu[i][self.MENU_TYPE_INDEX] == "income":
+                    self.incomeMenu.append(self.transactionsMenu[i][self.MENU_ID_INDEX])
+                if self.transactionsMenu[i][self.MENU_TYPE_INDEX] == "expense":
+                    self.expenseMenu.append(self.transactionsMenu[i][self.MENU_ID_INDEX])
+               
                  
             cur.execute('SELECT * FROM transactions;')    
             rows = cur.fetchall()
@@ -551,10 +551,6 @@ class Data():
             cur.execute('update transactions set categoryID = ?, year = ?, month = ?, day = ?, value = ?, description = ? where transactionID = ?', row[0])
             con.commit()
 
-            self.transactionsMenu = []
-            self.transactions = []
-            self.projections = []
-
             self.refresh_data()            
     
     def update_projection(self, title, category, year, month, day, value, description, projectionID):
@@ -569,10 +565,6 @@ class Data():
             cur = con.cursor()
             cur.execute('update projections set title=?, categoryID = ?, start_year = ?, start_month = ?, start_day = ?, value = ?, description = ? where projectionID = ?', row[0])
             con.commit()
-
-            self.transactionsMenu = []
-            self.transactions = []
-            self.projections = []
             
             self.refresh_data()            
 
