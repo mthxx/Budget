@@ -1,4 +1,4 @@
-#!/bin/python
+#!/bin/python3
 
 from gi.repository import Gtk, Gio, Gdk
 from window import Window
