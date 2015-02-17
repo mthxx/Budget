@@ -13,7 +13,7 @@ class Data():
             cur = con.cursor()
             cur.execute('create table categories(type INT, name VARCHAR(50), categoryOrder INT, categoryID INT PRIMARY KEY);')
             cur.execute('create table transactions(categoryID INT, year INT, month INT, day INT, value REAL, description VARCHAR(100), transactionID INT PRIMARY KEY);')
-            cur.execute('create table projections(title VARCHAR(30), value REAL, description VARCHAR(50), categoryID INT, start_year INT, start_month INT, start_day INT, end_year INT, end_month INT, end_day INT, frequencyID INT, projectionID INT PRIMARY KEY);')
+            cur.execute('create table projections(title VARCHAR(30), value REAL, description VARCHAR(50), categoryID INT, start_year INT, start_month INT, start_day INT, end_year INT, end_month INT, end_day INT, frequencyID INT, projectionID INTEGER PRIMARY KEY);')
             cur.execute('create table frequency(type VARCHAR(30), frequencyID INT PRIMARY KEY);')
             cur.execute('create table categoryType(type VARCHAR(30), typeID INT PRIMARY KEY);')
 
@@ -316,7 +316,7 @@ class Data():
             cur.execute('SELECT * FROM projections;')
             rows = cur.fetchall()
             for row in rows:
-                cur_frequency.execute('SELECT frequency.type from frequency, projections where frequency.frequencyID = projections.frequencyID and projections.projectionID = ?;', str(row[11]))
+                cur_frequency.execute('SELECT frequency.type from frequency, projections where frequency.frequencyID = projections.frequencyID and projections.projectionID = ?;', (str(row[11]),))
                 self.frequency = cur_frequency.fetchall()
                 self.frequency = self.frequency[0][0]
                 
@@ -324,12 +324,7 @@ class Data():
                 self.categoryNameType = cur_categoryNameType.fetchall()
                 self.categoryName = self.categoryNameType[0][0]
                 self.categoryType = self.categoryNameType[0][1]
-                #self.categoryType = self.categoryName[0][0]
                 
-                # cur_categoryType.execute("SELECT type FROM categories WHERE categoryID = ?", str(row[3]))
-                # self.categoryName = cur_categoryName.fetchall()
-                # self.categoryName = self.categoryName[0][0]
-
                 self.arr = []
                 self.arr.append(row[0].strip())             # Title
                 self.arr.append(row[1])                     # Value
