@@ -43,7 +43,7 @@
     /*background-color: #D1D1D1;*/
 }
 
-#entryScrolledWindow,#headerGrid{
+#entryScrolledWindow,#headerGrid, #transactionViewport{
     /*background-color: #F3F3F3;*/
     background-color: #CCCCCC;
     /*background-color: #EBEBEB;*/
