@@ -96,8 +96,9 @@ class Data():
         self.transactions = []
         self.incomeMenu = []
         self.expenseMenu = []
-        self.projections = []
         self.yearMenu = []
+        self.projections = []
+        self.frequencyMenu = []
 
         self.transaction_view = 0
         self.overview = 0
@@ -160,7 +161,7 @@ class Data():
 
             self.refresh_data()
     
-    def add_projection(self, title, value, description, selected, category, year, month, day, frequency, projectionID):
+    def add_projection(self, title, value, description, selected, category, startYear, startMonth, startDay, endYear, endMonth, endDay, frequency, projectionID):
         for i in range(0,len(self.transactionsMenu)):
             if category == self.transactionsMenu[i][self.MENU_NAME_INDEX]:
                 category = self.transactionsMenu[i][self.MENU_ID_INDEX]
@@ -178,7 +179,7 @@ class Data():
             cur.execute("SELECT categoryID FROM categories WHERE categories.type = ? AND categories.categoryOrder = ?", self.select[0])
             self.categoryID = cur.fetchall()
             self.categoryID = self.categoryID[0][0]
-            row = [(str(title),str(value),str(description),str(self.categoryID),str(year),str(month),str(day),str(year),str(month),str(day),str(frequency),str(projectionID))]
+            row = [(str(title),str(value),str(description),str(self.categoryID),str(startYear),str(startMonth),str(startDay),str(endYear),str(endMonth),str(endDay),str(frequency),str(projectionID))]
             cur.execute('INSERT INTO projections VALUES(?,?,?,?,?,?,?,?,?,?,?,?)', row[0])
             con.commit()
             
@@ -239,7 +240,9 @@ class Data():
             self.transactions = []
             self.incomeMenu = []
             self.expenseMenu = []
+            self.yearMenu = []
             self.projections = []
+            self.frequencyMenu = []
             
             self.import_data()
             
@@ -354,6 +357,7 @@ class Data():
                     self.LATEST_PROJECTION_ID = row[11]
             
                 self.projections.append(self.arr)
+        
             cur = con.cursor()
             cur.execute('SELECT DISTINCT year FROM transactions ORDER BY year DESC;') 
             rows = cur.fetchall()
@@ -361,6 +365,15 @@ class Data():
             self.yearMenu.append("All")
             for row in rows:
                 self.yearMenu.append(str(row[0]))
+            
+            cur = con.cursor()
+            cur.execute('SELECT *  FROM frequency;') 
+            rows = cur.fetchall()
+            for row in rows:
+                self.arr = []
+                self.arr.append(row[0].strip())             # Title
+                self.arr.append(row[1])                     # Frequency ID
+                self.frequencyMenu.append(self.arr)
 
     def sort_data(self, data, arr):
         if len(data) == 0:

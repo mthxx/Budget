@@ -100,10 +100,10 @@ class Projections():
             self.radioBox.show()
             self.addCategoryLabel.show()
             self.addCategoryComboBoxText.show()
-            self.startDateLabel.show()
-            self.startDate.show()
             self.frequencyLabel.show()
             self.frequencyComboBoxText.show()
+            self.startDateLabel.show()
+            self.startDate.show()
             self.cancelButton.show()
             self.transactionViewGrid.queue_draw()
         else:
@@ -117,10 +117,14 @@ class Projections():
             self.radioBox.hide()
             self.addCategoryLabel.hide()
             self.addCategoryComboBoxText.hide()
-            self.startDateLabel.hide()
-            self.startDate.hide()
             self.frequencyLabel.hide()
             self.frequencyComboBoxText.hide()
+            self.startDateLabel.hide()
+            self.startDate.hide()
+            self.endDateLabel.hide()
+            self.selectDateRadio.hide()
+            self.neverRadio.hide()
+            self.endDate.hide()
             self.cancelButton.hide()
             self.transactionViewGrid.queue_draw()
     
@@ -247,10 +251,28 @@ class Projections():
                 and self.transactionAmountEntry != "" 
                 and self.addCategoryComboBoxText.get_active() >= 0 
                 and self.frequencyComboBoxText.get_active() >= 0):
+                
                 self.dateArr = self.startDate.get_date()
-                self.year = str(self.dateArr[0])
-                self.month = str(self.dateArr[1] + 1)
-                self.day = str(self.dateArr[2])
+                self.startYear = str(self.dateArr[0])
+                self.startMonth = str(self.dateArr[1] + 1)
+                self.startDay = str(self.dateArr[2])
+                
+                if self.frequencyComboBoxText.get_active() == 0:
+                    self.dateArr = self.startDate.get_date()
+                    self.endYear = str(self.dateArr[0])
+                    self.endMonth = str(self.dateArr[1] + 1)
+                    self.endDay = str(self.dateArr[2])
+                else:
+                    if self.selectDateRadio.get_active() == True:
+                        self.dateArr = self.endDate.get_date()
+                        self.endYear = str(self.dateArr[0])
+                        self.endMonth = str(self.dateArr[1] + 1)
+                        self.endDay = str(self.dateArr[2])
+                    elif self.neverRadio.get_active() == True:
+                        self.endYear = str(0)
+                        self.endMonth = str(0)
+                        self.endDay = str(0)
+                
                 if self.addIncomeRadio.get_active() == True:
                     self.selected = "income"
                 elif self.addExpenseRadio.get_active() == True:
@@ -260,8 +282,8 @@ class Projections():
                 
                 self.data.add_projection(self.transactionTitleEntry.get_text(),
                     self.transactionAmountEntry.get_text(), self.transactionDescriptionEntry.get_text(),
-                    self.selected, self.addCategoryComboBoxText.get_active(), self.year, self.month, self.day, 
-                    self.frequencyComboBoxText.get_active(), self.data.LATEST_PROJECTION_ID)
+                    self.selected, self.addCategoryComboBoxText.get_active(), self.startYear, self.startMonth, self.startDay, 
+                    self.endYear, self.endMonth, self.endDay, self.frequencyComboBoxText.get_active(), self.data.LATEST_PROJECTION_ID)
 
         else:
             self.add_view_mode(True)
@@ -295,15 +317,18 @@ class Projections():
     
     def on_cancelButton_clicked(self, *args):
         self.add_view_mode(False)
-        
+        print("Here")        
+
         # Reset fields to default
         self.transactionTitleEntry.set_text("")
         self.transactionAmountEntry.set_text("")
         self.addIncomeRadio.set_active(True)
         self.addCategoryComboBoxText.set_active(-1)
+        self.frequencyComboBoxText.set_active(0)
         self.startDate.select_month(self.currentMonth - 1, self.currentYear)
         self.startDate.select_day(self.currentDay)
-        self.frequencyComboBoxText.set_active(-1)
+        self.endDate.select_month(self.currentMonth - 1, self.currentYear)
+        self.endDate.select_day(self.currentDay)
 
     def on_dayButton_clicked(self, *args):
         self.projectionsNotebook.set_current_page(0)
@@ -320,6 +345,14 @@ class Projections():
     def on_monthButton_clicked(self, *args):
         self.projectionsNotebook.set_current_page(2)
     
+    def on_selectDateRadio_toggled(self, *args):
+        if self.selectDateRadio.get_active() == True:
+            self.endDate.show()
+            self.transactionViewGrid.queue_draw()
+        if self.neverRadio.get_active() == True:
+            self.endDate.hide()
+            self.transactionViewGrid.queue_draw()
+ 
     def on_yearButton_clicked(self, *args):
         self.projectionsNotebook.set_current_page(3)
      
@@ -434,6 +467,7 @@ class Projections():
                         if self.data.projections[j][self.data.PROJECTIONS_START_MONTH] == self.selectedMonth:
                             if self.data.projections[j][self.data.PROJECTIONS_START_DAY] == self.dayText - 1:
                                 if self.data.projections[j][self.data.PROJECTIONS_CATEGORY_TYPE] == 0:
+                                    # print(self.data.projections[j][self.data.PROJECTIONS_VALUE])
                                     self.incomeSum += self.data.projections[j][self.data.PROJECTIONS_VALUE]
                                 if self.data.projections[j][self.data.PROJECTIONS_CATEGORY_TYPE] == 1:
                                     self.expenseSum += self.data.projections[j][self.data.PROJECTIONS_VALUE]
@@ -510,6 +544,26 @@ class Projections():
                 self.monthCalendarGrid.attach(self.monthGrid,(i-35),6,1,1)
 
             self.monthCalendarGrid.show_all()
+    
+    def frequency_selected(self, listbox, *args):
+        # To catch calls before widget exists.
+        if listbox == None:
+            return
+        else:
+            self.row = self.data.frequencyMenu[listbox.get_active()][0]
+            if listbox.get_active() == 0:
+                self.endDateLabel.hide()
+                self.selectDateRadio.hide()
+                self.neverRadio.hide()
+                self.endDate.hide()
+                self.transactionViewGrid.queue_draw()
+            else:
+                self.selectDateRadio.show()
+                self.neverRadio.show()
+                self.endDateLabel.show()
+                self.endDate.show()
+                self.transactionViewGrid.queue_draw()
+
 
     def generate_transactions_view(self):
         while len(self.transactionViewGrid) > 0:
@@ -538,24 +592,29 @@ class Projections():
         self.addCategoryLabel = Gtk.Label("Category:")
         self.addCategoryComboBoxText = Gtk.ComboBoxText()
         
-        self.startDateLabel = Gtk.Label("Start Date:")
-        self.startDate = Gtk.Calendar()
-
         self.frequencyLabel = Gtk.Label("Frequency:")
         self.frequencyComboBoxText = Gtk.ComboBoxText()
+            
+        self.startDateLabel = Gtk.Label("Start Date:")
+        self.startDate = Gtk.Calendar()
+        
+        self.selectDateRadio = Gtk.RadioButton.new_with_label(None, "Select Date")
+        self.neverRadio = Gtk.RadioButton.new_with_label(None, "Never")
+        self.neverRadio.join_group(self.selectDateRadio)
+
+        self.endDateLabel = Gtk.Label("End Date:")
+        self.endDate = Gtk.Calendar()
 
         self.cancelButton = Gtk.Button("Cancel")
         self.addButton = Gtk.Button("Add Transaction")
             
         # Add data to frequency
-        self.frequencyComboBoxText.append_text("One Time")
-        self.frequencyComboBoxText.append_text("Daily")
-        self.frequencyComboBoxText.append_text("Weekly")
-        self.frequencyComboBoxText.append_text("Bi-Weekly")
-        self.frequencyComboBoxText.append_text("Monthly on Date")
-        self.frequencyComboBoxText.append_text("Monthly on Weekday")
-        self.frequencyComboBoxText.append_text("Yearly")
+        for j in range(0, len(self.data.frequencyMenu)):
+            self.frequencyComboBoxText.append_text(self.data.frequencyMenu[j][0])        
 
+        self.frequencyComboBoxText.connect("changed",self.frequency_selected)
+        self.selectDateRadio.connect("toggled", self.on_selectDateRadio_toggled)
+        
         # Style Widgets
         self.transactionTitleLabel.set_halign(Gtk.Align.END)
         self.transactionTitleEntry.set_margin_start(20)
@@ -585,16 +644,28 @@ class Projections():
         self.addCategoryComboBoxText.set_margin_top(10)
         self.addCategoryComboBoxText.set_property("height-request", 34)
         
-        self.startDateLabel.set_halign(Gtk.Align.END)
-        self.startDateLabel.set_margin_top(10)
-        self.startDate.set_margin_start(20)
-        self.startDate.set_margin_top(10)
-        
         self.frequencyLabel.set_halign(Gtk.Align.END)
         self.frequencyLabel.set_margin_top(10)
         self.frequencyComboBoxText.set_margin_start(20)
         self.frequencyComboBoxText.set_margin_top(10)
         self.frequencyComboBoxText.set_property("height-request", 34)
+        
+        self.startDateLabel.set_halign(Gtk.Align.END)
+        self.startDateLabel.set_margin_top(10)
+        self.startDate.set_margin_start(20)
+        self.startDate.set_margin_top(10)
+        
+        self.endDateLabel.set_halign(Gtk.Align.END)
+        self.endDateLabel.set_margin_top(10)
+        
+        self.selectDateRadio.set_margin_start(20)
+        self.selectDateRadio.set_margin_top(10)
+        
+        self.neverRadio.set_margin_start(20)
+        self.neverRadio.set_margin_top(10)
+        
+        self.endDate.set_margin_start(20)
+        self.endDate.set_margin_top(10)
         
         self.cancelButton.set_margin_top(10)
         self.cancelButton.set_margin_bottom(20)
@@ -614,23 +685,27 @@ class Projections():
             self.transactionViewGrid.set_halign(Gtk.Align.FILL)
 
         self.transactionViewGrid.attach(self.transactionTitleLabel,1,0,1,1)
-        self.transactionViewGrid.attach(self.transactionTitleEntry,2,0,1,1)
+        self.transactionViewGrid.attach(self.transactionTitleEntry,2,0,2,1)
         self.transactionViewGrid.attach(self.transactionAmountLabel,1,1,1,1)
-        self.transactionViewGrid.attach(self.transactionAmountEntry,2,1,1,1)
+        self.transactionViewGrid.attach(self.transactionAmountEntry,2,1,2,1)
         self.transactionViewGrid.attach(self.transactionDescriptionLabel,1,2,1,1)
-        self.transactionViewGrid.attach(self.transactionDescriptionEntry,2,2,1,1)
+        self.transactionViewGrid.attach(self.transactionDescriptionEntry,2,2,2,1)
         self.transactionViewGrid.attach(self.transactionTypeLabel,1,3,1,1)
-        self.transactionViewGrid.attach(self.radioBox,2,3,1,1)
+        self.transactionViewGrid.attach(self.radioBox,2,3,2,1)
         self.transactionViewGrid.attach(self.addCategoryLabel,1,4,1,1)
-        self.transactionViewGrid.attach(self.addCategoryComboBoxText,2,4,1,1)
-        self.transactionViewGrid.attach(self.startDateLabel,1,5,1,1)
-        self.transactionViewGrid.attach(self.startDate,2,5,1,1)
-        self.transactionViewGrid.attach(self.frequencyLabel,1,6,1,1)
-        self.transactionViewGrid.attach(self.frequencyComboBoxText,2,6,1,1)
-        self.transactionViewGrid.attach(self.cancelButton,1,7,1,1)
-        self.transactionViewGrid.attach(self.addButton,2,7,1,1)
+        self.transactionViewGrid.attach(self.addCategoryComboBoxText,2,4,2,1)
+        self.transactionViewGrid.attach(self.frequencyLabel,1,5,1,1)
+        self.transactionViewGrid.attach(self.frequencyComboBoxText,2,5,2,1)
+        self.transactionViewGrid.attach(self.startDateLabel,1,6,1,1)
+        self.transactionViewGrid.attach(self.startDate,2,6,2,1)
+        self.transactionViewGrid.attach(self.endDateLabel,1,7,1,1)
+        self.transactionViewGrid.attach(self.selectDateRadio,2,7,1,1)
+        self.transactionViewGrid.attach(self.neverRadio,3,7,1,1)
+        self.transactionViewGrid.attach(self.endDate,2,8,2,1)
+        self.transactionViewGrid.attach(self.cancelButton,1,9,1,1)
+        self.transactionViewGrid.attach(self.addButton,2,9,2,1)
         
-        self.index = 8
+        self.index = 10
         for i in range (0,len(self.data.projections)):
             # Date String
             self.dateString = [self.data.projections[i][self.data.PROJECTIONS_START_YEAR],self.data.projections[i][self.data.PROJECTIONS_START_MONTH] - 1,self.data.projections[i][self.data.PROJECTIONS_START_DAY]]
@@ -715,7 +790,7 @@ class Projections():
             self.layoutGrid.set_margin_bottom(25)
 
 
-            self.transactionViewGrid.attach(self.layoutGrid, 1, self.index, 3, 2)
+            self.transactionViewGrid.attach(self.layoutGrid, 1, self.index, 4, 2)
 
             self.index = self.index + 2
 
