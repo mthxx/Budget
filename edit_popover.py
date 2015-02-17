@@ -116,7 +116,11 @@ class Edit_Popover(Gtk.Window):
     
     def on_deleteConfirmButton_clicked(self, *args):
         self.editPopover.hide()
-        self.data.delete_data(self.unique_id)
+        if self.view == "transaction":
+            self.data.delete_transaction(self.unique_id)
+        if self.view == "projection":
+            self.data.delete_projection(self.unique_id)
+        self.contentGrid.queue_draw()
     
     def on_editButton_clicked(self, *args):
         self.editPopover.hide()
