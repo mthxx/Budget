@@ -105,6 +105,7 @@ class Projections():
             self.frequencyLabel.show()
             self.frequencyComboBoxText.show()
             self.cancelButton.show()
+            self.transactionViewGrid.queue_draw()
         else:
             self.transactionTitleLabel.hide()
             self.transactionTitleEntry.hide()
@@ -121,6 +122,7 @@ class Projections():
             self.frequencyLabel.hide()
             self.frequencyComboBoxText.hide()
             self.cancelButton.hide()
+            self.transactionViewGrid.queue_draw()
     
     def generate_month_view(self):
         self.monthTitleLabel = Gtk.Label()
@@ -392,7 +394,7 @@ class Projections():
         for i in range(1, 43):
             # Create Widgets 
             if i - 2 >= start and self.dayText <= end:
-                if int(self.dayText) == self.currentDay:
+                if self.selectedYear == self.currentYear and self.selectedMonth == self.currentMonth and int(self.dayText) == self.currentDay:
                     if i == 7 or i == 14 or i == 21 or i == 28 or i == 35:
                         self.monthGrid = Gtk.Grid(name="monthGridRightCurrent")
                     elif i > 35 and i < 42:
@@ -408,7 +410,7 @@ class Projections():
                         self.monthGrid = Gtk.Grid(name="monthGridBottomActive")
                     elif i == 42:
                         self.monthGrid = Gtk.Grid(name="monthGridLastActive")
-                    else:            
+                    else:
                         self.monthGrid = Gtk.Grid(name="monthGridActive")
                 
                 self.dayLabel = Gtk.Label(self.dayText)
@@ -656,7 +658,7 @@ class Projections():
             self.editPopover = Gtk.Popover.new(self.editButton)
             self.edit_popover = Edit_Popover(self.data, "projection")
             self.editPopover.add(self.edit_popover.editGrid)
-            self.editButton.connect("clicked", self.edit_popover.on_editDropdown_clicked, self.editPopover, self.data.projections[i][self.data.PROJECTIONS_ID], self.entryRows,  self.contentGrid)
+            self.editButton.connect("clicked", self.edit_popover.on_editDropdown_clicked, self.editPopover, self.data.projections[i][self.data.PROJECTIONS_ID], self.entryRows,  self.transactionViewGrid)
             
             # Style Widgets
             self.entryGrid.set_halign(Gtk.Align.CENTER)
