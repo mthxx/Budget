@@ -29,10 +29,10 @@ class Projections():
         self.weekViewGrid = Gtk.Grid()
         self.monthViewGrid = Gtk.Grid()
         self.yearViewGrid = Gtk.Grid()
-        self.transactionViewGrid = Gtk.Grid()
+        self.transactionViewGrid = Gtk.Grid( name="transactionViewGrid")
         
         self.transactionScrolledWindow = Gtk.ScrolledWindow()
-        self.transactionViewport = Gtk.Viewport()
+        self.transactionViewport = Gtk.Viewport(name="transactionViewport")
 
         self.transactionScrolledWindow.add(self.transactionViewport) 
         self.transactionViewport.add(self.transactionViewGrid)    
@@ -258,7 +258,7 @@ class Projections():
 
                 self.data.LATEST_PROJECTION_ID += 1
                 
-                self.data.add_projection_data(self.transactionTitleEntry.get_text(),
+                self.data.add_projection(self.transactionTitleEntry.get_text(),
                     self.transactionAmountEntry.get_text(), self.transactionDescriptionEntry.get_text(),
                     self.selected, self.addCategoryComboBoxText.get_active(), self.year, self.month, self.day, 
                     self.frequencyComboBoxText.get_active(), self.data.LATEST_PROJECTION_ID)
@@ -307,6 +307,12 @@ class Projections():
 
     def on_dayButton_clicked(self, *args):
         self.projectionsNotebook.set_current_page(0)
+    
+    # def on_deleteButton_clicked(self, button, editPopover):
+    #     if editPopover.get_visible():
+    #         editPopover.hide()
+    #     else:
+    #         editPopover.show_all()
      
     def on_weekButton_clicked(self, *args):
         self.projectionsNotebook.set_current_page(1)
@@ -659,6 +665,9 @@ class Projections():
             self.edit_popover = Edit_Popover(self.data, "projection")
             self.editPopover.add(self.edit_popover.editGrid)
             self.editButton.connect("clicked", self.edit_popover.on_editDropdown_clicked, self.editPopover, self.data.projections[i][self.data.PROJECTIONS_ID], self.entryRows,  self.transactionViewGrid)
+            
+            # self.deleteCancelButton.connect("clicked", self.on_deleteButton_clicked, self.editPopover)
+            # self.deleteConfirmButton.connect("clicked", self.delete_category_confirm, label)
             
             # Style Widgets
             self.entryGrid.set_halign(Gtk.Align.CENTER)
