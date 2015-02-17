@@ -327,7 +327,6 @@ class Transactions():
         self.deleteSelectorBox.set_margin_end(5)
 
         # Connect Widget Handlers
-        self.button.connect("clicked", self.on_deleteButton_clicked, self.editPopover)
         self.deleteCancelButton.connect("clicked", self.on_deleteButton_clicked, self.editPopover)
         self.deleteConfirmButton.connect("clicked", self.delete_category_confirm, label)
 

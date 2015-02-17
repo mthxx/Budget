@@ -145,7 +145,7 @@ class Data():
 
             self.refresh_data()   
  
-    def add_data(self, category, year, month, day, value, description, transactionID):
+    def add_transaction(self, category, year, month, day, value, description, transactionID):
         for i in range(0,len(self.transactionsMenu)):
             if category == self.transactionsMenu[i][self.MENU_NAME_INDEX]:
                 category = self.transactionsMenu[i][self.MENU_ID_INDEX]
@@ -160,7 +160,7 @@ class Data():
 
             self.refresh_data()
     
-    def add_projection_data(self, title, value, description, selected, category, year, month, day, frequency, projectionID):
+    def add_projection(self, title, value, description, selected, category, year, month, day, frequency, projectionID):
         for i in range(0,len(self.transactionsMenu)):
             if category == self.transactionsMenu[i][self.MENU_NAME_INDEX]:
                 category = self.transactionsMenu[i][self.MENU_ID_INDEX]
@@ -205,11 +205,20 @@ class Data():
             
             self.refresh_data()   
     
-    def delete_data(self, uniqueID):
+    def delete_transaction(self, uniqueID):
         if(os.path.isfile('budget.db')):
             con = lite.connect('budget.db')
             cur = con.cursor()
             cur.execute('DELETE FROM transactions WHERE transactionID = ' + str(uniqueID))
+            con.commit()
+
+            self.refresh_data()
+    
+    def delete_projection(self, uniqueID):
+        if(os.path.isfile('budget.db')):
+            con = lite.connect('budget.db')
+            cur = con.cursor()
+            cur.execute('DELETE FROM projections WHERE projectionID = ' + str(uniqueID))
             con.commit()
 
             self.refresh_data()
