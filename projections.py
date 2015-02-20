@@ -6,8 +6,10 @@ class Projections():
         
     def __init__(self, data):
         self.data = data
-        self.grid = Gtk.Grid(name="projectionsGrid")
-        
+        self.projections = []
+        self.defaultLoadOut = 90
+        self.grid = Gtk.Grid(name="projectionsGrid")        
+
         self.sideGrid = Gtk.Grid()
         self.contentGrid = Gtk.Grid()
         self.entryRows = []
@@ -564,8 +566,66 @@ class Projections():
                 self.endDate.show()
                 self.transactionViewGrid.queue_draw()
 
+    def add_projection(self, i, startYear, startMonth, startDay):
+        self.arr = []
+        self.arr.append(self.data.projections[i][self.data.PROJECTIONS_TITLE])
+        self.arr.append(self.data.projections[i][self.data.PROJECTIONS_VALUE])
+        self.arr.append(self.data.projections[i][self.data.PROJECTIONS_DESCRIPTION])
+        self.arr.append(self.data.projections[i][self.data.PROJECTIONS_CATEGORY_ID])
+        self.arr.append(self.data.projections[i][self.data.PROJECTIONS_CATEGORY_NAME])
+        self.arr.append(self.data.projections[i][self.data.PROJECTIONS_CATEGORY_TYPE])
+        self.arr.append(startYear)
+        self.arr.append(startMonth)
+        self.arr.append(startDay)
+        self.arr.append(self.data.projections[i][self.data.PROJECTIONS_END_YEAR])
+        self.arr.append(self.data.projections[i][self.data.PROJECTIONS_END_MONTH])
+        self.arr.append(self.data.projections[i][self.data.PROJECTIONS_END_DAY])
+        self.arr.append(self.data.projections[i][self.data.PROJECTIONS_FREQUENCY])
+        self.arr.append(self.data.projections[i][self.data.PROJECTIONS_ID])
+        
+        self.projections.append(self.arr)
+
 
     def generate_transactions_view(self):
+        
+        # Create new array full of projections
+
+        for i in range(0,len(self.data.projections)):
+            startYear = self.data.projections[i][self.data.PROJECTIONS_START_YEAR]
+            startMonth = self.data.projections[i][self.data.PROJECTIONS_START_MONTH]
+            startDay = self.data.projections[i][self.data.PROJECTIONS_START_DAY]
+            currentMonthEndDate = calendar.monthrange(startYear, startMonth)[1] 
+            
+            start = datetime.date(self.data.projections[i][self.data.PROJECTIONS_START_YEAR],
+                    self.data.projections[i][self.data.PROJECTIONS_START_MONTH],
+                    self.data.projections[i][self.data.PROJECTIONS_START_DAY])
+            if self.data.projections[i][self.data.PROJECTIONS_END_YEAR] != 0:
+                end = datetime.date(self.data.projections[i][self.data.PROJECTIONS_END_YEAR],
+                        self.data.projections[i][self.data.PROJECTIONS_END_MONTH],
+                        self.data.projections[i][self.data.PROJECTIONS_END_DAY])
+                days = (end-start).days
+                if days > self.defaultLoadOut:
+                    days = self.defaultLoadOut
+            else:
+                days = self.defaultLoadOut
+           
+            # Create Daily Projections
+            if self.data.projections[i][self.data.PROJECTIONS_FREQUENCY] == "Daily":
+                for j in range(days):
+                    self.add_projection(i, startYear, startMonth, startDay)
+                    if startDay > currentMonthEndDate:
+                        startDay = 1
+                        if startMonth == 12:
+                            startMonth = 1
+                            startYear += 1
+                        else:
+                            startMonth += 1
+                        currentMonthEndDate = calendar.monthrange(startYear, startMonth)[1] 
+                    startDay += 1
+                        
+                print(self.projections)
+
+        # Code from transactions.py
         while len(self.transactionViewGrid) > 0:
             self.transactionViewGrid.remove_row(0)
             
@@ -679,7 +739,7 @@ class Projections():
         self.addIncomeRadio.connect("toggled", self.on_addRadio_toggled)
         
         # Attach Widgets
-        if len(self.data.projections) == 0:
+        if len(self.projections) == 0:
             self.transactionViewGrid.set_halign(Gtk.Align.CENTER)
         else:
             self.transactionViewGrid.set_halign(Gtk.Align.FILL)
@@ -706,9 +766,9 @@ class Projections():
         self.transactionViewGrid.attach(self.addButton,2,9,2,1)
         
         self.index = 10
-        for i in range (0,len(self.data.projections)):
+        for i in range (0,len(self.projections)):
             # Date String
-            self.dateString = [self.data.projections[i][self.data.PROJECTIONS_START_YEAR],self.data.projections[i][self.data.PROJECTIONS_START_MONTH] - 1,self.data.projections[i][self.data.PROJECTIONS_START_DAY]]
+            self.dateString = [self.projections[i][self.data.PROJECTIONS_START_YEAR],self.projections[i][self.data.PROJECTIONS_START_MONTH] - 1,self.projections[i][self.data.PROJECTIONS_START_DAY]]
             self.dateString = self.data.translate_date(self.dateString, "edit")
             
             self.layoutGrid = Gtk.Grid(name="layoutGrid")
@@ -723,23 +783,22 @@ class Projections():
             self.currencyLabel = Gtk.Label("$")
             self.costLabel = Gtk.Label()
             
-            #if int(self.data.projections[i][self.data.PROJECTIONS_TYPE = ransactions[i][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX]) == int(self.data.transactionsMenu[j][self.data.MENU_ID_INDEX]) and self.data.transactionsMenu[j][self.data.MENU_TYPE_INDEX] == "income":
-            self.costLabel.set_markup("<span foreground=\"green\">" + str(self.data.projections[i][self.data.PROJECTIONS_VALUE]) + "</span>")
+            self.costLabel.set_markup("<span foreground=\"green\">" + str(self.projections[i][self.data.PROJECTIONS_VALUE]) + "</span>")
            
             # for j in range(0, len(self.data.transactionsMenu)):
             #     if int(self.data.transactions[i][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX]) == int(self.data.transactionsMenu[j][self.data.MENU_ID_INDEX]) and self.data.transactionsMenu[j][self.data.MENU_TYPE_INDEX] == "expense":
             #         self.costLabel.set_markup("<span foreground=\"red\">" + str(self.data.transactions[i][self.data.TRANSACTION_VALUE_INDEX]) + "</span>")
 
-            self.titleLabel.set_markup("<b>" + self.data.projections[i][self.data.PROJECTIONS_TITLE] + "</b>")
-            self.descriptionLabel.set_markup("<i>" + self.data.projections[i][self.data.PROJECTIONS_DESCRIPTION] + "</i>")
-            self.categoryLabel.set_markup(self.data.projections[i][self.data.PROJECTIONS_CATEGORY_NAME])
+            self.titleLabel.set_markup("<b>" + self.projections[i][self.data.PROJECTIONS_TITLE] + "</b>")
+            self.descriptionLabel.set_markup("<i>" + self.projections[i][self.data.PROJECTIONS_DESCRIPTION] + "</i>")
+            self.categoryLabel.set_markup(self.projections[i][self.data.PROJECTIONS_CATEGORY_NAME])
             
             # Create Edit Popover
             self.editButton = Gtk.Button()
             self.editPopover = Gtk.Popover.new(self.editButton)
             self.edit_popover = Edit_Popover(self.data, "projection")
             self.editPopover.add(self.edit_popover.editGrid)
-            self.editButton.connect("clicked", self.edit_popover.on_editDropdown_clicked, self.editPopover, self.data.projections[i][self.data.PROJECTIONS_ID], self.entryRows,  self.transactionViewGrid)
+            self.editButton.connect("clicked", self.edit_popover.on_editDropdown_clicked, self.editPopover, self.projections[i][self.data.PROJECTIONS_ID], self.entryRows,  self.transactionViewGrid)
             
             # self.deleteCancelButton.connect("clicked", self.on_deleteButton_clicked, self.editPopover)
             # self.deleteConfirmButton.connect("clicked", self.delete_category_confirm, label)
@@ -799,7 +858,7 @@ class Projections():
             #     if self.data.projections[j][self.data.MENU_ID_INDEX] == self.data.transactions[i][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX]:
             #         self.transactionType = self.data.transactionsMenu[j][self.data.MENU_TYPE_INDEX]
             
-            self.entryRows.append([self.layoutGrid, [self.categoryLabel, self.dateLabel, self.currencyLabel, self.costLabel, self.descriptionLabel, self.editButton, self.titleLabel], self.entryGrid, self.costGrid, self.data.projections[i][self.data.PROJECTIONS_ID]])
+            self.entryRows.append([self.layoutGrid, [self.categoryLabel, self.dateLabel, self.currencyLabel, self.costLabel, self.descriptionLabel, self.editButton, self.titleLabel], self.entryGrid, self.costGrid, self.projections[i][self.data.PROJECTIONS_ID]])
             self.transactionViewGrid.show_all() 
        
     def redisplay_info(self):
