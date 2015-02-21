@@ -7,7 +7,7 @@ class Projections():
     def __init__(self, data):
         self.data = data
         self.projections = []
-        self.defaultLoadOut = 90
+        self.defaultLoadOut = 180
         self.grid = Gtk.Grid(name="projectionsGrid")        
 
         self.sideGrid = Gtk.Grid()
@@ -71,8 +71,8 @@ class Projections():
         
         self.contentGrid.add(self.projectionsNotebook)
         self.generate_sidebar()
-        self.generate_month_view()
         self.generate_transactions_view()
+        self.generate_month_view()
 
         self.grid.attach(self.sideGrid, 0, 0, 1, 1)
         self.grid.attach(self.contentGrid, 1, 0, 1, 1)
@@ -464,15 +464,14 @@ class Projections():
                 self.incomeSum = 0
                 self.expenseSum = 0
 
-                for j in range(0,len(self.data.projections)):
-                    if self.data.projections[j][self.data.PROJECTIONS_START_YEAR] == self.selectedYear:
-                        if self.data.projections[j][self.data.PROJECTIONS_START_MONTH] == self.selectedMonth:
-                            if self.data.projections[j][self.data.PROJECTIONS_START_DAY] == self.dayText - 1:
-                                if self.data.projections[j][self.data.PROJECTIONS_CATEGORY_TYPE] == 0:
-                                    # print(self.data.projections[j][self.data.PROJECTIONS_VALUE])
-                                    self.incomeSum += self.data.projections[j][self.data.PROJECTIONS_VALUE]
-                                if self.data.projections[j][self.data.PROJECTIONS_CATEGORY_TYPE] == 1:
-                                    self.expenseSum += self.data.projections[j][self.data.PROJECTIONS_VALUE]
+                for j in range(0,len(self.projections)):
+                    if self.projections[j][self.data.PROJECTIONS_START_YEAR] == self.selectedYear:
+                        if self.projections[j][self.data.PROJECTIONS_START_MONTH] == self.selectedMonth:
+                            if self.projections[j][self.data.PROJECTIONS_START_DAY] == self.dayText - 1:
+                                if self.projections[j][self.data.PROJECTIONS_CATEGORY_TYPE] == 0:
+                                    self.incomeSum += self.projections[j][self.data.PROJECTIONS_VALUE]
+                                if self.projections[j][self.data.PROJECTIONS_CATEGORY_TYPE] == 1:
+                                    self.expenseSum += self.projections[j][self.data.PROJECTIONS_VALUE]
                 
                 if self.currentYear == self.selectedYear:
                     if self.currentMonth == self.selectedMonth:
@@ -613,7 +612,60 @@ class Projections():
             if self.data.projections[i][self.data.PROJECTIONS_FREQUENCY] == "Daily":
                 for j in range(days):
                     self.add_projection(i, startYear, startMonth, startDay)
-                    if startDay > currentMonthEndDate:
+                    if startDay >= currentMonthEndDate:
+                        startDay = 1
+                        if startMonth == 12:
+                            startMonth = 1
+                            startYear += 1
+                        else:
+                            startMonth += 1
+                        currentMonthEndDate = calendar.monthrange(startYear, startMonth)[1] 
+                    startDay += 1
+            
+            # Create Weekly Projections
+            if self.data.projections[i][self.data.PROJECTIONS_FREQUENCY] == "Weekly":
+                dayOfWeek = datetime.datetime(startYear, startMonth, startDay).weekday()
+                for j in range(days):
+                    if dayOfWeek == datetime.datetime(startYear, startMonth, startDay).weekday():
+                        self.add_projection(i, startYear, startMonth, startDay)
+                    if startDay >= currentMonthEndDate:
+                        startDay = 1
+                        if startMonth == 12:
+                            startMonth = 1
+                            startYear += 1
+                        else:
+                            startMonth += 1
+                        currentMonthEndDate = calendar.monthrange(startYear, startMonth)[1] 
+                    startDay += 1
+            
+            # Create Bi-Weekly Projections
+            if self.data.projections[i][self.data.PROJECTIONS_FREQUENCY] == "Bi-Weekly":
+                dayOfWeek = datetime.datetime(startYear, startMonth, startDay).weekday()
+                self.flag = True;
+                for j in range(days):
+                    if dayOfWeek == datetime.datetime(startYear, startMonth, startDay).weekday():
+                        if self.flag == True:
+                            self.add_projection(i, startYear, startMonth, startDay)
+                            self.flag = False
+                        else:
+                            self.flag = True
+                    if startDay >= currentMonthEndDate:
+                        startDay = 1
+                        if startMonth == 12:
+                            startMonth = 1
+                            startYear += 1
+                        else:
+                            startMonth += 1
+                        currentMonthEndDate = calendar.monthrange(startYear, startMonth)[1] 
+                    startDay += 1
+            
+            # Create Monthly On Date Projections
+            if self.data.projections[i][self.data.PROJECTIONS_FREQUENCY] == "Monthly on Date":
+                recurringDate = startDay
+                for j in range(days):
+                    if startDay == recurringDate:
+                        self.add_projection(i, startYear, startMonth, startDay)
+                    if startDay >= currentMonthEndDate:
                         startDay = 1
                         if startMonth == 12:
                             startMonth = 1
@@ -623,7 +675,49 @@ class Projections():
                         currentMonthEndDate = calendar.monthrange(startYear, startMonth)[1] 
                     startDay += 1
                         
-                print(self.projections)
+            print(self.data.projections[i])
+            
+            # Create Monthly on Weekday
+            if self.data.projections[i][self.data.PROJECTIONS_FREQUENCY] == "Monthly on Weekday":
+                dayOfWeek = datetime.datetime(startYear, startMonth, startDay).weekday()
+                self.count = 0;
+                for j in range(days):
+                    if dayOfWeek == datetime.datetime(startYear, startMonth, startDay).weekday():
+                        if self.count == 0:
+                            self.add_projection(i, startYear, startMonth, startDay)
+                            self.count += 1
+                        elif self.count != 3:
+                            self.count += 1
+                        elif self.count == 3:
+                            self.count = 0;
+                    if startDay >= currentMonthEndDate:
+                        startDay = 1
+                        if startMonth == 12:
+                            startMonth = 1
+                            startYear += 1
+                        else:
+                            startMonth += 1
+                        currentMonthEndDate = calendar.monthrange(startYear, startMonth)[1] 
+                    startDay += 1
+            
+            # Create Monthly on Weekday
+            if self.data.projections[i][self.data.PROJECTIONS_FREQUENCY] == "Yearly":
+                dayOfWeek = datetime.datetime(startYear, startMonth, startDay).weekday()
+                self.recurringYear = startYear
+                self.recurringMonth = startMonth
+                self.recurringDay = startDay
+                for j in range(days):
+                    if self.recurringMonth == startMonth and self.recurringDay == startDay:
+                            self.add_projection(i, startYear, startMonth, startDay)
+                    if startDay >= currentMonthEndDate:
+                        startDay = 1
+                        if startMonth == 12:
+                            startMonth = 1
+                            startYear += 1
+                        else:
+                            startMonth += 1
+                        currentMonthEndDate = calendar.monthrange(startYear, startMonth)[1] 
+                    startDay += 1
 
         # Code from transactions.py
         while len(self.transactionViewGrid) > 0:
