@@ -319,7 +319,7 @@ class Data():
                 self.arr.append(row[6])                     # transactionID
                 if self.LATEST_ID < row[6]:
                     self.LATEST_ID = row[6]
-                self.sort_data(self.transactions, self.arr)
+                self.sort_transaction(self.transactions, self.arr)
             
             cur = con.cursor()
             cur_frequency = con.cursor()
@@ -375,7 +375,7 @@ class Data():
                 self.arr.append(row[1])                     # Frequency ID
                 self.frequencyMenu.append(self.arr)
 
-    def sort_data(self, data, arr):
+    def sort_transaction(self, data, arr):
         if len(data) == 0:
             data.append(arr)
         else:
@@ -421,6 +421,55 @@ class Data():
 
             if flag == False:
                 data.append(arr)
+    
+    def sort_projections(self, data, arr):
+        if len(data) == 0:
+            data.append(arr)
+        else:
+            flag = False
+            for i in range(len(data)):
+                # If entry's year is equal to array's year
+                if data[i][self.PROJECTIONS_START_YEAR] == int(arr[self.PROJECTIONS_START_YEAR]):
+                    # If entry's month is equal to array's month
+                    if data[i][self.PROJECTIONS_START_MONTH] == int(arr[self.PROJECTIONS_START_MONTH]):
+                        # If entry's day is equal to array's day
+                        if data[i][self.PROJECTIONS_START_DAY] == int(arr[self.PROJECTIONS_START_DAY]):
+                            data.insert(i, arr)
+                            flag = True
+                            break
+                        # If entry's day is less than array's day
+                        elif data[i][self.PROJECTIONS_START_DAY] > int(arr[self.PROJECTIONS_START_DAY]):
+                            for j in range(i, len(data)):
+                                if data[j][self.PROJECTIONS_START_MONTH] == int(arr[self.PROJECTIONS_START_MONTH]):
+                                    if data[j][self.PROJECTIONS_START_DAY] <= int(arr[self.PROJECTIONS_START_DAY]):
+                                        data.insert(j, arr)
+                                        flag = True
+                                        break
+                                else:
+                                    data.insert(j , arr)
+                                    flag = True
+                                    break
+                            break
+                        # If entry's day is greater than array's day
+                        elif data[i][self.PROJECTIONS_START_DAY] < int(arr[self.PROJECTIONS_START_DAY]):
+                            data.insert(i , arr)
+                            flag = True
+                            break
+                    # If entry's month is less than array's month
+                    elif data[i][self.PROJECTIONS_START_MONTH] < int(arr[self.PROJECTIONS_START_MONTH]):
+                        data.insert(i , arr)
+                        flag = True
+                        break
+                # If entry's year is less than income array's year
+                elif data[i][self.PROJECTIONS_START_YEAR] < int(arr[self.PROJECTIONS_START_YEAR]):
+                    data.insert(i , arr)
+                    flag = True
+                    break
+
+            if flag == False:
+                data.append(arr)
+
+        return data
            
     def translate_date(self,data,index):
         dateString = ""

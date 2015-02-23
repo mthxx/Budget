@@ -313,7 +313,6 @@ class Projections():
     
     def on_cancelButton_clicked(self, *args):
         self.add_view_mode(False)
-        print("Here")        
 
         # Reset fields to default
         self.transactionTitleEntry.set_text("")
@@ -576,7 +575,7 @@ class Projections():
         self.arr.append(self.data.projections[i][self.data.PROJECTIONS_FREQUENCY])
         self.arr.append(self.data.projections[i][self.data.PROJECTIONS_ID])
         
-        self.projections.append(self.arr)
+        self.projections = self.data.sort_projections(self.projections, self.arr)
 
 
     def generate_transactions_view(self):
@@ -674,8 +673,6 @@ class Projections():
                         currentMonthEndDate = calendar.monthrange(startYear, startMonth)[1] 
                     startDay += 1
                         
-            print(self.data.projections[i])
-            
             # Create Monthly on Weekday
             if self.data.projections[i][self.data.PROJECTIONS_FREQUENCY] == "Monthly on Weekday":
                 dayOfWeek = datetime.datetime(startYear, startMonth, startDay).weekday()
@@ -859,7 +856,7 @@ class Projections():
         self.transactionViewGrid.attach(self.addButton,2,9,2,1)
         
         self.index = 10
-        for i in range (0,len(self.projections)):
+        for i in reversed(range(0,len(self.projections))):
             # Date String
             self.dateString = [self.projections[i][self.data.PROJECTIONS_START_YEAR],self.projections[i][self.data.PROJECTIONS_START_MONTH] - 1,self.projections[i][self.data.PROJECTIONS_START_DAY]]
             self.dateString = self.data.translate_date(self.dateString, "edit")
