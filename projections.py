@@ -79,16 +79,16 @@ class Projections():
 
     def active_day_cell(self, dayText, incomeSum, expenseSum, totalSum, incomeLabel, expenseLabel, totalLabel):
         if incomeSum != 0:
-            incomeLabel.set_markup("<span foreground=\"green\">" + "+" + str(incomeSum) + "</span>")
+            incomeLabel.set_markup("<span foreground=\"green\">" + "+" + str("%0.2f" % (incomeSum,)) + "</span>")
         if expenseSum != 0:
-            expenseLabel.set_markup("<span foreground=\"red\">" + "-" + str(expenseSum) + "</span>")
+            expenseLabel.set_markup("<span foreground=\"red\">" + "-" + str("%0.2f" % (expenseSum,)) + "</span>")
         if incomeSum != 0 or expenseSum != 0:
             self.totalSum += incomeSum 
             self.totalSum -= expenseSum
             if self.totalSum < 0:
-                totalLabel.set_markup("<span foreground=\"red\">" + "=" + str(self.totalSum) + "</span>")
+                totalLabel.set_markup("<span foreground=\"red\">" + "=" + str("%0.2f" % (self.totalSum,)) + "</span>")
             if self.totalSum >= 0:
-                totalLabel.set_markup("<span foreground=\"green\">" + "=" + str(self.totalSum) + "</span>")
+                totalLabel.set_markup("<span foreground=\"green\">" + "=" + str("%0.2f" % (self.totalSum,)) + "</span>")
     
     def add_view_mode(self, boolean):
         if boolean == True:
@@ -217,15 +217,9 @@ class Projections():
     
     def inactive_day_cell(self, dayText, incomeSum, expenseSum, totalSum, incomeLabel, expenseLabel, totalLabel):
         if incomeSum != 0:
-            incomeLabel.set_markup("<span foreground=\"gray\">" + "+" + str(incomeSum) + "</span>")
+            incomeLabel.set_markup("<span foreground=\"gray\">" + "+" + str("%0.2f" % (incomeSum,)) + "</span>")
         if expenseSum != 0:
-            expenseLabel.set_markup("<span foreground=\"gray\">" + "-" + str(expenseSum) + "</span>")
-        # if incomeSum != 0 or expenseSum !=0:
-        #     totalSum = incomeSum - expenseSum
-        #     if totalSum < 0:
-        #         totalLabel.set_markup("<span foreground=\"gray\">" + "=" + str(totalSum) + "</span>")
-        #     if totalSum >= 0:
-        #         totalLabel.set_markup("<span foreground=\"gray\">" + "=" + str(totalSum) + "</span>")
+            expenseLabel.set_markup("<span foreground=\"gray\">" + "-" + str("%0.2f" % (expenseSum,)) + "</span>")
 
     def on_addButton_clicked(self, *args):
         if self.cancelButton.get_visible():
@@ -598,6 +592,7 @@ class Projections():
             start = datetime.date(self.data.projections[i][self.data.PROJECTIONS_START_YEAR],
                     self.data.projections[i][self.data.PROJECTIONS_START_MONTH],
                     self.data.projections[i][self.data.PROJECTIONS_START_DAY])
+            
             if self.data.projections[i][self.data.PROJECTIONS_END_YEAR] != 0:
                 end = datetime.date(self.data.projections[i][self.data.PROJECTIONS_END_YEAR],
                         self.data.projections[i][self.data.PROJECTIONS_END_MONTH],
@@ -607,6 +602,10 @@ class Projections():
                     days = self.defaultLoadOut
             else:
                 days = self.defaultLoadOut
+            
+            # Create Daily Projections
+            if self.data.projections[i][self.data.PROJECTIONS_FREQUENCY] == "One Time":
+                self.add_projection(i, startYear, startMonth, startDay)
            
             # Create Daily Projections
             if self.data.projections[i][self.data.PROJECTIONS_FREQUENCY] == "Daily":
@@ -956,6 +955,8 @@ class Projections():
             self.transactionViewGrid.show_all() 
        
     def redisplay_info(self):
+        self.projections = []
         self.generate_transactions_view()
+        self.populate_month_grid(self.currentMonth, self.currentYear, self.currentMonthStartDate, self.currentMonthEndDate)
         self.add_view_mode(False)
         self.transactionViewGrid.queue_draw()
