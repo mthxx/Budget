@@ -116,7 +116,7 @@ class Transactions():
                 self.dataSum += self.data.transactions[j][self.data.TRANSACTION_VALUE_INDEX]
         
         self.label2 = Gtk.Label()
-        self.label2.set_markup("<span foreground=\"green\">" + "$" + str(self.dataSum) + "</span>")
+        self.label2.set_markup("<span foreground=\"green\">" + "$" + str("%0.2f" % (self.dataSum,)) + "</span>")
         self.label2.set_halign(Gtk.Align.END)
         
         self.button = self.create_delete_button(self.label.get_text())
@@ -141,7 +141,7 @@ class Transactions():
                 self.dataSum += self.data.transactions[j][self.data.TRANSACTION_VALUE_INDEX]
         
         self.label2 = Gtk.Label()
-        self.label2.set_markup("<span foreground=\"green\">" + "$" + str(self.dataSum) + "</span>")
+        self.label2.set_markup("<span foreground=\"green\">" + "$" + str("%0.2f" % (self.dataSum,)) + "</span>")
         self.label2.set_halign(Gtk.Align.END)
         
         self.labelBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
@@ -395,11 +395,11 @@ class Transactions():
             
             for j in range(0, len(self.data.transactionsMenu)):
                 if int(self.data.transactions[i][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX]) == int(self.data.transactionsMenu[j][self.data.MENU_ID_INDEX]) and self.data.transactionsMenu[j][self.data.MENU_TYPE_INDEX] == "income":
-                    self.costLabel.set_markup("<span foreground=\"green\">" + str(self.data.transactions[i][self.data.TRANSACTION_VALUE_INDEX]) + "</span>")
+                    self.costLabel.set_markup("<span foreground=\"green\">" + str("%0.2f" % (self.data.transactions[i][self.data.TRANSACTION_VALUE_INDEX],)) + "</span>")
            
             for j in range(0, len(self.data.transactionsMenu)):
                 if int(self.data.transactions[i][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX]) == int(self.data.transactionsMenu[j][self.data.MENU_ID_INDEX]) and self.data.transactionsMenu[j][self.data.MENU_TYPE_INDEX] == "expense":
-                    self.costLabel.set_markup("<span foreground=\"red\">" + str(self.data.transactions[i][self.data.TRANSACTION_VALUE_INDEX]) + "</span>")
+                    self.costLabel.set_markup("<span foreground=\"red\">" + str("%0.2f" % (self.data.transactions[i][self.data.TRANSACTION_VALUE_INDEX],)) + "</span>")
 
             self.descriptionLabel.set_markup("<i>" + self.data.transactions[i][self.data.TRANSACTION_DESCRIPTION_INDEX] + "</i>")
             
@@ -686,9 +686,9 @@ class Transactions():
         
         self.label2 = Gtk.Label()
         if self.dataSum >= 0:
-            self.label2.set_markup("<span foreground=\"green\">" + "$" + str(self.dataSum) + "</span>")
+            self.label2.set_markup("<span foreground=\"green\">" + "$" + str("%0.2f" % (self.dataSum,)) + "</span>")
         elif self.dataSum < 0:
-            self.label2.set_markup("<span foreground=\"red\">" + "$" + str(self.dataSum) + "</span>")
+            self.label2.set_markup("<span foreground=\"red\">" + "$" + str("%0.2f" % (self.dataSum,)) + "</span>")
         self.label2.set_halign(Gtk.Align.END)
 
         self.transactionsBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
@@ -709,7 +709,7 @@ class Transactions():
                     self.dataSum += self.data.transactions[i][self.data.TRANSACTION_VALUE_INDEX]
         
         self.label2 = Gtk.Label()
-        self.label2.set_markup("<span foreground=\"green\">" + "$" + str(self.dataSum) + "</span>")
+        self.label2.set_markup("<span foreground=\"green\">" + "$" + str("%0.2f" % (self.dataSum,)) + "</span>")
         self.label2.set_halign(Gtk.Align.END)
 
         self.incomeBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
@@ -741,7 +741,7 @@ class Transactions():
                     self.dataSum += self.data.transactions[i][self.data.TRANSACTION_VALUE_INDEX]
         
         self.label2 = Gtk.Label()
-        self.label2.set_markup("<span foreground=\"red\">" + "$" + str(self.dataSum) + "</span>")
+        self.label2.set_markup("<span foreground=\"red\">" + "$" + str("%0.2f" % (self.dataSum,)) + "</span>")
         self.label2.set_halign(Gtk.Align.END)
 
         self.expenseBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
