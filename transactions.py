@@ -116,7 +116,10 @@ class Transactions():
                 self.dataSum += self.data.transactions[j][self.data.TRANSACTION_VALUE_INDEX]
         
         self.label2 = Gtk.Label()
-        self.label2.set_markup("<span foreground=\"green\">" + "$" + str("%0.2f" % (self.dataSum,)) + "</span>")
+        if self.data.transactionsMenu[i][self.data.MENU_TYPE_INDEX] == "income":
+            self.label2.set_markup("<span foreground=\"green\">" + "$" + str("%0.2f" % (self.dataSum,)) + "</span>")
+        elif self.data.transactionsMenu[i][self.data.MENU_TYPE_INDEX] == "expense":
+            self.label2.set_markup("<span foreground=\"red\">" + "$" + str("%0.2f" % (self.dataSum,)) + "</span>")
         self.label2.set_halign(Gtk.Align.END)
         
         self.button = self.create_delete_button(self.label.get_text())
@@ -141,7 +144,10 @@ class Transactions():
                 self.dataSum += self.data.transactions[j][self.data.TRANSACTION_VALUE_INDEX]
         
         self.label2 = Gtk.Label()
-        self.label2.set_markup("<span foreground=\"green\">" + "$" + str("%0.2f" % (self.dataSum,)) + "</span>")
+        if self.data.transactionsMenu[i][self.data.MENU_TYPE_INDEX] == "income":
+            self.label2.set_markup("<span foreground=\"green\">" + "$" + str("%0.2f" % (self.dataSum,)) + "</span>")
+        elif self.data.transactionsMenu[i][self.data.MENU_TYPE_INDEX] == "expense":
+            self.label2.set_markup("<span foreground=\"red\">" + "$" + str("%0.2f" % (self.dataSum,)) + "</span>")
         self.label2.set_halign(Gtk.Align.END)
         
         self.labelBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
