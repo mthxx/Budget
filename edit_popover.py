@@ -214,8 +214,12 @@ class Edit_Popover(Gtk.Window):
                 for j in range(0,len(self.data.transactionsMenu)):
                     if self.data.transactionsMenu[j][self.data.MENU_NAME_INDEX] != "Uncategorized":
                         self.categoryComboBoxText.append_text(self.data.transactionsMenu[j][self.data.MENU_NAME_INDEX])
-                    if self.data.transactionsMenu[j][self.data.MENU_NAME_INDEX] == self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_text():
+                    #if self.data.transactionsMenu[j][self.data.MENU_NAME_INDEX] == self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_text():
+                if self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_text() != "Uncategorized":
+                    for j in range(0,len(self.data.transactionsMenu)-2):
                         self.categoryComboBoxText.set_active(j)
+                        if self.categoryComboBoxText.get_active_text() == self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_text():
+                            break
                 
                 # Style Edit Grid, Hide Entry Grid
                 self.editGrid.set_halign(Gtk.Align.CENTER)
