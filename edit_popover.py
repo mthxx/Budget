@@ -296,8 +296,16 @@ class Edit_Popover(Gtk.Window):
             self.contentGrid.queue_draw()
     
     def set_calendar(self,data):
-        for i in range(0, len(data)):
-            if data[i][self.data.TRANSACTION_ID_INDEX] == self.unique_id:
-                self.calendar.select_month(data[i][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_MONTH_INDEX] - 1,
-                                            data[i][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_YEAR_INDEX])
-                self.calendar.select_day(data[i][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_DAY_INDEX])
+        if self.view == "transaction":
+            for i in range(0, len(data)):
+                if self.data.transactions[i][self.data.TRANSACTION_ID_INDEX] == self.unique_id:
+                    self.calendar.select_month(self.data.transactions[i][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_MONTH_INDEX] - 1,
+                                                self.data.transactions[i][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_YEAR_INDEX])
+                    self.calendar.select_day(self.data.transactions[i][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_DAY_INDEX])
+        
+        if self.view == "projection":
+            for i in range(0, len(data)):
+                if self.data.projections[i][self.data.PROJECTIONS_ID] == self.unique_id:
+                    self.calendar.select_month(self.data.projections[i][self.data.PROJECTIONS_START_MONTH] - 1,
+                                                self.data.projections[i][self.data.PROJECTIONS_START_YEAR])
+                    self.calendar.select_day(self.data.projections[i][self.data.PROJECTIONS_START_DAY])
