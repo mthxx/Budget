@@ -243,8 +243,8 @@ class Projections():
             else:
                 self.frequencyLabel.set_text("Frequency")
             
-            if (self.transactionTitleEntry != "" 
-                and self.transactionAmountEntry != "" 
+            if (self.transactionTitleEntry.get_text() != "" 
+                and self.transactionAmountEntry.get_text() != "" 
                 and self.addCategoryComboBoxText.get_active() >= 0 
                 and self.frequencyComboBoxText.get_active() >= 0):
                 
