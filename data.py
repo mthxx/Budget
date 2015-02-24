@@ -120,10 +120,22 @@ class Data():
                             ]
 
     def add_category(self, menuType, category):
+        con = lite.connect('budget.db')
+        cur = con.cursor()
+        
         if menuType == "income":
+            cur.execute('SELECT MAX(categoryOrder) from categories where type = ' + str(0))
+            row = cur.fetchone()
+            self.INCOME_ORDER_ID = row[0]
             self.INCOME_ORDER_ID += 1
         if menuType == "expense":
+            cur.execute('SELECT MAX(categoryOrder) from categories where type = ' + str(1))
+            row = cur.fetchone()
+            self.EXPENSE_ORDER_ID = row[0]
             self.EXPENSE_ORDER_ID += 1
+        cur.execute('SELECT MAX(categoryID) from categories;')
+        row = cur.fetchone()
+        self.LATEST_MENU_ID = row[0]
         self.LATEST_MENU_ID += 1
         if(os.path.isfile('budget.db')):
             con = lite.connect('budget.db')
@@ -174,7 +186,7 @@ class Data():
                 selected = 0
             elif selected == "expense":
                 selected = 1
-
+             
             self.select = [(str(selected),str(category + 1))] 
             cur.execute("SELECT categoryID FROM categories WHERE categories.type = ? AND categories.categoryOrder = ?", self.select[0])
             self.categoryID = cur.fetchall()
@@ -203,7 +215,18 @@ class Data():
             elif row[0] == 1:
                 cur.execute('UPDATE transactions SET categoryID = -2 WHERE categoryID = ' + str(uniqueID))
                 cur.execute('UPDATE projections SET categoryID = -2 where categoryID = ' + str(uniqueID));
+            
+            cur.execute('SELECT categoryOrder from categories where categoryID = ' + str(uniqueID))
+            row = cur.fetchone()
+            self.order = row[0]
             cur.execute('delete from categories where categoryID = ' + str(uniqueID))
+            cur.execute('SELECT count(*) from categories;')
+            row = cur.fetchone()
+            self.count = row[0]
+            for i in range(self.order, self.count):
+                row = [(str(i), str(i + 1))]
+                cur.execute('UPDATE categories set categoryOrder = ? where categoryOrder = ?', row[0])
+
             con.commit()
             
             self.refresh_data()   
