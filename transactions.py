@@ -198,9 +198,8 @@ class Transactions():
     def create_date_grid(self):
         # Date Grid
         self.dateGrid = Gtk.Grid(name="headerGrid")
-        #self.dateLabelMonth = Gtk.Label("Month:")
+        self.dateLabelMonth = Gtk.Label("Month:")
         self.dateLabelYear = Gtk.Label("Year:")
-        #self.dateLabelRange = Gtk.Label("Range:")
         
         self.dateComboMonth = Gtk.ComboBoxText()
         self.dateComboYear = Gtk.ComboBoxText()
@@ -227,18 +226,19 @@ class Transactions():
         self.dateCalendarTo.select_month(self.currentDate.month - 1, self.currentDate.year)
         self.dateButtonTo.set_label(self.data.translate_date(self.dateCalendarFrom.get_date(),"edit"))
         
-        self.monthYearRadio = Gtk.RadioButton.new_with_label(None, "Month:")
-        self.rangeRadio = Gtk.RadioButton.new_with_label(None, "Range:")
+        self.monthYearRadio = Gtk.RadioButton.new_with_label(None, "Month/Year")
+        self.rangeRadio = Gtk.RadioButton.new_with_label(None, "Range")
         self.rangeRadio.join_group(self.monthYearRadio)
 
         self.dateGrid.attach(self.monthYearRadio,0,0,1,1)
-        self.dateGrid.attach(self.dateComboMonth,1,0,1,1)
-        self.dateGrid.attach(self.dateLabelYear,2,0,1,1)
-        self.dateGrid.attach(self.dateComboYear,3,0,1,1)
-        self.dateGrid.attach(self.rangeRadio,4,0,1,1)
-        self.dateGrid.attach(self.dateButtonFrom,5,0,1,1) 
-        self.dateGrid.attach(self.dateLabelTo,6,0,1,1) 
-        self.dateGrid.attach(self.dateButtonTo,7,0,1,1) 
+        self.dateGrid.attach(self.rangeRadio,1,0,1,1)
+        self.dateGrid.attach(self.dateLabelMonth,2,0,1,1)
+        self.dateGrid.attach(self.dateComboMonth,3,0,1,1)
+        self.dateGrid.attach(self.dateLabelYear,4,0,1,1)
+        self.dateGrid.attach(self.dateComboYear,5,0,1,1)
+        self.dateGrid.attach(self.dateButtonFrom,6,0,1,1) 
+        self.dateGrid.attach(self.dateLabelTo,7,0,1,1) 
+        self.dateGrid.attach(self.dateButtonTo,8,0,1,1) 
         
         # Generate Months
         for i in range(0,len(self.data.allMonthMenu)):
@@ -265,6 +265,9 @@ class Transactions():
         self.monthYearRadio.set_margin_start(20)
         self.monthYearRadio.set_margin_top(2)
         self.monthYearRadio.set_margin_end(5)
+        
+        self.dateLabelMonth.set_margin_start(30)
+        self.dateLabelMonth.set_margin_end(5)
 
         self.dateComboMonth.set_margin_top(10)
         self.dateComboMonth.set_margin_bottom(10)
@@ -279,7 +282,8 @@ class Transactions():
         
         self.rangeRadio.set_margin_top(2)
         self.rangeRadio.set_margin_end(5)
-       
+        
+        self.dateButtonFrom.set_margin_start(30)
         self.dateButtonFrom.set_margin_top(10)
         self.dateButtonFrom.set_margin_bottom(10)
         self.dateButtonFrom.set_margin_end(5)
@@ -289,8 +293,8 @@ class Transactions():
         self.dateButtonTo.set_margin_top(10)
         self.dateButtonTo.set_margin_bottom(10)
         
-        self.month_year_sensitive(True)
-        self.range_sensitive(False)
+        self.month_year_visible(True)
+        self.range_visible(False)
     
     def on_datePopover_clicked(self, button, datePopover):
         if datePopover.get_visible():
@@ -349,12 +353,12 @@ class Transactions():
     
     def on_dateRadio_toggled(self, *args):
         if self.monthYearRadio.get_active() == True:
-            self.month_year_sensitive(True)
-            self.range_sensitive(False)
+            self.month_year_visible(True)
+            self.range_visible(False)
             self.filter_entries()
         if self.rangeRadio.get_active() == True:
-            self.month_year_sensitive(False)
-            self.range_sensitive(True)
+            self.month_year_visible(False)
+            self.range_visible(True)
             self.filter_entries()
 
     def delete_category_confirm(self, button, label):
@@ -820,9 +824,13 @@ class Transactions():
             self.selected_month_index = self.data.allMonthMenu[self.row][self.data.TRANSACTION_MENU_ID_INDEX]
             self.filter_entries()
     
-    def month_year_sensitive(self, boolean):
-        self.dateComboMonth.set_sensitive(boolean)
-        self.dateComboYear.set_sensitive(boolean)
+    def month_year_visible(self, boolean):
+        self.dateLabelMonth.set_visible(boolean)
+        self.dateComboMonth.set_visible(boolean)
+        self.dateComboYear.set_visible(boolean)
+        self.dateLabelYear.set_visible(boolean)
+        # self.dateComboMonth.set_sensitive(boolean)
+        # self.dateComboYear.set_sensitive(boolean)
     
     def on_deleteButton_clicked(self, button, editPopover):
         if editPopover.get_visible():
@@ -847,9 +855,10 @@ class Transactions():
                                 self.data.edit_category(self.data.transactionsMenu[j][self.data.MENU_ID_INDEX],self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_ENTRY].get_text())
                     self.category_view_mode(i)
     
-    def range_sensitive(self, boolean):
-        self.dateButtonFrom.set_sensitive(boolean)
-        self.dateButtonTo.set_sensitive(boolean)
+    def range_visible(self, boolean):
+        self.dateButtonFrom.set_visible(boolean)
+        self.dateButtonTo.set_visible(boolean)
+        self.dateLabelTo.set_visible(boolean)
 
     def year_selected(self, listbox, *args):
         # To catch calls before widget exists.
