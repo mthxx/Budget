@@ -199,8 +199,10 @@ class Data():
             row = cur.fetchone()
             if row[0] == 0:
                 cur.execute('UPDATE transactions SET categoryID = -1 WHERE categoryID = ' + str(uniqueID))
+                cur.execute('UPDATE projections SET categoryID = -1 where categoryID = ' + str(uniqueID));
             elif row[0] == 1:
                 cur.execute('UPDATE transactions SET categoryID = -2 WHERE categoryID = ' + str(uniqueID))
+                cur.execute('UPDATE projections SET categoryID = -2 where categoryID = ' + str(uniqueID));
             cur.execute('delete from categories where categoryID = ' + str(uniqueID))
             con.commit()
             
@@ -332,7 +334,8 @@ class Data():
                 self.frequency = cur_frequency.fetchall()
                 self.frequency = self.frequency[0][0]
                 
-                cur_categoryNameType.execute("SELECT name, type FROM categories WHERE categoryID = ?", str(row[3]))
+                cur_categoryNameType.execute("SELECT name, type FROM categories WHERE categoryID = ?", (str(row[3]),))
+
                 self.categoryNameType = cur_categoryNameType.fetchall()
                 self.categoryName = self.categoryNameType[0][0]
                 self.categoryType = self.categoryNameType[0][1]
