@@ -337,6 +337,7 @@ class Transactions():
         self.deleteSelectorBox.set_margin_end(5)
 
         # Connect Widget Handlers
+        self.button.connect("clicked", self.on_deleteButton_clicked, self.editPopover)
         self.deleteCancelButton.connect("clicked", self.on_deleteButton_clicked, self.editPopover)
         self.deleteConfirmButton.connect("clicked", self.delete_category_confirm, label)
 
@@ -362,6 +363,7 @@ class Transactions():
             self.filter_entries()
 
     def delete_category_confirm(self, button, label):
+        #print("Hello")
         for i in range(len(self.menuListBox)):
             if self.menuListBox.get_row_at_index(i) == None:
                 return
