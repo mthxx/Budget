@@ -26,9 +26,10 @@ class Edit_Popover(Gtk.Window):
         
         #Initialize Data
         self.unique_id = 0
-        self.entryRows = 0
+        self.entryRow = 0
         self.editPopover = ""
         self.contentGrid = 0
+        self.dataEntry = 0
 
         # Create Widgets
         self.editGrid = Gtk.Grid()
@@ -96,10 +97,8 @@ class Edit_Popover(Gtk.Window):
 
     def on_cancelButton_clicked(self, button):
         self.editGrid.hide()
-        for i in range(0, len(self.entryRows)):
-            if self.entryRows[i][self.UNIQUE_ID_INDEX] == self.unique_id:
-                self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.EDIT_BUTTON_INDEX].show_all()
-                self.entryRows[i][self.ENTRY_GRID_INDEX].show_all()
+        self.entryRow[self.LAYOUT_WIDGET_INDEX][self.EDIT_BUTTON_INDEX].show_all()
+        self.entryRow[self.ENTRY_GRID_INDEX].show_all()
         self.contentGrid.queue_draw()
     
     def on_deleteButton_clicked(self, *args):
@@ -206,62 +205,60 @@ class Edit_Popover(Gtk.Window):
         self.cancelButton.set_margin_bottom(20)
        
         # Set Calendar to currently set date
-        self.set_calendar(self.data.transactions)
-        
+        self.set_calendar()
+ 
         # Replace label widgets with editing widgets
-        for i in range(0, len(self.entryRows)):
-            if self.entryRows[i][self.UNIQUE_ID_INDEX] == self.unique_id:
-                for j in range(0,len(self.data.transactionsMenu)):
-                    if self.data.transactionsMenu[j][self.data.MENU_NAME_INDEX] != "Uncategorized":
-                        self.categoryComboBoxText.append_text(self.data.transactionsMenu[j][self.data.MENU_NAME_INDEX])
-                    #if self.data.transactionsMenu[j][self.data.MENU_NAME_INDEX] == self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_text():
-                if self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_text() != "Uncategorized":
-                    for j in range(0,len(self.data.transactionsMenu)-2):
-                        self.categoryComboBoxText.set_active(j)
-                        if self.categoryComboBoxText.get_active_text() == self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_text():
-                            break
-                
-                # Style Edit Grid, Hide Entry Grid
-                self.editGrid.set_halign(Gtk.Align.CENTER)
-                self.editGrid.set_hexpand(True)
-                self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.EDIT_BUTTON_INDEX].hide()
-                self.entryRows[i][self.ENTRY_GRID_INDEX].hide()
-               
-                # Title
-                if self.view == "projection":
-                    self.titleEntry.set_text(self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.TITLE_LABEL_INDEX].get_text())
-                    self.editGrid.attach(self.titleLabel, 1,0,1,1)
-                    self.editGrid.attach(self.titleEntry,2,0,1,1)
-                
-                # Category
-                self.editGrid.attach(self.categoryLabel, 1,1,1,1)
-                self.editGrid.attach(self.categoryComboBoxText,2,1,1,1)
-                
-                # Date
-                self.calendarButton.set_label(self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.DATE_LABEL_INDEX].get_text())
-                self.editGrid.attach(self.calendarLabel,1,2,1,1)
-                self.editGrid.attach(self.calendarButton,2,2,1,1)
-                
-                # Cost
-                self.costEntry.set_text(self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.COST_LABEL_INDEX].get_text())
-                self.editGrid.attach(self.costLabel,1,3,1,1)
-                self.editGrid.attach(self.costEntry,2,3,1,1)
-                
-                # Description
-                self.descriptionEntry.set_text(self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.DESCRIPTION_LABEL_INDEX].get_text())
-                self.editGrid.attach(self.descriptionLabel,1,4,1,1)
-                self.editGrid.attach(self.descriptionEntry,2,4,1,1)
-                
-                # Add Submit/Cancel Button to popover
-                self.editGrid.attach(self.cancelButton,1,5,1,1)
-                self.editGrid.attach(self.submitButton,2,5,1,1)
+        #if self.view == "transaction":
+        for j in range(0,len(self.data.transactionsMenu)):
+            if self.data.transactionsMenu[j][self.data.MENU_NAME_INDEX] != "Uncategorized":
+                self.categoryComboBoxText.append_text(self.data.transactionsMenu[j][self.data.MENU_NAME_INDEX])
+        if self.entryRow[self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_text() != "Uncategorized":
+            for j in range(0,len(self.data.transactionsMenu)-2):
+                self.categoryComboBoxText.set_active(j)
+                if self.categoryComboBoxText.get_active_text() == self.entryRow[self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_text():
+                    break
+        
+        # Style Edit Grid, Hide Entry Grid
+        self.editGrid.set_halign(Gtk.Align.CENTER)
+        self.editGrid.set_hexpand(True)
+        self.entryRow[self.LAYOUT_WIDGET_INDEX][self.EDIT_BUTTON_INDEX].hide()
+        self.entryRow[self.ENTRY_GRID_INDEX].hide()
+       
+        # Title
+        if self.view == "projection":
+            self.titleEntry.set_text(self.entryRow[self.LAYOUT_WIDGET_INDEX][self.TITLE_LABEL_INDEX].get_text())
+            self.editGrid.attach(self.titleLabel, 1,0,1,1)
+            self.editGrid.attach(self.titleEntry,2,0,1,1)
+        
+        # Category
+        self.editGrid.attach(self.categoryLabel, 1,1,1,1)
+        self.editGrid.attach(self.categoryComboBoxText,2,1,1,1)
+        
+        # Date
+        self.calendarButton.set_label(self.entryRow[self.LAYOUT_WIDGET_INDEX][self.DATE_LABEL_INDEX].get_text())
+        self.editGrid.attach(self.calendarLabel,1,2,1,1)
+        self.editGrid.attach(self.calendarButton,2,2,1,1)
+        
+        # Cost
+        self.costEntry.set_text(self.entryRow[self.LAYOUT_WIDGET_INDEX][self.COST_LABEL_INDEX].get_text())
+        self.editGrid.attach(self.costLabel,1,3,1,1)
+        self.editGrid.attach(self.costEntry,2,3,1,1)
+        
+        # Description
+        self.descriptionEntry.set_text(self.entryRow[self.LAYOUT_WIDGET_INDEX][self.DESCRIPTION_LABEL_INDEX].get_text())
+        self.editGrid.attach(self.descriptionLabel,1,4,1,1)
+        self.editGrid.attach(self.descriptionEntry,2,4,1,1)
+        
+        # Add Submit/Cancel Button to popover
+        self.editGrid.attach(self.cancelButton,1,5,1,1)
+        self.editGrid.attach(self.submitButton,2,5,1,1)
 
-                # Attach and Show Edit Grid
-                self.entryRows[i][self.LAYOUT_GRID_INDEX].attach(self.editGrid, 0, 0, 1, 1)
-                self.contentGrid.queue_draw()
-                self.editGrid.show_all()
+        # Attach and Show Edit Grid
+        self.entryRow[self.LAYOUT_GRID_INDEX].attach(self.editGrid, 0, 0, 1, 1)
+        self.contentGrid.queue_draw()
+        self.editGrid.show_all()
     
-    def on_editDropdown_clicked(self, button, editPopover, unique_id, entryRows, contentGrid):
+    def on_editDropdown_clicked(self, button, editPopover, unique_id, entryRow, contentGrid, dataEntry):
         if editPopover.get_visible():
             editPopover.hide()
         else:
@@ -272,8 +269,9 @@ class Edit_Popover(Gtk.Window):
 
         self.editPopover = editPopover
         self.unique_id = unique_id
-        self.entryRows = entryRows
+        self.entryRow = entryRow
         self.contentGrid = contentGrid
+        self.dataEntry = dataEntry
 
     def on_submitButton_clicked(self, button):
         if self.categoryComboBoxText.get_active() < 0:
@@ -292,24 +290,18 @@ class Edit_Popover(Gtk.Window):
                 self.data.update_projection(self.titleEntry.get_text(), self.categoryComboBoxText.get_active_text(), self.year, self.month, self.day, 
                                     self.costEntry.get_text(), self.descriptionEntry.get_text(), self.unique_id)
  
-            for i in range(0, len(self.entryRows)):
-                if self.entryRows[i][self.UNIQUE_ID_INDEX] == self.unique_id:
-                    self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.EDIT_BUTTON_INDEX].show_all()
-                    self.entryRows[i][self.ENTRY_GRID_INDEX].show_all()
+            self.entryRow[self.LAYOUT_WIDGET_INDEX][self.EDIT_BUTTON_INDEX].show_all()
+            self.entryRow[self.ENTRY_GRID_INDEX].show_all()
             
             self.contentGrid.queue_draw()
     
-    def set_calendar(self,data):
+    def set_calendar(self):
         if self.view == "transaction":
-            for i in range(0, len(data)):
-                if self.data.transactions[i][self.data.TRANSACTION_ID_INDEX] == self.unique_id:
-                    self.calendar.select_month(self.data.transactions[i][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_MONTH_INDEX] - 1,
-                                                self.data.transactions[i][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_YEAR_INDEX])
-                    self.calendar.select_day(self.data.transactions[i][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_DAY_INDEX])
+            self.calendar.select_month(self.dataEntry[self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_MONTH_INDEX] - 1,
+                self.dataEntry[self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_YEAR_INDEX])
+            self.calendar.select_day(self.dataEntry[self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_DAY_INDEX])
         
         if self.view == "projection":
-            for i in range(0, len(data)):
-                if self.data.projections[i][self.data.PROJECTIONS_ID] == self.unique_id:
-                    self.calendar.select_month(self.data.projections[i][self.data.PROJECTIONS_START_MONTH] - 1,
-                                                self.data.projections[i][self.data.PROJECTIONS_START_YEAR])
-                    self.calendar.select_day(self.data.projections[i][self.data.PROJECTIONS_START_DAY])
+            self.calendar.select_month(self.dataEntry[self.data.PROJECTIONS_START_MONTH] - 1,
+                                        self.dataEntry[self.data.PROJECTIONS_START_YEAR])
+            self.calendar.select_day(self.dataEntry[self.data.PROJECTIONS_START_DAY])

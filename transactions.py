@@ -420,7 +420,6 @@ class Transactions():
             self.editPopover = Gtk.Popover.new(self.editButton)
             self.edit_popover = Edit_Popover(self.data, "transaction")
             self.editPopover.add(self.edit_popover.editGrid)
-            self.editButton.connect("clicked", self.edit_popover.on_editDropdown_clicked, self.editPopover, self.data.transactions[i][self.data.TRANSACTION_ID_INDEX], self.entryRows,  self.contentGrid)
 
             # Style Widgets
             self.entryGrid.set_halign(Gtk.Align.CENTER)
@@ -477,6 +476,7 @@ class Transactions():
                     self.transactionType = self.data.transactionsMenu[j][self.data.MENU_TYPE_INDEX]
             
             self.entryRows.append([self.layoutGrid, [self.categoryLabel, self.dateLabel, self.currencyLabel, self.costLabel, self.descriptionLabel, self.editButton], self.entryGrid, self.costGrid, self.data.transactions[i][self.data.TRANSACTION_ID_INDEX], self.transactionType])
+            self.editButton.connect("clicked", self.edit_popover.on_editDropdown_clicked, self.editPopover, self.data.transactions[i][self.data.TRANSACTION_ID_INDEX], self.entryRows[i],  self.contentGrid, self.data.transactions[i])
             self.contentGrid.show_all() 
         
     def editable_category(self, i):

@@ -856,6 +856,7 @@ class Projections():
         self.transactionViewGrid.attach(self.addButton,2,9,2,1)
         
         self.index = 10
+        self.count = 0
         for i in reversed(range(0,len(self.projections))):
             # Date String
             self.dateString = [self.projections[i][self.data.PROJECTIONS_START_YEAR],self.projections[i][self.data.PROJECTIONS_START_MONTH] - 1,self.projections[i][self.data.PROJECTIONS_START_DAY]]
@@ -888,7 +889,6 @@ class Projections():
             self.editPopover = Gtk.Popover.new(self.editButton)
             self.edit_popover = Edit_Popover(self.data, "projection")
             self.editPopover.add(self.edit_popover.editGrid)
-            self.editButton.connect("clicked", self.edit_popover.on_editDropdown_clicked, self.editPopover, self.projections[i][self.data.PROJECTIONS_ID], self.entryRows,  self.transactionViewGrid)
             
             # self.deleteCancelButton.connect("clicked", self.on_deleteButton_clicked, self.editPopover)
             # self.deleteConfirmButton.connect("clicked", self.delete_category_confirm, label)
@@ -949,6 +949,8 @@ class Projections():
             #         self.transactionType = self.data.transactionsMenu[j][self.data.MENU_TYPE_INDEX]
             
             self.entryRows.append([self.layoutGrid, [self.categoryLabel, self.dateLabel, self.currencyLabel, self.costLabel, self.descriptionLabel, self.editButton, self.titleLabel], self.entryGrid, self.costGrid, self.projections[i][self.data.PROJECTIONS_ID]])
+            self.editButton.connect("clicked", self.edit_popover.on_editDropdown_clicked, self.editPopover, self.projections[i][self.data.PROJECTIONS_ID], self.entryRows[self.count],  self.transactionViewGrid, self.projections[i])
+            self.count += 1
             self.transactionViewGrid.show_all() 
        
     def redisplay_info(self):
