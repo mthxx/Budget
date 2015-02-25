@@ -36,27 +36,35 @@ class Window(Gtk.Window):
 
         # --- Navigation Buttons ---
         # Create Navigation Buttons
-        self.overviewButton = Gtk.Button("Overview")
-        self.transactionsButton = Gtk.Button("Transactions")
-        self.projectionsButton = Gtk.Button("Projections")
-        self.navBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-
+        self.overviewRadio = Gtk.RadioButton.new_with_label(None, "Overview")
+        self.transactionsRadio = Gtk.RadioButton.new_with_label(None, "Transactions")
+        self.projectionsRadio = Gtk.RadioButton.new_with_label(None, "Projections")
+        
+        self.transactionsRadio.join_group(self.overviewRadio)
+        self.projectionsRadio.join_group(self.overviewRadio)
+        
+        self.radioNavBox = Gtk.Box(Gtk.Orientation.HORIZONTAL,1)
+        self.radioNavBox.pack_start(self.overviewRadio, True, True, 0)
+        self.radioNavBox.pack_start(self.transactionsRadio, True, True, 0)
+        self.radioNavBox.pack_start(self.projectionsRadio, True, True, 0)
+        
         # Style Navigation Buttons
-        self.overviewButton.set_size_request(100,32)
-        self.transactionsButton.set_size_request(100,32)
-        self.projectionsButton.set_size_request(100,32)
-        Gtk.StyleContext.add_class(self.navBox.get_style_context(), "linked")
+        self.radioNavBox.set_homogeneous(True)
+        self.radioNavBox.set_property("height-request", 32)
+        self.overviewRadio.set_property("draw-indicator",False)
+        self.transactionsRadio.set_property("draw-indicator",False)
+        self.projectionsRadio.set_property("draw-indicator",False)
+        Gtk.StyleContext.add_class(self.radioNavBox.get_style_context(), "linked")
 
-        # Connect Buttons to handler
-        self.overviewButton.connect("clicked", self.on_overviewButton_clicked)
-        self.transactionsButton.connect("clicked", self.on_transactionsButton_clicked)
-        self.projectionsButton.connect("clicked", self.on_projectionsButton_clicked)
+        # Connect Radio Buttons to handler
+        self.overviewRadio.connect("toggled", self.on_navRadio_toggled)
+        self.transactionsRadio.connect("toggled", self.on_navRadio_toggled)
+        self.projectionsRadio.connect("toggled", self.on_navRadio_toggled)
+        
+        self.radioStatus = "overview"
 
-        # Add Buttons to Navigation Box
-        self.navBox.add(self.overviewButton)
-        self.navBox.add(self.transactionsButton)
-        self.navBox.add(self.projectionsButton)
-        self.hb.set_custom_title(self.navBox)
+        # Add Navigation Radio Buttons to Navigation Box
+        self.hb.set_custom_title(self.radioNavBox)
         
         # --- Action Buttons ---
         # Create Widgets
@@ -120,24 +128,23 @@ class Window(Gtk.Window):
     
     def on_menuButton_clicked(self, *args):
         print("Menu Button Working!")
+    
+    def on_navRadio_toggled(self, *args):
+        if self.overviewRadio.get_active() == True:
+            self.radioStatus = "overview"
+            self.switch_to_overview()
+        elif self.transactionsRadio.get_active() == True:
+            self.radioStatus = "transactions"
+            self.switch_to_transactions()
+        elif self.projectionsRadio.get_active() == True:
+            self.radioStatus = "projections"
+            self.switch_to_projections()
 
-    # def on_notebook_switch(self, notebook, page, index, *args):
-    #     if index == 0:
-    #         self.hb.queue_draw()
-    #     if index == 1:
-    #         self.hb.queue_draw()
-    #     if index == 2:
-    #         self.hb.queue_draw()
-    #     if index == 3:
-    #         self.hb.queue_draw()
-    #     if index == 4:
-    #         self.hb.queue_draw()
-
-    def on_overviewButton_clicked(self, *args):
+    def switch_to_overview(self):
         self.notebook.set_current_page(0)
      
-    def on_transactionsButton_clicked(self, *args):
+    def switch_to_transactions(self):
         self.notebook.set_current_page(1)
     
-    def on_projectionsButton_clicked(self, *args):
+    def switch_to_projections(self):
         self.notebook.set_current_page(2)
