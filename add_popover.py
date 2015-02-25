@@ -54,6 +54,7 @@ class Add_Popover(Gtk.Window):
         self.radioStatus = "income"
         
         # Connect Widget Handlers
+        self.addEntry.connect("insert-text", self.data.check_amount_value)
         self.addIncomeRadio.connect("toggled", self.on_addRadio_toggled)
         
         # Add Widgets to Grid
@@ -133,5 +134,5 @@ class Add_Popover(Gtk.Window):
             self.data.add_transaction(self.addCategoryComboBoxText.get_active_text(), self.year, self.month, self.day, 
                                 self.addEntry.get_text(), self.addDescription.get_text(), self.data.LATEST_ID)
             
-            self.addEntry.set_text("")
+            #self.addEntry.set_text("")
             self.addDescription.set_text("")

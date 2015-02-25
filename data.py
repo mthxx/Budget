@@ -92,6 +92,7 @@ class Data():
     def __init__(self):
         #Indexes for data arrays
 
+        self.valid_numbers = ["1","2","3","4","5","6","7","8","9","0","."]
         self.transactionsMenu = []
         self.transactions = []
         self.incomeMenu = []
@@ -196,6 +197,13 @@ class Data():
             con.commit()
             
             self.refresh_data()
+    
+    def check_amount_value(self, widget, value, length, *args):
+        if value not in self.valid_numbers:
+            widget.stop_emission("insert-text")
+            #print(value)
+        # if boolean == False:
+    
 
     def connect_data_views(self, transaction_view, overview, projections):
         self.transaction_view = transaction_view

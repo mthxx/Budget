@@ -762,6 +762,7 @@ class Projections():
         for j in range(0, len(self.data.frequencyMenu)):
             self.frequencyComboBoxText.append_text(self.data.frequencyMenu[j][0])        
 
+        self.transactionAmountEntry.connect("insert-text", self.data.check_amount_value)
         self.frequencyComboBoxText.connect("changed",self.frequency_selected)
         self.selectDateRadio.connect("toggled", self.on_selectDateRadio_toggled)
         
