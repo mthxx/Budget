@@ -31,7 +31,6 @@ class main():
         for i in range(0, len(self.win.transactions.menuListBox)):
             if self.win.transactions.editable_category(i):
                 self.win.transactions.category_view_mode(i)
-        self.win.projections.add_view_mode(False)
         
         self.win.connect('key-press-event', self.on_key_function)
         self.win.set_icon_from_file("logo.png")
