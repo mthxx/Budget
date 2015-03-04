@@ -57,10 +57,10 @@ class Projections():
 
         # Create Notebooks
         self.projectionsNotebook = Gtk.Notebook()
-        self.projectionsNotebook.insert_page(self.dayViewGrid, self.dayLabel,0)
-        self.projectionsNotebook.insert_page(self.weekViewGrid, self.weekLabel,1)
+        #self.projectionsNotebook.insert_page(self.dayViewGrid, self.dayLabel,0)
+        #self.projectionsNotebook.insert_page(self.weekViewGrid, self.weekLabel,1)
         self.projectionsNotebook.insert_page(self.monthViewGrid, self.monthLabel,2)
-        self.projectionsNotebook.insert_page(self.yearViewGrid, self.yearLabel,3)
+        #self.projectionsNotebook.insert_page(self.yearViewGrid, self.yearLabel,3)
         self.projectionsNotebook.set_show_tabs(False)
         
         self.gridScrolledWindow.add(self.gridViewport)
@@ -146,6 +146,7 @@ class Projections():
         self.addPopover.add(self.addPopoverGrid)
         self.addButton.connect("clicked", self.on_addButton_clicked)
 
+
         self.transactionTitleLabel = Gtk.Label("Title:")
         self.transactionTitleEntry = Gtk.Entry()
         
@@ -169,12 +170,12 @@ class Projections():
         self.frequencyLabel = Gtk.Label("Frequency:")
         self.frequencyComboBoxText = Gtk.ComboBoxText()
             
-        self.startDateLabel = Gtk.Label("Start Date:")
+        self.startDateLabel = Gtk.Label("Date:")
         self.startDate = Gtk.Calendar()
         
-        self.selectDateRadio = Gtk.RadioButton.new_with_label(None, "Select Date")
         self.neverRadio = Gtk.RadioButton.new_with_label(None, "Never")
-        self.neverRadio.join_group(self.selectDateRadio)
+        self.selectDateRadio = Gtk.RadioButton.new_with_label(None, "Select Date")
+        self.selectDateRadio.join_group(self.neverRadio)
 
         self.endDateLabel = Gtk.Label("End Date:")
         self.endDate = Gtk.Calendar()
@@ -262,10 +263,10 @@ class Projections():
         self.endDate.set_margin_end(20)
         
         self.cancelButton.set_margin_start(20)
-        self.cancelButton.set_margin_top(10)
+        self.cancelButton.set_margin_top(30)
         self.cancelButton.set_margin_bottom(20)
         self.submitButton.set_margin_start(20)
-        self.submitButton.set_margin_top(10)
+        self.submitButton.set_margin_top(30)
         self.submitButton.set_margin_bottom(20)
         self.submitButton.set_margin_end(20)
         
@@ -292,14 +293,14 @@ class Projections():
         self.addPopoverGrid.attach(self.addCategoryComboBoxText,2,5,2,1)
         self.addPopoverGrid.attach(self.frequencyLabel,1,6,1,1)
         self.addPopoverGrid.attach(self.frequencyComboBoxText,2,6,2,1)
-        self.addPopoverGrid.attach(self.startDateLabel,1,7,1,1)
-        self.addPopoverGrid.attach(self.startDate,2,7,2,1)
-        self.addPopoverGrid.attach(self.endDateLabel,1,8,1,1)
-        self.addPopoverGrid.attach(self.selectDateRadio,2,8,1,1)
-        self.addPopoverGrid.attach(self.neverRadio,3,8,1,1)
-        self.addPopoverGrid.attach(self.endDate,2,9,2,1)
-        self.addPopoverGrid.attach(self.cancelButton,1,10,1,1)
-        self.addPopoverGrid.attach(self.submitButton,2,10,2,1)        
+        self.addPopoverGrid.attach(self.startDateLabel,4,1,1,4)
+        self.addPopoverGrid.attach(self.startDate,5,1,2,4)
+        self.addPopoverGrid.attach(self.endDateLabel,4,5,1,1)
+        self.addPopoverGrid.attach(self.neverRadio,5,5,1,1)
+        self.addPopoverGrid.attach(self.selectDateRadio,6,5,1,1)
+        self.addPopoverGrid.attach(self.endDate,5,6,2,4)
+        self.addPopoverGrid.attach(self.cancelButton,4,10,1,1)
+        self.addPopoverGrid.attach(self.submitButton,5,10,2,1)        
     
     def frequency_selected(self, listbox, *args):
         # To catch calls before widget exists.
@@ -308,16 +309,17 @@ class Projections():
         else:
             self.row = self.data.frequencyMenu[listbox.get_active()][0]
             if listbox.get_active() == 0:
+                self.startDateLabel.set_text("Date:")
                 self.endDateLabel.hide()
                 self.selectDateRadio.hide()
                 self.neverRadio.hide()
                 self.endDate.hide()
                 self.transactionViewGrid.queue_draw()
             else:
+                self.startDateLabel.set_text("Start Date:")
                 self.selectDateRadio.show()
                 self.neverRadio.show()
                 self.endDateLabel.show()
-                self.endDate.show()
                 self.transactionViewGrid.queue_draw()
 
     def generate_transactions_view(self):
@@ -609,6 +611,10 @@ class Projections():
         else:
             self.reset_fields()
             self.addPopover.show_all()
+            self.neverRadio.hide()
+            self.selectDateRadio.hide()
+            self.endDateLabel.hide()
+            self.endDate.hide()
         
     def on_submitButton_clicked(self, *args):
         if self.transactionTitleEntry.get_text() == "":
@@ -697,9 +703,13 @@ class Projections():
     def on_selectDateRadio_toggled(self, *args):
         if self.selectDateRadio.get_active() == True:
             self.endDate.show()
+            self.frequencyLabel.set_margin_bottom(103)
+            self.frequencyComboBoxText.set_margin_bottom(103)
             self.transactionViewGrid.queue_draw()
         if self.neverRadio.get_active() == True:
             self.endDate.hide()
+            self.frequencyLabel.set_margin_bottom(0)
+            self.frequencyComboBoxText.set_margin_bottom(0)
             self.transactionViewGrid.queue_draw()
     
     def on_monthPreviousButton_clicked(self, *args):
@@ -912,11 +922,14 @@ class Projections():
         self.transactionDescriptionEntry.set_text("")
         self.addIncomeRadio.set_active(True)
         self.addCategoryComboBoxText.set_active(-1)
-        self.frequencyComboBoxText.set_active(0)
+        self.frequencyComboBoxText.set_active(-1)
+        self.startDateLabel.set_text("Date:")
         self.startDate.select_month(self.currentMonth - 1, self.currentYear)
         self.startDate.select_day(self.currentDay)
+        self.neverRadio.set_active(True)
         self.endDate.select_month(self.currentMonth - 1, self.currentYear)
         self.endDate.select_day(self.currentDay)
+        
     
     def view_selected(self, listbox, *args):
         self.projectionsNotebook.set_current_page(listbox.get_active())
