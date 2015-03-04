@@ -2,10 +2,13 @@
 [Desktop Entry]
 Version=0.1
 Name=Budget
+GenericName=Finance 
+X-GNOME_FullName=Budget 
 Comment=Personal Finance
+Keywords=Budget;Finance;Money;
 Exec=/home/mat/Development/Budget/budget
-Icon=/home/mat/Development/Budget/logo.png
+Icon=budget
 Terminal=false
 Type=Application
-Categories=Application;Finance;Money;Budget;
+Categories=Budget;Finance;Money;
  
