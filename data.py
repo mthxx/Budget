@@ -1,13 +1,22 @@
 from gi.repository import Gtk, Gio
 from decimal import *
-import os.path, sys 
+import os.path, sys
 import sqlite3 as lite
-
 class Data():
+    # Database location
+    home = os.path.expanduser("~")
+    local_path = home + '/.local/share/budget'
+    db_path = local_path + '/budget.db'
+    # For a separate development database, comment out the above 3 lines and uncomment the 1 line below
+    #db_path = 'budget.db'
+    
     # Create Database if none exists
-    if(os.path.isfile('budget.db') == False):
+    if(os.path.isfile(db_path) == False):
+        if os.path.exists(local_path) == False:
+            os.mkdir(local_path) 
+        
         try:
-            con = lite.connect('budget.db')
+            con = lite.connect(db_path)
 
             # Create Database Tables
             cur = con.cursor()
@@ -121,51 +130,52 @@ class Data():
                             ]
 
     def add_category(self, menuType, category):
-        con = lite.connect('budget.db')
-        cur = con.cursor()
-        
-        if menuType == "income":
-            cur.execute('SELECT MAX(categoryOrder) from categories where type = ' + str(0))
-            row = cur.fetchone()
-            self.INCOME_ORDER_ID = row[0]
-            self.INCOME_ORDER_ID += 1
-        if menuType == "expense":
-            cur.execute('SELECT MAX(categoryOrder) from categories where type = ' + str(1))
-            row = cur.fetchone()
-            self.EXPENSE_ORDER_ID = row[0]
-            self.EXPENSE_ORDER_ID += 1
-        cur.execute('SELECT MAX(categoryID) from categories;')
-        row = cur.fetchone()
-        self.LATEST_MENU_ID = row[0]
-        self.LATEST_MENU_ID += 1
-        if(os.path.isfile('budget.db')):
-            con = lite.connect('budget.db')
+        if(os.path.isfile(self.db_path)):
+            con = lite.connect(self.db_path)
             cur = con.cursor()
-            
-            typeID = []
-            typeID.append(menuType)
-            cur.execute("SELECT typeID from categoryType where type = ?", typeID)
-            typeID = cur.fetchall()
-            typeID = typeID[0][0]
             
             if menuType == "income":
-                row = [(str(typeID),str(category),str(self.INCOME_ORDER_ID),str(self.LATEST_MENU_ID))]
+                cur.execute('SELECT MAX(categoryOrder) from categories where type = ' + str(0))
+                row = cur.fetchone()
+                self.INCOME_ORDER_ID = row[0]
+                self.INCOME_ORDER_ID += 1
             if menuType == "expense":
-                row = [(str(typeID),str(category),str(self.EXPENSE_ORDER_ID),str(self.LATEST_MENU_ID))]
-        
-            cur = con.cursor()
-            cur.execute('INSERT INTO categories VALUES(?,?,?,?)', row[0])
-            con.commit()
+                cur.execute('SELECT MAX(categoryOrder) from categories where type = ' + str(1))
+                row = cur.fetchone()
+                self.EXPENSE_ORDER_ID = row[0]
+                self.EXPENSE_ORDER_ID += 1
+            cur.execute('SELECT MAX(categoryID) from categories;')
+            row = cur.fetchone()
+            self.LATEST_MENU_ID = row[0]
+            self.LATEST_MENU_ID += 1
+            if(os.path.isfile('budget.db')):
+                con = lite.connect(self.db_path)
+                cur = con.cursor()
+                
+                typeID = []
+                typeID.append(menuType)
+                cur.execute("SELECT typeID from categoryType where type = ?", typeID)
+                typeID = cur.fetchall()
+                typeID = typeID[0][0]
+                
+                if menuType == "income":
+                    row = [(str(typeID),str(category),str(self.INCOME_ORDER_ID),str(self.LATEST_MENU_ID))]
+                if menuType == "expense":
+                    row = [(str(typeID),str(category),str(self.EXPENSE_ORDER_ID),str(self.LATEST_MENU_ID))]
+            
+                cur = con.cursor()
+                cur.execute('INSERT INTO categories VALUES(?,?,?,?)', row[0])
+                con.commit()
 
-            self.refresh_data()   
+                self.refresh_data()   
  
     def add_transaction(self, category, year, month, day, value, description, transactionID):
         for i in range(0,len(self.transactionsMenu)):
             if category == self.transactionsMenu[i][self.MENU_NAME_INDEX]:
                 category = self.transactionsMenu[i][self.MENU_ID_INDEX]
 
-        if(os.path.isfile('budget.db')):
-            con = lite.connect('budget.db')
+        if(os.path.isfile(self.db_path)):
+            con = lite.connect(self.db_path)
             row = [(str(category),str(year),str(month),str(day),str(value),str(description),str(transactionID))]
         
             cur = con.cursor()
@@ -179,8 +189,8 @@ class Data():
             if category == self.transactionsMenu[i][self.MENU_NAME_INDEX]:
                 category = self.transactionsMenu[i][self.MENU_ID_INDEX]
 
-        if(os.path.isfile('budget.db')):
-            con = lite.connect('budget.db')
+        if(os.path.isfile(self.db_path)):
+            con = lite.connect(self.db_path)
             cur = con.cursor()
 
             if selected == "income":
@@ -211,8 +221,8 @@ class Data():
         self.projections_view = projections
         
     def delete_category(self, uniqueID):
-        if(os.path.isfile('budget.db')):
-            con = lite.connect('budget.db')
+        if(os.path.isfile(self.db_path)):
+            con = lite.connect(self.db_path)
         
             cur = con.cursor()
             cur.execute('SELECT type FROM categories WHERE categoryID = '+ str(uniqueID))
@@ -240,8 +250,8 @@ class Data():
             self.refresh_data()   
     
     def delete_transaction(self, uniqueID):
-        if(os.path.isfile('budget.db')):
-            con = lite.connect('budget.db')
+        if(os.path.isfile(self.db_path)):
+            con = lite.connect(self.db_path)
             cur = con.cursor()
             cur.execute('DELETE FROM transactions WHERE transactionID = ' + str(uniqueID))
             con.commit()
@@ -249,8 +259,8 @@ class Data():
             self.refresh_data()
     
     def delete_projection(self, uniqueID):
-        if(os.path.isfile('budget.db')):
-            con = lite.connect('budget.db')
+        if(os.path.isfile(self.db_path)):
+            con = lite.connect(self.db_path)
             cur = con.cursor()
             cur.execute('DELETE FROM projections WHERE projectionID = ' + str(uniqueID))
             con.commit()
@@ -258,8 +268,8 @@ class Data():
             self.refresh_data()
     
     def edit_category(self, uniqueID, newLabel):
-        if(os.path.isfile('budget.db')):
-            con = lite.connect('budget.db')
+        if(os.path.isfile(self.db_path)):
+            con = lite.connect(self.db_path)
             row = [(str(newLabel),str(uniqueID))]
         
             cur = con.cursor()
@@ -286,8 +296,8 @@ class Data():
 
     def import_data(self):
         
-        if(os.path.isfile('budget.db')):
-            con = lite.connect('budget.db')
+        if(os.path.isfile(self.db_path)):
+            con = lite.connect(self.db_path)
 
             cur = con.cursor()
             cur.execute('SELECT * FROM categories WHERE type = 0 ORDER BY categoryOrder;')
@@ -643,8 +653,8 @@ class Data():
             if category == self.transactionsMenu[i][self.MENU_NAME_INDEX]:
                 category = self.transactionsMenu[i][self.MENU_ID_INDEX]
 
-        if(os.path.isfile('budget.db')):
-            con = lite.connect('budget.db')
+        if(os.path.isfile(self.db_path)):
+            con = lite.connect(self.db_path)
             row = [(str(category),str(year),str(month),str(day),str(value),str(description),str(transactionID))]
 
             cur = con.cursor()
@@ -658,8 +668,8 @@ class Data():
             if category == self.transactionsMenu[i][self.MENU_NAME_INDEX]:
                 category = self.transactionsMenu[i][self.MENU_ID_INDEX]
 
-        if(os.path.isfile('budget.db')):
-            con = lite.connect('budget.db')
+        if(os.path.isfile(self.db_path)):
+            con = lite.connect(self.db_path)
             row = [(str(title),str(category),str(year),str(month),str(day),str(value),str(description),str(projectionID))]
 
             cur = con.cursor()
