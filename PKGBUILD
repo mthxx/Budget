@@ -1,25 +1,15 @@
 # Maintainer: Marc Thomas <mat at mthx dot org>
-pkgname=budget
-pkgver=0.0.1
+pkgname=budget-git
+pkgver=0.1
 pkgrel=1
 pkgdesc="Personal finance application built for the Gnome desktop (alpha version)"
-arch=(i686 x86_64)
+arch=('i686' 'x86_64')
 url="https://github.com/mthxx/Budget"
-license=('GPL')
-groups=()
-depends=()
-makedepends=()
-optdepends=()
-provides=('budget')
-conflicts=()
-replaces=()
-backup=()
-options=()
+license=('GPL2')
 install= budget.install
-changelog=
-source=($pkgname-$pkgver.tar.gz)
-noextract=()
+source=(git://github.com/mthxx/Budget)
 sha256sums=() #autofill using updpkgsums
+md5sums=('SKIP')
 
 build() {
   cd "$pkgname-$pkgver"
