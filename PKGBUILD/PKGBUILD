@@ -8,17 +8,20 @@ url="https://github.com/mthxx/Budget"
 license=('GPL2')
 install= budget.install
 source=(git://github.com/mthxx/Budget)
-sha256sums=() #autofill using updpkgsums
 md5sums=('SKIP')
 
 build() {
-  cd "$pkgname-$pkgver"
-
+  cd Budget
   ./configure --prefix=/usr
   make
 }
 
 package() {
-    cd "$pkgname-$pkgver"
-    make DESTDIR="$pkgdir/" install
+    cd Budget
+    make DESTDIR="$pkgdir" install
+}
+
+pkgver() {
+    cd Budget
+    git describe --tags | sed 's/^v//; s/-/.r/; s/-/./'
 }
