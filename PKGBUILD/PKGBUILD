@@ -23,5 +23,5 @@ package() {
 
 pkgver() {
     cd Budget
-    git describe --tags | sed 's/^v//; s/-/.r/; s/-/./'
+    git describe | sed 's/^v//; s/-/.r/; s/-/./'
 }

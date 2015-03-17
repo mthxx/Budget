@@ -1,3 +1,5 @@
+# This file is currently irrelavant. Until a standard is defined, simply ignore this.
+
 CLASS_LEVEL_VARIABLE               |  All Caps
 
 self.instanceLevelVariable         |  Camel Case
