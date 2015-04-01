@@ -1,3 +1,3 @@
-from . import main
+from budget import main
 
 main()
