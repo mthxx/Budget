@@ -14,7 +14,7 @@ class Window(Gtk.Window):
         Gtk.StyleContext.add_provider_for_screen(Gdk.Screen.get_default(), self.provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
         Gtk.Window.__init__(self, title="Budget")
-        #self.set_default_size(500, 500)
+        self.set_default_size(500, 500)
         
         # Initialize Views
         self.overview = Overview(self.data)

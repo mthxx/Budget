@@ -10,14 +10,14 @@ class main():
     def __init__(self):
         # If a database file doesn't exist, create one
         # This should run only on the first launch of the application
-        if(os.path.isfile('database.txt')) == False:
-            uncategorizedIncomeString = "menu,income,Uncategorized,-1\n"
-            uncategorizedExpenseString = "menu,expense,Uncategorized,-2\n"
+        #if(os.path.isfile('database.txt')) == False:
+        #    uncategorizedIncomeString = "menu,income,Uncategorized,-1\n"
+        #    uncategorizedExpenseString = "menu,expense,Uncategorized,-2\n"
             
-            f = open('database.txt', 'w')
-            f.write(uncategorizedIncomeString)
-            f.write(uncategorizedExpenseString)
-            f.close()
+            #f = open('database.txt', 'w')
+            #f.write(uncategorizedIncomeString)
+            #f.write(uncategorizedExpenseString)
+            #f.close()
 
         self.data = Data()
         self.data.import_data()
@@ -54,5 +54,5 @@ class main():
             if event.keyval == 51:
                 self.win.notebook.set_current_page(2)
 
-if __name__=='__main__':
-    main()
+#if __name__=='__main__':
+#    main()
