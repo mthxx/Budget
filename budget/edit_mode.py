@@ -1,6 +1,6 @@
 from gi.repository import Gtk, Gio, Gdk
 
-class Edit_Popover(Gtk.Window):
+class Edit_Entry(Gtk.Window):
 
     def __init__(self, data, view):
         self.data = data
