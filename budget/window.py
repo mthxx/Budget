@@ -1,9 +1,8 @@
 from gi.repository import Gtk, Gio, Gdk
 from overview import Overview
 from transactions import Transactions
-from reports import Reports
 from projections import Projections
-from add_popover import Add_Popover
+from add_popover import Add_Entry_Popover
 
 class Window(Gtk.Window):
 
@@ -19,7 +18,6 @@ class Window(Gtk.Window):
         # Initialize Views
         self.overview = Overview(self.data)
         self.transactions = Transactions(self.data)
-        self.reports = Reports()
         self.projections = Projections(self.data)
 
         # --- Header Bar ---
@@ -71,9 +69,9 @@ class Window(Gtk.Window):
         self.addButton = Gtk.Button()
         self.menuButton = Gtk.MenuButton();
         
-        self.addPopover = Gtk.Popover.new(self.addButton)
-        self.add_popover = Add_Popover(self.data)
-        self.addPopover.add(self.add_popover.addGrid)
+        self.addEntryPopover = Gtk.Popover.new(self.addButton)
+        self.add_entry_popover = Add_Entry_Popover(self.data)
+        self.addEntryPopover.add(self.add_entry_popover.addGrid)
        
         # Add Images
         self.addIcon = Gio.ThemedIcon(name="list-add-symbolic")
@@ -88,7 +86,7 @@ class Window(Gtk.Window):
         self.menuButton.set_size_request(32,32)
         
         # Connect to handler
-        self.addButton.connect("clicked", self.add_popover.on_addButton_clicked, self.addPopover)
+        self.addButton.connect("clicked", self.add_entry_popover.on_addButton_clicked, self.addEntryPopover)
         self.menuButton.connect("clicked", self.on_menuButton_clicked)
         
         # Pack Header Bar 
@@ -121,10 +119,10 @@ class Window(Gtk.Window):
         self.data.connect_data_views(self.transactions, self.overview, self.projections)
     
     def on_addButton_clicked(self, *args):
-        if self.addPopover.get_visible():
-            self.addPopover.hide()
+        if self.addEntryPopover.get_visible():
+            self.addEntryPopover.hide()
         else:
-            self.addPopover.show_all()
+            self.addEntryPopover.show_all()
     
     def on_menuButton_clicked(self, *args):
         print("Menu Button Working!")

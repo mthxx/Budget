@@ -1,6 +1,6 @@
 from gi.repository import Gtk, Gio, Gdk
-from edit_popover import Edit_Popover
-from add_category_popover import Add_Category_Popover
+from edit_mode import Edit_Entry
+from add_popover import Add_Category_Popover
 import datetime
 
 class Transactions():
@@ -315,7 +315,7 @@ class Transactions():
         self.button.add(self.image)
         self.button.show_all()
         
-        self.editPopover = Gtk.Popover.new(self.button)
+        self.editView = Gtk.Popover.new(self.button)
         
         self.editGrid = Gtk.Grid()
         
@@ -337,8 +337,8 @@ class Transactions():
         self.deleteSelectorBox.set_margin_end(5)
 
         # Connect Widget Handlers
-        self.button.connect("clicked", self.on_deleteButton_clicked, self.editPopover)
-        self.deleteCancelButton.connect("clicked", self.on_deleteButton_clicked, self.editPopover)
+        self.button.connect("clicked", self.on_deleteButton_clicked, self.editView)
+        self.deleteCancelButton.connect("clicked", self.on_deleteButton_clicked, self.editView)
         self.deleteConfirmButton.connect("clicked", self.delete_category_confirm, label)
 
         self.deleteSelectorBox.add(self.deleteCancelButton)
@@ -348,7 +348,7 @@ class Transactions():
         self.editGrid.attach(self.confirmLabelLine2, 0, 1, 2, 1)
         self.editGrid.attach(self.deleteSelectorBox, 0, 2, 2, 1)
         
-        self.editPopover.add(self.editGrid)
+        self.editView.add(self.editGrid)
 
         return self.button
     
@@ -417,9 +417,9 @@ class Transactions():
             
             # Create Edit Popover
             self.editButton = Gtk.Button()
-            self.editPopover = Gtk.Popover.new(self.editButton)
-            self.edit_popover = Edit_Popover(self.data, "transaction")
-            self.editPopover.add(self.edit_popover.editGrid)
+            self.editView = Gtk.Popover.new(self.editButton)
+            self.edit_view = Edit_Entry(self.data, "transaction")
+            self.editView.add(self.edit_view.editGrid)
 
             # Style Widgets
             self.entryGrid.set_halign(Gtk.Align.CENTER)
@@ -476,7 +476,7 @@ class Transactions():
                     self.transactionType = self.data.transactionsMenu[j][self.data.MENU_TYPE_INDEX]
             
             self.entryRows.append([self.layoutGrid, [self.categoryLabel, self.dateLabel, self.currencyLabel, self.costLabel, self.descriptionLabel, self.editButton], self.entryGrid, self.costGrid, self.data.transactions[i][self.data.TRANSACTION_ID_INDEX], self.transactionType])
-            self.editButton.connect("clicked", self.edit_popover.on_editDropdown_clicked, self.editPopover, self.data.transactions[i][self.data.TRANSACTION_ID_INDEX], self.entryRows[i],  self.contentGrid, self.data.transactions[i])
+            self.editButton.connect("clicked", self.edit_view.on_editDropdown_clicked, self.editView, self.data.transactions[i][self.data.TRANSACTION_ID_INDEX], self.entryRows[i],  self.contentGrid, self.data.transactions[i])
             self.contentGrid.show_all() 
         
     def editable_category(self, i):
@@ -834,11 +834,11 @@ class Transactions():
         # self.dateComboMonth.set_sensitive(boolean)
         # self.dateComboYear.set_sensitive(boolean)
     
-    def on_deleteButton_clicked(self, button, editPopover):
-        if editPopover.get_visible():
-            editPopover.hide()
+    def on_deleteButton_clicked(self, button, editView):
+        if editView.get_visible():
+            editView.hide()
         else:
-            editPopover.show_all()
+            editView.show_all()
 
     def on_selectButton_clicked(self, *args):
         if self.editMode == 0:

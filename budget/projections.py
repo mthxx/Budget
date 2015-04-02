@@ -1,6 +1,6 @@
 from gi.repository import Gtk, Gio
 import datetime, calendar
-from edit_popover import Edit_Popover
+from edit_mode import Edit_Entry
 
 class Projections():
         
@@ -490,9 +490,9 @@ class Projections():
             
             # Create Edit Popover
             self.editButton = Gtk.Button()
-            self.editPopover = Gtk.Popover.new(self.editButton)
-            self.edit_popover = Edit_Popover(self.data, "projection")
-            self.editPopover.add(self.edit_popover.editGrid)
+            self.editView = Gtk.Popover.new(self.editButton)
+            self.edit_view = Edit_Entry(self.data, "projection")
+            self.editView.add(self.edit_view.editGrid)
             
             # Style Widgets
             self.entryGrid.set_halign(Gtk.Align.CENTER)
@@ -547,7 +547,7 @@ class Projections():
             self.transactionType = ""
             
             self.entryRows.append([self.layoutGrid, [self.categoryLabel, self.dateLabel, self.currencyLabel, self.costLabel, self.descriptionLabel, self.editButton, self.titleLabel], self.entryGrid, self.costGrid, self.projections[i][self.data.PROJECTIONS_ID]])
-            self.editButton.connect("clicked", self.edit_popover.on_editDropdown_clicked, self.editPopover, self.projections[i][self.data.PROJECTIONS_ID], self.entryRows[self.count],  self.transactionViewGrid, self.projections[i])
+            self.editButton.connect("clicked", self.edit_view.on_editDropdown_clicked, self.editView, self.projections[i][self.data.PROJECTIONS_ID], self.entryRows[self.count],  self.transactionViewGrid, self.projections[i])
             self.count += 1
             self.transactionViewGrid.show_all() 
  
