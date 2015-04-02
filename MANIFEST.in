@@ -1,0 +1,3 @@
+include README.md
+include budget/*.css
+include budget/*.png

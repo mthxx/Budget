@@ -1,19 +1,23 @@
 from setuptools import setup, find_packages
 
-setup(
-    name = "Budget",
-    version = "0.1",
-    description = "Personal Finance",
-    author = "Marc Thomas",
-    author_email = "mat at mthx dot org",
-    url = "http://github.com/mthxx/budget",
-    package_dir = {'budget' : 'budget'},
-    #packages = ['budget'],
-    package_data = {'budget':['*.png','*.css'],},
-    packages=find_packages(),
-    include_package_data=True,
-    entry_points={'gui_scripts': ['budget = budget.budget:init']},
-    license = "GPL v2.0",
-    keywords = "budget finance mthx money",
-)
+try:
+    long_description = open("README.rst").read()
+except IOError:
+    long_description = ""
 
+setup(
+    name="budget",
+    version="0.1.0",
+    description="Personal Finance",
+    license="GPL v2.0",
+    author="Marc Thomas",
+    author_email = "mat@mthx.org",
+    url = "http://github.com/mthxx/budget",
+    packages=find_packages(),
+    install_requires=[],
+    long_description=long_description,
+    classifiers=[
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 3.4",
+    ]
+)
