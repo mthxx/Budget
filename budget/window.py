@@ -42,24 +42,24 @@ class Window(Gtk.Window):
         self.projectionsRadio.join_group(self.overviewRadio)
         
         self.radioNavBox = Gtk.Box(Gtk.Orientation.HORIZONTAL,1)
-        self.radioNavBox.pack_start(self.overviewRadio, True, True, 0)
+        #self.radioNavBox.pack_start(self.overviewRadio, True, True, 0)
         self.radioNavBox.pack_start(self.transactionsRadio, True, True, 0)
         self.radioNavBox.pack_start(self.projectionsRadio, True, True, 0)
         
         # Style Navigation Buttons
         self.radioNavBox.set_homogeneous(True)
         self.radioNavBox.set_property("height-request", 32)
-        self.overviewRadio.set_property("draw-indicator",False)
+        #self.overviewRadio.set_property("draw-indicator",False)
         self.transactionsRadio.set_property("draw-indicator",False)
         self.projectionsRadio.set_property("draw-indicator",False)
         Gtk.StyleContext.add_class(self.radioNavBox.get_style_context(), "linked")
 
         # Connect Radio Buttons to handler
-        self.overviewRadio.connect("toggled", self.on_navRadio_toggled)
+        #self.overviewRadio.connect("toggled", self.on_navRadio_toggled)
         self.transactionsRadio.connect("toggled", self.on_navRadio_toggled)
         self.projectionsRadio.connect("toggled", self.on_navRadio_toggled)
         
-        self.radioStatus = "overview"
+        self.radioStatus = "transactions"
 
         # Add Navigation Radio Buttons to Navigation Box
         self.hb.set_custom_title(self.radioNavBox)
@@ -95,20 +95,20 @@ class Window(Gtk.Window):
         
         # --- Notebooks ---
         # Create Labels
-        self.overviewLabel = Gtk.Label("Overview")
+        #self.overviewLabel = Gtk.Label("Overview")
         self.transactionsLabel = Gtk.Label("Transactions")
         self.projectionsLabel = Gtk.Label("Projections")
 
         # Style Notebook 
-        self.overviewLabel.set_hexpand(True)
+        #self.overviewLabel.set_hexpand(True)
         self.transactionsLabel.set_hexpand(True)
         self.projectionsLabel.set_hexpand(True)
        
         # Create Notebook
         self.notebook = Gtk.Notebook()
-        self.notebook.insert_page(self.overview.grid, self.overviewLabel, 0)
+        #self.notebook.insert_page(self.overview.grid, self.overviewLabel, 0)
         self.notebook.insert_page(self.transactions.grid, self.transactionsLabel, 1)
-        self.notebook.insert_page(self.projections.grid, self.projectionsLabel, 3)
+        self.notebook.insert_page(self.projections.grid, self.projectionsLabel, 2)
         self.add(self.notebook)
         self.notebook.set_show_tabs(False)
         
@@ -142,7 +142,7 @@ class Window(Gtk.Window):
         self.notebook.set_current_page(0)
      
     def switch_to_transactions(self):
-        self.notebook.set_current_page(1)
+        self.notebook.set_current_page(0)
     
     def switch_to_projections(self):
-        self.notebook.set_current_page(2)
+        self.notebook.set_current_page(1)

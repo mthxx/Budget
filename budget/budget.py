@@ -40,8 +40,8 @@ class main():
             if event.keyval == 50:
                 self.win.notebook.set_current_page(1)
             # alt+3
-            if event.keyval == 51:
-                self.win.notebook.set_current_page(2)
+            #if event.keyval == 51:
+            #    self.win.notebook.set_current_page(2)
 
 #if __name__=='__main__':
 #    main()
