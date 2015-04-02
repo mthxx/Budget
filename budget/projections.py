@@ -11,6 +11,10 @@ class Projections():
         self.grid = Gtk.Grid(name="projectionsGrid")        
         self.entryRows = []
         self.totalSum = 0  
+        
+        self.currentDay = datetime.datetime.now().day
+        self.currentMonth = datetime.datetime.now().month
+        self.currentYear = datetime.datetime.now().year
 
         # Create Grids
         self.sideGrid = Gtk.Grid()
@@ -466,90 +470,93 @@ class Projections():
         self.index = 10
         self.count = 0
         for i in reversed(range(0,len(self.projections))):
-            # Date String
-            self.dateString = [self.projections[i][self.data.PROJECTIONS_START_YEAR],self.projections[i][self.data.PROJECTIONS_START_MONTH] - 1,self.projections[i][self.data.PROJECTIONS_START_DAY]]
-            self.dateString = self.data.translate_date(self.dateString, "edit")
-            
-            self.layoutGrid = Gtk.Grid(name="layoutGrid")
-            self.entryGrid = Gtk.Grid()
-            self.costGrid = Gtk.Grid()
-     
-            self.titleLabel = Gtk.Label()
-            self.categoryLabel = Gtk.Label()
-            self.dateLabel = Gtk.Label(self.dateString)
-            self.descriptionLabel = Gtk.Label()
-            
-            self.currencyLabel = Gtk.Label("$")
-            self.costLabel = Gtk.Label()
-            
-            self.costLabel.set_markup("<span foreground=\"green\">" + str(self.projections[i][self.data.PROJECTIONS_VALUE]) + "</span>")
-           
-            self.titleLabel.set_markup("<b>" + self.projections[i][self.data.PROJECTIONS_TITLE] + "</b>")
-            self.descriptionLabel.set_markup("<i>" + self.projections[i][self.data.PROJECTIONS_DESCRIPTION] + "</i>")
-            self.categoryLabel.set_markup(self.projections[i][self.data.PROJECTIONS_CATEGORY_NAME])
-            
-            # Create Edit Popover
-            self.editButton = Gtk.Button()
-            self.editView = Gtk.Popover.new(self.editButton)
-            self.edit_view = Edit_Entry(self.data, "projection")
-            self.editView.add(self.edit_view.editGrid)
-            
-            # Style Widgets
-            self.entryGrid.set_halign(Gtk.Align.CENTER)
-            self.entryGrid.set_hexpand(True)
-            self.categoryLabel.set_property("height-request", 50)
-            self.categoryLabel.set_property("xalign", 1)
-            self.categoryLabel.set_width_chars(15)
-            
-            self.dateLabel.set_margin_start(30)
-            self.dateLabel.set_margin_end(30)
-            self.dateLabel.set_width_chars(15)
-            
-            self.costGrid.set_row_homogeneous(True)
-            self.costLabel.set_property("xalign", .05)
-            self.costLabel.set_width_chars(14)
-            
-            # Style Edit Button
-            self.editIcon = Gio.ThemedIcon(name="go-down-symbolic")
-            self.editImage = Gtk.Image.new_from_gicon(self.editIcon, Gtk.IconSize.MENU)
-            self.editButton.add(self.editImage)
-            self.editButton.set_relief(Gtk.ReliefStyle.NONE)
-            self.editButton.set_valign(Gtk.Align.START)
-            self.editButton.set_opacity(.5)
+            if self.projections[i][6] >= self.currentYear:
+                if self.projections[i][7] >= self.currentMonth:
+                    if self.projections[i][8] >= self.currentDay:
+                        # Date String
+                        self.dateString = [self.projections[i][self.data.PROJECTIONS_START_YEAR],self.projections[i][self.data.PROJECTIONS_START_MONTH] - 1,self.projections[i][self.data.PROJECTIONS_START_DAY]]
+                        self.dateString = self.data.translate_date(self.dateString, "edit")
+                        
+                        self.layoutGrid = Gtk.Grid(name="layoutGrid")
+                        self.entryGrid = Gtk.Grid()
+                        self.costGrid = Gtk.Grid()
+                 
+                        self.titleLabel = Gtk.Label()
+                        self.categoryLabel = Gtk.Label()
+                        self.dateLabel = Gtk.Label(self.dateString)
+                        self.descriptionLabel = Gtk.Label()
+                        
+                        self.currencyLabel = Gtk.Label("$")
+                        self.costLabel = Gtk.Label()
+                        
+                        self.costLabel.set_markup("<span foreground=\"green\">" + str(self.projections[i][self.data.PROJECTIONS_VALUE]) + "</span>")
+                       
+                        self.titleLabel.set_markup("<b>" + self.projections[i][self.data.PROJECTIONS_TITLE] + "</b>")
+                        self.descriptionLabel.set_markup("<i>" + self.projections[i][self.data.PROJECTIONS_DESCRIPTION] + "</i>")
+                        self.categoryLabel.set_markup(self.projections[i][self.data.PROJECTIONS_CATEGORY_NAME])
+                        
+                        # Create Edit Popover
+                        self.editButton = Gtk.Button()
+                        self.editView = Gtk.Popover.new(self.editButton)
+                        self.edit_view = Edit_Entry(self.data, "projection")
+                        self.editView.add(self.edit_view.editGrid)
+                        
+                        # Style Widgets
+                        self.entryGrid.set_halign(Gtk.Align.CENTER)
+                        self.entryGrid.set_hexpand(True)
+                        self.categoryLabel.set_property("height-request", 50)
+                        self.categoryLabel.set_property("xalign", 1)
+                        self.categoryLabel.set_width_chars(15)
+                        
+                        self.dateLabel.set_margin_start(30)
+                        self.dateLabel.set_margin_end(30)
+                        self.dateLabel.set_width_chars(15)
+                        
+                        self.costGrid.set_row_homogeneous(True)
+                        self.costLabel.set_property("xalign", .05)
+                        self.costLabel.set_width_chars(14)
+                        
+                        # Style Edit Button
+                        self.editIcon = Gio.ThemedIcon(name="go-down-symbolic")
+                        self.editImage = Gtk.Image.new_from_gicon(self.editIcon, Gtk.IconSize.MENU)
+                        self.editButton.add(self.editImage)
+                        self.editButton.set_relief(Gtk.ReliefStyle.NONE)
+                        self.editButton.set_valign(Gtk.Align.START)
+                        self.editButton.set_opacity(.5)
 
-            # Attach Labels
-            self.costGrid.attach(self.currencyLabel, 0,1,1,1)
-            self.costGrid.attach(self.costLabel, 1,1,1,1)
-            
-            self.entryGrid.attach(self.titleLabel, 0, 0, 3, 1)
-            self.entryGrid.attach(self.categoryLabel, 0, 2, 1, 1)
-            self.entryGrid.attach(self.dateLabel, 1, 2, 1, 1)
-            self.entryGrid.attach(self.costGrid, 2, 1, 1, 2)
+                        # Attach Labels
+                        self.costGrid.attach(self.currencyLabel, 0,1,1,1)
+                        self.costGrid.attach(self.costLabel, 1,1,1,1)
+                        
+                        self.entryGrid.attach(self.titleLabel, 0, 0, 3, 1)
+                        self.entryGrid.attach(self.categoryLabel, 0, 2, 1, 1)
+                        self.entryGrid.attach(self.dateLabel, 1, 2, 1, 1)
+                        self.entryGrid.attach(self.costGrid, 2, 1, 1, 2)
 
-            if self.descriptionLabel.get_text() != "":
-                self.entryGrid.attach(self.descriptionLabel, 0, 3, 3, 1)
-                self.extraSpaceLabel = Gtk.Label()
-                self.entryGrid.attach(self.extraSpaceLabel,0, 4, 1, 1)
-                self.layoutGrid.attach(self.entryGrid, 0, 0, 1, 5)
-            
-            # Add Layout Grid to Content Grid. Increment index and apply whitespaces
-            else:
-                self.layoutGrid.attach(self.entryGrid, 0, 0, 1, 2)
-            
-            self.layoutGrid.attach(self.editButton, 1, 0, 1, 1)
-            self.layoutGrid.set_margin_bottom(25)
+                        if self.descriptionLabel.get_text() != "":
+                            self.entryGrid.attach(self.descriptionLabel, 0, 3, 3, 1)
+                            self.extraSpaceLabel = Gtk.Label()
+                            self.entryGrid.attach(self.extraSpaceLabel,0, 4, 1, 1)
+                            self.layoutGrid.attach(self.entryGrid, 0, 0, 1, 5)
+                        
+                        # Add Layout Grid to Content Grid. Increment index and apply whitespaces
+                        else:
+                            self.layoutGrid.attach(self.entryGrid, 0, 0, 1, 2)
+                        
+                        self.layoutGrid.attach(self.editButton, 1, 0, 1, 1)
+                        self.layoutGrid.set_margin_bottom(25)
 
 
-            self.transactionViewGrid.attach(self.layoutGrid, 1, self.index, 4, 2)
+                        self.transactionViewGrid.attach(self.layoutGrid, 1, self.index, 4, 2)
 
-            self.index = self.index + 2
+                        self.index = self.index + 2
 
-            self.transactionType = ""
-            
-            self.entryRows.append([self.layoutGrid, [self.categoryLabel, self.dateLabel, self.currencyLabel, self.costLabel, self.descriptionLabel, self.editButton, self.titleLabel], self.entryGrid, self.costGrid, self.projections[i][self.data.PROJECTIONS_ID]])
-            self.editButton.connect("clicked", self.edit_view.on_editDropdown_clicked, self.editView, self.projections[i][self.data.PROJECTIONS_ID], self.entryRows[self.count],  self.transactionViewGrid, self.projections[i])
-            self.count += 1
-            self.transactionViewGrid.show_all() 
+                        self.transactionType = ""
+                        
+                        self.entryRows.append([self.layoutGrid, [self.categoryLabel, self.dateLabel, self.currencyLabel, self.costLabel, self.descriptionLabel, self.editButton, self.titleLabel], self.entryGrid, self.costGrid, self.projections[i][self.data.PROJECTIONS_ID]])
+                        self.editButton.connect("clicked", self.edit_view.on_editDropdown_clicked, self.editView, self.projections[i][self.data.PROJECTIONS_ID], self.entryRows[self.count],  self.transactionViewGrid, self.projections[i])
+                        self.count += 1
+                        self.transactionViewGrid.show_all() 
  
     def generate_month_view(self):
         self.monthTitleLabel = Gtk.Label()
@@ -584,10 +591,6 @@ class Projections():
         self.monthViewGrid.attach(self.monthNextButton, 4,0,1,1)
         self.monthViewGrid.attach(self.monthCalendarGrid, 0,1,7,1)
          
-        self.currentDay = datetime.datetime.now().day
-        self.currentMonth = datetime.datetime.now().month
-        self.currentYear = datetime.datetime.now().year
-
         self.selectedMonth = self.currentMonth
         self.selectedYear = self.currentYear
 
