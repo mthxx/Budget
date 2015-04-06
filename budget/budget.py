@@ -1,9 +1,24 @@
 #!/bin/python3
 
-from gi.repository import Gtk, Gio, Gdk
-from window import Window
-from data import Data
 import os.path
+import sys
+
+# Check if we are working in the source tree or from the installed
+# package and mangle the python path accordingly
+realPath = os.path.realpath(sys.argv[0])  # If this file is run from a symlink, it needs to follow the symlink
+if os.path.dirname(realPath) != ".":
+    if realPath[0] == "/":
+        fullPath = os.path.dirname(realPath)
+    else:
+        fullPath = os.getcwd() + "/" + os.path.dirname(realPath)
+else:
+    fullPath = os.getcwd()
+sys.path.insert(0, os.path.dirname(fullPath))
+
+
+from gi.repository import Gtk, Gio, Gdk
+from budget.window import Window
+from budget.data import Data
 
 class main():
 
@@ -43,5 +58,5 @@ class main():
             #if event.keyval == 51:
             #    self.win.notebook.set_current_page(2)
 
-#if __name__=='__main__':
-#    main()
+if __name__=='__main__':
+    main()

@@ -1,8 +1,8 @@
 from gi.repository import Gtk, Gio, Gdk
-from overview import Overview
-from transactions import Transactions
-from projections import Projections
-from add_popover import Add_Entry_Popover
+from budget.overview import Overview
+from budget.transactions import Transactions
+from budget.projections import Projections
+from budget.add_popover import Add_Entry_Popover
 
 class Window(Gtk.Window):
 

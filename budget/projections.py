@@ -1,6 +1,6 @@
 from gi.repository import Gtk, Gio
 import datetime, calendar
-from edit_mode import Edit_Entry
+from budget.edit_mode import Edit_Entry
 
 class Projections():
         

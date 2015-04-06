@@ -1,6 +1,6 @@
 from gi.repository import Gtk, Gio, Gdk
-from edit_mode import Edit_Entry
-from add_popover import Add_Category_Popover
+from budget.edit_mode import Edit_Entry
+from budget.add_popover import Add_Category_Popover
 import datetime
 
 class Transactions():

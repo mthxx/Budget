@@ -1,6 +1,6 @@
 from gi.repository import Gtk, Gio, Gdk
 from decimal import *
-from calc import Calc
+from budget.calc import Calc
 
 class Overview():
 

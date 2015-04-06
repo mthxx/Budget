@@ -2,6 +2,7 @@ from gi.repository import Gtk, Gio
 from decimal import *
 import os.path, sys
 import sqlite3 as lite
+
 class Data():
     # Database location
     home = os.path.expanduser("~")
