@@ -5,6 +5,4 @@
 Budget.egg-info/
 build/
 dist/
-database.txt
-budget.db
-local_settings.py
+budget.egg-info/
