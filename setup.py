@@ -13,7 +13,7 @@ ENTRY_POINTS = {
 
 setup(
     name="budget",
-    version="0.0.2",
+    version="0.0.4",
     description="Personal Finance",
     license="GPL v2.0",
     author="Marc Thomas",

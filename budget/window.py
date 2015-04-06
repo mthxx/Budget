@@ -7,9 +7,13 @@ from budget.add_popover import Add_Entry_Popover
 class Window(Gtk.Window):
 
     def __init__(self, data):
+        self.module_dir = (__file__)
+        while (len(self.module_dir)-1 > 0 and self.module_dir[len(self.module_dir)-1] != "/"):
+            self.module_dir = self.module_dir.replace(" ", "").rstrip(self.module_dir[-1:])
+        
         self.data = data 
         self.provider = Gtk.CssProvider()
-        self.provider.load_from_path("style.css")
+        self.provider.load_from_path(self.module_dir + "style.css")
         Gtk.StyleContext.add_provider_for_screen(Gdk.Screen.get_default(), self.provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
         Gtk.Window.__init__(self, title="Budget")
