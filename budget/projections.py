@@ -562,7 +562,15 @@ class Projections():
         self.monthTitleLabel = Gtk.Label()
         self.monthPreviousButton = Gtk.Button()
         self.monthNextButton = Gtk.Button()
-        
+       
+        self.sundayLabel = Gtk.Label("Sunday") 
+        self.mondayLabel = Gtk.Label("Monday") 
+        self.tuesdayLabel = Gtk.Label("Tuesday") 
+        self.wednesdayLabel = Gtk.Label("Wednesday") 
+        self.thursdayLabel = Gtk.Label("Thursday") 
+        self.fridayLabel = Gtk.Label("Friday") 
+        self.saturdayLabel = Gtk.Label("Saturday") 
+
         self.backIcon = Gio.ThemedIcon(name="go-previous-symbolic")
         self.backImage = Gtk.Image.new_from_gicon(self.backIcon, Gtk.IconSize.MENU)
         self.monthPreviousButton.add(self.backImage)
@@ -575,12 +583,15 @@ class Projections():
         self.monthNextButton.connect("clicked", self.on_monthNextButton_clicked)
 
         self.monthPreviousButton.set_margin_top(10)
+        self.monthPreviousButton.set_margin_bottom(15)
         self.monthPreviousButton.set_relief(Gtk.ReliefStyle.NONE)
         
         self.monthNextButton.set_margin_top(10)
+        self.monthNextButton.set_margin_bottom(15)
         self.monthNextButton.set_relief(Gtk.ReliefStyle.NONE)
 
         self.monthTitleLabel.set_margin_top(10)
+        self.monthTitleLabel.set_margin_bottom(15)
         self.monthTitleLabel.set_halign(Gtk.Align.CENTER)
         self.monthTitleLabel.set_hexpand(True)
 
@@ -589,8 +600,16 @@ class Projections():
         self.monthViewGrid.attach(self.monthPreviousButton, 2,0,1,1)
         self.monthViewGrid.attach(self.monthTitleLabel, 1,0,5,1)
         self.monthViewGrid.attach(self.monthNextButton, 4,0,1,1)
-        self.monthViewGrid.attach(self.monthCalendarGrid, 0,1,7,1)
+        self.monthViewGrid.attach(self.monthCalendarGrid, 0,2,7,1)
          
+        self.monthViewGrid.attach(self.sundayLabel, 0,1,1,1)
+        self.monthViewGrid.attach(self.mondayLabel, 1,1,1,1)
+        self.monthViewGrid.attach(self.tuesdayLabel, 2,1,1,1)
+        self.monthViewGrid.attach(self.wednesdayLabel, 3,1,1,1)
+        self.monthViewGrid.attach(self.thursdayLabel, 4,1,1,1)
+        self.monthViewGrid.attach(self.fridayLabel, 5,1,1,1)
+        self.monthViewGrid.attach(self.saturdayLabel, 6,1,1,1)
+        
         self.selectedMonth = self.currentMonth
         self.selectedYear = self.currentYear
 
@@ -883,7 +902,7 @@ class Projections():
             self.monthCalendarGrid.set_column_homogeneous(True)
             self.monthCalendarGrid.set_row_homogeneous(True)
             #self.monthCalendarGrid.set_vexpand(True)
-            self.monthCalendarGrid.set_margin_top(20)
+            self.monthCalendarGrid.set_margin_top(10)
         
             if i <= 7:
                 self.monthCalendarGrid.attach(self.monthGrid,i,1,1,1)
