@@ -134,7 +134,7 @@ class Data():
         if(os.path.isfile(self.db_path)):
             con = lite.connect(self.db_path)
             cur = con.cursor()
-            
+
             if menuType == "income":
                 cur.execute('SELECT MAX(categoryOrder) from categories where type = ' + str(0))
                 row = cur.fetchone()
@@ -149,26 +149,23 @@ class Data():
             row = cur.fetchone()
             self.LATEST_MENU_ID = row[0]
             self.LATEST_MENU_ID += 1
-            if(os.path.isfile('budget.db')):
-                con = lite.connect(self.db_path)
-                cur = con.cursor()
                 
-                typeID = []
-                typeID.append(menuType)
-                cur.execute("SELECT typeID from categoryType where type = ?", typeID)
-                typeID = cur.fetchall()
-                typeID = typeID[0][0]
-                
-                if menuType == "income":
-                    row = [(str(typeID),str(category),str(self.INCOME_ORDER_ID),str(self.LATEST_MENU_ID))]
-                if menuType == "expense":
-                    row = [(str(typeID),str(category),str(self.EXPENSE_ORDER_ID),str(self.LATEST_MENU_ID))]
+            typeID = []
+            typeID.append(menuType)
+            cur.execute("SELECT typeID from categoryType where type = ?", typeID)
+            typeID = cur.fetchall()
+            typeID = typeID[0][0]
             
-                cur = con.cursor()
-                cur.execute('INSERT INTO categories VALUES(?,?,?,?)', row[0])
-                con.commit()
+            if menuType == "income":
+                row = [(str(typeID),str(category),str(self.INCOME_ORDER_ID),str(self.LATEST_MENU_ID))]
+            if menuType == "expense":
+                row = [(str(typeID),str(category),str(self.EXPENSE_ORDER_ID),str(self.LATEST_MENU_ID))]
+        
+            cur = con.cursor()
+            cur.execute('INSERT INTO categories VALUES(?,?,?,?)', row[0])
+            con.commit()
 
-                self.refresh_data()   
+            self.refresh_data()   
  
     def add_transaction(self, category, year, month, day, value, description, transactionID):
         for i in range(0,len(self.transactionsMenu)):
