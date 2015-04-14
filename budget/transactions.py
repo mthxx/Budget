@@ -387,7 +387,15 @@ class Transactions():
         self.whiteSpaceLabel = Gtk.Label()
         
         self.index = 5
-        for i in range (0,len(self.data.transactions)):
+        
+        # Delete the following lines when issue #58 is correctly resolved
+        #if len(self.data.transactions) > 60:
+        #    self.displayCount = 60
+        #else:
+        #    self.displayCount = len(self.data.transactions)
+        self.displayCount = len(self.data.transactions)
+        
+        for i in range (0,self.displayCount):
             
             # Date String
             self.dateString = ""
@@ -649,12 +657,6 @@ class Transactions():
             else:
                 self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
                 self.contentGrid.queue_draw()
-
-
-
-
-
-
         else:
             self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
             self.contentGrid.queue_draw()

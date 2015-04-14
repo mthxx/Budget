@@ -1,6 +1,6 @@
 from gi.repository import Gtk, Gio
 from decimal import *
-import os.path, sys
+import os.path, sys, time
 import sqlite3 as lite
 
 class Data():
@@ -100,8 +100,11 @@ class Data():
     LATEST_PROJECTION_ID = 0
 
     def __init__(self):
-        #Indexes for data arrays
+        # Optimization Testing. Set true to print out time stamps.
+        self.optimizationTesting = True
+        #self.optimizationTesting = False
 
+        #Indexes for data arrays
         self.valid_numbers = ["1","2","3","4","5","6","7","8","9","0","."]
         self.transactionsMenu = []
         self.transactions = []
@@ -132,9 +135,11 @@ class Data():
 
     def add_category(self, menuType, category):
         if(os.path.isfile(self.db_path)):
+            if self.optimizationTesting == True:
+                self.addCategoryStart = time.time()
+            
             con = lite.connect(self.db_path)
             cur = con.cursor()
-
             if menuType == "income":
                 cur.execute('SELECT MAX(categoryOrder) from categories where type = ' + str(0))
                 row = cur.fetchone()
@@ -165,6 +170,10 @@ class Data():
             cur.execute('INSERT INTO categories VALUES(?,?,?,?)', row[0])
             con.commit()
 
+            if self.optimizationTesting == True:
+                self.addCategoryEnd = time.time()
+                self.calculate_time("Add Category", self.addCategoryStart, self.addCategoryEnd)
+
             self.refresh_data()   
  
     def add_transaction(self, category, year, month, day, value, description, transactionID):
@@ -173,12 +182,19 @@ class Data():
                 category = self.transactionsMenu[i][self.MENU_ID_INDEX]
 
         if(os.path.isfile(self.db_path)):
+            if self.optimizationTesting == True:
+                self.addTransactionStart = time.time()
+
             con = lite.connect(self.db_path)
             row = [(str(category),str(year),str(month),str(day),str(value),str(description),str(transactionID))]
         
             cur = con.cursor()
             cur.execute('INSERT INTO transactions VALUES(?,?,?,?,?,?,?)', row[0])
             con.commit()
+        
+            if self.optimizationTesting == True:
+                self.addTransactionEnd = time.time()
+                self.calculate_time("Add Transaction", self.addTransactionStart, self.addTransactionEnd)
 
             self.refresh_data()
     
@@ -188,6 +204,9 @@ class Data():
                 category = self.transactionsMenu[i][self.MENU_ID_INDEX]
 
         if(os.path.isfile(self.db_path)):
+            if self.optimizationTesting == True:
+                self.addProjectionStart = time.time()
+
             con = lite.connect(self.db_path)
             cur = con.cursor()
 
@@ -204,8 +223,16 @@ class Data():
             cur.execute('INSERT INTO projections VALUES(?,?,?,?,?,?,?,?,?,?,?,?)', row[0])
             con.commit()
             
+            if self.optimizationTesting == True:
+                self.addProjectionEnd = time.time()
+                self.calculate_time("Add Projection", self.addProjectionStart, self.addProjectionEnd)
+            
             self.refresh_data()
     
+    def calculate_time(self, tracking, startTime, endTime):
+        print(tracking + ": " + str(endTime - startTime))
+        
+
     def check_amount_value(self, widget, value, length, *args):
         if value not in self.valid_numbers:
             widget.stop_emission("insert-text")
@@ -220,8 +247,11 @@ class Data():
         
     def delete_category(self, uniqueID):
         if(os.path.isfile(self.db_path)):
+            if self.optimizationTesting == True:
+                self.deleteCategoryStart = time.time()
+                self.calculate_time("Delete Category", self.deleteCategoryStart, self.deleteCategoryEnd)
+
             con = lite.connect(self.db_path)
-        
             cur = con.cursor()
             cur.execute('SELECT type FROM categories WHERE categoryID = '+ str(uniqueID))
             row = cur.fetchone()
@@ -245,38 +275,63 @@ class Data():
 
             con.commit()
             
+            if self.optimizationTesting == True:
+                self.deleteCategoryEnd = time.time()
+                self.calculate_time("Delete Category", self.deleteCategoryStart, self.deleteCategoryEnd)
+            
             self.refresh_data()   
     
     def delete_transaction(self, uniqueID):
         if(os.path.isfile(self.db_path)):
+            if self.optimizationTesting == True:
+                self.deleteTransactionStart = time.time()
+            
             con = lite.connect(self.db_path)
             cur = con.cursor()
             cur.execute('DELETE FROM transactions WHERE transactionID = ' + str(uniqueID))
             con.commit()
+            
+            if self.optimizationTesting == True:
+                self.deleteTransactionEnd = time.time()
+                self.calculate_time("Delete Transaction", self.deleteTransactionStart, self.deleteTransactionEnd)
 
             self.refresh_data()
     
     def delete_projection(self, uniqueID):
         if(os.path.isfile(self.db_path)):
+            if self.optimizationTesting == True:
+                self.deleteProjectionStart = time.time()
+            
             con = lite.connect(self.db_path)
             cur = con.cursor()
             cur.execute('DELETE FROM projections WHERE projectionID = ' + str(uniqueID))
             con.commit()
+            
+            if self.optimizationTesting == True:
+                self.deleteProjectionEnd = time.time()
+                self.calculate_time("Delete Projection", self.deleteProjectionStart, self.deleteProjectionEnd)
 
             self.refresh_data()
     
     def edit_category(self, uniqueID, newLabel):
         if(os.path.isfile(self.db_path)):
+            if self.optimizationTesting == True:
+                self.editCategoryStart = time.time()
+            
             con = lite.connect(self.db_path)
             row = [(str(newLabel),str(uniqueID))]
         
             cur = con.cursor()
             cur.execute('UPDATE categories SET name = ? WHERE categoryID = ?', row[0])
             con.commit()
+            
+            if self.optimizationTesting == True:
+                self.editCategoryEnd = time.time()
+                self.calculate_time("Edit Category", self.editCategoryStart, self.editCategoryEnd)
 
             self.refresh_data()
     
-    def refresh_data(self):
+    def refresh_data(self):    
             self.transactionsMenu = []
             self.transactions = []
             self.incomeMenu = []
@@ -287,16 +342,25 @@ class Data():
             
             self.import_data()
             
+            if self.optimizationTesting == True:
+                self.refreshStart = time.time()
+            
             self.transaction_view.generate_sidebars()
             self.transaction_view.display_content()
             self.overview.redisplay_info()
             self.projections_view.redisplay_info()
+            
+            if self.optimizationTesting == True:
+                self.refreshEnd = time.time()
+                self.calculate_time("Refresh", self.refreshStart, self.refreshEnd)
+
 
     def import_data(self):
         
         if(os.path.isfile(self.db_path)):
+            if self.optimizationTesting == True:
+                self.importStart = time.time()
             con = lite.connect(self.db_path)
-
             cur = con.cursor()
             cur.execute('SELECT * FROM categories WHERE type = 0 ORDER BY categoryOrder;')
             rows = cur.fetchall()
@@ -342,6 +406,10 @@ class Data():
                  
             cur.execute('SELECT * FROM transactions;')    
             rows = cur.fetchall()
+
+            if self.optimizationTesting == True:
+                self.sortStart = time.time()
+            
             for row in rows:
                 self.arr = []
                 self.catArr = []
@@ -360,7 +428,13 @@ class Data():
                 self.arr.append(row[6])                     # transactionID
                 if self.LATEST_ID < row[6]:
                     self.LATEST_ID = row[6]
+                
                 self.sort_transaction(self.transactions, self.arr)
+                
+            if self.optimizationTesting == True:
+                self.sortEnd = time.time()
+                self.calculate_time("Sort", self.sortStart, self.sortEnd)
+    
             
             cur = con.cursor()
             cur_frequency = con.cursor()
@@ -417,6 +491,10 @@ class Data():
                 self.arr.append(row[1])                     # Frequency ID
                 self.frequencyMenu.append(self.arr)
 
+            if self.optimizationTesting == True:
+                self.importEnd = time.time()
+                self.calculate_time("Import Data", self.importStart, self.importEnd)
+
     def sort_transaction(self, data, arr):
         if len(data) == 0:
             data.append(arr)
@@ -463,7 +541,7 @@ class Data():
 
             if flag == False:
                 data.append(arr)
-    
+
     def sort_projections(self, data, arr):
         if len(data) == 0:
             data.append(arr)
