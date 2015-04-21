@@ -37,7 +37,7 @@ class main():
                 self.win.transactions.category_view_mode(i)
         
         self.win.connect('key-press-event', self.on_key_function)
-        self.win.set_icon_name("budget.png")
+        self.win.set_icon_name("budget.svg")
         Gtk.main()
 
     def on_key_function(self, widget, event):
