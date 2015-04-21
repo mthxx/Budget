@@ -1,7 +1,7 @@
 from gi.repository import Gtk, Gio, Gdk
 from budget.edit_mode import Edit_Entry
 from budget.add_popover import Add_Category_Popover
-import datetime
+import datetime, time
 
 class Transactions():
 
@@ -377,6 +377,9 @@ class Transactions():
                         return
     
     def display_content(self):
+        if self.data.optimizationTesting == True:
+            self.displayContentStart = time.time()
+
         #Clear existing data
         while len(self.contentGrid) > 0:
             self.contentGrid.remove_row(0)
@@ -486,6 +489,10 @@ class Transactions():
             self.entryRows.append([self.layoutGrid, [self.categoryLabel, self.dateLabel, self.currencyLabel, self.costLabel, self.descriptionLabel, self.editButton], self.entryGrid, self.costGrid, self.data.transactions[i][self.data.TRANSACTION_ID_INDEX], self.transactionType])
             self.editButton.connect("clicked", self.edit_view.on_editDropdown_clicked, self.editView, self.data.transactions[i][self.data.TRANSACTION_ID_INDEX], self.entryRows[i],  self.contentGrid, self.data.transactions[i])
             self.contentGrid.show_all() 
+        
+        if self.data.optimizationTesting == True:
+            self.displayContentEnd = time.time()
+            self.data.calculate_time("Display Transactions", self.displayContentStart, self.displayContentEnd)
         
     def editable_category(self, i):
         if i != 0:

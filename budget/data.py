@@ -101,8 +101,8 @@ class Data():
 
     def __init__(self):
         # Optimization Testing. Set true to print out time stamps.
-        self.optimizationTesting = True
-        #self.optimizationTesting = False
+        #self.optimizationTesting = True
+        self.optimizationTesting = False
 
         #Indexes for data arrays
         self.valid_numbers = ["1","2","3","4","5","6","7","8","9","0","."]
