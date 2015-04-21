@@ -1,3 +1,4 @@
 include README.md
 include budget/*.css
 include budget/*.png
+include PKGBUILD/budget.desktop

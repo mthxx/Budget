@@ -24,6 +24,7 @@ setup(
     install_requires=[],
     long_description=long_description,
     entry_points=ENTRY_POINTS,
+    data_files=[("/usr/share/applications/", ["PKGBUILD/budget.desktop"])],
     classifiers=[
         "Programming Language :: Python",
         "Programming Language :: Python :: 3.4",
