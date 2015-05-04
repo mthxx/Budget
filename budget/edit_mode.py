@@ -292,7 +292,7 @@ class Edit_Entry(Gtk.Window):
  
             self.entryRow[self.LAYOUT_WIDGET_INDEX][self.EDIT_BUTTON_INDEX].show_all()
             self.entryRow[self.ENTRY_GRID_INDEX].show_all()
-            
+
             self.contentGrid.queue_draw()
     
     def set_calendar(self):

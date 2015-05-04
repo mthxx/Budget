@@ -157,12 +157,9 @@ class Transactions():
         self.menuListBox.add(self.labelBox)
 
     def delete_transaction(self, i):
-
-        print("Got Here")
         index = i * 2
         self.contentGrid.remove_row(index)
         self.contentGrid.remove_row(index)
-
 
     def add_transaction(self, i):
         index = i * 2
@@ -250,7 +247,7 @@ class Transactions():
             if self.data.transactionsMenu[j][self.data.MENU_ID_INDEX] == self.data.transactions[i][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX]:
                 self.transactionType = self.data.transactionsMenu[j][self.data.MENU_TYPE_INDEX]
         
-        self.entryRows.append([self.layoutGrid, [self.categoryLabel, self.dateLabel, self.currencyLabel, self.costLabel, self.descriptionLabel, self.editButton], self.entryGrid, self.costGrid, self.data.transactions[i][self.data.TRANSACTION_ID_INDEX], self.transactionType])
+        self.entryRows.insert(i, [self.layoutGrid, [self.categoryLabel, self.dateLabel, self.currencyLabel, self.costLabel, self.descriptionLabel, self.editButton], self.entryGrid, self.costGrid, self.data.transactions[i][self.data.TRANSACTION_ID_INDEX], self.transactionType])
         self.editButton.connect("clicked", self.edit_view.on_editDropdown_clicked, self.editView, self.data.transactions[i][self.data.TRANSACTION_ID_INDEX], self.entryRows[i],  self.contentGrid, self.data.transactions[i])
         self.contentGrid.show_all() 
 
@@ -461,7 +458,6 @@ class Transactions():
             self.filter_entries()
 
     def delete_category_confirm(self, button, label):
-        #print("Hello")
         for i in range(len(self.menuListBox)):
             if self.menuListBox.get_row_at_index(i) == None:
                 return

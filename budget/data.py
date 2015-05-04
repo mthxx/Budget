@@ -176,18 +176,17 @@ class Data():
 
             self.refresh_data()   
  
-    def add_transaction(self, category, year, month, day, value, description, transactionID):
+    def add_transaction(self, categoryName, year, month, day, value, description, transactionID):
         for i in range(0,len(self.transactionsMenu)):
-            if category == self.transactionsMenu[i][self.MENU_NAME_INDEX]:
-                categoryIndex = category
-                category = self.transactionsMenu[i][self.MENU_ID_INDEX]
+            if categoryName == self.transactionsMenu[i][self.MENU_NAME_INDEX]:
+                categoryIndex = self.transactionsMenu[i][self.MENU_ID_INDEX]
 
         if(os.path.isfile(self.db_path)):
             if self.optimizationTesting == True:
                 self.addTransactionStart = time.time()
 
             con = lite.connect(self.db_path)
-            row = [(str(category),str(year),str(month),str(day),str(value),str(description),str(transactionID))]
+            row = [(str(categoryIndex),str(year),str(month),str(day),str(value),str(description),str(transactionID))]
         
             cur = con.cursor()
             cur.execute('INSERT INTO transactions VALUES(?,?,?,?,?,?,?)', row[0])
@@ -196,21 +195,28 @@ class Data():
             self.arr = []
             self.catArr = []
             self.dateArr = []
-            self.catArr.append(category)                # Name
-            self.catArr.append(categoryIndex)                # categoryID
-            self.dateArr.append(int(year))                 # year
-            self.dateArr.append(int(month))                 # month
-            self.dateArr.append(int(day))                 # day
+            self.catArr.append(categoryIndex)                   # Category Index
+            self.catArr.append(categoryName)                    # Category Name
+            self.dateArr.append(int(year))                      # year
+            self.dateArr.append(int(month))                     # month
+            self.dateArr.append(int(day))                       # day
             self.arr.append(self.catArr)
             self.arr.append(self.dateArr)
-            self.arr.append(float(value))                     # Value
-            self.arr.append(description)             # Description
-            self.arr.append(transactionID)                     # transactionID
+            self.arr.append(float(value))                       # Value
+            self.arr.append(description)                        # Description
+            self.arr.append(transactionID)                      # transactionID
             self.sort_transaction(self.transactions, self.arr)
 
             if self.optimizationTesting == True:
                 self.addTransactionEnd = time.time()
                 self.calculate_time("Add Transaction", self.addTransactionStart, self.addTransactionEnd)
+            
+            for i in range(0,len(self.transactions)):
+                if self.transactions[i][self.TRANSACTION_ID_INDEX] == self.LATEST_ID:
+                    index = i
+            
+            self.transaction_view.add_transaction(index)
+            self.transaction_view.contentGrid.queue_draw()
                 
             self.refresh_data()
     
@@ -316,8 +322,6 @@ class Data():
                     index = i
                     self.transactions.pop(i)
                     break
-
-            print(index)
             self.transaction_view.delete_transaction(index)
             self.refresh_data()
     
@@ -748,18 +752,22 @@ class Data():
                 
         return dateString
     
-    def update_transaction(self, category, year, month, day, value, description, transactionID):
+    def update_transaction(self, categoryName, year, month, day, value, description, transactionID):
         for i in range(0,len(self.transactionsMenu)):
-            if category == self.transactionsMenu[i][self.MENU_NAME_INDEX]:
-                category = self.transactionsMenu[i][self.MENU_ID_INDEX]
+            if categoryName == self.transactionsMenu[i][self.MENU_NAME_INDEX]:
+                categoryIndex = self.transactionsMenu[i][self.MENU_ID_INDEX]
 
         if(os.path.isfile(self.db_path)):
             con = lite.connect(self.db_path)
-            row = [(str(category),str(year),str(month),str(day),str(value),str(description),str(transactionID))]
+            row = [(str(categoryIndex),str(year),str(month),str(day),str(value),str(description),str(transactionID))]
 
             cur = con.cursor()
             cur.execute('update transactions set categoryID = ?, year = ?, month = ?, day = ?, value = ?, description = ? where transactionID = ?', row[0])
             con.commit()
+            
+            self.delete_transaction(transactionID)
+            self.LATEST_ID += 1
+            self.add_transaction(categoryName, year, month, day, value, description, self.LATEST_ID)
 
             self.refresh_data()            
     
