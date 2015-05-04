@@ -179,6 +179,7 @@ class Data():
     def add_transaction(self, category, year, month, day, value, description, transactionID):
         for i in range(0,len(self.transactionsMenu)):
             if category == self.transactionsMenu[i][self.MENU_NAME_INDEX]:
+                categoryIndex = category
                 category = self.transactionsMenu[i][self.MENU_ID_INDEX]
 
         if(os.path.isfile(self.db_path)):
@@ -192,10 +193,25 @@ class Data():
             cur.execute('INSERT INTO transactions VALUES(?,?,?,?,?,?,?)', row[0])
             con.commit()
         
+            self.arr = []
+            self.catArr = []
+            self.dateArr = []
+            self.catArr.append(category)                # Name
+            self.catArr.append(categoryIndex)                # categoryID
+            self.dateArr.append(int(year))                 # year
+            self.dateArr.append(int(month))                 # month
+            self.dateArr.append(int(day))                 # day
+            self.arr.append(self.catArr)
+            self.arr.append(self.dateArr)
+            self.arr.append(float(value))                     # Value
+            self.arr.append(description)             # Description
+            self.arr.append(transactionID)                     # transactionID
+            self.sort_transaction(self.transactions, self.arr)
+
             if self.optimizationTesting == True:
                 self.addTransactionEnd = time.time()
                 self.calculate_time("Add Transaction", self.addTransactionStart, self.addTransactionEnd)
-
+                
             self.refresh_data()
     
     def add_projection(self, title, value, description, selected, category, startYear, startMonth, startDay, endYear, endMonth, endDay, frequency, projectionID):
@@ -295,6 +311,14 @@ class Data():
                 self.deleteTransactionEnd = time.time()
                 self.calculate_time("Delete Transaction", self.deleteTransactionStart, self.deleteTransactionEnd)
 
+            for i in range(0,len(self.transactions)):
+                if self.transactions[i][self.TRANSACTION_ID_INDEX] == uniqueID:
+                    index = i
+                    self.transactions.pop(i)
+                    break
+
+            print(index)
+            self.transaction_view.delete_transaction(index)
             self.refresh_data()
     
     def delete_projection(self, uniqueID):
@@ -346,7 +370,7 @@ class Data():
                 self.refreshStart = time.time()
             
             self.transaction_view.generate_sidebars()
-            self.transaction_view.display_content()
+            #self.transaction_view.display_content()
             self.overview.redisplay_info()
             self.projections_view.redisplay_info()
             

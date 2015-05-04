@@ -134,6 +134,13 @@ class Add_Entry_Popover(Gtk.Window):
             self.data.add_transaction(self.addCategoryComboBoxText.get_active_text(), self.year, self.month, self.day, 
                                 self.addEntry.get_text(), self.addDescription.get_text(), self.data.LATEST_ID)
             
+            for i in range(0,len(self.data.transactions)):
+                if self.data.transactions[i][self.data.TRANSACTION_ID_INDEX] == self.data.LATEST_ID:
+                    index = i
+
+            self.data.transaction_view.add_transaction(index)
+            self.data.transaction_view.contentGrid.queue_draw()
+            
             #self.addEntry.set_text("")
             self.addDescription.set_text("")
 

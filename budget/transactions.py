@@ -156,11 +156,109 @@ class Transactions():
 
         self.menuListBox.add(self.labelBox)
 
+    def delete_transaction(self, i):
+
+        print("Got Here")
+        index = i * 2
+        self.contentGrid.remove_row(index)
+        self.contentGrid.remove_row(index)
+
+
+    def add_transaction(self, i):
+        index = i * 2
+        self.dateString = ""
+        self.dateString = self.data.translate_date(self.data.transactions, i)
+        
+        # Create Widgets
+        self.layoutGrid = Gtk.Grid(name="layoutGrid")
+        self.entryGrid = Gtk.Grid()
+        self.costGrid = Gtk.Grid()
+        
+        self.categoryLabel = Gtk.Label()
+        self.dateLabel = Gtk.Label(self.dateString)
+        self.descriptionLabel = Gtk.Label()
+        
+        self.currencyLabel = Gtk.Label("$")
+        self.costLabel = Gtk.Label()
+        
+        for j in range(0, len(self.data.transactionsMenu)):
+            if int(self.data.transactions[i][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX]) == int(self.data.transactionsMenu[j][self.data.MENU_ID_INDEX]) and self.data.transactionsMenu[j][self.data.MENU_TYPE_INDEX] == "income":
+                self.costLabel.set_markup("<span foreground=\"green\">" + str("%0.2f" % (self.data.transactions[i][self.data.TRANSACTION_VALUE_INDEX],)) + "</span>")
+       
+        for j in range(0, len(self.data.transactionsMenu)):
+            if int(self.data.transactions[i][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX]) == int(self.data.transactionsMenu[j][self.data.MENU_ID_INDEX]) and self.data.transactionsMenu[j][self.data.MENU_TYPE_INDEX] == "expense":
+                self.costLabel.set_markup("<span foreground=\"red\">" + str("%0.2f" % (self.data.transactions[i][self.data.TRANSACTION_VALUE_INDEX],)) + "</span>")
+            
+        self.descriptionLabel.set_markup("<i>" + self.data.transactions[i][self.data.TRANSACTION_DESCRIPTION_INDEX] + "</i>")
+            
+        # Create Edit Popover
+        self.editButton = Gtk.Button()
+        self.editView = Gtk.Popover.new(self.editButton)
+        self.edit_view = Edit_Entry(self.data, "transaction")
+        self.editView.add(self.edit_view.editGrid)
+
+        # Style Widgets
+        self.entryGrid.set_halign(Gtk.Align.CENTER)
+        self.entryGrid.set_hexpand(True)
+        self.categoryLabel.set_markup(self.data.transactions[i][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_NAME_INDEX])
+        self.categoryLabel.set_property("height-request", 50)
+        self.categoryLabel.set_property("xalign", 1)
+        self.categoryLabel.set_width_chars(15)
+        
+        self.dateLabel.set_margin_start(30)
+        self.dateLabel.set_margin_end(30)
+        self.dateLabel.set_width_chars(15)
+        
+        self.costGrid.set_row_homogeneous(True)
+        self.costLabel.set_property("xalign", .05)
+        self.costLabel.set_width_chars(14)
+        
+        # Style Edit Button
+        self.editIcon = Gio.ThemedIcon(name="go-down-symbolic")
+        self.editImage = Gtk.Image.new_from_gicon(self.editIcon, Gtk.IconSize.MENU)
+        self.editButton.add(self.editImage)
+        self.editButton.set_relief(Gtk.ReliefStyle.NONE)
+        self.editButton.set_valign(Gtk.Align.START)
+        self.editButton.set_opacity(.5)
+
+        # Attach Labels
+        self.costGrid.attach(self.currencyLabel, 0,1,1,1)
+        self.costGrid.attach(self.costLabel, 1,1,1,1)
+        self.entryGrid.attach(self.categoryLabel, 0, 1, 1, 1)
+        self.entryGrid.attach(self.dateLabel, 1, 1, 1, 1)
+        self.entryGrid.attach(self.costGrid, 2, 0, 1, 2)
+       
+        if self.descriptionLabel.get_text() != "":
+            self.entryGrid.attach(self.descriptionLabel, 0, 3, 3, 1)
+            self.extraSpaceLabel = Gtk.Label()
+            self.entryGrid.attach(self.extraSpaceLabel,0, 4, 1, 1)
+            self.layoutGrid.attach(self.entryGrid, 0, 0, 1, 5)
+        
+        # Add Layout Grid to Content Grid. Apply Whitespace 
+        else:
+            self.layoutGrid.attach(self.entryGrid, 0, 0, 1, 2)
+        
+        self.layoutGrid.attach(self.editButton, 1, 0, 1, 1)
+        self.layoutGrid.set_margin_bottom(25)
+
+        self.contentGrid.insert_row(index)
+        self.contentGrid.insert_row(index + 1)
+        self.contentGrid.attach(self.layoutGrid, 1, index, 3, 2)
+        
+        self.transactionType = ""
+        for j in range(0, len(self.data.transactionsMenu)):
+            if self.data.transactionsMenu[j][self.data.MENU_ID_INDEX] == self.data.transactions[i][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX]:
+                self.transactionType = self.data.transactionsMenu[j][self.data.MENU_TYPE_INDEX]
+        
+        self.entryRows.append([self.layoutGrid, [self.categoryLabel, self.dateLabel, self.currencyLabel, self.costLabel, self.descriptionLabel, self.editButton], self.entryGrid, self.costGrid, self.data.transactions[i][self.data.TRANSACTION_ID_INDEX], self.transactionType])
+        self.editButton.connect("clicked", self.edit_view.on_editDropdown_clicked, self.editView, self.data.transactions[i][self.data.TRANSACTION_ID_INDEX], self.entryRows[i],  self.contentGrid, self.data.transactions[i])
+        self.contentGrid.show_all() 
+
     def category_edit_mode(self, index):
-            self.menuListBox.get_row_at_index(index).get_child().get_children()[self.EDIT_CATEGORY_TITLE].hide()
-            self.menuListBox.get_row_at_index(index).get_child().get_children()[self.EDIT_CATEGORY_BALANCE].hide()
-            self.menuListBox.get_row_at_index(index).get_child().get_children()[self.EDIT_CATEGORY_ENTRY].show()
-            self.menuListBox.get_row_at_index(index).get_child().get_children()[self.EDIT_CATEGORY_BUTTON].show()
+        self.menuListBox.get_row_at_index(index).get_child().get_children()[self.EDIT_CATEGORY_TITLE].hide()
+        self.menuListBox.get_row_at_index(index).get_child().get_children()[self.EDIT_CATEGORY_BALANCE].hide()
+        self.menuListBox.get_row_at_index(index).get_child().get_children()[self.EDIT_CATEGORY_ENTRY].show()
+        self.menuListBox.get_row_at_index(index).get_child().get_children()[self.EDIT_CATEGORY_BUTTON].show()
     
     def category_selected(self, listbox, row):
         # To catch calls before widget exists.
@@ -389,8 +487,6 @@ class Transactions():
         
         self.whiteSpaceLabel = Gtk.Label()
         
-        self.index = 5
-        
         # Delete the following lines when issue #58 is correctly resolved
         #if len(self.data.transactions) > 60:
         #    self.displayCount = 60
@@ -399,97 +495,8 @@ class Transactions():
         self.displayCount = len(self.data.transactions)
         
         for i in range (0,self.displayCount):
-            
-            # Date String
-            self.dateString = ""
-            self.dateString = self.data.translate_date(self.data.transactions, i)
-            
-            # Create Widgets
-            self.layoutGrid = Gtk.Grid(name="layoutGrid")
-            self.entryGrid = Gtk.Grid()
-            self.costGrid = Gtk.Grid()
-            
-            self.categoryLabel = Gtk.Label()
-            self.dateLabel = Gtk.Label(self.dateString)
-            self.descriptionLabel = Gtk.Label()
-            
-            self.currencyLabel = Gtk.Label("$")
-            self.costLabel = Gtk.Label()
-            
-            for j in range(0, len(self.data.transactionsMenu)):
-                if int(self.data.transactions[i][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX]) == int(self.data.transactionsMenu[j][self.data.MENU_ID_INDEX]) and self.data.transactionsMenu[j][self.data.MENU_TYPE_INDEX] == "income":
-                    self.costLabel.set_markup("<span foreground=\"green\">" + str("%0.2f" % (self.data.transactions[i][self.data.TRANSACTION_VALUE_INDEX],)) + "</span>")
-           
-            for j in range(0, len(self.data.transactionsMenu)):
-                if int(self.data.transactions[i][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX]) == int(self.data.transactionsMenu[j][self.data.MENU_ID_INDEX]) and self.data.transactionsMenu[j][self.data.MENU_TYPE_INDEX] == "expense":
-                    self.costLabel.set_markup("<span foreground=\"red\">" + str("%0.2f" % (self.data.transactions[i][self.data.TRANSACTION_VALUE_INDEX],)) + "</span>")
+            self.add_transaction(i)
 
-            self.descriptionLabel.set_markup("<i>" + self.data.transactions[i][self.data.TRANSACTION_DESCRIPTION_INDEX] + "</i>")
-            
-            # Create Edit Popover
-            self.editButton = Gtk.Button()
-            self.editView = Gtk.Popover.new(self.editButton)
-            self.edit_view = Edit_Entry(self.data, "transaction")
-            self.editView.add(self.edit_view.editGrid)
-
-            # Style Widgets
-            self.entryGrid.set_halign(Gtk.Align.CENTER)
-            self.entryGrid.set_hexpand(True)
-            self.categoryLabel.set_markup(self.data.transactions[i][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_NAME_INDEX])
-            self.categoryLabel.set_property("height-request", 50)
-            self.categoryLabel.set_property("xalign", 1)
-            self.categoryLabel.set_width_chars(15)
-            
-            self.dateLabel.set_margin_start(30)
-            self.dateLabel.set_margin_end(30)
-            self.dateLabel.set_width_chars(15)
-            
-            self.costGrid.set_row_homogeneous(True)
-            self.costLabel.set_property("xalign", .05)
-            self.costLabel.set_width_chars(14)
-            
-            # Style Edit Button
-            self.editIcon = Gio.ThemedIcon(name="go-down-symbolic")
-            self.editImage = Gtk.Image.new_from_gicon(self.editIcon, Gtk.IconSize.MENU)
-            self.editButton.add(self.editImage)
-            self.editButton.set_relief(Gtk.ReliefStyle.NONE)
-            self.editButton.set_valign(Gtk.Align.START)
-            self.editButton.set_opacity(.5)
-
-            # Attach Labels
-            self.costGrid.attach(self.currencyLabel, 0,1,1,1)
-            self.costGrid.attach(self.costLabel, 1,1,1,1)
-            self.entryGrid.attach(self.categoryLabel, 0, 1, 1, 1)
-            self.entryGrid.attach(self.dateLabel, 1, 1, 1, 1)
-            self.entryGrid.attach(self.costGrid, 2, 0, 1, 2)
-           
-            if self.descriptionLabel.get_text() != "":
-                self.entryGrid.attach(self.descriptionLabel, 0, 3, 3, 1)
-                self.extraSpaceLabel = Gtk.Label()
-                self.entryGrid.attach(self.extraSpaceLabel,0, 4, 1, 1)
-                self.layoutGrid.attach(self.entryGrid, 0, 0, 1, 5)
-            
-            # Add Layout Grid to Content Grid. Increment index and apply whitespaces
-            else:
-                self.layoutGrid.attach(self.entryGrid, 0, 0, 1, 2)
-            
-            self.layoutGrid.attach(self.editButton, 1, 0, 1, 1)
-            self.layoutGrid.set_margin_bottom(25)
-
-
-            self.contentGrid.attach(self.layoutGrid, 1, self.index, 3, 2)
-
-            self.index = self.index + 2
-
-            self.transactionType = ""
-            for j in range(0, len(self.data.transactionsMenu)):
-                if self.data.transactionsMenu[j][self.data.MENU_ID_INDEX] == self.data.transactions[i][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX]:
-                    self.transactionType = self.data.transactionsMenu[j][self.data.MENU_TYPE_INDEX]
-            
-            self.entryRows.append([self.layoutGrid, [self.categoryLabel, self.dateLabel, self.currencyLabel, self.costLabel, self.descriptionLabel, self.editButton], self.entryGrid, self.costGrid, self.data.transactions[i][self.data.TRANSACTION_ID_INDEX], self.transactionType])
-            self.editButton.connect("clicked", self.edit_view.on_editDropdown_clicked, self.editView, self.data.transactions[i][self.data.TRANSACTION_ID_INDEX], self.entryRows[i],  self.contentGrid, self.data.transactions[i])
-            self.contentGrid.show_all() 
-        
         if self.data.optimizationTesting == True:
             self.displayContentEnd = time.time()
             self.data.calculate_time("Display Transactions", self.displayContentStart, self.displayContentEnd)
