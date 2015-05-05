@@ -359,9 +359,11 @@ class Data():
 
             self.refresh_data()
     
-    def refresh_data(self):    
+    def refresh_data(self):
+            # To-do:  Remove need for wiping out data and reloading
+            # Can't remove entirely until all array's are marked "Finished"
             self.transactionsMenu = []
-            self.transactions = []
+            self.transactions = []          # Finished
             self.incomeMenu = []
             self.expenseMenu = []
             self.yearMenu = []
@@ -375,7 +377,7 @@ class Data():
             
             self.transaction_view.generate_sidebars()
             #self.transaction_view.display_content()
-            self.overview.redisplay_info()
+            #self.overview.redisplay_info()
             self.projections_view.redisplay_info()
             
             if self.optimizationTesting == True:
@@ -769,7 +771,7 @@ class Data():
             self.LATEST_ID += 1
             self.add_transaction(categoryName, year, month, day, value, description, self.LATEST_ID)
 
-            self.refresh_data()            
+            #self.refresh_data()            
     
     def update_projection(self, title, category, year, month, day, value, description, projectionID):
         for i in range(0,len(self.transactionsMenu)):
