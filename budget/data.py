@@ -246,7 +246,6 @@ class Data():
             self.select = [(str(selected),str(category + 1))] 
             cur.execute("SELECT categoryID FROM categories WHERE categories.type = ? AND categories.categoryOrder = ?", self.select[0])
             self.categoryID = cur.fetchall()
-            print(self.categoryID)
             self.categoryID = self.categoryID[0][0]
             row = [(str(title),str(value),str(description),str(self.categoryID),str(startYear),str(startMonth),str(startDay),str(endYear),str(endMonth),str(endDay),str(frequency),str(projectionID))]
             cur.execute('INSERT INTO projections VALUES(?,?,?,?,?,?,?,?,?,?,?,?)', row[0])
@@ -261,13 +260,9 @@ class Data():
     def calculate_time(self, tracking, startTime, endTime):
         print(tracking + ": " + str(endTime - startTime))
         
-
     def check_amount_value(self, widget, value, length, *args):
         if value not in self.valid_numbers:
             widget.stop_emission("insert-text")
-            #print(value)
-        # if boolean == False:
-    
 
     def connect_data_views(self, transaction_view, overview, projections):
         self.transaction_view = transaction_view
@@ -391,7 +386,6 @@ class Data():
                 self.refreshEnd = time.time()
                 self.calculate_time("Refresh", self.refreshStart, self.refreshEnd)
 
-
     def import_data(self):
         
         if(os.path.isfile(self.db_path)):
@@ -440,7 +434,6 @@ class Data():
                 if self.transactionsMenu[i][self.MENU_TYPE_INDEX] == "expense":
                     self.expenseMenu.append(self.transactionsMenu[i][self.MENU_ID_INDEX])
                
-                 
             cur.execute('SELECT * FROM transactions;')    
             rows = cur.fetchall()
 
@@ -472,7 +465,6 @@ class Data():
                 self.sortEnd = time.time()
                 self.calculate_time("Sort", self.sortStart, self.sortEnd)
     
-            
             cur = con.cursor()
             cur_frequency = con.cursor()
             cur_categoryNameType = con.cursor()
@@ -778,8 +770,6 @@ class Data():
             self.LATEST_ID += 1
             self.add_transaction(categoryName, year, month, day, value, description, self.LATEST_ID)
 
-            #self.refresh_data()            
-    
     def update_projection(self, title, category, year, month, day, value, description, projectionID):
         for i in range(0,len(self.transactionsMenu)):
             if category == self.transactionsMenu[i][self.MENU_NAME_INDEX]:
