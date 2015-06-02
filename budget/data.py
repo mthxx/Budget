@@ -143,12 +143,18 @@ class Data():
             if menuType == "income":
                 cur.execute('SELECT MAX(categoryOrder) from categories where type = ' + str(0))
                 row = cur.fetchone()
-                self.INCOME_ORDER_ID = row[0]
+                if row[0] <= 0:
+                    self.INCOME_ORDER_ID = 0
+                else:
+                    self.INCOME_ORDER_ID = row[0]
                 self.INCOME_ORDER_ID += 1
             if menuType == "expense":
                 cur.execute('SELECT MAX(categoryOrder) from categories where type = ' + str(1))
                 row = cur.fetchone()
-                self.EXPENSE_ORDER_ID = row[0]
+                if row[0] <= 0:
+                    self.EXPENSE_ORDER_ID = 0
+                else:
+                    self.EXPENSE_ORDER_ID = row[0]
                 self.EXPENSE_ORDER_ID += 1
             cur.execute('SELECT MAX(categoryID) from categories;')
             row = cur.fetchone()
@@ -221,9 +227,9 @@ class Data():
             self.refresh_data()
     
     def add_projection(self, title, value, description, selected, category, startYear, startMonth, startDay, endYear, endMonth, endDay, frequency, projectionID):
-        for i in range(0,len(self.transactionsMenu)):
-            if category == self.transactionsMenu[i][self.MENU_NAME_INDEX]:
-                category = self.transactionsMenu[i][self.MENU_ID_INDEX]
+        #for i in range(0,len(self.transactionsMenu)):
+        #    if category == self.transactionsMenu[i][self.MENU_ID_INDEX]:
+        #        category = self.transactionsMenu[i][self.MENU_NAME_INDEX]
 
         if(os.path.isfile(self.db_path)):
             if self.optimizationTesting == True:
@@ -240,6 +246,7 @@ class Data():
             self.select = [(str(selected),str(category + 1))] 
             cur.execute("SELECT categoryID FROM categories WHERE categories.type = ? AND categories.categoryOrder = ?", self.select[0])
             self.categoryID = cur.fetchall()
+            print(self.categoryID)
             self.categoryID = self.categoryID[0][0]
             row = [(str(title),str(value),str(description),str(self.categoryID),str(startYear),str(startMonth),str(startDay),str(endYear),str(endMonth),str(endDay),str(frequency),str(projectionID))]
             cur.execute('INSERT INTO projections VALUES(?,?,?,?,?,?,?,?,?,?,?,?)', row[0])

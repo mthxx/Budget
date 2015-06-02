@@ -110,7 +110,7 @@ class Projections():
         self.arr.append(self.data.projections[i][self.data.PROJECTIONS_END_DAY])
         self.arr.append(self.data.projections[i][self.data.PROJECTIONS_FREQUENCY])
         self.arr.append(self.data.projections[i][self.data.PROJECTIONS_ID])
-        
+
         self.projections = self.data.sort_projections(self.projections, self.arr)
 
     def create_header_grid(self):
@@ -357,7 +357,7 @@ class Projections():
                 for j in range(days):
                     self.add_projection(i, startYear, startMonth, startDay)
                     if startDay >= currentMonthEndDate:
-                        startDay = 1
+                        startDay = 0
                         if startMonth == 12:
                             startMonth = 1
                             startYear += 1
@@ -373,7 +373,7 @@ class Projections():
                     if dayOfWeek == datetime.datetime(startYear, startMonth, startDay).weekday():
                         self.add_projection(i, startYear, startMonth, startDay)
                     if startDay >= currentMonthEndDate:
-                        startDay = 1
+                        startDay = 0
                         if startMonth == 12:
                             startMonth = 1
                             startYear += 1
@@ -394,7 +394,7 @@ class Projections():
                         else:
                             self.flag = True
                     if startDay >= currentMonthEndDate:
-                        startDay = 1
+                        startDay = 0
                         if startMonth == 12:
                             startMonth = 1
                             startYear += 1
@@ -410,7 +410,7 @@ class Projections():
                     if startDay == recurringDate:
                         self.add_projection(i, startYear, startMonth, startDay)
                     if startDay >= currentMonthEndDate:
-                        startDay = 1
+                        startDay = 0
                         if startMonth == 12:
                             startMonth = 1
                             startYear += 1
@@ -433,7 +433,7 @@ class Projections():
                         elif self.count == 3:
                             self.count = 0;
                     if startDay >= currentMonthEndDate:
-                        startDay = 1
+                        startDay = 0
                         if startMonth == 12:
                             startMonth = 1
                             startYear += 1
@@ -452,7 +452,7 @@ class Projections():
                     if self.recurringMonth == startMonth and self.recurringDay == startDay:
                             self.add_projection(i, startYear, startMonth, startDay)
                     if startDay >= currentMonthEndDate:
-                        startDay = 1
+                        startDay = 0
                         if startMonth == 12:
                             startMonth = 1
                             startYear += 1
@@ -940,7 +940,7 @@ class Projections():
         
         # Reset fields to default
         self.transactionTitleEntry.set_text("")
-        self.transactionAmountEntry.set_text("")
+#        self.transactionAmountEntry.set_text("")
         self.transactionDescriptionEntry.set_text("")
         self.addIncomeRadio.set_active(True)
         self.addCategoryComboBoxText.set_active(-1)
