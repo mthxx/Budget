@@ -1,6 +1,6 @@
 #!/usr/bin/env xdg-open
 [Desktop Entry]
-Version=0.0.5
+Version=0.0.6
 Name=Budget
 GenericName=Finance 
 X-GNOME_FullName=Budget 

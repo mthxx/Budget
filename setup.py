@@ -13,7 +13,7 @@ ENTRY_POINTS = {
 
 setup(
     name="budget",
-    version="0.0.5",
+    version="0.0.6",
     description="Personal Finance",
     license="GPL v2.0",
     author="Marc Thomas",
@@ -24,7 +24,7 @@ setup(
     install_requires=[],
     long_description=long_description,
     entry_points=ENTRY_POINTS,
-    data_files=[("/usr/share/applications/", ["PKGBUILD/budget.desktop"])],
+    data_files=[("/usr/share/applications/", ["PKGBUILD/budget.desktop"]),("/usr/share/icons/hicolor/scalable/apps/", ["PKGBUILD/budget.svg"])],
     classifiers=[
         "Programming Language :: Python",
         "Programming Language :: Python :: 3.4",
