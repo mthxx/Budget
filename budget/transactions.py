@@ -548,7 +548,7 @@ class Transactions():
         if hasattr(self, "monthYearRadio"):
             self.set_sums()
             for i in range (0,len(self.entryRows)):
-                self.date = self.entryRows[i][1][1].get_label().split()
+                self.date = self.entryRows[i][self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_DATE_LABEL_INDEX].get_label().split()
                 self.entry_month =  self.date[0]
                 self.entry_day = self.date[1]
                 self.entry_year = self.date[2]
@@ -929,9 +929,9 @@ class Transactions():
                                 if self.data.transactions[j][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.data.expenseMenu[k]:
                                     self.dataSum -= self.data.transactions[j][self.data.TRANSACTION_VALUE_INDEX]
                         if self.dataSum >= 0:
-                            self.categoryRows[0][self.categoryRowSum].set_markup("<span foreground=\"green\">" + "$" + str("%0.2f" % (self.dataSum,)) + "</span>")
+                            self.categoryRows[i][self.categoryRowSum].set_markup("<span foreground=\"green\">" + "$" + str("%0.2f" % (self.dataSum,)) + "</span>")
                         elif self.dataSum < 0:
-                            self.categoryRows[0][self.categoryRowSum].set_markup("<span foreground=\"red\">" + "$" + str("%0.2f" % (self.dataSum,)) + "</span>")
+                            self.categoryRows[i][self.categoryRowSum].set_markup("<span foreground=\"red\">" + "$" + str("%0.2f" % (self.dataSum,)) + "</span>")
                     
                     # "All Income" sum
                     elif self.categoryRows[i][self.categoryRowUniqueID] == self.ALL_INCOME_UNIQUE_ID:
@@ -948,7 +948,8 @@ class Transactions():
                                 if self.data.transactions[j][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.data.expenseMenu[k]:
                                     self.dataSum += self.data.transactions[j][self.data.TRANSACTION_VALUE_INDEX]
                         self.categoryRows[i][self.categoryRowSum].set_markup("<span foreground=\"red\">" + "$" + str("%0.2f" % (self.dataSum,)) + "</span>")
-                   
+                  
+                    # All other categories
                     else:
                         for j in range(0, len(self.data.transactions)):
                             if self.data.transactions[j][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.uniqueID:
@@ -957,10 +958,183 @@ class Transactions():
                             self.categoryRows[i][self.categoryRowSum].set_markup("<span foreground=\"green\">" + "$" + str("%0.2f" % (self.dataSum,)) + "</span>")
                         if self.categoryRows[i][self.categoryRowType] == "expense":
                             self.categoryRows[i][self.categoryRowSum].set_markup("<span foreground=\"red\">" + "$" + str("%0.2f" % (self.dataSum,)) + "</span>")
+            
+            # Either either month or year are not set to "All"
             elif (self.selected_month != self.data.allMonthMenu[self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_NAME_INDEX] 
                 or self.selected_year != self.data.yearMenu[0]):
-                print("Not All")
-            
+                for i in range(0,len(self.categoryRows)):
+                    self.uniqueID = self.categoryRows[i][self.categoryRowUniqueID]
+                    self.dataSum = 0
+                    
+                    # If "All Transactions" category is selected"
+                    if self.categoryRows[i][self.categoryRowUniqueID] == self.ALL_TRANSACTIONS_UNIQUE_ID:
+                        
+                        # If month is "All"
+                        if self.selected_month == self.data.allMonthMenu[self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_NAME_INDEX]:
+                            for j in range(0, len(self.data.transactions)):
+                                if int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_YEAR_INDEX]) == int(self.selected_year):
+                                    for k in range(0, len(self.data.incomeMenu)):
+                                        if self.data.transactions[j][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.data.incomeMenu[k]:
+                                            self.dataSum += self.data.transactions[j][self.data.TRANSACTION_VALUE_INDEX]
+                             
+                            for j in range(0, len(self.data.transactions)):
+                                if int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_YEAR_INDEX]) == int(self.selected_year):
+                                    for k in range(0, len(self.data.expenseMenu)):
+                                        if self.data.transactions[j][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.data.expenseMenu[k]:
+                                            self.dataSum -= self.data.transactions[j][self.data.TRANSACTION_VALUE_INDEX]
+                            if self.dataSum >= 0:
+                                self.categoryRows[i][self.categoryRowSum].set_markup("<span foreground=\"green\">" + "$" + str("%0.2f" % (self.dataSum,)) + "</span>")
+                            elif self.dataSum < 0:
+                                self.categoryRows[i][self.categoryRowSum].set_markup("<span foreground=\"red\">" + "$" + str("%0.2f" % (self.dataSum,)) + "</span>")
+                        
+                        # If month is not "All"
+                        elif self.selected_month != self.data.allMonthMenu[self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_NAME_INDEX]:
+                            
+                            # If year is "All"
+                            if self.selected_year == self.data.yearMenu[0]:
+                                for j in range(0, len(self.data.transactions)):
+                                    if int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_MONTH_INDEX]) == int(self.selected_month_index):
+                                        for k in range(0, len(self.data.incomeMenu)):
+                                            if self.data.transactions[j][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.data.incomeMenu[k]:
+                                                self.dataSum += self.data.transactions[j][self.data.TRANSACTION_VALUE_INDEX]
+                                for j in range(0, len(self.data.transactions)):
+                                    if int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_MONTH_INDEX]) == int(self.selected_month_index):
+                                        for k in range(0, len(self.data.expenseMenu)):
+                                            if self.data.transactions[j][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.data.expenseMenu[k]:
+                                                self.dataSum -= self.data.transactions[j][self.data.TRANSACTION_VALUE_INDEX]
+                                if self.dataSum >= 0:
+                                    self.categoryRows[i][self.categoryRowSum].set_markup("<span foreground=\"green\">" + "$" + str("%0.2f" % (self.dataSum,)) + "</span>")
+                                elif self.dataSum < 0:
+                                    self.categoryRows[i][self.categoryRowSum].set_markup("<span foreground=\"red\">" + "$" + str("%0.2f" % (self.dataSum,)) + "</span>")
+                            
+                            # If year is not "All"
+                            elif self.selected_year != self.data.yearMenu[0]:
+                                for j in range(0, len(self.data.transactions)):
+                                    if (int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_MONTH_INDEX]) == int(self.selected_month_index)
+                                        and int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_YEAR_INDEX]) == int(self.selected_year)):
+                                        for k in range(0, len(self.data.incomeMenu)):
+                                            if self.data.transactions[j][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.data.incomeMenu[k]:
+                                                self.dataSum += self.data.transactions[j][self.data.TRANSACTION_VALUE_INDEX]
+                                for j in range(0, len(self.data.transactions)):
+                                    if (int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_MONTH_INDEX]) == int(self.selected_month_index)
+                                        and int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_YEAR_INDEX]) == int(self.selected_year)):
+                                        for k in range(0, len(self.data.expenseMenu)):
+                                            if self.data.transactions[j][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.data.expenseMenu[k]:
+                                                self.dataSum -= self.data.transactions[j][self.data.TRANSACTION_VALUE_INDEX]
+                                if self.dataSum >= 0:
+                                    self.categoryRows[i][self.categoryRowSum].set_markup("<span foreground=\"green\">" + "$" + str("%0.2f" % (self.dataSum,)) + "</span>")
+                                elif self.dataSum < 0:
+                                    self.categoryRows[i][self.categoryRowSum].set_markup("<span foreground=\"red\">" + "$" + str("%0.2f" % (self.dataSum,)) + "</span>")
+                    
+                    # If "All Income" scategory is selected
+                    elif self.categoryRows[i][self.categoryRowUniqueID] == self.ALL_INCOME_UNIQUE_ID:
+                        
+                        # If month is "All"
+                        if self.selected_month == self.data.allMonthMenu[self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_NAME_INDEX]:
+                            for j in range(0, len(self.data.transactions)):
+                                if int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_YEAR_INDEX]) == int(self.selected_year):
+                                    for k in range(0, len(self.data.incomeMenu)):
+                                        if self.data.transactions[j][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.data.incomeMenu[k]:
+                                            self.dataSum += self.data.transactions[j][self.data.TRANSACTION_VALUE_INDEX]
+                            self.categoryRows[i][self.categoryRowSum].set_markup("<span foreground=\"green\">" + "$" + str("%0.2f" % (self.dataSum,)) + "</span>")
+                        
+                        # If month is not "All"
+                        elif self.selected_month != self.data.allMonthMenu[self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_NAME_INDEX]:
+                            
+                            # If year is "All"
+                            if self.selected_year == self.data.yearMenu[0]:
+                                for j in range(0, len(self.data.transactions)):
+                                    if int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_MONTH_INDEX]) == int(self.selected_month_index):
+                                        for k in range(0, len(self.data.incomeMenu)):
+                                            if self.data.transactions[j][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.data.incomeMenu[k]:
+                                                self.dataSum += self.data.transactions[j][self.data.TRANSACTION_VALUE_INDEX]
+                                self.categoryRows[i][self.categoryRowSum].set_markup("<span foreground=\"green\">" + "$" + str("%0.2f" % (self.dataSum,)) + "</span>")
+                            
+                            # If year is not "All"
+                            elif self.selected_year != self.data.yearMenu[0]:
+                                for j in range(0, len(self.data.transactions)):
+                                    if (int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_MONTH_INDEX]) == int(self.selected_month_index)
+                                        and int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_YEAR_INDEX]) == int(self.selected_year)):
+                                        for k in range(0, len(self.data.incomeMenu)):
+                                            if self.data.transactions[j][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.data.incomeMenu[k]:
+                                                self.dataSum += self.data.transactions[j][self.data.TRANSACTION_VALUE_INDEX]
+                                self.categoryRows[i][self.categoryRowSum].set_markup("<span foreground=\"green\">" + "$" + str("%0.2f" % (self.dataSum,)) + "</span>")
+                    
+                    # If "All Expenses" scategory is selected
+                    elif self.categoryRows[i][self.categoryRowUniqueID] == self.ALL_EXPENSES_UNIQUE_ID:
+                        
+                        # If month is "All"
+                        if self.selected_month == self.data.allMonthMenu[self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_NAME_INDEX]:
+                            for j in range(0, len(self.data.transactions)):
+                                if int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_YEAR_INDEX]) == int(self.selected_year):
+                                    for k in range(0, len(self.data.expenseMenu)):
+                                        if self.data.transactions[j][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.data.expenseMenu[k]:
+                                            self.dataSum += self.data.transactions[j][self.data.TRANSACTION_VALUE_INDEX]
+                            self.categoryRows[i][self.categoryRowSum].set_markup("<span foreground=\"red\">" + "$" + str("%0.2f" % (self.dataSum,)) + "</span>")
+                        
+                        # If month is not "All"
+                        elif self.selected_month != self.data.allMonthMenu[self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_NAME_INDEX]:
+                            
+                            # If year is "All"
+                            if self.selected_year == self.data.yearMenu[0]:
+
+                                for j in range(0, len(self.data.transactions)):
+                                    if int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_MONTH_INDEX]) == int(self.selected_month_index):
+                                        for k in range(0, len(self.data.expenseMenu)):
+                                            if self.data.transactions[j][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.data.expenseMenu[k]:
+                                                self.dataSum += self.data.transactions[j][self.data.TRANSACTION_VALUE_INDEX]
+                                self.categoryRows[i][self.categoryRowSum].set_markup("<span foreground=\"red\">" + "$" + str("%0.2f" % (self.dataSum,)) + "</span>")
+                            
+                            # If year is not "All"
+                            elif self.selected_year != self.data.yearMenu[0]:
+                                for j in range(0, len(self.data.transactions)):
+                                    if (int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_MONTH_INDEX]) == int(self.selected_month_index)
+                                        and int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_YEAR_INDEX]) == int(self.selected_year)):
+                                        for k in range(0, len(self.data.expenseMenu)):
+                                            if self.data.transactions[j][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.data.expenseMenu[k]:
+                                                self.dataSum += self.data.transactions[j][self.data.TRANSACTION_VALUE_INDEX]
+                                self.categoryRows[i][self.categoryRowSum].set_markup("<span foreground=\"red\">" + "$" + str("%0.2f" % (self.dataSum,)) + "</span>")
+                    
+                    else:
+                        
+                        # If month is "All"
+                        if self.selected_month == self.data.allMonthMenu[self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_NAME_INDEX]:
+                            for j in range(0, len(self.data.transactions)):
+                                if int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_YEAR_INDEX]) == int(self.selected_year):
+                                    if self.data.transactions[j][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.uniqueID:
+                                        self.dataSum += self.data.transactions[j][self.data.TRANSACTION_VALUE_INDEX]
+                            if self.categoryRows[i][self.categoryRowType] == "income":
+                                self.categoryRows[i][self.categoryRowSum].set_markup("<span foreground=\"green\">" + "$" + str("%0.2f" % (self.dataSum,)) + "</span>")
+                            if self.categoryRows[i][self.categoryRowType] == "expense":
+                                self.categoryRows[i][self.categoryRowSum].set_markup("<span foreground=\"red\">" + "$" + str("%0.2f" % (self.dataSum,)) + "</span>")
+                        
+                        # If month is not "All"
+                        elif self.selected_month != self.data.allMonthMenu[self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_NAME_INDEX]:
+                            
+                            # If year is "All"
+                            if self.selected_year == self.data.yearMenu[0]:
+                                for j in range(0, len(self.data.transactions)):
+                                    if int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_MONTH_INDEX]) == int(self.selected_month_index):
+                                        if self.data.transactions[j][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.uniqueID:
+                                            self.dataSum += self.data.transactions[j][self.data.TRANSACTION_VALUE_INDEX]
+                                if self.categoryRows[i][self.categoryRowType] == "income":
+                                    self.categoryRows[i][self.categoryRowSum].set_markup("<span foreground=\"green\">" + "$" + str("%0.2f" % (self.dataSum,)) + "</span>")
+                                if self.categoryRows[i][self.categoryRowType] == "expense":
+                                    self.categoryRows[i][self.categoryRowSum].set_markup("<span foreground=\"red\">" + "$" + str("%0.2f" % (self.dataSum,)) + "</span>")
+                            
+                            # If year is not "All"
+                            elif self.selected_year != self.data.yearMenu[0]:
+                                for j in range(0, len(self.data.transactions)):
+                                    if (int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_MONTH_INDEX]) == int(self.selected_month_index)
+                                        and int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_YEAR_INDEX]) == int(self.selected_year)):
+                                        if self.data.transactions[j][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.uniqueID:
+                                            self.dataSum += self.data.transactions[j][self.data.TRANSACTION_VALUE_INDEX]
+                                if self.categoryRows[i][self.categoryRowType] == "income":
+                                    self.categoryRows[i][self.categoryRowSum].set_markup("<span foreground=\"green\">" + "$" + str("%0.2f" % (self.dataSum,)) + "</span>")
+                                if self.categoryRows[i][self.categoryRowType] == "expense":
+                                    self.categoryRows[i][self.categoryRowSum].set_markup("<span foreground=\"red\">" + "$" + str("%0.2f" % (self.dataSum,)) + "</span>")
+
+
            
            # Calculate month totals
 
