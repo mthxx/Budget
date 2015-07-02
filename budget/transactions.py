@@ -606,16 +606,16 @@ class Transactions():
                         self.filter_range(i)
                     # If selected category item is "Income" or "Expenses"
                     elif self.selected_category_index == self.ALL_INCOME_UNIQUE_ID or self.selected_category_index == self.ALL_EXPENSES_UNIQUE_ID:
-                        if self.selected_category == self.entryRows[i][5]:
+                        if self.selected_category == self.entryRows[i][self.ENTRY_ROW_TYPE_INDEX]:
                             self.filter_range(i)
-                        elif self.selected_category != self.entryRows[i][5]:
+                        elif self.selected_category != self.entryRows[i][self.ENTRY_ROW_TYPE_INDEX]:
                             self.hide_entry(i)
                     
                     # If selected category item is "Uncategorized"
                     elif (self.selected_category_index == self.UNCATEGORIZED_INCOME_UNIQUE_ID or self.selected_category_index == self.UNCATEGORIZED_EXPENSES_UNIQUE_ID):
-                        if (self.selected_category == self.entryRows[i][5] and self.entryRows[i][self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_CATEGORY_LABEL_INDEX].get_label() == "Uncategorized"):
+                        if (self.selected_category == self.entryRows[i][self.ENTRY_ROW_TYPE_INDEX] and self.entryRows[i][self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_CATEGORY_LABEL_INDEX].get_label() == "Uncategorized"):
                             self.filter_range(i)
-                        elif (self.selected_category != self.entryRows[i][5] or self.entryRows[i][self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_CATEGORY_LABEL_INDEX].get_label() != "Uncategorized"):
+                        elif (self.selected_category != self.entryRows[i][self.ENTRY_ROW_TYPE_INDEX] or self.entryRows[i][self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_CATEGORY_LABEL_INDEX].get_label() != "Uncategorized"):
                             self.hide_entry(i)
                             
                     # If selected menu item is not "All"
