@@ -38,7 +38,16 @@ class Transactions():
         self.EDIT_CATEGORY_ENTRY = 1
         self.EDIT_CATEGORY_BALANCE = 2
         self.EDIT_CATEGORY_BUTTON = 3
-        
+    
+        # Hardcoded preset values
+
+        self.ALL_TRANSACTIONS_UNIQUE_ID = -100
+        self.ALL_INCOME_UNIQUE_ID = -200
+        self.ALL_EXPENSES_UNIQUE_ID = -300
+        self.UNCATEGORIZED_INCOME_UNIQUE_ID = -1
+        self.UNCATEGORIZED_EXPENSES_UNIQUE_ID = -2
+
+
         # Additional Items
         self.ENTRY_GRID_INDEX = 2            # Element
         self.COST_GRID_INDEX = 3             # Element
@@ -288,19 +297,19 @@ class Transactions():
         else:
             if row.get_child().get_children()[0].get_label() == "<span><b>All Transactions</b></span>":
                 self.selected_category = "all transactions"
-                self.selected_category_index = -1
+                self.selected_category_index = self.ALL_TRANSACTIONS_UNIQUE_ID
             elif row.get_child().get_children()[0].get_label() == "<span><b>Income</b></span>":
                 self.selected_category = "income"
-                self.selected_category_index = -2
+                self.selected_category_index = self.ALL_INCOME_UNIQUE_ID
             elif row.get_child().get_children()[0].get_label() == "<span><b>Expenses</b></span>":
                 self.selected_category = "expense"
-                self.selected_category_index = -3
+                self.selected_category_index = self.ALL_EXPENSES_UNIQUE_ID
             elif row.get_child().get_children()[0].get_label() == "Uncategorized" and row.get_index() < (len(self.menuListBox) - 2):
                 self.selected_category = "income"
-                self.selected_category_index = -4
+                self.selected_category_index = self.UNCATEGORIZED_INCOME_UNIQUE_ID
             elif row.get_child().get_children()[0].get_label() == "Uncategorized" and row.get_index() >= (len(self.menuListBox) - 2):
                 self.selected_category = "expense"
-                self.selected_category_index = -5
+                self.selected_category_index = self.UNCATEGORIZED_EXPENSES_UNIQUE_ID
             else:
                 for i in range(len(self.data.transactionsMenu)):
                     if self.data.transactionsMenu[i][self.data.TRANSACTION_MENU_NAME_INDEX] == row.get_child().get_children()[0].get_label():
@@ -552,25 +561,24 @@ class Transactions():
                     
                 if self.monthYearRadio.get_active() == True:
                     # If selected category item is "All"
-                    if self.selected_category_index == -1:
+                    if self.selected_category_index == self.ALL_TRANSACTIONS_UNIQUE_ID:
                         self.filter_month(i)
                      # If selected category item is "Income" or "Expenses"
-                    elif self.selected_category_index == -2 or self.selected_category_index == -3:
-                        if self.selected_category == self.entryRows[i][5]:
-                            print(self.entryRows[i][5])
+                    elif self.selected_category_index == self.ALL_INCOME_UNIQUE_ID or self.selected_category_index == self.ALL_EXPENSES_UNIQUE_ID:
+                        if self.selected_category == self.entryRows[i][self.ENTRY_ROW_TYPE_INDEX]:
                             self.filter_month(i)
-                        elif self.selected_category != self.entryRows[i][5]:
+                        elif self.selected_category != self.entryRows[i][self.ENTRY_ROW_TYPE_INDEX]:
                             self.hide_entry(i)
                     
                     # If selected category item is "Uncategorized"
-                    elif (self.selected_category_index == -4 or self.selected_category_index == -5):
-                        if (self.selected_category == self.entryRows[i][5] and self.entryRows[i][self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_CATEGORY_LABEL_INDEX].get_label() == "Uncategorized"):
+                    elif (self.selected_category_index == self.UNCATEGORIZED_INCOME_UNIQUE_ID or self.selected_category_index == self.UNCATEGORIZED_EXPENSES_UNIQUE_ID):
+                        if (self.selected_category == self.entryRows[i][self.ENTRY_ROW_TYPE_INDEX] and self.entryRows[i][self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_CATEGORY_LABEL_INDEX].get_label() == "Uncategorized"):
                             self.filter_month(i)
-                        elif (self.selected_category != self.entryRows[i][5] or self.entryRows[i][self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_CATEGORY_LABEL_INDEX].get_label() != "Uncategorized"):
+                        elif (self.selected_category != self.entryRows[i][self.ENTRY_ROW_TYPE_INDEX] or self.entryRows[i][self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_CATEGORY_LABEL_INDEX].get_label() != "Uncategorized"):
                             self.hide_entry(i)
                     
                     # If selected menu item is not "All"
-                    elif self.selected_category_index != -1:
+                    elif self.selected_category_index != self.ALL_TRANSACTIONS_UNIQUE_ID:
                         if self.selected_category == self.entryRows[i][self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_CATEGORY_LABEL_INDEX].get_label():
                             self.filter_month(i)
                         if self.selected_category != self.entryRows[i][self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_CATEGORY_LABEL_INDEX].get_label():
@@ -594,24 +602,24 @@ class Transactions():
                     self.toDay= self.toArr[2]
     
                     # If selected category item is "All"
-                    if self.selected_category_index == -1:
+                    if self.selected_category_index == self.ALL_TRANSACTIONS_UNIQUE_ID:
                         self.filter_range(i)
                     # If selected category item is "Income" or "Expenses"
-                    elif self.selected_category_index == -2 or self.selected_category_index == -3:
+                    elif self.selected_category_index == self.ALL_INCOME_UNIQUE_ID or self.selected_category_index == self.ALL_EXPENSES_UNIQUE_ID:
                         if self.selected_category == self.entryRows[i][5]:
                             self.filter_range(i)
                         elif self.selected_category != self.entryRows[i][5]:
                             self.hide_entry(i)
                     
                     # If selected category item is "Uncategorized"
-                    elif (self.selected_category_index == -4 or self.selected_category_index == -5):
+                    elif (self.selected_category_index == self.UNCATEGORIZED_INCOME_UNIQUE_ID or self.selected_category_index == self.UNCATEGORIZED_EXPENSES_UNIQUE_ID):
                         if (self.selected_category == self.entryRows[i][5] and self.entryRows[i][self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_CATEGORY_LABEL_INDEX].get_label() == "Uncategorized"):
                             self.filter_range(i)
                         elif (self.selected_category != self.entryRows[i][5] or self.entryRows[i][self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_CATEGORY_LABEL_INDEX].get_label() != "Uncategorized"):
                             self.hide_entry(i)
                             
                     # If selected menu item is not "All"
-                    elif self.selected_category_index != -1:
+                    elif self.selected_category_index != self.ALL_TRANSACTIONS_UNIQUE_ID:
                         if self.selected_category == self.entryRows[i][self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_CATEGORY_LABEL_INDEX].get_label():
                             self.filter_range(i)
                         if self.selected_category != self.entryRows[i][self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_CATEGORY_LABEL_INDEX].get_label():
@@ -734,7 +742,7 @@ class Transactions():
         self.tempArray = []
         self.tempArray.append(self.transactionsLabel)
         self.tempArray.append(self.sumLabel)
-        self.tempArray.append(int(-100))
+        self.tempArray.append(self.ALL_TRANSACTIONS_UNIQUE_ID)
         self.tempArray.append("All Transactions")
         self.categoryRows.append(self.tempArray)
 
@@ -755,7 +763,7 @@ class Transactions():
         self.tempArray = []
         self.tempArray.append(self.incomeLabel)
         self.tempArray.append(self.sumLabel)
-        self.tempArray.append(int(-200))
+        self.tempArray.append(self.ALL_INCOME_UNIQUE_ID)
         self.tempArray.append("All Income")
         self.categoryRows.append(self.tempArray)
 
@@ -787,7 +795,7 @@ class Transactions():
         self.tempArray = []
         self.tempArray.append(self.expenseLabel)
         self.tempArray.append(self.sumLabel)
-        self.tempArray.append(int(-300))
+        self.tempArray.append(self.ALL_EXPENSES_UNIQUE_ID)
         self.tempArray.append("All Expenses")
         self.categoryRows.append(self.tempArray)
         
@@ -910,7 +918,7 @@ class Transactions():
                     self.dataSum = 0
                     
                     # "All Transactions" sum
-                    if self.categoryRows[i][self.categoryRowUniqueID] == int(-100):
+                    if self.categoryRows[i][self.categoryRowUniqueID] == self.ALL_TRANSACTIONS_UNIQUE_ID:
                         for j in range(0, len(self.data.transactions)):
                             for k in range(0, len(self.data.incomeMenu)):
                                 if self.data.transactions[j][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.data.incomeMenu[k]:
@@ -926,7 +934,7 @@ class Transactions():
                             self.categoryRows[0][self.categoryRowSum].set_markup("<span foreground=\"red\">" + "$" + str("%0.2f" % (self.dataSum,)) + "</span>")
                     
                     # "All Income" sum
-                    elif self.categoryRows[i][self.categoryRowUniqueID] == int(-200):
+                    elif self.categoryRows[i][self.categoryRowUniqueID] == self.ALL_INCOME_UNIQUE_ID:
                         for j in range(0, len(self.data.transactions)):
                             for k in range(0, len(self.data.incomeMenu)):
                                 if self.data.transactions[j][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.data.incomeMenu[k]:
@@ -934,7 +942,7 @@ class Transactions():
                         self.categoryRows[i][self.categoryRowSum].set_markup("<span foreground=\"green\">" + "$" + str("%0.2f" % (self.dataSum,)) + "</span>")
                     
                     # "All Expense" sum
-                    elif self.categoryRows[i][self.categoryRowUniqueID] == int(-300):
+                    elif self.categoryRows[i][self.categoryRowUniqueID] == self.ALL_EXPENSES_UNIQUE_ID:
                         for j in range(0, len(self.data.transactions)):
                             for k in range(0, len(self.data.expenseMenu)):
                                 if self.data.transactions[j][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.data.expenseMenu[k]:
