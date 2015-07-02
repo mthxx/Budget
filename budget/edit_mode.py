@@ -7,16 +7,16 @@ class Edit_Entry(Gtk.Window):
         self.view = view
 
         # Content Grid
-        self.LAYOUT_GRID_INDEX = 0           # Element
+        self.ENTRY_ROW_LAYOUT_GRID_INDEX = 0           # Element
 
         # Layout Widgets
-        self.LAYOUT_WIDGET_INDEX = 1         # Array
-        self.CATEGORY_LABEL_INDEX = 0        # Element
-        self.DATE_LABEL_INDEX = 1            # Element
-        self.CURRENCY_LABEL_INDEX = 2        # Element
-        self.COST_LABEL_INDEX = 3            # Element
-        self.DESCRIPTION_LABEL_INDEX = 4     # Element
-        self.EDIT_BUTTON_INDEX = 5           # Element
+        self.ENTRY_ROW_LAYOUT_WIDGET_INDEX = 1         # Array
+        self.ENTRY_ROW_CATEGORY_LABEL_INDEX = 0        # Element
+        self.ENTRY_ROW_DATE_LABEL_INDEX = 1            # Element
+        self.ENTRY_ROW_CURRENCY_LABEL_INDEX = 2        # Element
+        self.ENTRY_ROW_COST_LABEL_INDEX = 3            # Element
+        self.ENTRY_ROW_DESCRIPTION_LABEL_INDEX = 4     # Element
+        self.ENTRY_ROW_EDIT_BUTTON_INDEX = 5           # Element
         self.TITLE_LABEL_INDEX = 6           # Element
         
         # Additional Items
@@ -97,7 +97,7 @@ class Edit_Entry(Gtk.Window):
 
     def on_cancelButton_clicked(self, button):
         self.editGrid.hide()
-        self.entryRow[self.LAYOUT_WIDGET_INDEX][self.EDIT_BUTTON_INDEX].show_all()
+        self.entryRow[self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_EDIT_BUTTON_INDEX].show_all()
         self.entryRow[self.ENTRY_GRID_INDEX].show_all()
         self.contentGrid.queue_draw()
     
@@ -212,21 +212,21 @@ class Edit_Entry(Gtk.Window):
         for j in range(0,len(self.data.transactionsMenu)):
             if self.data.transactionsMenu[j][self.data.MENU_NAME_INDEX] != "Uncategorized":
                 self.categoryComboBoxText.append_text(self.data.transactionsMenu[j][self.data.MENU_NAME_INDEX])
-        if self.entryRow[self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_text() != "Uncategorized":
+        if self.entryRow[self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_CATEGORY_LABEL_INDEX].get_text() != "Uncategorized":
             for j in range(0,len(self.data.transactionsMenu)-2):
                 self.categoryComboBoxText.set_active(j)
-                if self.categoryComboBoxText.get_active_text() == self.entryRow[self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_text():
+                if self.categoryComboBoxText.get_active_text() == self.entryRow[self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_CATEGORY_LABEL_INDEX].get_text():
                     break
         
         # Style Edit Grid, Hide Entry Grid
         self.editGrid.set_halign(Gtk.Align.CENTER)
         self.editGrid.set_hexpand(True)
-        self.entryRow[self.LAYOUT_WIDGET_INDEX][self.EDIT_BUTTON_INDEX].hide()
+        self.entryRow[self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_EDIT_BUTTON_INDEX].hide()
         self.entryRow[self.ENTRY_GRID_INDEX].hide()
        
         # Title
         if self.view == "projection":
-            self.titleEntry.set_text(self.entryRow[self.LAYOUT_WIDGET_INDEX][self.TITLE_LABEL_INDEX].get_text())
+            self.titleEntry.set_text(self.entryRow[self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.TITLE_LABEL_INDEX].get_text())
             self.editGrid.attach(self.titleLabel, 1,0,1,1)
             self.editGrid.attach(self.titleEntry,2,0,1,1)
         
@@ -235,17 +235,17 @@ class Edit_Entry(Gtk.Window):
         self.editGrid.attach(self.categoryComboBoxText,2,1,1,1)
         
         # Date
-        self.calendarButton.set_label(self.entryRow[self.LAYOUT_WIDGET_INDEX][self.DATE_LABEL_INDEX].get_text())
+        self.calendarButton.set_label(self.entryRow[self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_DATE_LABEL_INDEX].get_text())
         self.editGrid.attach(self.calendarLabel,1,2,1,1)
         self.editGrid.attach(self.calendarButton,2,2,1,1)
         
         # Cost
-        self.costEntry.set_text(self.entryRow[self.LAYOUT_WIDGET_INDEX][self.COST_LABEL_INDEX].get_text())
+        self.costEntry.set_text(self.entryRow[self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_COST_LABEL_INDEX].get_text())
         self.editGrid.attach(self.costLabel,1,3,1,1)
         self.editGrid.attach(self.costEntry,2,3,1,1)
         
         # Description
-        self.descriptionEntry.set_text(self.entryRow[self.LAYOUT_WIDGET_INDEX][self.DESCRIPTION_LABEL_INDEX].get_text())
+        self.descriptionEntry.set_text(self.entryRow[self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_DESCRIPTION_LABEL_INDEX].get_text())
         self.editGrid.attach(self.descriptionLabel,1,4,1,1)
         self.editGrid.attach(self.descriptionEntry,2,4,1,1)
         
@@ -254,7 +254,7 @@ class Edit_Entry(Gtk.Window):
         self.editGrid.attach(self.submitButton,2,5,1,1)
 
         # Attach and Show Edit Grid
-        self.entryRow[self.LAYOUT_GRID_INDEX].attach(self.editGrid, 0, 0, 1, 1)
+        self.entryRow[self.ENTRY_ROW_LAYOUT_GRID_INDEX].attach(self.editGrid, 0, 0, 1, 1)
         self.contentGrid.queue_draw()
         self.editGrid.show_all()
     
@@ -290,7 +290,7 @@ class Edit_Entry(Gtk.Window):
                 self.data.update_projection(self.titleEntry.get_text(), self.categoryComboBoxText.get_active_text(), self.year, self.month, self.day, 
                                     self.costEntry.get_text(), self.descriptionEntry.get_text(), self.unique_id)
  
-            self.entryRow[self.LAYOUT_WIDGET_INDEX][self.EDIT_BUTTON_INDEX].show_all()
+            self.entryRow[self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_EDIT_BUTTON_INDEX].show_all()
             self.entryRow[self.ENTRY_GRID_INDEX].show_all()
 
             self.contentGrid.queue_draw()

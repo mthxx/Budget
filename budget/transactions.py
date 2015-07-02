@@ -7,17 +7,31 @@ class Transactions():
 
     def __init__(self, data):
         
+        ## Entry Row Indexes
         # Content Grid
-        self.LAYOUT_GRID_INDEX = 0           # Element
+        self.ENTRY_ROW_LAYOUT_GRID_INDEX = 0           # Element
 
         # Layout Widget Indexes
-        self.LAYOUT_WIDGET_INDEX = 1         # Array
-        self.CATEGORY_LABEL_INDEX = 0        # Element
-        self.DATE_LABEL_INDEX = 1            # Element
-        self.CURRENCY_LABEL_INDEX = 2        # Element
-        self.COST_LABEL_INDEX = 3            # Element
-        self.DESCRIPTION_LABEL_INDEX = 4     # Element
-        self.EDIT_BUTTON_INDEX = 5
+        self.ENTRY_ROW_LAYOUT_WIDGET_INDEX = 1         # Array
+        #--
+        self.ENTRY_ROW_CATEGORY_LABEL_INDEX = 0        # Element
+        self.ENTRY_ROW_DATE_LABEL_INDEX = 1            # Element
+        self.ENTRY_ROW_CURRENCY_LABEL_INDEX = 2        # Element
+        self.ENTRY_ROW_COST_LABEL_INDEX = 3            # Element
+        self.ENTRY_ROW_DESCRIPTION_LABEL_INDEX = 4     # Element
+        self.ENTRY_ROW_EDIT_BUTTON_INDEX = 5
+
+        # Entry Row Unique ID
+        self.ENTRY_ROW_ENTRY_GRID_INDEX = 2  # Grid
+        
+        # Entry Row Unique ID
+        self.ENTRY_ROW_COST_GRID_INDEX = 3   # Grid
+        
+        # Entry Row Unique ID
+        self.ENTRY_ROW_UNIQUE_ID_INDEX = 4   # Element
+
+        # Entry Row Category
+        self.ENTRY_ROW_TYPE_INDEX = 5        # Element
         
         # Menu List Box Indexes
         self.EDIT_CATEGORY_TITLE = 0
@@ -543,22 +557,23 @@ class Transactions():
                      # If selected category item is "Income" or "Expenses"
                     elif self.selected_category_index == -2 or self.selected_category_index == -3:
                         if self.selected_category == self.entryRows[i][5]:
+                            print(self.entryRows[i][5])
                             self.filter_month(i)
                         elif self.selected_category != self.entryRows[i][5]:
                             self.hide_entry(i)
                     
                     # If selected category item is "Uncategorized"
                     elif (self.selected_category_index == -4 or self.selected_category_index == -5):
-                        if (self.selected_category == self.entryRows[i][5] and self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_label() == "Uncategorized"):
+                        if (self.selected_category == self.entryRows[i][5] and self.entryRows[i][self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_CATEGORY_LABEL_INDEX].get_label() == "Uncategorized"):
                             self.filter_month(i)
-                        elif (self.selected_category != self.entryRows[i][5] or self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_label() != "Uncategorized"):
+                        elif (self.selected_category != self.entryRows[i][5] or self.entryRows[i][self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_CATEGORY_LABEL_INDEX].get_label() != "Uncategorized"):
                             self.hide_entry(i)
                     
                     # If selected menu item is not "All"
                     elif self.selected_category_index != -1:
-                        if self.selected_category == self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_label():
+                        if self.selected_category == self.entryRows[i][self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_CATEGORY_LABEL_INDEX].get_label():
                             self.filter_month(i)
-                        if self.selected_category != self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_label():
+                        if self.selected_category != self.entryRows[i][self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_CATEGORY_LABEL_INDEX].get_label():
                             self.hide_entry(i)
             
                 elif self.rangeRadio.get_active() == True:
@@ -590,16 +605,16 @@ class Transactions():
                     
                     # If selected category item is "Uncategorized"
                     elif (self.selected_category_index == -4 or self.selected_category_index == -5):
-                        if (self.selected_category == self.entryRows[i][5] and self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_label() == "Uncategorized"):
+                        if (self.selected_category == self.entryRows[i][5] and self.entryRows[i][self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_CATEGORY_LABEL_INDEX].get_label() == "Uncategorized"):
                             self.filter_range(i)
-                        elif (self.selected_category != self.entryRows[i][5] or self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_label() != "Uncategorized"):
+                        elif (self.selected_category != self.entryRows[i][5] or self.entryRows[i][self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_CATEGORY_LABEL_INDEX].get_label() != "Uncategorized"):
                             self.hide_entry(i)
                             
                     # If selected menu item is not "All"
                     elif self.selected_category_index != -1:
-                        if self.selected_category == self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_label():
+                        if self.selected_category == self.entryRows[i][self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_CATEGORY_LABEL_INDEX].get_label():
                             self.filter_range(i)
-                        if self.selected_category != self.entryRows[i][self.LAYOUT_WIDGET_INDEX][self.CATEGORY_LABEL_INDEX].get_label():
+                        if self.selected_category != self.entryRows[i][self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_CATEGORY_LABEL_INDEX].get_label():
                             self.hide_entry(i)
     
     def filter_month(self, i):
@@ -615,7 +630,7 @@ class Transactions():
                 self.filter_year(i)
             # If selected month does not equal entry's month
             else:
-                self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
+                self.entryRows[i][self.ENTRY_ROW_LAYOUT_GRID_INDEX].hide()
                 self.contentGrid.queue_draw()
     
     def filter_range(self,i):
@@ -624,75 +639,75 @@ class Transactions():
             # Same from and to month
             if int(self.entry_month) == int(self.fromMonth) and int(self.entry_month) == int(self.toMonth):
                 if int(self.entry_day) >= int(self.fromDay) and int(self.entry_day) <= int(self.toDay):
-                    self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
+                    self.entryRows[i][self.ENTRY_ROW_LAYOUT_GRID_INDEX].show()
                     self.contentGrid.queue_draw()
                 else:
-                    self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
+                    self.entryRows[i][self.ENTRY_ROW_LAYOUT_GRID_INDEX].hide()
                     self.contentGrid.queue_draw()
             # Different from and to month
             elif int(self.entry_month) >= int(self.fromMonth) and int(self.entry_month) <= int(self.toMonth):
                 if int(self.entry_month) == int(self.fromMonth):# and int(self.entry_month) != int(self.toMonth):
                     if int(self.entry_day) >= int(self.fromDay):
-                        self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
+                        self.entryRows[i][self.ENTRY_ROW_LAYOUT_GRID_INDEX].show()
                         self.contentGrid.queue_draw()
                     else:
-                        self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
+                        self.entryRows[i][self.ENTRY_ROW_LAYOUT_GRID_INDEX].hide()
                         self.contentGrid.queue_draw()
                 elif int(self.entry_month) == int(self.toMonth):
                     if int(self.entry_day) <= int(self.toDay):
-                        self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
+                        self.entryRows[i][self.ENTRY_ROW_LAYOUT_GRID_INDEX].show()
                         self.contentGrid.queue_draw()
                     else:
-                        self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
+                        self.entryRows[i][self.ENTRY_ROW_LAYOUT_GRID_INDEX].hide()
                         self.contentGrid.queue_draw()
             else:
-                self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
+                self.entryRows[i][self.ENTRY_ROW_LAYOUT_GRID_INDEX].hide()
                 self.contentGrid.queue_draw()
         elif (int(self.entry_year) != int(self.fromYear) or int(self.entry_year) != int(self.toYear)) and (int(self.entry_year) >= int(self.fromYear) and int(self.entry_year) <= int(self.toYear)):
             if int(self.entry_year) == int(self.fromYear):
                 if int(self.entry_month >= self.fromMonth):
                     if int(self.entry_day) >= int(self.fromDay):
-                        self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
+                        self.entryRows[i][self.ENTRY_ROW_LAYOUT_GRID_INDEX].show()
                         self.contentGrid.queue_draw()
                     else:
-                        self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
+                        self.entryRows[i][self.ENTRY_ROW_LAYOUT_GRID_INDEX].hide()
                         self.contentGrid.queue_draw()
                 else:
-                    self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
+                    self.entryRows[i][self.ENTRY_ROW_LAYOUT_GRID_INDEX].hide()
                     self.contentGrid.queue_draw()
             elif int(self.entry_year) == int(self.toYear):
                 if int(self.entry_month <= self.toMonth):
                     if int(self.entry_day) <= int(self.toDay):
-                        self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
+                        self.entryRows[i][self.ENTRY_ROW_LAYOUT_GRID_INDEX].show()
                         self.contentGrid.queue_draw()
                     else:
-                        self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
+                        self.entryRows[i][self.ENTRY_ROW_LAYOUT_GRID_INDEX].hide()
                         self.contentGrid.queue_draw()
                 else:
-                    self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
+                    self.entryRows[i][self.ENTRY_ROW_LAYOUT_GRID_INDEX].hide()
                     self.contentGrid.queue_draw()
             elif int(self.entry_year) != int(self.fromYear) and int(self.entry_year) != int(self.toYear):
-                self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
+                self.entryRows[i][self.ENTRY_ROW_LAYOUT_GRID_INDEX].show()
                 self.contentGrid.queue_draw()
             else:
-                self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
+                self.entryRows[i][self.ENTRY_ROW_LAYOUT_GRID_INDEX].hide()
                 self.contentGrid.queue_draw()
         else:
-            self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
+            self.entryRows[i][self.ENTRY_ROW_LAYOUT_GRID_INDEX].hide()
             self.contentGrid.queue_draw()
 
     def filter_year(self, i):
         # if selected year equals "All", show row
         if self.selected_year == self.data.yearMenu[0]:
-            self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
+            self.entryRows[i][self.ENTRY_ROW_LAYOUT_GRID_INDEX].show()
             self.contentGrid.queue_draw()
         # if selected year does not equal "All"
         elif self.selected_year != self.data.yearMenu[0]:
             if self.selected_year == self.entry_year:
-                self.entryRows[i][self.LAYOUT_GRID_INDEX].show()
+                self.entryRows[i][self.ENTRY_ROW_LAYOUT_GRID_INDEX].show()
                 self.contentGrid.queue_draw()
             else:
-                self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
+                self.entryRows[i][self.ENTRY_ROW_LAYOUT_GRID_INDEX].hide()
                 self.contentGrid.queue_draw()
 
     def generate_sidebars(self):
@@ -827,7 +842,7 @@ class Transactions():
         self.menuListBox.select_row(self.menuListBox.get_row_at_index(0))
     
     def hide_entry(self, i):
-        self.entryRows[i][self.LAYOUT_GRID_INDEX].hide()
+        self.entryRows[i][self.ENTRY_ROW_LAYOUT_GRID_INDEX].hide()
         self.contentGrid.queue_draw()
     
     def month_selected(self, listbox, *args):
@@ -934,6 +949,10 @@ class Transactions():
                             self.categoryRows[i][self.categoryRowSum].set_markup("<span foreground=\"green\">" + "$" + str("%0.2f" % (self.dataSum,)) + "</span>")
                         if self.categoryRows[i][self.categoryRowType] == "expense":
                             self.categoryRows[i][self.categoryRowSum].set_markup("<span foreground=\"red\">" + "$" + str("%0.2f" % (self.dataSum,)) + "</span>")
+            elif (self.selected_month != self.data.allMonthMenu[self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_NAME_INDEX] 
+                or self.selected_year != self.data.yearMenu[0]):
+                print("Not All")
+            
            
            # Calculate month totals
 
