@@ -923,19 +923,19 @@ class Transactions():
                 self.uniqueID = self.categoryRows[i][self.categoryRowUniqueID]
                 self.dataSum = 0
                     
-                    # "All Transactions" Sum
+                # "All Transactions" Sum
                 if self.categoryRows[i][self.categoryRowUniqueID] == self.ALL_TRANSACTIONS_UNIQUE_ID:
                     self.set_sums_calc(i, "all", "all")
                         
-                    # "All Income" Sum
+                # "All Income" Sum
                 elif self.categoryRows[i][self.categoryRowUniqueID] == self.ALL_INCOME_UNIQUE_ID:
                     self.set_sums_calc(i, self.data.incomeMenu, "income")
 
-                    # "All Expenses" Sum
+                # "All Expenses" Sum
                 elif self.categoryRows[i][self.categoryRowUniqueID] == self.ALL_EXPENSES_UNIQUE_ID:
                     self.set_sums_calc(i, self.data.expenseMenu, "expense")
 
-                    # Remaining Category Sums
+                # Remaining Category Sums
                 else:
                     self.set_sums_calc(i, "other", self.categoryRows[i][self.categoryRowType])
 
@@ -957,21 +957,21 @@ class Transactions():
                 self.uniqueID = self.categoryRows[i][self.categoryRowUniqueID]
                 self.dataSum = 0
                     
-                    # "All Transactions" Sum
+                # "All Transactions" Sum
                 if self.categoryRows[i][self.categoryRowUniqueID] == self.ALL_TRANSACTIONS_UNIQUE_ID:
                     self.set_sums_range(i, "all", "all")
                         
-                #     # "All Income" Sum
-                # elif self.categoryRows[i][self.categoryRowUniqueID] == self.ALL_INCOME_UNIQUE_ID:
-                #     self.set_sums_range(i, self.data.incomeMenu, "income")
-                #     
-                #     # "All Expenses" Sum
-                # elif self.categoryRows[i][self.categoryRowUniqueID] == self.ALL_EXPENSES_UNIQUE_ID:
-                #     self.set_sums_range(i, self.data.expenseMenu, "expense")
-                #     
-                #     # Remaining Category Sums
-                # else:
-                #     self.set_sums_range(i, "other", self.categoryRows[i][self.categoryRowType])
+                # "All Income" Sum
+                elif self.categoryRows[i][self.categoryRowUniqueID] == self.ALL_INCOME_UNIQUE_ID:
+                    self.set_sums_range(i, self.data.incomeMenu, "income")
+
+                # "All Expenses" Sum
+                elif self.categoryRows[i][self.categoryRowUniqueID] == self.ALL_EXPENSES_UNIQUE_ID:
+                    self.set_sums_range(i, self.data.expenseMenu, "expense")
+
+                # Remaining Category Sums
+                else:
+                    self.set_sums_range(i, "other", self.categoryRows[i][self.categoryRowType])
 
     def set_sums_calc(self, i, dataArr, menuType):
         # If month and year are both set to "All"
@@ -1076,71 +1076,142 @@ class Transactions():
                 self.categoryRows[i][self.categoryRowSum].set_markup("<span foreground=\"red\">" + "$" + str("%0.2f" % (self.dataSum,)) + "</span>")
     
     def set_sums_range(self, i, dataArr, menuType):
-        # All Transactions
-        if dataArr == "all":
-            for j in range(0, len(self.data.transactions)):
-                # Same from and to year
-                if (int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_YEAR_INDEX]) == int(self.fromYear) 
-                    and int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_YEAR_INDEX]) == int(self.toYear)):
-                    # Same from and to month
-                    if (int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_MONTH_INDEX]) == int(self.fromMonth) 
-                        and int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_MONTH_INDEX]) == int(self.toMonth)):
-                        # Day falls between from and to days
-                        if int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_DAY_INDEX]) >= int(self.fromDay) and int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_DAY_INDEX]) <= int(self.toDay):
+        for j in range(0, len(self.data.transactions)):
+            # Same from and to year
+            if (int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_YEAR_INDEX]) == int(self.fromYear) 
+                and int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_YEAR_INDEX]) == int(self.toYear)):
+                # Same from and to month
+                if (int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_MONTH_INDEX]) == int(self.fromMonth) 
+                    and int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_MONTH_INDEX]) == int(self.toMonth)):
+                    # Day falls between from and to days
+                    if (int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_DAY_INDEX]) >= int(self.fromDay) 
+                        and int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_DAY_INDEX]) <= int(self.toDay)):
+                        # All Transactions
+                        if dataArr == "all":
                             for k in range(0, len(self.data.incomeMenu)):
                                 if self.data.transactions[j][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.data.incomeMenu[k]:
                                     self.dataSum += self.data.transactions[j][self.data.TRANSACTION_VALUE_INDEX]
                             for k in range(0, len(self.data.expenseMenu)):
                                 if self.data.transactions[j][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.data.expenseMenu[k]:
                                     self.dataSum -= self.data.transactions[j][self.data.TRANSACTION_VALUE_INDEX]
-                    # Different from and to month
-                    elif (int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_MONTH_INDEX]) >= int(self.fromMonth) 
-                            and int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_MONTH_INDEX]) <= int(self.toMonth)):
-                        if int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_MONTH_INDEX]) == int(self.fromMonth):
-                            if int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_DAY_INDEX]) >= int(self.fromDay):
+                        # All Income and All Expenses
+                        elif (dataArr == self.data.incomeMenu or dataArr == self.data.expenseMenu):
+                            for k in range(0, len(dataArr)):
+                                if self.data.transactions[j][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == dataArr[k]:
+                                    self.dataSum += self.data.transactions[j][self.data.TRANSACTION_VALUE_INDEX]
+                        elif dataArr == "other":
+                            if self.data.transactions[j][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.uniqueID:
+                                self.dataSum += self.data.transactions[j][self.data.TRANSACTION_VALUE_INDEX]
+                # Different from and to month
+                elif (int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_MONTH_INDEX]) >= int(self.fromMonth) 
+                        and int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_MONTH_INDEX]) <= int(self.toMonth)):
+                    # Transaction month equals from month
+                    if int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_MONTH_INDEX]) == int(self.fromMonth):
+                        # Transaction day greater than from day
+                        if int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_DAY_INDEX]) >= int(self.fromDay):
+                            # All Transactions
+                            if dataArr == "all":
                                 for k in range(0, len(self.data.incomeMenu)):
                                     if self.data.transactions[j][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.data.incomeMenu[k]:
                                         self.dataSum += self.data.transactions[j][self.data.TRANSACTION_VALUE_INDEX]
                                 for k in range(0, len(self.data.expenseMenu)):
                                     if self.data.transactions[j][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.data.expenseMenu[k]:
                                         self.dataSum -= self.data.transactions[j][self.data.TRANSACTION_VALUE_INDEX]
-                # Year is not equal to both from and to years, but is within their range
-                elif ((int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_YEAR_INDEX]) != int(self.fromYear)
-                    or int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_YEAR_INDEX]) != int(self.toYear)) 
-                    and (int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_YEAR_INDEX]) >= int(self.fromYear) 
-                    and int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_YEAR_INDEX]) <= int(self.toYear))):
-                    # Year is equal to from year
-                    if int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_YEAR_INDEX]) == int(self.fromYear):
-                        # Month is equal or larger than from month
-                        if int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_MONTH_INDEX]) >= int(self.fromMonth):
-                            # Day is equal or greater than from day
-                            if int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_DAY_INDEX]) >= int(self.fromDay):
+                            # All Income and All Expenses
+                            elif (dataArr == self.data.incomeMenu or dataArr == self.data.expenseMenu):
+                                for k in range(0, len(dataArr)):
+                                    if self.data.transactions[j][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == dataArr[k]:
+                                        self.dataSum += self.data.transactions[j][self.data.TRANSACTION_VALUE_INDEX]
+                            elif dataArr == "other":
+                                if self.data.transactions[j][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.uniqueID:
+                                    self.dataSum += self.data.transactions[j][self.data.TRANSACTION_VALUE_INDEX]
+                    # Transaction month less than or equal to to month or equal to month with day less than to day
+                    elif (int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_MONTH_INDEX]) <= int(self.toMonth) 
+                        or (int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_MONTH_INDEX]) == int(self.toMonth) 
+                        and int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_DAY_INDEX]) <= int(self.toDay))):
+                        # All Transactions
+                        if dataArr == "all":
+                            for k in range(0, len(self.data.incomeMenu)):
+                                if self.data.transactions[j][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.data.incomeMenu[k]:
+                                    self.dataSum += self.data.transactions[j][self.data.TRANSACTION_VALUE_INDEX]
+                            for k in range(0, len(self.data.expenseMenu)):
+                                if self.data.transactions[j][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.data.expenseMenu[k]:
+                                    self.dataSum -= self.data.transactions[j][self.data.TRANSACTION_VALUE_INDEX]
+                        # All Income and All Expenses
+                        elif (dataArr == self.data.incomeMenu or dataArr == self.data.expenseMenu):
+                            for k in range(0, len(dataArr)):
+                                if self.data.transactions[j][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == dataArr[k]:
+                                    self.dataSum += self.data.transactions[j][self.data.TRANSACTION_VALUE_INDEX]
+                        elif dataArr == "other":
+                            if self.data.transactions[j][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.uniqueID:
+                                self.dataSum += self.data.transactions[j][self.data.TRANSACTION_VALUE_INDEX]
+            # Year is not equal to both from and to years, but is within their range
+            elif ((int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_YEAR_INDEX]) != int(self.fromYear)
+                or int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_YEAR_INDEX]) != int(self.toYear)) 
+                and (int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_YEAR_INDEX]) >= int(self.fromYear) 
+                and int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_YEAR_INDEX]) <= int(self.toYear))):
+                # Year is equal to from year
+                if int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_YEAR_INDEX]) == int(self.fromYear):
+                    # Month is equal or larger than from month
+                    if int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_MONTH_INDEX]) >= int(self.fromMonth):
+                        # Day is equal or greater than from day
+                        if int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_DAY_INDEX]) >= int(self.fromDay):
+                            # All Transactions
+                            if dataArr == "all":
                                 for k in range(0, len(self.data.incomeMenu)):
                                     if self.data.transactions[j][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.data.incomeMenu[k]:
                                         self.dataSum += self.data.transactions[j][self.data.TRANSACTION_VALUE_INDEX]
                                 for k in range(0, len(self.data.expenseMenu)):
                                     if self.data.transactions[j][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.data.expenseMenu[k]:
                                         self.dataSum -= self.data.transactions[j][self.data.TRANSACTION_VALUE_INDEX]
-                    # Year is equal to to year
-                    if int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_YEAR_INDEX]) == int(self.toYear):
-                        # Month is equal or larger than to month
-                        if int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_MONTH_INDEX]) <= int(self.toMonth):
-                            # Day is equal or greater than to day
-                            if int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_DAY_INDEX]) <= int(self.toDay):
+                            # All Income and All Expenses
+                            elif (dataArr == self.data.incomeMenu or dataArr == self.data.expenseMenu):
+                                for k in range(0, len(dataArr)):
+                                    if self.data.transactions[j][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == dataArr[k]:
+                                        self.dataSum += self.data.transactions[j][self.data.TRANSACTION_VALUE_INDEX]
+                            elif dataArr == "other":
+                                if self.data.transactions[j][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.uniqueID:
+                                    self.dataSum += self.data.transactions[j][self.data.TRANSACTION_VALUE_INDEX]
+                # Year is equal to to year
+                if int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_YEAR_INDEX]) == int(self.toYear):
+                    # Month is equal or larger than to month
+                    if int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_MONTH_INDEX]) <= int(self.toMonth):
+                        # Day is equal or greater than to day
+                        if int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_DAY_INDEX]) <= int(self.toDay):
+                            # All Transactions
+                            if dataArr == "all":
                                 for k in range(0, len(self.data.incomeMenu)):
                                     if self.data.transactions[j][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.data.incomeMenu[k]:
                                         self.dataSum += self.data.transactions[j][self.data.TRANSACTION_VALUE_INDEX]
                                 for k in range(0, len(self.data.expenseMenu)):
                                     if self.data.transactions[j][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.data.expenseMenu[k]:
                                         self.dataSum -= self.data.transactions[j][self.data.TRANSACTION_VALUE_INDEX]
-                    # Entry's year is between from and to day, but not equal to them.
-                    elif int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_YEAR_INDEX]) != int(self.fromYear) and int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_YEAR_INDEX]) != int(self.toYear):
+                            # All Income and All Expenses
+                            elif (dataArr == self.data.incomeMenu or dataArr == self.data.expenseMenu):
+                                for k in range(0, len(dataArr)):
+                                    if self.data.transactions[j][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == dataArr[k]:
+                                        self.dataSum += self.data.transactions[j][self.data.TRANSACTION_VALUE_INDEX]
+                            elif dataArr == "other":
+                                if self.data.transactions[j][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.uniqueID:
+                                    self.dataSum += self.data.transactions[j][self.data.TRANSACTION_VALUE_INDEX]
+                # Entry's year is between from and to day, but not equal to them.
+                elif int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_YEAR_INDEX]) != int(self.fromYear) and int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_YEAR_INDEX]) != int(self.toYear):
+                    # All Transactions
+                    if dataArr == "all":
                         for k in range(0, len(self.data.incomeMenu)):
                             if self.data.transactions[j][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.data.incomeMenu[k]:
                                 self.dataSum += self.data.transactions[j][self.data.TRANSACTION_VALUE_INDEX]
                         for k in range(0, len(self.data.expenseMenu)):
                             if self.data.transactions[j][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.data.expenseMenu[k]:
                                 self.dataSum -= self.data.transactions[j][self.data.TRANSACTION_VALUE_INDEX]
+                    # All Income and All Expenses
+                    elif (dataArr == self.data.incomeMenu or dataArr == self.data.expenseMenu):
+                        for k in range(0, len(dataArr)):
+                            if self.data.transactions[j][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == dataArr[k]:
+                                self.dataSum += self.data.transactions[j][self.data.TRANSACTION_VALUE_INDEX]
+                    elif dataArr == "other":
+                        if self.data.transactions[j][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.uniqueID:
+                            self.dataSum += self.data.transactions[j][self.data.TRANSACTION_VALUE_INDEX]
                             
         if menuType == "income":
             self.categoryRows[i][self.categoryRowSum].set_markup("<span foreground=\"green\">" + "$" + str("%0.2f" % (self.dataSum,)) + "</span>")
