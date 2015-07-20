@@ -3,6 +3,7 @@ from budget.overview import Overview
 from budget.transactions import Transactions
 from budget.projections import Projections
 from budget.add_popover import Add_Entry_Popover
+from budget.menu_popover import Menu_Popover
 
 class Window(Gtk.Window):
 
@@ -71,11 +72,15 @@ class Window(Gtk.Window):
         # --- Action Buttons ---
         # Create Widgets
         self.addButton = Gtk.Button()
-        self.menuButton = Gtk.MenuButton();
+        self.menuButton = Gtk.Button()
         
         self.addEntryPopover = Gtk.Popover.new(self.addButton)
         self.add_entry_popover = Add_Entry_Popover(self.data)
         self.addEntryPopover.add(self.add_entry_popover.addGrid)
+        
+        self.menuPopover = Gtk.Popover.new(self.menuButton)
+        self.menu_popover = Menu_Popover()
+        self.menuPopover.add(self.menu_popover.menuGrid)
        
         # Add Images
         self.addIcon = Gio.ThemedIcon(name="list-add-symbolic")
@@ -91,7 +96,7 @@ class Window(Gtk.Window):
         
         # Connect to handler
         self.addButton.connect("clicked", self.add_entry_popover.on_addButton_clicked, self.addEntryPopover)
-        self.menuButton.connect("clicked", self.on_menuButton_clicked)
+        self.menuButton.connect("clicked", self.menu_popover.on_menuButton_clicked, self.menuPopover)
         
         # Pack Header Bar 
         self.hb.pack_end(self.menuButton)
@@ -121,15 +126,6 @@ class Window(Gtk.Window):
       
         # Connect views to data
         self.data.connect_data_views(self.transactions, self.overview, self.projections)
-    
-    def on_addButton_clicked(self, *args):
-        if self.addEntryPopover.get_visible():
-            self.addEntryPopover.hide()
-        else:
-            self.addEntryPopover.show_all()
-    
-    def on_menuButton_clicked(self, *args):
-        print("Menu Button Working!")
     
     def on_navRadio_toggled(self, *args):
         if self.overviewRadio.get_active() == True:
