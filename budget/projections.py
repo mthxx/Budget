@@ -75,11 +75,11 @@ class Projections():
         self.generate_month_view()
         self.create_header_grid()
 
-        self.contentGrid.attach(self.headerGrid, 1, 0, 1, 1)
-        self.contentGrid.attach(self.projectionsNotebook, 1, 1, 1, 1)
-        self.contentGrid.attach(self.transactionViewGrid, 1, 2, 1, 1)
-        #self.grid.attach(self.sideGrid,0,0,1,1)
-        self.grid.attach(self.gridScrolledWindow,1,0,1,1)
+        self.grid.attach(self.headerGrid,0,0,1,1)
+        self.grid.attach(self.gridScrolledWindow,0,1,1,1)
+        
+        self.contentGrid.attach(self.projectionsNotebook, 0, 0, 1, 1)
+        self.contentGrid.attach(self.transactionViewGrid, 0, 1, 1, 1)
     
     def active_day_cell(self):
         if self.incomeSum != 0:
@@ -140,7 +140,12 @@ class Projections():
     def create_header_grid(self):
         self.viewLabel = Gtk.Label("View:")
         self.viewCombo = Gtk.ComboBoxText()
-        self.addButton = Gtk.Button("Add Projection")
+        
+        self.addButton = Gtk.Button()
+        self.addIcon = Gio.ThemedIcon(name="list-add-symbolic")
+        self.addImage = Gtk.Image.new_from_gicon(self.addIcon, Gtk.IconSize.MENU)
+        self.addButton.add(self.addImage)
+        #self.addButton.set_halign(Gtk.Align.END)
         
         # Generate Months
         self.viewCombo.append_text("Day")
@@ -163,10 +168,10 @@ class Projections():
         self.addButton.set_margin_start(20)
         self.addButton.set_margin_top(10)
         self.addButton.set_margin_bottom(10)
-   
-        self.headerGrid.attach(self.viewLabel,0,0,1,1)
-        self.headerGrid.attach(self.viewCombo,1,0,1,1)
-        self.headerGrid.attach(self.addButton,2,0,1,1)
+
+        self.headerGrid.attach(self.addButton,0,0,1,1)
+        self.headerGrid.attach(self.viewLabel,1,0,1,1)
+        self.headerGrid.attach(self.viewCombo,2,0,1,1)
        
         # Create Widgets
         self.addPopover = Gtk.Popover.new(self.addButton)
