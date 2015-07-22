@@ -1,5 +1,6 @@
 from gi.repository import Gtk, Gio, Gdk
 from budget.edit_mode import Edit_Entry
+from budget.add_popover import Add_Entry_Popover
 from budget.add_popover import Add_Category_Popover
 import datetime, time
 
@@ -326,14 +327,35 @@ class Transactions():
     def create_date_grid(self):
         # Date Grid
         self.dateGrid = Gtk.Grid(name="headerGrid")
+        
+        # Create Add Button
+        self.addButton = Gtk.Button()
+        self.addIcon = Gio.ThemedIcon(name="list-add-symbolic")
+        self.addImage = Gtk.Image.new_from_gicon(self.addIcon, Gtk.IconSize.MENU)
+        self.addButton.add(self.addImage)
+       
+        # Style Add Button
+        self.addButton.set_margin_start(20)
+        self.addButton.set_margin_top(10)
+        self.addButton.set_margin_bottom(10)
+
+        # Link Add Button to Popover
+        self.addEntryPopover = Gtk.Popover.new(self.addButton)
+        self.add_entry_popover = Add_Entry_Popover(self.data)
+        self.addEntryPopover.add(self.add_entry_popover.addGrid)
+        self.addButton.connect("clicked", self.add_entry_popover.on_addButton_clicked, self.addEntryPopover)
+
+        # Create Labels
         self.dateLabelMonth = Gtk.Label("Month:")
         self.dateLabelYear = Gtk.Label("Year:")
         
+        # Create Combo Boxes
         self.dateComboMonth = Gtk.ComboBoxText()
         self.dateComboYear = Gtk.ComboBoxText()
         
         self.currentDate = datetime.datetime.now()
         
+        # Create from and to widgets
         self.dateButtonFrom = Gtk.Button()
         self.dateCalendarFrom = Gtk.Calendar()
         self.datePopoverFrom = Gtk.Popover.new(self.dateButtonFrom)
@@ -354,19 +376,22 @@ class Transactions():
         self.dateCalendarTo.select_month(self.currentDate.month - 1, self.currentDate.year)
         self.dateButtonTo.set_label(self.data.translate_date(self.dateCalendarFrom.get_date(),"edit"))
         
+        # Create Radio Selectors
         self.monthYearRadio = Gtk.RadioButton.new_with_label(None, "Month/Year")
         self.rangeRadio = Gtk.RadioButton.new_with_label(None, "Range")
         self.rangeRadio.join_group(self.monthYearRadio)
 
-        self.dateGrid.attach(self.monthYearRadio,0,0,1,1)
-        self.dateGrid.attach(self.rangeRadio,1,0,1,1)
-        self.dateGrid.attach(self.dateLabelMonth,2,0,1,1)
-        self.dateGrid.attach(self.dateComboMonth,3,0,1,1)
-        self.dateGrid.attach(self.dateLabelYear,4,0,1,1)
-        self.dateGrid.attach(self.dateComboYear,5,0,1,1)
-        self.dateGrid.attach(self.dateButtonFrom,6,0,1,1) 
-        self.dateGrid.attach(self.dateLabelTo,7,0,1,1) 
-        self.dateGrid.attach(self.dateButtonTo,8,0,1,1) 
+        # Build Date Grid
+        self.dateGrid.attach(self.addButton,0,0,1,1)
+        self.dateGrid.attach(self.monthYearRadio,1,0,1,1)
+        self.dateGrid.attach(self.rangeRadio,2,0,1,1)
+        self.dateGrid.attach(self.dateLabelMonth,3,0,1,1)
+        self.dateGrid.attach(self.dateComboMonth,4,0,1,1)
+        self.dateGrid.attach(self.dateLabelYear,5,0,1,1)
+        self.dateGrid.attach(self.dateComboYear,6,0,1,1)
+        self.dateGrid.attach(self.dateButtonFrom,7,0,1,1) 
+        self.dateGrid.attach(self.dateLabelTo,8,0,1,1) 
+        self.dateGrid.attach(self.dateButtonTo,9,0,1,1) 
         
         # Generate Months
         for i in range(0,len(self.data.allMonthMenu)):

@@ -71,36 +71,25 @@ class Window(Gtk.Window):
         
         # --- Action Buttons ---
         # Create Widgets
-        self.addButton = Gtk.Button()
         self.menuButton = Gtk.Button()
-        
-        self.addEntryPopover = Gtk.Popover.new(self.addButton)
-        self.add_entry_popover = Add_Entry_Popover(self.data)
-        self.addEntryPopover.add(self.add_entry_popover.addGrid)
         
         self.menuPopover = Gtk.Popover.new(self.menuButton)
         self.menu_popover = Menu_Popover()
         self.menuPopover.add(self.menu_popover.menuGrid)
        
         # Add Images
-        self.addIcon = Gio.ThemedIcon(name="list-add-symbolic")
         self.menuIcon = Gio.ThemedIcon(name="open-menu-symbolic")
-        self.addImage = Gtk.Image.new_from_gicon(self.addIcon, Gtk.IconSize.MENU)
         self.menuImage = Gtk.Image.new_from_gicon(self.menuIcon, Gtk.IconSize.MENU)
-        self.addButton.add(self.addImage)
         self.menuButton.add(self.menuImage)
        
         # Style Action Buttons
-        self.addButton.set_size_request(32,32)
         self.menuButton.set_size_request(32,32)
         
         # Connect to handler
-        self.addButton.connect("clicked", self.add_entry_popover.on_addButton_clicked, self.addEntryPopover)
         self.menuButton.connect("clicked", self.menu_popover.on_menuButton_clicked, self.menuPopover)
         
         # Pack Header Bar 
         self.hb.pack_end(self.menuButton)
-        self.hb.pack_end(self.addButton)
         
         # --- Notebooks ---
         # Create Labels
