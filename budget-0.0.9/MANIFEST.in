@@ -1,0 +1,4 @@
+include README.md
+include budget/*.css
+include PKGBUILD/*.svg
+include PKGBUILD/budget.desktop

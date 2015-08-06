@@ -1,0 +1,12 @@
+Metadata-Version: 1.1
+Name: budget
+Version: 0.0.9
+Summary: Personal Finance
+Home-page: http://github.com/mthxx/budget
+Author: Marc Thomas
+Author-email: mat@mthx.org
+License: GPL v2.0
+Description: UNKNOWN
+Platform: UNKNOWN
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3.4

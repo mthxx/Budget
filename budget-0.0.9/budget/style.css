@@ -1,0 +1,51 @@
+#layoutGrid{
+    box-shadow: 0px 2px 3px rgb(153, 153, 153);    
+    background-color: white;
+}
+
+#monthGridActive, #monthGridCurrent, #monthGridRightCurrent, #monthGridBottomCurrent, #monthGridLastCurrent, #monthGridRightActive, #monthGridBottomActive, #monthGridLastActive, #monthGridInactive, #monthGridRightInactive, #monthGridBottomInactive, #monthGridLastInactive{
+
+    border-color: gray;
+    border-style: solid;
+    border-top-width: 1px;
+    border-left-width: 1px;
+}
+
+#monthGridRightActive, #monthGridRightCurrent, #monthGridLastActive, #monthGridLastCurrent, #monthGridRightInactive, #monthGridLastInactive{
+    border-right-width: 1px;
+}
+
+#monthGridBottomActive, #monthGridBottomCurrent, #monthGridLastActive, #monthGridLastCurrent, #monthGridBottomInactive, #monthGridLastInactive{
+    border-bottom-width: 1px;
+}
+
+#monthGridActive, #monthGridRightActive, #monthGridBottomActive, #monthGridLastActive{
+    background-color: white;
+}
+
+#monthGridInactive, #monthGridRightInactive, #monthGridBottomInactive, #monthGridLastInactive{
+    background-color: #E5E5E5;
+}
+
+#monthGridCurrent, #monthGridRightCurrent, #monthGridBottomCurrent, #monthGridLastCurrent{
+    background-color: #F5FFFA;
+}
+
+#menuViewport, #subMenuViewport{
+    border-style: solid;
+    border-width: 1px;
+}
+
+#overviewGrid, #reportsGrid, #projectionsGrid, #headerGrid, #menuListBox, #subMenuListBox{
+    background-color: #F3F3F3;
+    /*background-color: #CCCCCC;*/
+    /*background-color: #EBEBEB;*/
+    /*background-color: #D1D1D1;*/
+}
+
+#entryScrolledWindow,#headerGrid, #transactionViewport{
+    /*background-color: #F3F3F3;*/
+    background-color: #CCCCCC;
+    /*background-color: #EBEBEB;*/
+    /*background-color: #D1D1D1;*/
+}
