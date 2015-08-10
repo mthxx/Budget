@@ -25,10 +25,20 @@ setup(
     long_description=long_description,
     entry_points=ENTRY_POINTS,
     data_files=[("/usr/share/applications/", ["PKGBUILD/budget.desktop"])
-        ,("/usr/share/icons/hicolor/16x16/apps", ["PKGBUILD/budget-16/budget.png"]),("/usr/share/icons/hicolor/24x24/apps", ["PKGBUILD/budget-24/budget.png"])
-        ,("/usr/share/icons/hicolor/32x32/apps", ["PKGBUILD/budget-32/budget.png"]),("/usr/share/icons/hicolor/48x48/apps", ["PKGBUILD/budget-48/budget.png"])
-        ,("/usr/share/icons/hicolor/64x64/apps", ["PKGBUILD/budget-64/budget.png"]),("/usr/share/icons/hicolor/128x128/apps", ["PKGBUILD/budget-128/budget.png"])
+        ,("/usr/share/icons/hicolor/16x16/apps", ["PKGBUILD/budget-16/budget.png"])
+        ,("/usr/share/icons/hicolor/24x24/apps", ["PKGBUILD/budget-24/budget.png"])
+        ,("/usr/share/icons/hicolor/32x32/apps", ["PKGBUILD/budget-32/budget.png"])
+        ,("/usr/share/icons/hicolor/48x48/apps", ["PKGBUILD/budget-48/budget.png"])
+        ,("/usr/share/icons/hicolor/64x64/apps", ["PKGBUILD/budget-64/budget.png"])
+        ,("/usr/share/icons/hicolor/128x128/apps", ["PKGBUILD/budget-128/budget.png"])
         ,("/usr/share/icons/hicolor/scalable/apps", ["PKGBUILD/budget-128/budget.svg"])
+        ,("/usr/share/icons/Adwaita/16x16/apps", ["PKGBUILD/budget-16/budget.png"])
+        ,("/usr/share/icons/Adwaita/24x24/apps", ["PKGBUILD/budget-24/budget.png"])
+        ,("/usr/share/icons/Adwaita/32x32/apps", ["PKGBUILD/budget-32/budget.png"])
+        ,("/usr/share/icons/Adwaita/48x48/apps", ["PKGBUILD/budget-48/budget.png"])
+        ,("/usr/share/icons/Adwaita/64x64/apps", ["PKGBUILD/budget-64/budget.png"])
+        ,("/usr/share/icons/Adwaita/128x128/apps", ["PKGBUILD/budget-128/budget.png"])
+        ,("/usr/share/icons/Adwaita/scalable/apps", ["PKGBUILD/budget-128/budget.svg"])
         ],
     classifiers=[
         "Programming Language :: Python",
