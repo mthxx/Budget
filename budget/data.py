@@ -57,13 +57,13 @@ class Data():
             if con:
                con.close()
 
-    # Menu Indexes
+    # transactionMenu[] Indexes
     MENU_TYPE_INDEX = 0
     MENU_NAME_INDEX = 1
     MENU_ORDER_INDEX = 2
     MENU_ID_INDEX = 3
 
-    # Transactions Indexes
+    # transactions[] Indexes
     TRANSACTION_MENU_INDEX = 0
     TRANSACTION_MENU_ID_INDEX = 0
     TRANSACTION_MENU_NAME_INDEX = 1
@@ -344,6 +344,10 @@ class Data():
             self.refresh_data()
     
     def edit_category(self, uniqueID, newLabel):
+        for i in range(0,len(self.transactions)):
+            if self.transactions[i][self.TRANSACTION_MENU_INDEX][self.TRANSACTION_MENU_ID_INDEX] == uniqueID:
+                self.transactions[i][self.TRANSACTION_MENU_INDEX][self.TRANSACTION_MENU_NAME_INDEX] = newLabel
+
         if(os.path.isfile(self.db_path)):
             if self.optimizationTesting == True:
                 self.editCategoryStart = time.time()
