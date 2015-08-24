@@ -221,6 +221,7 @@ class Overview():
     def display_info(self, category, data_arr):
         # Print out Categories
         for index in range(0,len(self.data.transactionsMenu)):
+            self.menuID = self.data.transactionsMenu[index][self.data.MENU_ID_INDEX]
             if self.data.transactionsMenu[index][self.data.MENU_TYPE_INDEX] == category:
                 self.button = Gtk.Button(self.data.transactionsMenu[index][self.data.MENU_NAME_INDEX])
                 self.button.set_relief(Gtk.ReliefStyle.NONE)
@@ -242,17 +243,19 @@ class Overview():
                         self.totalLabel.set_markup("<b>$" + str("%0.2f" % (self.total,)) + "</b>")
                         self.totalLabel.set_property("height-request", 40)
                         self.totalLabel.set_property("width-request", 120)
+                        self.totalLabel.set_hexpand(True)
                         self.totalLabel.override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(self.totalColor, self.totalColor, self.totalColor, self.totalColor))
                         self.contentArr.append(self.totalLabel)
                         self.contentGrid.attach(self.totalLabel, self.month - 1, self.index, 1, 1)
                     else:
                         for self.dataIndex in range(0,len(data_arr)):
-                            if data_arr[self.dataIndex][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == index:
+                            if data_arr[self.dataIndex][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.menuID:
                                 if data_arr[self.dataIndex][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_MONTH_INDEX] == self.data.allMonthMenu[self.month][0]:
                                     self.total += Decimal(data_arr[self.dataIndex][self.COST_INDEX])
                         self.totalLabel = Gtk.Label("$" + str("%0.2f" % (self.total,)))
                         self.totalLabel.set_property("height-request", 40)
                         self.totalLabel.set_property("width-request", 120)
+                        self.totalLabel.set_hexpand(True)
                         self.contentArr.append(self.totalLabel)
                         self.contentGrid.attach(self.totalLabel, self.month - 1, self.index, 1, 1)
                 self.entryRows.append([self.index, self.contentArr])
