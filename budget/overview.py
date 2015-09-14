@@ -6,18 +6,18 @@ class Overview():
 
     def __init__(self, data):
 
-        self.CATEGORY_ARRAY_INDEX = 0   # [0]
-        self.CATEGORY_ID_INDEX = 0	# [0][0]
-        self.CATEGORY_NAME_INDEX = 1	# [0][1]
+        self.CATEGORY_ARRAY_INDEX = 0           # [0]
+        self.CATEGORY_ID_INDEX = 0              # [0][0]
+        self.CATEGORY_NAME_INDEX = 1            # [0][1]
 
-        self.DATE_INDEX = 1		# [1]
-        self.DATE_YEAR_INDEX = 0	# [1][0]
-        self.DATE_MONTH_INDEX = 1	# [1][1]
-        self.DATE_DAY_INDEX = 2		# [1][2]
+        self.DATE_INDEX = 1                     # [1]
+        self.DATE_YEAR_INDEX = 0                # [1][0]
+        self.DATE_MONTH_INDEX = 1               # [1][1]
+        self.DATE_DAY_INDEX = 2                 # [1][2]
 
-        self.COST_INDEX = 2		# [2]
-        self.DESCRIPTION_INDEX = 3	# [3]
-        self.TRANSACTION_ID_INDEX = 4	# [4]
+        self.COST_INDEX = 2                     # [2]
+        self.DESCRIPTION_INDEX = 3              # [3]
+        self.TRANSACTION_ID_INDEX = 4           # [4]
 
         self.data = data
         # Initialize Variables
