@@ -42,13 +42,11 @@ class Transactions():
         self.EDIT_CATEGORY_BUTTON = 3
     
         # Hardcoded preset values
-
         self.ALL_TRANSACTIONS_UNIQUE_ID = -100
         self.ALL_INCOME_UNIQUE_ID = -200
         self.ALL_EXPENSES_UNIQUE_ID = -300
         self.UNCATEGORIZED_INCOME_UNIQUE_ID = -1
         self.UNCATEGORIZED_EXPENSES_UNIQUE_ID = -2
-
 
         # Additional Items
         self.ENTRY_GRID_INDEX = 2            # Element
@@ -583,8 +581,6 @@ class Transactions():
                     
                     # If selected menu item is not "All"
                     elif self.selected_category_index != self.ALL_TRANSACTIONS_UNIQUE_ID:
-                        #print(self.selected_category_index)
-                        #print(self.entryRows[i][self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_CATEGORY_ID_INDEX])
                         if self.selected_category_index == self.entryRows[i][self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_CATEGORY_ID_INDEX]:
                             self.filter_month(i)
                         if self.selected_category_index != self.entryRows[i][self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_CATEGORY_ID_INDEX]:
@@ -941,7 +937,8 @@ class Transactions():
             if self.entryRows[i][self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_CATEGORY_LABEL_INDEX].get_label() == oldLabel:
                 self.entryRows[i][self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_CATEGORY_LABEL_INDEX].set_label(newLabel)
         self.data.edit_category(self.data.transactionsMenu[transactionMenuIndex][self.data.MENU_ID_INDEX],self.menuListBox.get_row_at_index(menuListBoxIndex).get_child().get_children()[self.EDIT_CATEGORY_ENTRY].get_text())
-
+        # Modify overview label here
+        #print(self.data.overview.DATE_INDEX)
 
     def range_visible(self, boolean):
         self.dateButtonFrom.set_visible(boolean)
