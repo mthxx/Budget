@@ -5,12 +5,17 @@ import sqlite3 as lite
 
 class Data():
     # Database location
-    home = os.path.expanduser("~")
-    local_path = home + '/.local/share/budget'
-    db_path = local_path + '/budget.db'
+    #home = os.path.expanduser("~")
+    #local_path = home + '/.local/share/budget'
+    #db_path = local_path + '/budget.db'
     # For a separate development database, comment out the above 3 lines and uncomment the 1 line below
-    #db_path = 'budget.db'
+    db_path = 'budget.db'
     
+    #Intialize Row Arrays
+    tables_row = [("table", "categories"),("table", "transactions"),("table", "projections"),("table", "frequency"),("table", "categoryType"),("table", "aggregates")]
+    category_type_row = [("all","-1"),("income", "0"),("expense","1")]
+    categories_row = [("-1", "All Transactions","-100","-100"),("0", "All Income","-200","-200"),("1","All Expenses","-300","-300"),("0", "Uncategorized","-1","-1"),("1","Uncategorized","-2","-2")]
+    frequency_row = [("One Time", "0"),("Daily","1"),("Weekly","2"),("Bi-Weekly","3"),("Monthly on Date", "4"),("Monthly on Weekday","5"),("Yearly","6")]
     # Create Database if none exists
     if(os.path.isfile(db_path) == False):
         if os.path.exists(local_path) == False:
@@ -26,24 +31,26 @@ class Data():
             cur.execute('create table projections(title VARCHAR(30), value REAL, description VARCHAR(50), categoryID INT, start_year INT, start_month INT, start_day INT, end_year INT, end_month INT, end_day INT, frequencyID INT, projectionID INTEGER PRIMARY KEY);')
             cur.execute('create table frequency(type VARCHAR(30), frequencyID INT PRIMARY KEY);')
             cur.execute('create table categoryType(type VARCHAR(30), typeID INT PRIMARY KEY);')
+            cur.execute('create table aggregates(typeID VARCHAR(30), categoryID INT, year INT, month INT);')
 
             # Initialize with data
-            row = [("income", "0"),("expense","1")]
-            cur.execute('INSERT INTO categoryType VALUES(?, ?)', row[0])
-            cur.execute('INSERT INTO categoryType VALUES(?, ?)', row[1])
+            cur.execute('INSERT INTO categoryType VALUES(?, ?)', category_type_row[0])
+            cur.execute('INSERT INTO categoryType VALUES(?, ?)', category_type_row[1])
+            cur.execute('INSERT INTO categoryType VALUES(?, ?)', category_type_row[2])
             
-            row = [("0", "Uncategorized","-1","-1"),("1","Uncategorized","-2","-2")]
-            cur.execute('INSERT INTO categories VALUES(?, ?, ?, ?)', row[0])
-            cur.execute('INSERT INTO categories VALUES(?, ?, ?, ?)', row[1])
+            cur.execute('INSERT INTO categories VALUES(?, ?, ?, ?)', categories_row[0])
+            cur.execute('INSERT INTO categories VALUES(?, ?, ?, ?)', categories_row[1])
+            cur.execute('INSERT INTO categories VALUES(?, ?, ?, ?)', categories_row[2])
+            cur.execute('INSERT INTO categories VALUES(?, ?, ?, ?)', categories_row[3])
+            cur.execute('INSERT INTO categories VALUES(?, ?, ?, ?)', categories_row[4])
             
-            row = [("One Time", "0"),("Daily","1"),("Weekly","2"),("Bi-Weekly","3"),("Monthly on Date", "4"),("Monthly on Weekday","5"),("Yearly","6")]
-            cur.execute('INSERT INTO frequency VALUES(?,?)', row[0])
-            cur.execute('INSERT INTO frequency VALUES(?,?)', row[1])
-            cur.execute('INSERT INTO frequency VALUES(?,?)', row[2])
-            cur.execute('INSERT INTO frequency VALUES(?,?)', row[3])
-            cur.execute('INSERT INTO frequency VALUES(?,?)', row[4])
-            cur.execute('INSERT INTO frequency VALUES(?,?)', row[5])
-            cur.execute('INSERT INTO frequency VALUES(?,?)', row[6])
+            cur.execute('INSERT INTO frequency VALUES(?,?)', frequency_row[0])
+            cur.execute('INSERT INTO frequency VALUES(?,?)', frequency_row[1])
+            cur.execute('INSERT INTO frequency VALUES(?,?)', frequency_row[2])
+            cur.execute('INSERT INTO frequency VALUES(?,?)', frequency_row[3])
+            cur.execute('INSERT INTO frequency VALUES(?,?)', frequency_row[4])
+            cur.execute('INSERT INTO frequency VALUES(?,?)', frequency_row[5])
+            cur.execute('INSERT INTO frequency VALUES(?,?)', frequency_row[6])
             
             con.commit()
 
@@ -56,6 +63,110 @@ class Data():
         finally:
             if con:
                con.close()
+    
+    # This acts as a database sanity check. 
+    # It also performs upgrades if there has 
+    # been a database update and tables or 
+    # fields have been altered
+    else:
+        con = lite.connect(db_path)
+        cur = con.cursor()
+
+    
+        #tables_row = [(categories),(transactions),(projections),(frequency),(categoryType),(aggregates)]
+        table_categories_flag = False
+        table_transactions_flag = False
+        table_projections_flag = False
+        table_frequency_flag = False
+        table_categoryType_flag = False
+        table_aggregates_flag = False
+
+        for i in range(0, len(tables_row)):
+            cur.execute('SELECT name FROM sqlite_master WHERE type=? AND name=?',tables_row[i])
+            rows = cur.fetchall()
+            for row in rows:
+                print(row)
+                if row[0] == "categories":
+                    table_categories_flag = True
+                if row[0] == "transactions":
+                    table_transactions_flag = True            
+                if row[0] == "projections":
+                    table_projections_flag = True
+                if row[0] == "frequency":
+                    table_frequency_flag = True
+                if row[0] == "categoryType":
+                    table_categoryType_flag = True
+                if row[0] == "aggregates":
+                    table_aggregates_flag = True
+        
+        if table_categories_flag == False:
+            cur.execute('create table categories(type INT, name VARCHAR(50), categoryOrder INT, categoryID INT PRIMARY KEY);')
+        if table_transactions_flag == False:
+            cur.execute('create table transactions(categoryID INT, year INT, month INT, day INT, value REAL, description VARCHAR(100), transactionID INT PRIMARY KEY);')
+        if table_projections_flag == False:
+            cur.execute('create table projections(title VARCHAR(30), value REAL, description VARCHAR(50), categoryID INT, start_year INT, start_month INT, start_day INT, end_year INT, end_month INT, end_day INT, frequencyID INT, projectionID INTEGER PRIMARY KEY);')
+        if table_frequency_flag == False:
+            cur.execute('create table frequency(type VARCHAR(30), frequencyID INT PRIMARY KEY);')
+        if table_categoryType_flag == False:
+            cur.execute('create table categoryType(type VARCHAR(30), typeID INT PRIMARY KEY);')
+        if table_aggregates_flag == False:
+            cur.execute('create table aggregates(typeID VARCHAR(30), categoryID INT, year INT, month INT);')
+    
+        all_type_flag = False
+        income_type_flag = False
+        expense_type_flag = False
+
+        cur.execute('SELECT * from categoryType')
+        rows = cur.fetchall()
+        for row in rows:
+            if row[1] == -1:
+                all_type_flag = True
+            if row[1] == 0:
+                income_type_flag = True
+            if row[1] == 1:
+                expense_type_flag = True
+
+        if all_type_flag == False:
+            cur.execute('INSERT INTO categoryType VALUES(?, ?)', category_type_row[0])
+        if income_type_flag == False:
+            cur.execute('INSERT INTO categoryType VALUES(?, ?)', category_type_row[1])
+        if expense_type_flag == False:
+            cur.execute('INSERT INTO categoryType VALUES(?, ?)', category_type_row[2])
+        
+        con.commit()
+        
+        all_transactions_flag = False
+        all_income_flag = False
+        all_expense_flag = False
+        uncategorized_income_flag = False
+        uncategorized_expense_flag = False
+
+        cur.execute('SELECT * from categories')
+        rows = cur.fetchall()
+        for row in rows:
+            if row[3] == -100 and row[0] == -1:
+                all_transactions_flag = True
+            if row[3] == -200 and row[0] == 0:
+                all_income_flag = True
+            if row[3] == -300 and row[0] == 1:
+                all_expense_flag = True
+            if row[3] == -1 and row[0] == 0:
+                uncategorized_income_flag = True
+            if row[3] == -2 and row[0] == 1:
+                uncategorized_expense_flag = True
+
+        if all_transactions_flag == False:
+            cur.execute('INSERT INTO categories VALUES(?, ?, ?, ?)', categories_row[0])
+        if all_income_flag == False:
+            cur.execute('INSERT INTO categories VALUES(?, ?, ?, ?)', categories_row[1])
+        if all_expense_flag == False:
+            cur.execute('INSERT INTO categories VALUES(?, ?, ?, ?)', categories_row[2])
+        if uncategorized_income_flag == False:
+            cur.execute('INSERT INTO categories VALUES(?, ?, ?, ?)', categories_row[3])
+        if uncategorized_expense_flag == False:
+            cur.execute('INSERT INTO categories VALUES(?, ?, ?, ?)', categories_row[4])
+        
+        con.commit()
 
     # Menu Indexes
     MENU_TYPE_INDEX = 0
@@ -396,37 +507,39 @@ class Data():
             cur.execute('SELECT * FROM categories WHERE type = 0 ORDER BY categoryOrder;')
             rows = cur.fetchall()
             for row in rows:
-                self.arr = []
-                self.arr.append("income")                   # Type
-                self.arr.append(row[1].strip())             # Name
-                self.arr.append(row[2])                     # Order
-                self.arr.append(row[3])                     # categoryID
-            
-                if self.INCOME_ORDER_ID < row[2]:
-                    self.INCOME_ORDER_ID = row[2]
-           
-                if self.LATEST_MENU_ID < row[3]:
-                    self.LATEST_MENU_ID = row[3]
+                if not(row[3] == -100 or row[3] == -200 or row[3] == -300):
+                    self.arr = []
+                    self.arr.append("income")                   # Type
+                    self.arr.append(row[1].strip())             # Name
+                    self.arr.append(row[2])                     # Order
+                    self.arr.append(row[3])                     # categoryID
+                
+                    if self.INCOME_ORDER_ID < row[2]:
+                        self.INCOME_ORDER_ID = row[2]
+               
+                    if self.LATEST_MENU_ID < row[3]:
+                        self.LATEST_MENU_ID = row[3]
 
-                self.transactionsMenu.append(self.arr)
+                    self.transactionsMenu.append(self.arr)
                 
             cur = con.cursor()
             cur.execute('SELECT * FROM categories WHERE type = 1 ORDER BY categoryOrder;')
             rows = cur.fetchall()
             for row in rows:
-                self.arr = []
-                self.arr.append("expense")                  # Type
-                self.arr.append(row[1].strip())             # Name
-                self.arr.append(row[2])                     # Order
-                self.arr.append(row[3])                     # categoryID
-            
-                if self.EXPENSE_ORDER_ID < row[2]:
-                    self.EXPENSE_ORDER_ID = row[2]
-           
-                if self.LATEST_MENU_ID < row[3]:
-                    self.LATEST_MENU_ID = row[3]
+                if not(row[3] == -100 or row[3] == -200 or row[3] == -300):
+                    self.arr = []
+                    self.arr.append("expense")                  # Type
+                    self.arr.append(row[1].strip())             # Name
+                    self.arr.append(row[2])                     # Order
+                    self.arr.append(row[3])                     # categoryID
                 
-                self.transactionsMenu.append(self.arr)
+                    if self.EXPENSE_ORDER_ID < row[2]:
+                        self.EXPENSE_ORDER_ID = row[2]
+               
+                    if self.LATEST_MENU_ID < row[3]:
+                        self.LATEST_MENU_ID = row[3]
+                    
+                    self.transactionsMenu.append(self.arr)
                 
             for i in range(0, len(self.transactionsMenu)):
                 if self.transactionsMenu[i][self.MENU_TYPE_INDEX] == "income":
