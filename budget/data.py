@@ -31,7 +31,7 @@ class Data():
             cur.execute('create table projections(title VARCHAR(30), value REAL, description VARCHAR(50), categoryID INT, start_year INT, start_month INT, start_day INT, end_year INT, end_month INT, end_day INT, frequencyID INT, projectionID INTEGER PRIMARY KEY);')
             cur.execute('create table frequency(type VARCHAR(30), frequencyID INT PRIMARY KEY);')
             cur.execute('create table categoryType(type VARCHAR(30), typeID INT PRIMARY KEY);')
-            cur.execute('create table aggregates(typeID VARCHAR(30), categoryID INT, year INT, month INT);')
+            cur.execute('create table aggregates(typeID VARCHAR(30), categoryID INT, year INT, month INT, value REAL);')
 
             # Initialize with data
             cur.execute('INSERT INTO categoryType VALUES(?, ?)', category_type_row[0])
@@ -85,7 +85,6 @@ class Data():
             cur.execute('SELECT name FROM sqlite_master WHERE type=? AND name=?',tables_row[i])
             rows = cur.fetchall()
             for row in rows:
-                print(row)
                 if row[0] == "categories":
                     table_categories_flag = True
                 if row[0] == "transactions":
@@ -110,7 +109,7 @@ class Data():
         if table_categoryType_flag == False:
             cur.execute('create table categoryType(type VARCHAR(30), typeID INT PRIMARY KEY);')
         if table_aggregates_flag == False:
-            cur.execute('create table aggregates(typeID VARCHAR(30), categoryID INT, year INT, month INT);')
+            cur.execute('create table aggregates(typeID VARCHAR(30), categoryID INT, year INT, month INT, value REAL);')
     
         all_type_flag = False
         income_type_flag = False
@@ -297,7 +296,7 @@ class Data():
         for i in range(0,len(self.transactionsMenu)):
             if categoryName == self.transactionsMenu[i][self.MENU_NAME_INDEX]:
                 categoryIndex = self.transactionsMenu[i][self.MENU_ID_INDEX]
-
+        
         if(os.path.isfile(self.db_path)):
             if self.optimizationTesting == True:
                 self.addTransactionStart = time.time()
@@ -334,7 +333,8 @@ class Data():
             
             self.transaction_view.add_transaction(index)
             self.transaction_view.contentGrid.queue_draw()
-                
+            
+            self.update_aggregates(categoryIndex, year, month, value)
             self.refresh_data()
     
     def add_projection(self, title, value, description, selected, category, startYear, startMonth, startDay, endYear, endMonth, endDay, frequency, projectionID):
@@ -865,7 +865,38 @@ class Data():
             dateString += str(data[index][self.TRANSACTION_DATE_INDEX][self.TRANSACTION_DATE_YEAR_INDEX])
                 
         return dateString
-    
+   
+    def update_aggregates(self, categoryIndex, year, month, value):
+        for i in range(0,len(self.transactionsMenu)):
+            if self.transactionsMenu[i][self.MENU_ID_INDEX] == categoryIndex:
+                self.update_type = self.transactionsMenu[i][self.MENU_TYPE_INDEX]
+        if self.update_type == "income":
+            self.update_type = "0"
+        elif self.update_type == "expense":
+            self.update_type = "1"
+
+        self.total = 0
+        for i in range(0, len(self.transactions)):
+            if categoryIndex == self.transactions[i][self.TRANSACTION_MENU_INDEX][self.TRANSACTION_MENU_ID_INDEX]:
+                self.total += self.transactions[i][self.TRANSACTION_VALUE_INDEX]
+            
+        if(os.path.isfile(self.db_path)):
+            con = lite.connect(self.db_path)
+            cur = con.cursor()
+            check_exists = [(str(categoryIndex))]
+            cur.execute('select count() from aggregates where categoryID = ?', check_exists[0])
+            rows = cur.fetchall()
+            for row in rows:
+                if row[0] == 0:
+                    aggregate_row = [(str(self.update_type),str(categoryIndex), str(year), str(month), str(self.total))]
+                    cur.execute('INSERT INTO aggregates VALUES(?,?,?,?,?)', aggregate_row[0])
+                else:
+                    aggregate_row = [(str(self.total), str(categoryIndex), str(year), str(month))]
+                    cur.execute('UPDATE aggregates set value = ? where categoryID = ? and year = ? and month = ?', aggregate_row[0])
+            
+            con.commit()
+   
+
     def update_transaction(self, categoryName, year, month, day, value, description, transactionID):
         for i in range(0,len(self.transactionsMenu)):
             if categoryName == self.transactionsMenu[i][self.MENU_NAME_INDEX]:
