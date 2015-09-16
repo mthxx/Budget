@@ -15,7 +15,7 @@ class Data():
     tables_row = [("table", "categories"),("table", "transactions"),("table", "projections"),("table", "frequency"),("table", "categoryType"),("table", "aggregates")]
     category_type_row = [("all","-1"),("income", "0"),("expense","1")]
     categories_row = [("-1", "All Transactions","-100","-100"),("0", "All Income","-200","-200"),("1","All Expenses","-300","-300"),("0", "Uncategorized","-1","-1"),("1","Uncategorized","-2","-2")]
-    frequency_row = [("One Time", "0"),("Daily","1"),("Weekly","2"),("Bi-Weekly","3"),("Monthly on Date", "4"),("Monthly on Weekday","5"),("Yearly","6")]
+    freqpuency_row = [("One Time", "0"),("Daily","1"),("Weekly","2"),("Bi-Weekly","3"),("Monthly on Date", "4"),("Monthly on Weekday","5"),("Yearly","6")]
     # Create Database if none exists
     if(os.path.isfile(db_path) == False):
         if os.path.exists(local_path) == False:
@@ -64,109 +64,6 @@ class Data():
             if con:
                con.close()
     
-    # This acts as a database sanity check. 
-    # It also performs upgrades if there has 
-    # been a database update and tables or 
-    # fields have been altered
-    else:
-        con = lite.connect(db_path)
-        cur = con.cursor()
-
-    
-        #tables_row = [(categories),(transactions),(projections),(frequency),(categoryType),(aggregates)]
-        table_categories_flag = False
-        table_transactions_flag = False
-        table_projections_flag = False
-        table_frequency_flag = False
-        table_categoryType_flag = False
-        table_aggregates_flag = False
-
-        for i in range(0, len(tables_row)):
-            cur.execute('SELECT name FROM sqlite_master WHERE type=? AND name=?',tables_row[i])
-            rows = cur.fetchall()
-            for row in rows:
-                if row[0] == "categories":
-                    table_categories_flag = True
-                if row[0] == "transactions":
-                    table_transactions_flag = True            
-                if row[0] == "projections":
-                    table_projections_flag = True
-                if row[0] == "frequency":
-                    table_frequency_flag = True
-                if row[0] == "categoryType":
-                    table_categoryType_flag = True
-                if row[0] == "aggregates":
-                    table_aggregates_flag = True
-        
-        if table_categories_flag == False:
-            cur.execute('create table categories(type INT, name VARCHAR(50), categoryOrder INT, categoryID INT PRIMARY KEY);')
-        if table_transactions_flag == False:
-            cur.execute('create table transactions(categoryID INT, year INT, month INT, day INT, value REAL, description VARCHAR(100), transactionID INT PRIMARY KEY);')
-        if table_projections_flag == False:
-            cur.execute('create table projections(title VARCHAR(30), value REAL, description VARCHAR(50), categoryID INT, start_year INT, start_month INT, start_day INT, end_year INT, end_month INT, end_day INT, frequencyID INT, projectionID INTEGER PRIMARY KEY);')
-        if table_frequency_flag == False:
-            cur.execute('create table frequency(type VARCHAR(30), frequencyID INT PRIMARY KEY);')
-        if table_categoryType_flag == False:
-            cur.execute('create table categoryType(type VARCHAR(30), typeID INT PRIMARY KEY);')
-        if table_aggregates_flag == False:
-            cur.execute('create table aggregates(typeID VARCHAR(30), categoryID INT, year INT, month INT, value REAL);')
-    
-        all_type_flag = False
-        income_type_flag = False
-        expense_type_flag = False
-
-        cur.execute('SELECT * from categoryType')
-        rows = cur.fetchall()
-        for row in rows:
-            if row[1] == -1:
-                all_type_flag = True
-            if row[1] == 0:
-                income_type_flag = True
-            if row[1] == 1:
-                expense_type_flag = True
-
-        if all_type_flag == False:
-            cur.execute('INSERT INTO categoryType VALUES(?, ?)', category_type_row[0])
-        if income_type_flag == False:
-            cur.execute('INSERT INTO categoryType VALUES(?, ?)', category_type_row[1])
-        if expense_type_flag == False:
-            cur.execute('INSERT INTO categoryType VALUES(?, ?)', category_type_row[2])
-        
-        con.commit()
-        
-        all_transactions_flag = False
-        all_income_flag = False
-        all_expense_flag = False
-        uncategorized_income_flag = False
-        uncategorized_expense_flag = False
-
-        cur.execute('SELECT * from categories')
-        rows = cur.fetchall()
-        for row in rows:
-            if row[3] == -100 and row[0] == -1:
-                all_transactions_flag = True
-            if row[3] == -200 and row[0] == 0:
-                all_income_flag = True
-            if row[3] == -300 and row[0] == 1:
-                all_expense_flag = True
-            if row[3] == -1 and row[0] == 0:
-                uncategorized_income_flag = True
-            if row[3] == -2 and row[0] == 1:
-                uncategorized_expense_flag = True
-
-        if all_transactions_flag == False:
-            cur.execute('INSERT INTO categories VALUES(?, ?, ?, ?)', categories_row[0])
-        if all_income_flag == False:
-            cur.execute('INSERT INTO categories VALUES(?, ?, ?, ?)', categories_row[1])
-        if all_expense_flag == False:
-            cur.execute('INSERT INTO categories VALUES(?, ?, ?, ?)', categories_row[2])
-        if uncategorized_income_flag == False:
-            cur.execute('INSERT INTO categories VALUES(?, ?, ?, ?)', categories_row[3])
-        if uncategorized_expense_flag == False:
-            cur.execute('INSERT INTO categories VALUES(?, ?, ?, ?)', categories_row[4])
-        
-        con.commit()
-
     # Menu Indexes
     MENU_TYPE_INDEX = 0
     MENU_NAME_INDEX = 1
@@ -242,6 +139,109 @@ class Data():
                             [11, "November"],
                             [12, "December"],
                             ]
+        
+        # This acts as a database sanity check. 
+        # It also performs upgrades if there has 
+        # been a database update and tables or 
+        # fields have been altered
+        con = lite.connect(self.db_path)
+        cur = con.cursor()
+    
+        self.table_categories_flag = False
+        self.table_transactions_flag = False
+        self.table_projections_flag = False
+        self.table_frequency_flag = False
+        self.table_categoryType_flag = False
+        self.table_aggregates_flag = False
+
+        for i in range(0, len(self.tables_row)):
+            cur.execute('SELECT name FROM sqlite_master WHERE type=? AND name=?',self.tables_row[i])
+            rows = cur.fetchall()
+            for row in rows:
+                if row[0] == "categories":
+                    self.table_categories_flag = True
+                if row[0] == "transactions":
+                    self.table_transactions_flag = True            
+                if row[0] == "projections":
+                    self.table_projections_flag = True
+                if row[0] == "frequency":
+                    self.table_frequency_flag = True
+                if row[0] == "categoryType":
+                    self.table_categoryType_flag = True
+                if row[0] == "aggregates":
+                    self.table_aggregates_flag = True
+        
+        if self.table_categories_flag == False:
+            cur.execute('create table categories(type INT, name VARCHAR(50), categoryOrder INT, categoryID INT PRIMARY KEY);')
+        if self.table_transactions_flag == False:
+            cur.execute('create table transactions(categoryID INT, year INT, month INT, day INT, value REAL, description VARCHAR(100), transactionID INT PRIMARY KEY);')
+        if self.table_projections_flag == False:
+            cur.execute('create table projections(title VARCHAR(30), value REAL, description VARCHAR(50), categoryID INT, start_year INT, start_month INT, start_day INT, end_year INT, end_month INT, end_day INT, frequencyID INT, projectionID INTEGER PRIMARY KEY);')
+        if self.table_frequency_flag == False:
+            cur.execute('create table frequency(type VARCHAR(30), frequencyID INT PRIMARY KEY);')
+        if self.table_categoryType_flag == False:
+            cur.execute('create table categoryType(type VARCHAR(30), typeID INT PRIMARY KEY);')
+        if self.table_aggregates_flag == False:
+            cur.execute('create table aggregates(typeID VARCHAR(30), categoryID INT, year INT, month INT, value REAL);')
+            self.force_update_aggregates()
+            
+    
+        self.all_type_flag = False
+        self.income_type_flag = False
+        self.expense_type_flag = False
+
+        cur.execute('SELECT * from categoryType')
+        rows = cur.fetchall()
+        for row in rows:
+            if row[1] == -1:
+                self.all_type_flag = True
+            if row[1] == 0:
+                self.income_type_flag = True
+            if row[1] == 1:
+                self.expense_type_flag = True
+
+        if self.all_type_flag == False:
+            cur.execute('INSERT INTO categoryType VALUES(?, ?)', self.category_type_row[0])
+        if self.income_type_flag == False:
+            cur.execute('INSERT INTO categoryType VALUES(?, ?)', self.category_type_row[1])
+        if self.expense_type_flag == False:
+            cur.execute('INSERT INTO categoryType VALUES(?, ?)', self.category_type_row[2])
+        
+        con.commit()
+        
+        self.all_transactions_flag = False
+        self.all_income_flag = False
+        self.all_expense_flag = False
+        self.uncategorized_income_flag = False
+        self.uncategorized_expense_flag = False
+
+        cur.execute('SELECT * from categories')
+        rows = cur.fetchall()
+        for row in rows:
+            if row[3] == -100 and row[0] == -1:
+                self.all_transactions_flag = True
+            if row[3] == -200 and row[0] == 0:
+                self.all_income_flag = True
+            if row[3] == -300 and row[0] == 1:
+                self.all_expense_flag = True
+            if row[3] == -1 and row[0] == 0:
+                self.uncategorized_income_flag = True
+            if row[3] == -2 and row[0] == 1:
+                self.uncategorized_expense_flag = True
+
+        if self.all_transactions_flag == False:
+            cur.execute('INSERT INTO categories VALUES(?, ?, ?, ?)', self.categories_row[0])
+        if self.all_income_flag == False:
+            cur.execute('INSERT INTO categories VALUES(?, ?, ?, ?)', self.categories_row[1])
+        if self.all_expense_flag == False:
+            cur.execute('INSERT INTO categories VALUES(?, ?, ?, ?)', self.categories_row[2])
+        if self.uncategorized_income_flag == False:
+            cur.execute('INSERT INTO categories VALUES(?, ?, ?, ?)', self.categories_row[3])
+        if self.uncategorized_expense_flag == False:
+            cur.execute('INSERT INTO categories VALUES(?, ?, ?, ?)', self.categories_row[4])
+        
+        con.commit()
+
 
     def add_category(self, menuType, category):
         if(os.path.isfile(self.db_path)):
@@ -334,7 +334,7 @@ class Data():
             self.transaction_view.add_transaction(index)
             self.transaction_view.contentGrid.queue_draw()
             
-            self.update_aggregates(categoryIndex, year, month, value)
+            self.update_aggregates(categoryIndex, year, month)
             self.refresh_data()
     
     def add_projection(self, title, value, description, selected, category, startYear, startMonth, startDay, endYear, endMonth, endDay, frequency, projectionID):
@@ -432,9 +432,15 @@ class Data():
 
             for i in range(0,len(self.transactions)):
                 if self.transactions[i][self.TRANSACTION_ID_INDEX] == uniqueID:
+                    categoryIndex = self.transactions[i][self.TRANSACTION_MENU_INDEX][self.TRANSACTION_MENU_ID_INDEX]
+                    year = self.transactions[i][self.TRANSACTION_DATE_INDEX][self.TRANSACTION_DATE_YEAR_INDEX]
+                    month = self.transactions[i][self.TRANSACTION_DATE_INDEX][self.TRANSACTION_DATE_MONTH_INDEX]
                     index = i
                     self.transactions.pop(i)
                     break
+            
+            self.update_aggregates(categoryIndex, year, month)
+
             self.transaction_view.delete_transaction(index)
             self.refresh_data()
     
@@ -866,7 +872,24 @@ class Data():
                 
         return dateString
    
-    def update_aggregates(self, categoryIndex, year, month, value):
+    def force_update_aggregates(self):
+        self.import_data()
+        for i in range(1,len(self.yearMenu)):
+            for j in range(1, len(self.allMonthMenu)):
+                for k in range(0, len(self.transactionsMenu)):
+                    self.update_aggregates(self.transactionsMenu[k][self.MENU_ID_INDEX], self.yearMenu[i][1], self.allMonthMenu[j][0])
+
+        self.transactionsMenu = []
+        self.transactions = []
+        self.incomeMenu = []
+        self.expenseMenu = []
+        self.yearMenu = []
+        self.projections = []
+        self.frequencyMenu = []
+
+
+    def update_aggregates(self, categoryIndex, year, month):
+        # Get category type (Income/Expense)
         for i in range(0,len(self.transactionsMenu)):
             if self.transactionsMenu[i][self.MENU_ID_INDEX] == categoryIndex:
                 self.update_type = self.transactionsMenu[i][self.MENU_TYPE_INDEX]
@@ -875,27 +898,61 @@ class Data():
         elif self.update_type == "expense":
             self.update_type = "1"
 
-        self.total = 0
+        self.all_time_total = 0
+        self.year_total = 0
+        self.month_total = 0
         for i in range(0, len(self.transactions)):
+            # Recalculate specified category's all time aggregate
             if categoryIndex == self.transactions[i][self.TRANSACTION_MENU_INDEX][self.TRANSACTION_MENU_ID_INDEX]:
-                self.total += self.transactions[i][self.TRANSACTION_VALUE_INDEX]
+                self.all_time_total += self.transactions[i][self.TRANSACTION_VALUE_INDEX]
+            # Recalculate specified category's specified year's aggregate
+                if int(year) == int(self.transactions[i][self.TRANSACTION_DATE_INDEX][self.TRANSACTION_DATE_YEAR_INDEX]):
+                    self.year_total += self.transactions[i][self.TRANSACTION_VALUE_INDEX]
+            #Recalculate specified category's specified month's aggregate
+                if (int(year) == int(self.transactions[i][self.TRANSACTION_DATE_INDEX][self.TRANSACTION_DATE_YEAR_INDEX])
+                    and int(month) == int(self.transactions[i][self.TRANSACTION_DATE_INDEX][self.TRANSACTION_DATE_MONTH_INDEX])):
+                    self.month_total += self.transactions[i][self.TRANSACTION_VALUE_INDEX]
             
         if(os.path.isfile(self.db_path)):
             con = lite.connect(self.db_path)
             cur = con.cursor()
-            check_exists = [(str(categoryIndex))]
-            cur.execute('select count() from aggregates where categoryID = ?', check_exists[0])
+            # Check if specified category's all time aggregate already exists
+            check_exists = [(str(categoryIndex), "", "")]
+            cur.execute('select count() from aggregates where categoryID = ? and year = ? and month = ?', check_exists[0])
             rows = cur.fetchall()
             for row in rows:
                 if row[0] == 0:
-                    aggregate_row = [(str(self.update_type),str(categoryIndex), str(year), str(month), str(self.total))]
+                    aggregate_row = [(str(self.update_type),str(categoryIndex),"","", str(self.all_time_total))]
                     cur.execute('INSERT INTO aggregates VALUES(?,?,?,?,?)', aggregate_row[0])
                 else:
-                    aggregate_row = [(str(self.total), str(categoryIndex), str(year), str(month))]
+                    aggregate_row = [(str(self.all_time_total), str(categoryIndex), "", "")]
+                    cur.execute('UPDATE aggregates set value = ? where categoryID = ? and year = ? and month = ?', aggregate_row[0])
+
+            # Check if specified category's specified year aggregate already exists
+            check_exists = [(str(categoryIndex), str(year), "")]
+            cur.execute('select count() from aggregates where categoryID = ? and year = ? and month = ?', check_exists[0])
+            rows = cur.fetchall()
+            for row in rows:
+                if row[0] == 0:
+                    aggregate_row = [(str(self.update_type),str(categoryIndex), str(year),"", str(self.year_total))]
+                    cur.execute('INSERT INTO aggregates VALUES(?,?,?,?,?)', aggregate_row[0])
+                else:
+                    aggregate_row = [(str(self.year_total), str(categoryIndex), str(year), "")]
                     cur.execute('UPDATE aggregates set value = ? where categoryID = ? and year = ? and month = ?', aggregate_row[0])
             
+            # Check if specified category's specified month aggregate already exists
+            check_exists = [(str(categoryIndex), str(year), str(month))]
+            cur.execute('select count() from aggregates where categoryID = ? and year = ? and month = ?', check_exists[0])
+            rows = cur.fetchall()
+            for row in rows:
+                if row[0] == 0:
+                    aggregate_row = [(str(self.update_type),str(categoryIndex), str(year), str(month), str(self.month_total))]
+                    cur.execute('INSERT INTO aggregates VALUES(?,?,?,?,?)', aggregate_row[0])
+                else:
+                    aggregate_row = [(str(self.month_total), str(categoryIndex), str(year), str(month))]
+                    cur.execute('UPDATE aggregates set value = ? where categoryID = ? and year = ? and month = ?', aggregate_row[0])
+
             con.commit()
-   
 
     def update_transaction(self, categoryName, year, month, day, value, description, transactionID):
         for i in range(0,len(self.transactionsMenu)):
