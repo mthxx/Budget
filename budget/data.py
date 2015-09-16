@@ -894,14 +894,20 @@ class Data():
             if self.transactionsMenu[i][self.MENU_ID_INDEX] == categoryIndex:
                 self.update_type = self.transactionsMenu[i][self.MENU_TYPE_INDEX]
         if self.update_type == "income":
-            self.update_type = "0"
+            self.update_type_index = "0"
         elif self.update_type == "expense":
-            self.update_type = "1"
+            self.update_type_index = "1"
 
+        self.type_total = 0
         self.all_time_total = 0
         self.year_total = 0
         self.month_total = 0
         for i in range(0, len(self.transactions)):
+            self.transactionMenuIDIndex = self.transactions[i][self.TRANSACTION_MENU_INDEX][self.TRANSACTION_MENU_ID_INDEX]
+            for j in range(0, len(self.transactionsMenu)):
+                if int(self.transactionMenuIDIndex) == int(self.transactionsMenu[j][self.MENU_ID_INDEX]):
+                    if self.update_type == self.transactionsMenu[j][self.MENU_TYPE_INDEX]:
+                        self.type_total += self.transactions[i][self.TRANSACTION_VALUE_INDEX]
             # Recalculate specified category's all time aggregate
             if categoryIndex == self.transactions[i][self.TRANSACTION_MENU_INDEX][self.TRANSACTION_MENU_ID_INDEX]:
                 self.all_time_total += self.transactions[i][self.TRANSACTION_VALUE_INDEX]
@@ -916,13 +922,24 @@ class Data():
         if(os.path.isfile(self.db_path)):
             con = lite.connect(self.db_path)
             cur = con.cursor()
+            # Check if type's aggregate already exists
+            check_exists = [(str(self.update_type_index), "" , "", "")]
+            cur.execute('select count() from aggregates where typeID = ? and categoryID = ? and year = ? and month = ?', check_exists[0])
+            rows = cur.fetchall()
+            for row in rows:
+                if row[0] == 0:
+                    aggregate_row = [(str(self.update_type_index), "", "", "", str(self.type_total))]
+                    cur.execute('INSERT INTO aggregates VALUES(?,?,?,?,?)', aggregate_row[0])
+                else:
+                    aggregate_row = [(str(self.type_total), str(self.update_type_index), "", "")]
+                    cur.execute('UPDATE aggregates set value = ? where typeID = ? and year = ? and month = ?', aggregate_row[0])
             # Check if specified category's all time aggregate already exists
             check_exists = [(str(categoryIndex), "", "")]
             cur.execute('select count() from aggregates where categoryID = ? and year = ? and month = ?', check_exists[0])
             rows = cur.fetchall()
             for row in rows:
                 if row[0] == 0:
-                    aggregate_row = [(str(self.update_type),str(categoryIndex),"","", str(self.all_time_total))]
+                    aggregate_row = [(str(self.update_type_index),str(categoryIndex),"","", str(self.all_time_total))]
                     cur.execute('INSERT INTO aggregates VALUES(?,?,?,?,?)', aggregate_row[0])
                 else:
                     aggregate_row = [(str(self.all_time_total), str(categoryIndex), "", "")]
@@ -934,7 +951,7 @@ class Data():
             rows = cur.fetchall()
             for row in rows:
                 if row[0] == 0:
-                    aggregate_row = [(str(self.update_type),str(categoryIndex), str(year),"", str(self.year_total))]
+                    aggregate_row = [(str(self.update_type_index),str(categoryIndex), str(year),"", str(self.year_total))]
                     cur.execute('INSERT INTO aggregates VALUES(?,?,?,?,?)', aggregate_row[0])
                 else:
                     aggregate_row = [(str(self.year_total), str(categoryIndex), str(year), "")]
@@ -946,7 +963,7 @@ class Data():
             rows = cur.fetchall()
             for row in rows:
                 if row[0] == 0:
-                    aggregate_row = [(str(self.update_type),str(categoryIndex), str(year), str(month), str(self.month_total))]
+                    aggregate_row = [(str(self.update_type_index),str(categoryIndex), str(year), str(month), str(self.month_total))]
                     cur.execute('INSERT INTO aggregates VALUES(?,?,?,?,?)', aggregate_row[0])
                 else:
                     aggregate_row = [(str(self.month_total), str(categoryIndex), str(year), str(month))]
