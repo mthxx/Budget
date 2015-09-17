@@ -128,6 +128,7 @@ class Data():
         self.frequencyMenu = []
         self.aggregates = []
 
+        self.current_year = 2015
         self.transaction_view = 0
         self.overview = 0
         self.projections_view = 0
@@ -944,17 +945,21 @@ class Data():
             # Recalculate specified category's all time aggregate
             if categoryIndex == self.transactions[i][self.TRANSACTION_MENU_INDEX][self.TRANSACTION_MENU_ID_INDEX]:
                 self.all_time_total += self.transactions[i][self.TRANSACTION_VALUE_INDEX]
-            # Recalculate specified category's specified year's aggregate
+                # Recalculate specified category's specified year's aggregate
                 if int(year) == int(self.transactions[i][self.TRANSACTION_DATE_INDEX][self.TRANSACTION_DATE_YEAR_INDEX]):
                     self.year_total += self.transactions[i][self.TRANSACTION_VALUE_INDEX]
-            #Recalculate specified category's specified month's aggregate
+                #Recalculate specified category's specified month's aggregate
                 if (int(year) == int(self.transactions[i][self.TRANSACTION_DATE_INDEX][self.TRANSACTION_DATE_YEAR_INDEX])
                     and int(month) == int(self.transactions[i][self.TRANSACTION_DATE_INDEX][self.TRANSACTION_DATE_MONTH_INDEX])):
                     self.month_total += self.transactions[i][self.TRANSACTION_VALUE_INDEX]
-            
+        
+        # print(self.type_month_total)
+        # print(self.month_total)
+        #print(self.year_total)
         if(os.path.isfile(self.db_path)):
             con = lite.connect(self.db_path)
             cur = con.cursor()
+
             # Check if type's all time aggregate already exists
             check_exists = [(str(self.update_type_index), "" , "", "")]
             cur.execute('select count() from aggregates where typeID = ? and categoryID = ? and year = ? and month = ?', check_exists[0])
@@ -964,8 +969,8 @@ class Data():
                     aggregate_row = [(str(self.update_type_index), "", "", "", str(self.type_total))]
                     cur.execute('INSERT INTO aggregates VALUES(?,?,?,?,?)', aggregate_row[0])
                 else:
-                    aggregate_row = [(str(self.type_total), str(self.update_type_index), "", "")]
-                    cur.execute('UPDATE aggregates set value = ? where typeID = ? and year = ? and month = ?', aggregate_row[0])
+                    aggregate_row = [(str(self.type_total), str(self.update_type_index), "",  "", "")]
+                    cur.execute('UPDATE aggregates set value = ? where typeID = ? and categoryID = ? and year = ? and month = ?', aggregate_row[0])
             # Check if type's specified year aggregate already exists
             check_exists = [(str(self.update_type_index), "" , str(year), "")]
             cur.execute('select count() from aggregates where typeID = ? and categoryID = ? and year = ? and month = ?', check_exists[0])
@@ -975,8 +980,8 @@ class Data():
                     aggregate_row = [(str(self.update_type_index), "", str(year), "", str(self.type_year_total))]
                     cur.execute('INSERT INTO aggregates VALUES(?,?,?,?,?)', aggregate_row[0])
                 else:
-                    aggregate_row = [(str(self.type_year_total), str(self.update_type_index), str(year), "")]
-                    cur.execute('UPDATE aggregates set value = ? where typeID = ? and year = ? and month = ?', aggregate_row[0])
+                    aggregate_row = [(str(self.type_year_total), str(self.update_type_index), "",  str(year), "")]
+                    cur.execute('UPDATE aggregates set value = ? where typeID = ? and categoryID = ? and year = ? and month = ?', aggregate_row[0])
             # Check if type's specified month aggregate already exists
             check_exists = [(str(self.update_type_index), "" , str(year), str(month))]
             cur.execute('select count() from aggregates where typeID = ? and categoryID = ? and year = ? and month = ?', check_exists[0])
@@ -986,8 +991,9 @@ class Data():
                     aggregate_row = [(str(self.update_type_index), "", str(year), str(month), str(self.type_month_total))]
                     cur.execute('INSERT INTO aggregates VALUES(?,?,?,?,?)', aggregate_row[0])
                 else:
-                    aggregate_row = [(str(self.type_month_total), str(self.update_type_index), str(year), str(month))]
-                    cur.execute('UPDATE aggregates set value = ? where typeID = ? and year = ? and month = ?', aggregate_row[0])
+                    aggregate_row = [(str(self.type_month_total), str(self.update_type_index), "",  str(year), str(month))]
+                    cur.execute('UPDATE aggregates set value = ? where typeID = ? and categoryID = ? and year = ? and month = ?', aggregate_row[0])
+            
             # Check if specified category's all time aggregate already exists
             check_exists = [(str(categoryIndex), "", "")]
             cur.execute('select count() from aggregates where categoryID = ? and year = ? and month = ?', check_exists[0])
