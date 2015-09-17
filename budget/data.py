@@ -106,6 +106,12 @@ class Data():
     LATEST_MENU_ID = 0
     LATEST_PROJECTION_ID = 0
 
+    AGGREGATE_TYPE_INDEX = 0
+    AGGREGATE_MENU_ID_INDEX = 1
+    AGGREGATE_YEAR_INDEX = 2
+    AGGREGATE_MONTH_INDEX = 3
+    AGGREGATE_VALUE_INDEX = 4
+
     def __init__(self):
         # Optimization Testing. Set true to print out time stamps.
         #self.optimizationTesting = True
@@ -120,6 +126,7 @@ class Data():
         self.yearMenu = []
         self.projections = []
         self.frequencyMenu = []
+        self.aggregates = []
 
         self.transaction_view = 0
         self.overview = 0
@@ -488,6 +495,7 @@ class Data():
             self.yearMenu = []
             self.projections = []
             self.frequencyMenu = []
+            self.aggregates = []
             
             self.import_data()
             
@@ -642,6 +650,20 @@ class Data():
             if self.optimizationTesting == True:
                 self.importEnd = time.time()
                 self.calculate_time("Import Data", self.importStart, self.importEnd)
+            
+            cur = con.cursor()
+            cur.execute('SELECT * FROM aggregates;')
+            rows = cur.fetchall()
+            for row in rows:
+                self.arr = []
+                self.arr.append(row[0])                     # Type
+                self.arr.append(row[1])                     # CategoryID
+                self.arr.append(row[2])                     # Year
+                self.arr.append(row[3])                     # Month
+                self.arr.append(row[4])                     # Value
+
+                self.aggregates.append(self.arr)
+
 
     def sort_transaction(self, data, arr):
         if len(data) == 0:
@@ -889,7 +911,6 @@ class Data():
 
 
     def update_aggregates(self, categoryIndex, year, month):
-        print(year)
         # Get category type (Income/Expense)
         for i in range(0,len(self.transactionsMenu)):
             if self.transactionsMenu[i][self.MENU_ID_INDEX] == categoryIndex:
