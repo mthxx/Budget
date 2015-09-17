@@ -16,11 +16,12 @@ class Transactions():
         self.ENTRY_ROW_LAYOUT_WIDGET_INDEX = 1         # Array
         #--
         self.ENTRY_ROW_CATEGORY_LABEL_INDEX = 0        # Element
-        self.ENTRY_ROW_DATE_LABEL_INDEX = 1            # Element
-        self.ENTRY_ROW_CURRENCY_LABEL_INDEX = 2        # Element
-        self.ENTRY_ROW_COST_LABEL_INDEX = 3            # Element
-        self.ENTRY_ROW_DESCRIPTION_LABEL_INDEX = 4     # Element
-        self.ENTRY_ROW_EDIT_BUTTON_INDEX = 5
+        self.ENTRY_ROW_CATEGORY_ID_INDEX = 1           # Element
+        self.ENTRY_ROW_DATE_LABEL_INDEX = 2            # Element
+        self.ENTRY_ROW_CURRENCY_LABEL_INDEX = 3        # Element
+        self.ENTRY_ROW_COST_LABEL_INDEX = 4            # Element
+        self.ENTRY_ROW_DESCRIPTION_LABEL_INDEX = 5     # Element
+        self.ENTRY_ROW_EDIT_BUTTON_INDEX = 6
 
         # Entry Row Unique ID
         self.ENTRY_ROW_ENTRY_GRID_INDEX = 2  # Grid
@@ -41,13 +42,11 @@ class Transactions():
         self.EDIT_CATEGORY_BUTTON = 3
     
         # Hardcoded preset values
-
         self.ALL_TRANSACTIONS_UNIQUE_ID = -100
         self.ALL_INCOME_UNIQUE_ID = -200
         self.ALL_EXPENSES_UNIQUE_ID = -300
         self.UNCATEGORIZED_INCOME_UNIQUE_ID = -1
         self.UNCATEGORIZED_EXPENSES_UNIQUE_ID = -2
-
 
         # Additional Items
         self.ENTRY_GRID_INDEX = 2            # Element
@@ -159,7 +158,7 @@ class Transactions():
         self.categoryRows.append(self.tempArray)
   
         self.menuListBox.add(self.labelBox)
-   
+
     def add_menu_item_uncategorized(self, i):
         self.uniqueID = self.data.transactionsMenu[i][self.data.MENU_ID_INDEX]
         self.label = Gtk.Label(self.data.transactionsMenu[i][self.data.MENU_NAME_INDEX])
@@ -199,7 +198,7 @@ class Transactions():
         index = i * 2
         self.dateString = ""
         self.dateString = self.data.translate_date(self.data.transactions, i)
-        
+        self.categoryIndex = self.data.transactions[i][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX]
         # Create Widgets
         self.layoutGrid = Gtk.Grid(name="layoutGrid")
         self.entryGrid = Gtk.Grid()
@@ -281,7 +280,7 @@ class Transactions():
             if self.data.transactionsMenu[j][self.data.MENU_ID_INDEX] == self.data.transactions[i][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX]:
                 self.transactionType = self.data.transactionsMenu[j][self.data.MENU_TYPE_INDEX]
         
-        self.entryRows.insert(i, [self.layoutGrid, [self.categoryLabel, self.dateLabel, self.currencyLabel, self.costLabel, self.descriptionLabel, self.editButton], self.entryGrid, self.costGrid, self.data.transactions[i][self.data.TRANSACTION_ID_INDEX], self.transactionType])
+        self.entryRows.insert(i, [self.layoutGrid, [self.categoryLabel, self.categoryIndex, self.dateLabel, self.currencyLabel, self.costLabel, self.descriptionLabel, self.editButton], self.entryGrid, self.costGrid, self.data.transactions[i][self.data.TRANSACTION_ID_INDEX], self.transactionType])
         self.editButton.connect("clicked", self.edit_view.on_editDropdown_clicked, self.editView, self.data.transactions[i][self.data.TRANSACTION_ID_INDEX], self.entryRows[i],  self.contentGrid, self.data.transactions[i])
         self.contentGrid.show_all() 
 
@@ -313,9 +312,9 @@ class Transactions():
                 self.selected_category_index = self.UNCATEGORIZED_EXPENSES_UNIQUE_ID
             else:
                 for i in range(len(self.data.transactionsMenu)):
-                    if self.data.transactionsMenu[i][self.data.TRANSACTION_MENU_NAME_INDEX] == row.get_child().get_children()[0].get_label():
-                        self.selected_category = self.data.transactionsMenu[i][self.data.TRANSACTION_MENU_NAME_INDEX]
-                        self.selected_category_index = self.data.transactionsMenu[i][self.data.TRANSACTION_MENU_ID_INDEX]
+                    if self.data.transactionsMenu[i][self.data.MENU_NAME_INDEX] == row.get_child().get_children()[0].get_label():
+                        self.selected_category = self.data.transactionsMenu[i][self.data.MENU_NAME_INDEX]
+                        self.selected_category_index = self.data.transactionsMenu[i][self.data.MENU_ID_INDEX]
             self.filter_entries()
     
     def category_view_mode(self, index):
@@ -449,29 +448,17 @@ class Transactions():
         self.month_year_visible(True)
         self.range_visible(False)
     
-    def on_datePopover_clicked(self, button, datePopover):
-        if datePopover.get_visible():
-            datePopover.hide()
-        else:
-            datePopover.show_all()
-    
-    def on_datePopover_closed(self, datePopover, dateCalendar, dateButton):
-        dateString = self.data.translate_date(dateCalendar.get_date(),"edit")
-        dateButton.set_label(dateString)
-        if self.dateButtonFrom.get_label() != None and self.dateButtonTo.get_label() != None:
-            self.filter_entries()
-
     def create_delete_button(self, label):
         self.button = Gtk.Button()
         self.icon = Gio.ThemedIcon(name="window-close-symbolic")
         self.image = Gtk.Image.new_from_gicon(self.icon, Gtk.IconSize.MENU)
         self.button.add(self.image)
         self.button.show_all()
-        
+
         self.editView = Gtk.Popover.new(self.button)
-        
+
         self.editGrid = Gtk.Grid()
-        
+
         self.confirmLabelLine1 = Gtk.Label("Are you sure?")
         self.confirmLabelLine2 = Gtk.Label()
         self.deleteCancelButton = Gtk.Button("Cancel")
@@ -505,16 +492,6 @@ class Transactions():
 
         return self.button
     
-    def on_dateRadio_toggled(self, *args):
-        if self.monthYearRadio.get_active() == True:
-            self.month_year_visible(True)
-            self.range_visible(False)
-            self.filter_entries()
-        if self.rangeRadio.get_active() == True:
-            self.month_year_visible(False)
-            self.range_visible(True)
-            self.filter_entries()
-
     def delete_category_confirm(self, button, label):
         for i in range(len(self.menuListBox)):
             if self.menuListBox.get_row_at_index(i) == None:
@@ -604,9 +581,9 @@ class Transactions():
                     
                     # If selected menu item is not "All"
                     elif self.selected_category_index != self.ALL_TRANSACTIONS_UNIQUE_ID:
-                        if self.selected_category == self.entryRows[i][self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_CATEGORY_LABEL_INDEX].get_label():
+                        if self.selected_category_index == self.entryRows[i][self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_CATEGORY_ID_INDEX]:
                             self.filter_month(i)
-                        if self.selected_category != self.entryRows[i][self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_CATEGORY_LABEL_INDEX].get_label():
+                        if self.selected_category_index != self.entryRows[i][self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_CATEGORY_ID_INDEX]:
                             self.hide_entry(i)
             
                 elif self.rangeRadio.get_active() == True:
@@ -909,6 +886,28 @@ class Transactions():
         # self.dateComboMonth.set_sensitive(boolean)
         # self.dateComboYear.set_sensitive(boolean)
     
+    def on_datePopover_clicked(self, button, datePopover):
+        if datePopover.get_visible():
+            datePopover.hide()
+        else:
+            datePopover.show_all()
+
+    def on_datePopover_closed(self, datePopover, dateCalendar, dateButton):
+        dateString = self.data.translate_date(dateCalendar.get_date(),"edit")
+        dateButton.set_label(dateString)
+        if self.dateButtonFrom.get_label() != None and self.dateButtonTo.get_label() != None:
+            self.filter_entries()
+
+    def on_dateRadio_toggled(self, *args):
+        if self.monthYearRadio.get_active() == True:
+            self.month_year_visible(True)
+            self.range_visible(False)
+            self.filter_entries()
+        if self.rangeRadio.get_active() == True:
+            self.month_year_visible(False)
+            self.range_visible(True)
+            self.filter_entries()
+
     def on_deleteButton_clicked(self, button, editView):
         if editView.get_visible():
             editView.hide()
@@ -929,9 +928,18 @@ class Transactions():
                         for j in range(0, len(self.data.transactionsMenu)):
                             # Find matching menu item and uniqueID in database
                             if self.data.transactionsMenu[j][self.data.MENU_NAME_INDEX] == self.menuListBox.get_row_at_index(i).get_child().get_children()[0].get_label():
-                                self.data.edit_category(self.data.transactionsMenu[j][self.data.MENU_ID_INDEX],self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_ENTRY].get_text())
-                    self.category_view_mode(i)
-    
+                                self.update_transaction_categories(self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_TITLE].get_label()
+                                                                    , self.menuListBox.get_row_at_index(i).get_child().get_children()[self.EDIT_CATEGORY_ENTRY].get_text()
+                                                                    ,j, i)
+
+    def update_transaction_categories(self, oldLabel, newLabel, transactionMenuIndex, menuListBoxIndex):
+        for i in range(0, len(self.entryRows)):
+            if self.entryRows[i][self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_CATEGORY_LABEL_INDEX].get_label() == oldLabel:
+                self.entryRows[i][self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_CATEGORY_LABEL_INDEX].set_label(newLabel)
+        self.data.edit_category(self.data.transactionsMenu[transactionMenuIndex][self.data.MENU_ID_INDEX],self.menuListBox.get_row_at_index(menuListBoxIndex).get_child().get_children()[self.EDIT_CATEGORY_ENTRY].get_text())
+        # Modify overview label here
+        #print(self.data.overview.DATE_INDEX)
+
     def range_visible(self, boolean):
         self.dateButtonFrom.set_visible(boolean)
         self.dateButtonTo.set_visible(boolean)
