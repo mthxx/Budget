@@ -2,6 +2,7 @@
 *.pot
 *.pyc
 *.swp
+*.db
 Budget.egg-info/
 build/
 dist/
