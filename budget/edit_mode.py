@@ -12,12 +12,13 @@ class Edit_Entry(Gtk.Window):
         # Layout Widgets
         self.ENTRY_ROW_LAYOUT_WIDGET_INDEX = 1         # Array
         self.ENTRY_ROW_CATEGORY_LABEL_INDEX = 0        # Element
-        self.ENTRY_ROW_DATE_LABEL_INDEX = 1            # Element
-        self.ENTRY_ROW_CURRENCY_LABEL_INDEX = 2        # Element
-        self.ENTRY_ROW_COST_LABEL_INDEX = 3            # Element
-        self.ENTRY_ROW_DESCRIPTION_LABEL_INDEX = 4     # Element
-        self.ENTRY_ROW_EDIT_BUTTON_INDEX = 5           # Element
-        self.TITLE_LABEL_INDEX = 6           # Element
+        self.ENTRY_ROW_CATEGORY_ID_INDEX = 1           # Element
+        self.ENTRY_ROW_DATE_LABEL_INDEX = 2            # Element
+        self.ENTRY_ROW_CURRENCY_LABEL_INDEX = 3        # Element
+        self.ENTRY_ROW_COST_LABEL_INDEX = 4            # Element
+        self.ENTRY_ROW_DESCRIPTION_LABEL_INDEX = 5     # Element
+        self.ENTRY_ROW_EDIT_BUTTON_INDEX = 6           # Element
+        self.TITLE_LABEL_INDEX = 7                     # Element
         
         # Additional Items
         self.ENTRY_GRID_INDEX = 2            # Element
