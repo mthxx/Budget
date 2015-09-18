@@ -523,6 +523,7 @@ class Projections():
                         self.titleLabel.set_markup("<b>" + self.projections[i][self.data.PROJECTIONS_TITLE] + "</b>")
                         self.descriptionLabel.set_markup("<i>" + self.projections[i][self.data.PROJECTIONS_DESCRIPTION] + "</i>")
                         self.categoryLabel.set_markup(self.projections[i][self.data.PROJECTIONS_CATEGORY_NAME])
+                        self.categoryIndex = self.projections[i][self.data.PROJECTIONS_CATEGORY_ID]
                         
                         # Create Edit Popover
                         self.editButton = Gtk.Button()
@@ -582,7 +583,7 @@ class Projections():
 
                         self.transactionType = ""
                         
-                        self.entryRows.append([self.layoutGrid, [self.categoryLabel, self.dateLabel, self.currencyLabel, self.costLabel, self.descriptionLabel, self.editButton, self.titleLabel], self.entryGrid, self.costGrid, self.projections[i][self.data.PROJECTIONS_ID]])
+                        self.entryRows.append([self.layoutGrid, [self.categoryLabel, self.categoryIndex, self.dateLabel, self.currencyLabel, self.costLabel, self.descriptionLabel, self.editButton, self.titleLabel], self.entryGrid, self.costGrid, self.projections[i][self.data.PROJECTIONS_ID]])
                         self.editButton.connect("clicked", self.edit_view.on_editDropdown_clicked, self.editView, self.projections[i][self.data.PROJECTIONS_ID], self.entryRows[self.count],  self.transactionViewGrid, self.projections[i])
                         self.count += 1
                         self.transactionViewGrid.show_all() 
