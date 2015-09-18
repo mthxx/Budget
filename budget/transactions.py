@@ -57,6 +57,8 @@ class Transactions():
         self.data = data
         self.categoryRows = []
         self.entryRows = []
+        self.menuListBox = ""
+        self.menuRow = ""
         
         self.selected_category = ""
         self.selected_category_index = 0
@@ -291,6 +293,8 @@ class Transactions():
         self.menuListBox.get_row_at_index(index).get_child().get_children()[self.EDIT_CATEGORY_BUTTON].show()
     
     def category_selected(self, listbox, row):
+        self.menuListBox = listbox
+        self.menuRow = row
         # To catch calls before widget exists.
         if row == None:
             return
@@ -501,6 +505,7 @@ class Transactions():
                     # Find matching menu item and uniqueID in database
                     if self.data.transactionsMenu[j][self.data.MENU_NAME_INDEX] == self.menuListBox.get_row_at_index(i).get_child().get_children()[0].get_label():
                         self.data.delete_category(self.data.transactionsMenu[j][self.data.MENU_ID_INDEX])
+                        self.generate_sidebars()
                         self.editMode = 0
                         # If row is found, break out of loop.
                         return

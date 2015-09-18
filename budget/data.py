@@ -279,8 +279,7 @@ class Data():
             self.LATEST_MENU_ID = row[0]
             self.LATEST_MENU_ID += 1
                 
-            typeID = []
-            typeID.append(menuType)
+            typeID = [(menuType)]
             cur.execute("SELECT typeID from categoryType where type = ?", typeID)
             typeID = cur.fetchall()
             typeID = typeID[0][0]
@@ -507,7 +506,7 @@ class Data():
             if self.optimizationTesting == True:
                 self.refreshStart = time.time()
             
-            self.transaction_view.generate_sidebars()
+            self.transaction_view.category_selected(self.transaction_view.menuListBox, self.transaction_view.menuRow)
             #self.transaction_view.display_content()
             #self.overview.redisplay_info()
             self.projections_view.redisplay_info()
