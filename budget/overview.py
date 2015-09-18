@@ -221,14 +221,15 @@ class Overview():
     def display_info(self, categoryType, aggregates):
         # Print out Categories
         if categoryType == "income":
+            self.AllButton = Gtk.Button("All Income")
             categoryTypeID = 0
         elif categoryType == "expense":
+            self.AllButton = Gtk.Button("All Expenses")
             categoryTypeID = 1
+        
         for i in range(0,len(self.data.transactionsMenu)):
             self.categoryID = self.data.transactionsMenu[i][self.data.MENU_ID_INDEX]
-            if (self.data.transactionsMenu[i][self.data.MENU_TYPE_INDEX] == categoryType
-                and self.data.transactionsMenu[i][self.data.MENU_ID_INDEX] != -1
-                and self.data.transactionsMenu[i][self.data.MENU_ID_INDEX] != -2):
+            if (self.data.transactionsMenu[i][self.data.MENU_TYPE_INDEX] == categoryType):
 
                 self.button = Gtk.Button(self.data.transactionsMenu[i][self.data.MENU_NAME_INDEX])
                 self.button.set_relief(Gtk.ReliefStyle.NONE)
@@ -279,10 +280,6 @@ class Overview():
                 self.index += 1
 
         # Print out "All" Buttons
-        if categoryType == "income":
-            self.AllButton = Gtk.Button("All Income")
-        elif categoryType == "expense":
-            self.AllButton = Gtk.Button("All Expenses")
         self.AllButton.set_relief(Gtk.ReliefStyle.NONE)
         self.AllButton.set_property("height-request", 40)
         self.categoryArr.append([self.index, self.AllButton])
@@ -325,8 +322,9 @@ class Overview():
                         self.totalLabel.override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(self.totalColor, self.totalColor, self.totalColor, self.totalColor))
                         self.contentArr.append(self.totalLabel)
                         self.contentGrid.attach(self.totalLabel, self.month - 1, self.index, 1, 1)
-                self.entryRows.append([self.index, self.contentArr])
+        self.entryRows.append([self.index, self.contentArr])
         self.index += 1
+        ####print(self.index)
        
     def empty_row(self):
         # Set up empty Row
@@ -348,6 +346,7 @@ class Overview():
         
         self.categoryGrid.attach(self.dummyCategoryButton, 0, self.index, 1, 1) 
         self.index += 1
+        ####print(self.index)
     
     def month_clicked(self, button, index):
         self.monthIndex = index - 1
