@@ -291,40 +291,38 @@ class Overview():
 
         # Print out total values of all categories for each month 
         self.contentArr = []
-        for i in range(0,len(self.data.transactionsMenu)):
+        for self.month in range(1,len(self.data.allMonthMenu) + 1):
             self.total = 0
-            self.categoryID = self.data.transactionsMenu[i][self.data.MENU_ID_INDEX]
-            if self.data.transactionsMenu[i][self.data.MENU_TYPE_INDEX] == categoryType:
-                for self.month in range(1,len(self.data.allMonthMenu) + 1):
-                    # Total Label
-                    # If it is the total column
-                    if self.month == len(self.data.allMonthMenu):
-                        for j in range(0,len(aggregates)):
-                            if (int(self.data.aggregates[j][self.data.AGGREGATE_TYPE_INDEX]) == int(categoryTypeID)
-                                and self.data.aggregates[j][self.data.AGGREGATE_MENU_ID_INDEX] == ""
-                                and self.data.aggregates[j][self.data.AGGREGATE_MONTH_INDEX] == ""
-                                and self.data.aggregates[j][self.data.AGGREGATE_YEAR_INDEX] == self.data.current_year):
-                                    self.total = self.data.aggregates[j][self.data.AGGREGATE_VALUE_INDEX]
-                        self.totalLabel = Gtk.Label()
-                        self.totalLabel.set_markup("<b>$" + str("%0.2f" % (self.total,)) + "</b>")
-                        self.totalLabel.set_property("height-request", 40)
-                        self.totalLabel.override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(self.totalColor, self.totalColor, self.totalColor, self.totalColor))
-                        self.contentArr.append(self.totalLabel)
-                        self.contentGrid.attach(self.totalLabel, self.month - 1, self.index, 1, 1)
-                    # If it is not the total column
-                    else:
-                        for j in range(0,len(aggregates)):
-                            if (int(self.data.aggregates[j][self.data.AGGREGATE_TYPE_INDEX]) == int(categoryTypeID)
-                                and self.data.aggregates[j][self.data.AGGREGATE_MENU_ID_INDEX] == ""
-                                and self.data.aggregates[j][self.data.AGGREGATE_MONTH_INDEX] == self.month
-                                and self.data.aggregates[j][self.data.AGGREGATE_YEAR_INDEX] == self.data.current_year):
-                                    self.total = self.data.aggregates[j][self.data.AGGREGATE_VALUE_INDEX]
-                        self.totalLabel = Gtk.Label()
-                        self.totalLabel.set_markup("<b>$" + str("%0.2f" % (self.total,)) + "</b>")
-                        self.totalLabel.set_property("height-request", 40)
-                        self.totalLabel.override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(self.totalColor, self.totalColor, self.totalColor, self.totalColor))
-                        self.contentArr.append(self.totalLabel)
-                        self.contentGrid.attach(self.totalLabel, self.month - 1, self.index, 1, 1)
+            # self.categoryID = self.data.transactionsMenu[i][self.data.MENU_ID_INDEX]
+            # Total Label
+            # If it is the total column
+            if self.month == len(self.data.allMonthMenu):
+                for j in range(0,len(aggregates)):
+                    if (int(self.data.aggregates[j][self.data.AGGREGATE_TYPE_INDEX]) == int(categoryTypeID)
+                        and self.data.aggregates[j][self.data.AGGREGATE_MENU_ID_INDEX] == ""
+                        and self.data.aggregates[j][self.data.AGGREGATE_MONTH_INDEX] == ""
+                        and self.data.aggregates[j][self.data.AGGREGATE_YEAR_INDEX] == self.data.current_year):
+                            self.total = self.data.aggregates[j][self.data.AGGREGATE_VALUE_INDEX]
+                self.totalLabel = Gtk.Label()
+                self.totalLabel.set_markup("<b>$" + str("%0.2f" % (self.total,)) + "</b>")
+                self.totalLabel.set_property("height-request", 40)
+                self.totalLabel.override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(self.totalColor, self.totalColor, self.totalColor, self.totalColor))
+                self.contentArr.append(self.totalLabel)
+                self.contentGrid.attach(self.totalLabel, self.month - 1, self.index, 1, 1)
+            # If it is not the total column
+            else:
+                for j in range(0,len(aggregates)):
+                    if (int(self.data.aggregates[j][self.data.AGGREGATE_TYPE_INDEX]) == int(categoryTypeID)
+                        and self.data.aggregates[j][self.data.AGGREGATE_MENU_ID_INDEX] == ""
+                        and self.data.aggregates[j][self.data.AGGREGATE_MONTH_INDEX] == self.month
+                        and self.data.aggregates[j][self.data.AGGREGATE_YEAR_INDEX] == self.data.current_year):
+                            self.total = self.data.aggregates[j][self.data.AGGREGATE_VALUE_INDEX]
+                self.totalLabel = Gtk.Label()
+                self.totalLabel.set_markup("<b>$" + str("%0.2f" % (self.total,)) + "</b>")
+                self.totalLabel.set_property("height-request", 40)
+                self.totalLabel.override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(self.totalColor, self.totalColor, self.totalColor, self.totalColor))
+                self.contentArr.append(self.totalLabel)
+                self.contentGrid.attach(self.totalLabel, self.month - 1, self.index, 1, 1)
         if categoryTypeID == 0:
             self.entryRows.append([self.index, int(-200), self.contentArr])
         elif categoryTypeID == 1:
@@ -379,30 +377,45 @@ class Overview():
             self.typeID = 0
         elif self.typeID == "expense":
             self.typeID = 1
-        
+       
         for i in range(0, len(self.entryRows)):
             if self.entryRows[i][self.ENTRY_ROW_CATEGORY_ID] == int(categoryID):
                 if int(self.data.current_year) == int(year):
+                    # Update specified categories month total
                     for j in range (0, len(self.data.aggregates)):
                         if ( self.data.aggregates[j][self.data.AGGREGATE_MENU_ID_INDEX] == int(categoryID)
                             and self.data.aggregates[j][self.data.AGGREGATE_YEAR_INDEX] == int(self.data.current_year)
                             and self.data.aggregates[j][self.data.AGGREGATE_MONTH_INDEX] == int(month)):
                                 self.entryRows[i][self.ENTRY_ROW_VALUES][int(month)-1].set_markup("$" + str("%0.2f" % (self.data.aggregates[j][self.data.AGGREGATE_VALUE_INDEX],)))
+                    # Update specified categories year total
+                    for j in range (0, len(self.data.aggregates)):
+                        if ( self.data.aggregates[j][self.data.AGGREGATE_MENU_ID_INDEX] == int(categoryID)
+                            and self.data.aggregates[j][self.data.AGGREGATE_YEAR_INDEX] == int(self.data.current_year)
+                            and self.data.aggregates[j][self.data.AGGREGATE_MONTH_INDEX] == ""):
+                                self.entryRows[i][self.ENTRY_ROW_VALUES][12].set_markup("<b>$" + str("%0.2f" % (self.data.aggregates[j][self.data.AGGREGATE_VALUE_INDEX],)) + "</b>")
 
         if self.typeID == 0:
             categoryID = -200
         elif self.typeID == 1:
             categoryID = -300
-
+        
         for i in range(0, len(self.entryRows)):
             if self.entryRows[i][self.ENTRY_ROW_CATEGORY_ID] == int(categoryID):
                 if int(self.data.current_year) == int(year):
+                    # Update specified type's month total
                     for j in range (0, len(self.data.aggregates)):
                         if (int(self.data.aggregates[j][self.data.AGGREGATE_TYPE_INDEX]) == int(self.typeID)
                             and self.data.aggregates[j][self.data.AGGREGATE_MENU_ID_INDEX] == ""
                             and self.data.aggregates[j][self.data.AGGREGATE_YEAR_INDEX] == int(self.data.current_year)
                             and self.data.aggregates[j][self.data.AGGREGATE_MONTH_INDEX] == int(month)):
                                 self.entryRows[i][self.ENTRY_ROW_VALUES][int(month)-1].set_markup("<b>$" + str("%0.2f" % (self.data.aggregates[j][self.data.AGGREGATE_VALUE_INDEX],)) + "</b>")
+                    # Update specified type's year total
+                    for j in range (0, len(self.data.aggregates)):
+                        if (int(self.data.aggregates[j][self.data.AGGREGATE_TYPE_INDEX]) == int(self.typeID)
+                            and self.data.aggregates[j][self.data.AGGREGATE_MENU_ID_INDEX] == ""
+                            and self.data.aggregates[j][self.data.AGGREGATE_YEAR_INDEX] == int(self.data.current_year)
+                            and self.data.aggregates[j][self.data.AGGREGATE_MONTH_INDEX] == ""):
+                                self.entryRows[i][self.ENTRY_ROW_VALUES][12].set_markup("<b>$" + str("%0.2f" % (self.data.aggregates[j][self.data.AGGREGATE_VALUE_INDEX],)) + "</b>")
 
                 
         
