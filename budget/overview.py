@@ -6,6 +6,7 @@ class Overview():
 
     def __init__(self, data):
 
+        # categoryArr Index's
         self.CATEGORY_ARRAY_INDEX = 0           # [0]
         self.CATEGORY_ID_INDEX = 0              # [0][0]
         self.CATEGORY_NAME_INDEX = 1            # [0][1]
@@ -19,6 +20,11 @@ class Overview():
         self.DESCRIPTION_INDEX = 3              # [3]
         self.TRANSACTION_ID_INDEX = 4           # [4]
 
+        #entryRow Index's
+        self.ENTRY_ROW_INDEX = 0                # [0]
+        self.ENTRY_ROW_CATEGORY_ID = 1          # [1]
+        self.ENTRY_ROW_VALUES = 2               # [2][*]  * references the month
+    
         self.data = data
         # Initialize Variables
         self.calc = Calc(self.data)
@@ -179,18 +185,18 @@ class Overview():
         for i in range (0, len(self.categoryArr)):
             if self.categoryArr[i][0] == index:
                 self.categoryArr[i][1].set_relief(Gtk.ReliefStyle.HALF)
-                for j in range(0, len(self.entryRows[i][1])):
+                for j in range(0, len(self.entryRows[i][self.ENTRY_ROW_VALUES])):
                     if j == self.monthIndex:
-                        self.entryRows[i][1][j].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(self.menuColor, self.menuColor, self.menuColor, self.menuColor))
+                        self.entryRows[i][self.ENTRY_ROW_VALUES][j].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(self.menuColor, self.menuColor, self.menuColor, self.menuColor))
                     else:
-                        self.entryRows[i][1][j].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(self.highlightColor, self.highlightColor, self.highlightColor, self.highlightColor))
+                        self.entryRows[i][self.ENTRY_ROW_VALUES][j].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(self.highlightColor, self.highlightColor, self.highlightColor, self.highlightColor))
             else:
                 self.categoryArr[i][1].set_relief(Gtk.ReliefStyle.NONE)
-                for j in range(0, len(self.entryRows[i][1])):
+                for j in range(0, len(self.entryRows[i][self.ENTRY_ROW_VALUES])):
                     if j != self.monthIndex:
-                        self.entryRows[i][1][j].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(.0, .0, .0, .0));
+                        self.entryRows[i][self.ENTRY_ROW_VALUES][j].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(.0, .0, .0, .0));
                     else:
-                        self.entryRows[i][1][j].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(self.highlightColor, self.highlightColor, self.highlightColor, self.highlightColor))
+                        self.entryRows[i][self.ENTRY_ROW_VALUES][j].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(self.highlightColor, self.highlightColor, self.highlightColor, self.highlightColor))
     
     def clear_selection(self, button):
         self.categoryIndex = 10000
@@ -200,23 +206,23 @@ class Overview():
         for i in range (0, len(self.monthArr)):
             self.monthArr[i][1].set_relief(Gtk.ReliefStyle.NONE)
         for i in range(0, len(self.entryRows)):
-            for j in range(0, len(self.entryRows[i][1])):
+            for j in range(0, len(self.entryRows[i][self.ENTRY_ROW_VALUES])):
                 # Get count of income categories
                 count = 0
                 for k in range(0, len(self.data.transactionsMenu)):
                     if self.data.transactionsMenu[k][self.data.MENU_TYPE_INDEX] == "income":
                         count += 1
                 # Reset All Income
-                if self.entryRows[i][0] == self.categoryArr[count][0]:
-                    self.entryRows[i][1][j].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(self.totalColor, self.totalColor, self.totalColor, self.totalColor))
+                if self.entryRows[i][self.ENTRY_ROW_INDEX] == self.categoryArr[count][0]:
+                    self.entryRows[i][self.ENTRY_ROW_VALUES][j].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(self.totalColor, self.totalColor, self.totalColor, self.totalColor))
                 # Reset All Expenses
-                elif self.entryRows[i][0] == self.categoryArr[len(self.data.transactionsMenu) + 2][0]:
-                    self.entryRows[i][1][j].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(self.totalColor, self.totalColor, self.totalColor, self.totalColor))
+                elif self.entryRows[i][self.ENTRY_ROW_INDEX] == self.categoryArr[len(self.data.transactionsMenu) + 2][0]:
+                    self.entryRows[i][self.ENTRY_ROW_VALUES][j].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(self.totalColor, self.totalColor, self.totalColor, self.totalColor))
                 else:
                     if j == len(self.data.allMonthMenu) - 1:
-                        self.entryRows[i][1][j].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(self.totalColor, self.totalColor, self.totalColor, self.totalColor))
+                        self.entryRows[i][self.ENTRY_ROW_VALUES][j].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(self.totalColor, self.totalColor, self.totalColor, self.totalColor))
                     else:
-                        self.entryRows[i][1][j].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(.0, .0, .0, .0));
+                        self.entryRows[i][self.ENTRY_ROW_VALUES][j].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(.0, .0, .0, .0));
     
     def display_info(self, categoryType, aggregates):
         # Print out Categories
@@ -250,7 +256,6 @@ class Overview():
                                 and self.data.aggregates[j][self.data.AGGREGATE_MONTH_INDEX] == ""
                                 and self.data.aggregates[j][self.data.AGGREGATE_YEAR_INDEX] == self.data.current_year):
                                     self.total = self.data.aggregates[j][self.data.AGGREGATE_VALUE_INDEX]
-                                    # print(self.total)
                                     
                         self.totalLabel = Gtk.Label()
                         self.totalLabel.set_markup("<b>$" + str("%0.2f" % (self.total,)) + "</b>")
@@ -263,12 +268,10 @@ class Overview():
                     # If it not total column
                     else:
                         for j in range(0,len(aggregates)):
-                            #print(self.data.aggregates[j])
                             if (self.data.aggregates[j][self.data.AGGREGATE_MENU_ID_INDEX] == self.categoryID
                                 and self.data.aggregates[j][self.data.AGGREGATE_MONTH_INDEX] == self.month
                                 and self.data.aggregates[j][self.data.AGGREGATE_YEAR_INDEX] == self.data.current_year):
                                     self.total = self.data.aggregates[j][self.data.AGGREGATE_VALUE_INDEX]
-                                    #print(self.total)
 
                         self.totalLabel = Gtk.Label("$" + str("%0.2f" % (self.total,)))
                         self.totalLabel.set_property("height-request", 40)
@@ -276,7 +279,7 @@ class Overview():
                         self.totalLabel.set_hexpand(True)
                         self.contentArr.append(self.totalLabel)
                         self.contentGrid.attach(self.totalLabel, self.month - 1, self.index, 1, 1)
-                self.entryRows.append([self.index, self.contentArr])
+                self.entryRows.append([self.index, self.categoryID, self.contentArr])
                 self.index += 1
 
         # Print out "All" Buttons
@@ -322,9 +325,11 @@ class Overview():
                         self.totalLabel.override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(self.totalColor, self.totalColor, self.totalColor, self.totalColor))
                         self.contentArr.append(self.totalLabel)
                         self.contentGrid.attach(self.totalLabel, self.month - 1, self.index, 1, 1)
-        self.entryRows.append([self.index, self.contentArr])
+        if categoryTypeID == 0:
+            self.entryRows.append([self.index, int(-200), self.contentArr])
+        elif categoryTypeID == 1:
+            self.entryRows.append([self.index, int(-300), self.contentArr])
         self.index += 1
-        ####print(self.index)
        
     def empty_row(self):
         # Set up empty Row
@@ -342,11 +347,10 @@ class Overview():
                 self.dummyContentLabel.override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(self.totalColor, self.totalColor, self.totalColor, self.totalColor))
             self.contentArr.append(self.dummyContentLabel)
             self.contentGrid.attach(self.dummyContentLabel, self.month - 1, self.index, 1, 1)
-        self.entryRows.append([self.index, self.contentArr])
+        self.entryRows.append([self.index, "", self.contentArr])
         
         self.categoryGrid.attach(self.dummyCategoryButton, 0, self.index, 1, 1) 
         self.index += 1
-        ####print(self.index)
     
     def month_clicked(self, button, index):
         self.monthIndex = index - 1
@@ -354,18 +358,54 @@ class Overview():
             if self.monthArr[i][0] == index:
                 self.monthArr[i][1].set_relief(Gtk.ReliefStyle.HALF)
                 for j in range(0, len(self.entryRows)):
-                    if self.entryRows[j][0] == self.categoryIndex:
-                        self.entryRows[j][1][i].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(self.menuColor, self.menuColor, self.menuColor, self.menuColor))
+                    if self.entryRows[j][self.ENTRY_ROW_INDEX] == self.categoryIndex:
+                        self.entryRows[j][self.ENTRY_ROW_VALUES][i].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(self.menuColor, self.menuColor, self.menuColor, self.menuColor))
                     else:
-                        self.entryRows[j][1][i].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(self.highlightColor, self.highlightColor, self.highlightColor, self.highlightColor))
+                        self.entryRows[j][self.ENTRY_ROW_VALUES][i].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(self.highlightColor, self.highlightColor, self.highlightColor, self.highlightColor))
             else:
                 self.monthArr[i][1].set_relief(Gtk.ReliefStyle.NONE)
                 for j in range(0, len(self.entryRows)):
-                    if self.entryRows[j][0] != self.categoryIndex:
-                       self.entryRows[j][1][i].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(.0, .0, .0, .0));
+                    if self.entryRows[j][self.ENTRY_ROW_INDEX] != self.categoryIndex:
+                       self.entryRows[j][self.ENTRY_ROW_VALUES][i].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(.0, .0, .0, .0));
                     else:
-                        self.entryRows[j][1][i].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(self.highlightColor, self.highlightColor, self.highlightColor, self.highlightColor))
-    
+                        self.entryRows[j][self.ENTRY_ROW_VALUES][i].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(self.highlightColor, self.highlightColor, self.highlightColor, self.highlightColor))
+   
+
+    def update_values(self, categoryID, year, month):
+        for i in range(0,len(self.data.transactionsMenu)):
+            if self.data.transactionsMenu[i][self.data.MENU_ID_INDEX] == categoryID:
+                self.typeID = self.data.transactionsMenu[i][self.data.MENU_TYPE_INDEX]
+        if self.typeID == "income":
+            self.typeID = 0
+        elif self.typeID == "expense":
+            self.typeID = 1
+        
+        for i in range(0, len(self.entryRows)):
+            if self.entryRows[i][self.ENTRY_ROW_CATEGORY_ID] == int(categoryID):
+                if int(self.data.current_year) == int(year):
+                    for j in range (0, len(self.data.aggregates)):
+                        if ( self.data.aggregates[j][self.data.AGGREGATE_MENU_ID_INDEX] == int(categoryID)
+                            and self.data.aggregates[j][self.data.AGGREGATE_YEAR_INDEX] == int(self.data.current_year)
+                            and self.data.aggregates[j][self.data.AGGREGATE_MONTH_INDEX] == int(month)):
+                                self.entryRows[i][self.ENTRY_ROW_VALUES][int(month)-1].set_markup("$" + str("%0.2f" % (self.data.aggregates[j][self.data.AGGREGATE_VALUE_INDEX],)))
+
+        if self.typeID == 0:
+            categoryID = -200
+        elif self.typeID == 1:
+            categoryID = -300
+
+        for i in range(0, len(self.entryRows)):
+            if self.entryRows[i][self.ENTRY_ROW_CATEGORY_ID] == int(categoryID):
+                if int(self.data.current_year) == int(year):
+                    for j in range (0, len(self.data.aggregates)):
+                        if (int(self.data.aggregates[j][self.data.AGGREGATE_TYPE_INDEX]) == int(self.typeID)
+                            and self.data.aggregates[j][self.data.AGGREGATE_MENU_ID_INDEX] == ""
+                            and self.data.aggregates[j][self.data.AGGREGATE_YEAR_INDEX] == int(self.data.current_year)
+                            and self.data.aggregates[j][self.data.AGGREGATE_MONTH_INDEX] == int(month)):
+                                self.entryRows[i][self.ENTRY_ROW_VALUES][int(month)-1].set_markup("<b>$" + str("%0.2f" % (self.data.aggregates[j][self.data.AGGREGATE_VALUE_INDEX],)) + "</b>")
+
+                
+        
     def redisplay_info(self):
         self.index = 0
         while len(self.categoryArr) > 0:

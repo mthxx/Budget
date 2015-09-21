@@ -343,6 +343,7 @@ class Data():
             
             self.update_aggregates(categoryIndex, year, month)
             self.refresh_data()
+            self.overview.update_values(categoryIndex, year, month)
     
     def add_projection(self, title, value, description, selected, category, startYear, startMonth, startDay, endYear, endMonth, endDay, frequency, projectionID):
         #for i in range(0,len(self.transactionsMenu)):
@@ -450,6 +451,8 @@ class Data():
 
             self.transaction_view.delete_transaction(index)
             self.refresh_data()
+            
+            self.overview.update_values(categoryIndex, year, month)
     
     def delete_projection(self, uniqueID):
         if(os.path.isfile(self.db_path)):
