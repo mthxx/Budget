@@ -97,7 +97,7 @@ class Edit_Entry(Gtk.Window):
         self.calendarButton.set_label(dateString)
 
     def on_cancelButton_clicked(self, button):
-        self.editGrid.hide()
+        self.editGrid.destroy()
         self.entryRow[self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_EDIT_BUTTON_INDEX].show_all()
         self.entryRow[self.ENTRY_GRID_INDEX].show_all()
         self.contentGrid.queue_draw()
