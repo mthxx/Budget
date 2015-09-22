@@ -278,7 +278,6 @@ class Edit_Entry(Gtk.Window):
         if self.categoryComboBoxText.get_active() < 0:
             self.categoryLabel.set_markup("<span foreground=\"red\"><b>* Category</b></span>")
         else:
-            self.editGrid.hide()
             self.dateArr = self.calendar.get_date()
             self.year = str(self.dateArr[0])
             self.month = str(self.dateArr[1] + 1)
@@ -293,6 +292,7 @@ class Edit_Entry(Gtk.Window):
  
             self.entryRow[self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_EDIT_BUTTON_INDEX].show_all()
             self.entryRow[self.ENTRY_GRID_INDEX].show_all()
+            self.editGrid.destroy()
 
             self.contentGrid.queue_draw()
     
