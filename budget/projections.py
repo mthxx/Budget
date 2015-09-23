@@ -518,7 +518,10 @@ class Projections():
                         self.currencyLabel = Gtk.Label("$")
                         self.costLabel = Gtk.Label()
                         
-                        self.costLabel.set_markup("<span foreground=\"green\">" + str(self.projections[i][self.data.PROJECTIONS_VALUE]) + "</span>")
+                        if self.projections[i][self.data.PROJECTIONS_CATEGORY_TYPE] == 0:
+                            self.costLabel.set_markup("<span foreground=\"green\">" + str(self.projections[i][self.data.PROJECTIONS_VALUE]) + "</span>")
+                        if self.projections[i][self.data.PROJECTIONS_CATEGORY_TYPE] == 1:
+                            self.costLabel.set_markup("<span foreground=\"red\">" + str(self.projections[i][self.data.PROJECTIONS_VALUE]) + "</span>")
                        
                         self.titleLabel.set_markup("<b>" + self.projections[i][self.data.PROJECTIONS_TITLE] + "</b>")
                         self.descriptionLabel.set_markup("<i>" + self.projections[i][self.data.PROJECTIONS_DESCRIPTION] + "</i>")
