@@ -15,7 +15,7 @@ class Data():
     tables_row = [("table", "categories"),("table", "transactions"),("table", "projections"),("table", "frequency"),("table", "categoryType"),("table", "aggregates")]
     category_type_row = [("all","-1"),("income", "0"),("expense","1")]
     categories_row = [("-1", "All Transactions","-100","-100"),("0", "All Income","-200","-200"),("1","All Expenses","-300","-300"),("0", "Uncategorized","-1","-1"),("1","Uncategorized","-2","-2")]
-    freqpuency_row = [("One Time", "0"),("Daily","1"),("Weekly","2"),("Bi-Weekly","3"),("Monthly on Date", "4"),("Monthly on Weekday","5"),("Yearly","6")]
+    frequency_row = [("One Time", "0"),("Daily","1"),("Weekly","2"),("Bi-Weekly","3"),("Monthly on Date", "4"),("Monthly on Weekday","5"),("Yearly","6")]
     # Create Database if none exists
     if(os.path.isfile(db_path) == False):
         if os.path.exists(local_path) == False:
