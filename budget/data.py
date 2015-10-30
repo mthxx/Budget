@@ -399,9 +399,11 @@ class Data():
             cur.execute('SELECT type FROM categories WHERE categoryID = '+ str(uniqueID))
             row = cur.fetchone()
             if row[0] == 0:
+                categoryIndex = -1
                 cur.execute('UPDATE transactions SET categoryID = -1 WHERE categoryID = ' + str(uniqueID))
                 cur.execute('UPDATE projections SET categoryID = -1 where categoryID = ' + str(uniqueID));
             elif row[0] == 1:
+                categoryIndex = -2
                 cur.execute('UPDATE transactions SET categoryID = -2 WHERE categoryID = ' + str(uniqueID))
                 cur.execute('UPDATE projections SET categoryID = -2 where categoryID = ' + str(uniqueID));
             
@@ -423,6 +425,12 @@ class Data():
                 self.calculate_time("Delete Category", self.deleteCategoryStart, self.deleteCategoryEnd)
             
             self.refresh_data()   
+            
+            # Update all aggregates that have uncategorized items
+            for i in range(1,len(self.yearMenu)):
+                for j in range(1, len(self.allMonthMenu)):
+                    self.update_aggregates(categoryIndex, self.yearMenu[i], self.allMonthMenu[j][0])
+
     
     def delete_transaction(self, uniqueID):
         if(os.path.isfile(self.db_path)):
@@ -446,9 +454,9 @@ class Data():
                     index = i
                     self.transactions.pop(i)
                     break
-            
+           
             self.update_aggregates(categoryIndex, year, month)
-
+            
             self.transaction_view.delete_transaction(index)
             self.refresh_data()
             
@@ -919,9 +927,14 @@ class Data():
 
     def update_aggregates(self, categoryIndex, year, month):
         # Get category type (Income/Expense)
-        for i in range(0,len(self.transactionsMenu)):
-            if self.transactionsMenu[i][self.MENU_ID_INDEX] == categoryIndex:
-                self.update_type = self.transactionsMenu[i][self.MENU_TYPE_INDEX]
+        if categoryIndex == -1:
+            self.update_type = "income"
+        elif categoryIndex == -2:
+            self.update_type = "expense"
+        else:
+            for i in range(0,len(self.transactionsMenu)):
+                if self.transactionsMenu[i][self.MENU_ID_INDEX] == categoryIndex:
+                    self.update_type = self.transactionsMenu[i][self.MENU_TYPE_INDEX]
         if self.update_type == "income":
             self.update_type_index = "0"
         elif self.update_type == "expense":
