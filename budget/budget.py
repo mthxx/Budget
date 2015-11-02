@@ -2,6 +2,7 @@
 
 import os.path
 import sys
+import gi
 
 # Check if we are working in the source tree or from the installed
 # package and mangle the python path accordingly
@@ -15,7 +16,7 @@ else:
     fullPath = os.getcwd()
 sys.path.insert(0, os.path.dirname(fullPath))
 
-
+gi.require_version('Gtk','3.0')
 from gi.repository import Gtk, Gio, Gdk
 from budget.window import Window
 from budget.data import Data
