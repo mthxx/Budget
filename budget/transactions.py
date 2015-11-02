@@ -1030,6 +1030,7 @@ class Transactions():
                         and self.data.aggregates[j][self.data.AGGREGATE_YEAR_INDEX] == ""
                         and self.data.aggregates[j][self.data.AGGREGATE_MONTH_INDEX] == ""):
                         self.dataSum -= self.data.aggregates[j][self.data.AGGREGATE_VALUE_INDEX]
+            
             # All Income
             elif dataArr == self.data.incomeMenu:
                 for j in range(0, len(self.data.aggregates)):
@@ -1038,6 +1039,7 @@ class Transactions():
                         and self.data.aggregates[j][self.data.AGGREGATE_YEAR_INDEX] == ""
                         and self.data.aggregates[j][self.data.AGGREGATE_MONTH_INDEX] == ""):
                         self.dataSum = self.data.aggregates[j][self.data.AGGREGATE_VALUE_INDEX]
+            
             # All Expenses
             elif dataArr == self.data.expenseMenu:
                 for j in range(0, len(self.data.aggregates)):
@@ -1046,6 +1048,8 @@ class Transactions():
                         and self.data.aggregates[j][self.data.AGGREGATE_YEAR_INDEX] == ""
                         and self.data.aggregates[j][self.data.AGGREGATE_MONTH_INDEX] == ""):
                         self.dataSum = self.data.aggregates[j][self.data.AGGREGATE_VALUE_INDEX]
+
+            # Individual Categories
             elif dataArr == "other":
                 for j in range(0, len(self.data.aggregates)):
                     if (self.data.aggregates[j][self.data.AGGREGATE_MENU_ID_INDEX] == self.uniqueID
@@ -1069,6 +1073,7 @@ class Transactions():
                         and self.data.aggregates[j][self.data.AGGREGATE_MONTH_INDEX] == ""):
                         self.dataSum -= self.data.aggregates[j][self.data.AGGREGATE_VALUE_INDEX]
 
+            # All Income
             elif dataArr == self.data.incomeMenu:
                 for j in range(0, len(self.data.aggregates)):
                     if (self.data.aggregates[j][self.data.AGGREGATE_TYPE_INDEX] == "0"
@@ -1076,7 +1081,8 @@ class Transactions():
                         and self.data.aggregates[j][self.data.AGGREGATE_YEAR_INDEX] == int(self.selected_year)
                         and self.data.aggregates[j][self.data.AGGREGATE_MONTH_INDEX] == ""):
                         self.dataSum = self.data.aggregates[j][self.data.AGGREGATE_VALUE_INDEX]
-                    
+            
+            # All Expenses        
             elif dataArr == self.data.expenseMenu:
                 for j in range(0, len(self.data.aggregates)):
                     if (self.data.aggregates[j][self.data.AGGREGATE_TYPE_INDEX] == "1"
@@ -1084,6 +1090,8 @@ class Transactions():
                         and self.data.aggregates[j][self.data.AGGREGATE_YEAR_INDEX] == int(self.selected_year)
                         and self.data.aggregates[j][self.data.AGGREGATE_MONTH_INDEX] == ""):
                         self.dataSum = self.data.aggregates[j][self.data.AGGREGATE_VALUE_INDEX]
+
+            # Individual Categories
             elif dataArr == "other":
                 for j in range(0, len(self.data.aggregates)):
                     if (self.data.aggregates[j][self.data.AGGREGATE_MENU_ID_INDEX] == self.uniqueID
@@ -1107,6 +1115,7 @@ class Transactions():
                         and self.data.aggregates[j][self.data.AGGREGATE_MONTH_INDEX] == int(self.selected_month_index)):
                         self.dataSum -= self.data.aggregates[j][self.data.AGGREGATE_VALUE_INDEX]
 
+            # All Income
             elif dataArr == self.data.incomeMenu:
                 for j in range(0, len(self.data.aggregates)):
                     if (self.data.aggregates[j][self.data.AGGREGATE_TYPE_INDEX] == "0"
@@ -1115,6 +1124,7 @@ class Transactions():
                         and self.data.aggregates[j][self.data.AGGREGATE_MONTH_INDEX] == int(self.selected_month_index)):
                         self.dataSum = self.data.aggregates[j][self.data.AGGREGATE_VALUE_INDEX]
                     
+            # All Expenses
             elif dataArr == self.data.expenseMenu:
                 for j in range(0, len(self.data.aggregates)):
                     if (self.data.aggregates[j][self.data.AGGREGATE_TYPE_INDEX] == "1"
@@ -1122,6 +1132,8 @@ class Transactions():
                         and self.data.aggregates[j][self.data.AGGREGATE_YEAR_INDEX] == int(self.data.current_year)
                         and self.data.aggregates[j][self.data.AGGREGATE_MONTH_INDEX] == int(self.selected_month_index)):
                         self.dataSum = self.data.aggregates[j][self.data.AGGREGATE_VALUE_INDEX]
+                    
+            # Individual Categories
             elif dataArr == "other":
                 for j in range(0, len(self.data.aggregates)):
                     if (self.data.aggregates[j][self.data.AGGREGATE_MENU_ID_INDEX] == self.uniqueID
@@ -1129,30 +1141,47 @@ class Transactions():
                         and self.data.aggregates[j][self.data.AGGREGATE_MONTH_INDEX] == int(self.selected_month_index)):
                         self.dataSum = self.data.aggregates[j][self.data.AGGREGATE_VALUE_INDEX]
 
-        ###################### Continue HERE! ########################## 
         # If month is not "All" and year is not "All"
         elif (self.selected_month != self.data.allMonthMenu[self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_NAME_INDEX] and self.selected_year != self.data.yearMenu[0]):
-            for j in range(0, len(self.data.transactions)):
-                if (int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_MONTH_INDEX]) == int(self.selected_month_index)
-                    and int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_YEAR_INDEX]) == int(self.selected_year)):
-                    # All Transactions
-                    if dataArr == "all":
-                        for k in range(0, len(self.data.incomeMenu)):
-                            if self.data.transactions[j][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.data.incomeMenu[k]:
-                                self.dataSum += self.data.transactions[j][self.data.TRANSACTION_VALUE_INDEX]
-                        for k in range(0, len(self.data.expenseMenu)):
-                            if self.data.transactions[j][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.data.expenseMenu[k]:
-                                self.dataSum -= self.data.transactions[j][self.data.TRANSACTION_VALUE_INDEX]
-                    # All Income and All Expenses
-                    elif (dataArr == self.data.incomeMenu or dataArr == self.data.expenseMenu):
-                        for k in range(0, len(dataArr)):
-                            if self.data.transactions[j][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == dataArr[k]:
-                                self.dataSum += self.data.transactions[j][self.data.TRANSACTION_VALUE_INDEX]
-                    elif dataArr == "other":
-                        if self.data.transactions[j][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX] == self.uniqueID:
-                            if (int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_MONTH_INDEX]) == int(self.selected_month_index)
-                                and int(self.data.transactions[j][self.data.TRANSACTION_DATE_INDEX][self.data.TRANSACTION_DATE_YEAR_INDEX]) == int(self.selected_year)):
-                                self.dataSum += self.data.transactions[j][self.data.TRANSACTION_VALUE_INDEX]
+            # All Transactions
+            if dataArr == "all":
+                for j in range(0, len(self.data.aggregates)):
+                    if (self.data.aggregates[j][self.data.AGGREGATE_TYPE_INDEX] == "0"
+                        and self.data.aggregates[j][self.data.AGGREGATE_MENU_ID_INDEX] == ""
+                        and self.data.aggregates[j][self.data.AGGREGATE_YEAR_INDEX] == int(self.selected_year)
+                        and self.data.aggregates[j][self.data.AGGREGATE_MONTH_INDEX] == int(self.selected_month_index)):
+                        self.dataSum = self.data.aggregates[j][self.data.AGGREGATE_VALUE_INDEX]
+                    if (self.data.aggregates[j][self.data.AGGREGATE_TYPE_INDEX] == "1"
+                        and self.data.aggregates[j][self.data.AGGREGATE_MENU_ID_INDEX] == ""
+                        and self.data.aggregates[j][self.data.AGGREGATE_YEAR_INDEX] == int(self.selected_year)
+                        and self.data.aggregates[j][self.data.AGGREGATE_MONTH_INDEX] == int(self.selected_month_index)):
+                        self.dataSum -= self.data.aggregates[j][self.data.AGGREGATE_VALUE_INDEX]
+
+            # All Income
+            elif dataArr == self.data.incomeMenu:
+                for j in range(0, len(self.data.aggregates)):
+                    if (self.data.aggregates[j][self.data.AGGREGATE_TYPE_INDEX] == "0"
+                        and self.data.aggregates[j][self.data.AGGREGATE_MENU_ID_INDEX] == ""
+                        and self.data.aggregates[j][self.data.AGGREGATE_YEAR_INDEX] == int(self.selected_year)
+                        and self.data.aggregates[j][self.data.AGGREGATE_MONTH_INDEX] == int(self.selected_month_index)):
+                        self.dataSum = self.data.aggregates[j][self.data.AGGREGATE_VALUE_INDEX]
+            
+            # All Expenses
+            elif dataArr == self.data.expenseMenu:
+                for j in range(0, len(self.data.aggregates)):
+                    if (self.data.aggregates[j][self.data.AGGREGATE_TYPE_INDEX] == "1"
+                        and self.data.aggregates[j][self.data.AGGREGATE_MENU_ID_INDEX] == ""
+                        and self.data.aggregates[j][self.data.AGGREGATE_YEAR_INDEX] == int(self.selected_year)
+                        and self.data.aggregates[j][self.data.AGGREGATE_MONTH_INDEX] == int(self.selected_month_index)):
+                        self.dataSum = self.data.aggregates[j][self.data.AGGREGATE_VALUE_INDEX]
+
+            # Individual Categories
+            elif dataArr == "other":
+                for j in range(0, len(self.data.aggregates)):
+                    if (self.data.aggregates[j][self.data.AGGREGATE_MENU_ID_INDEX] == self.uniqueID
+                        and self.data.aggregates[j][self.data.AGGREGATE_YEAR_INDEX] == int(self.selected_year)
+                        and self.data.aggregates[j][self.data.AGGREGATE_MONTH_INDEX] == int(self.selected_month_index)):
+                        self.dataSum = self.data.aggregates[j][self.data.AGGREGATE_VALUE_INDEX]
         
         if menuType == "income":
             self.categoryRows[i][self.categoryRowSum].set_markup("<span foreground=\"green\">" + "$" + str("%0.2f" % (self.dataSum,)) + "</span>")
