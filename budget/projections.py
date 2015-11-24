@@ -500,8 +500,9 @@ class Projections():
         self.count = 0
         for i in reversed(range(0,len(self.projections))):
             if self.projections[i][6] >= self.currentYear:
-                if (self.projections[i][7] == self.currentMonth and self.projections[i][8] >= self.currentDay
-                    or self.projections[i][7] > self.currentMonth):
+                if ((self.projections[i][7] == self.currentMonth and self.projections[i][8] >= self.currentDay)
+                    or (self.projections[i][6] == self.currentYear and self.projections[i][7] > self.currentMonth)
+                    or self.projections[i][6] > self.currentYear):
                         # Date String
                         self.dateString = [self.projections[i][self.data.PROJECTIONS_START_YEAR],self.projections[i][self.data.PROJECTIONS_START_MONTH] - 1,self.projections[i][self.data.PROJECTIONS_START_DAY]]
                         self.dateString = self.data.translate_date(self.dateString, "edit")
