@@ -7,7 +7,7 @@ class Projections():
     def __init__(self, data):
         self.data = data
         self.projections = []
-        self.defaultLoadOut = 180
+        self.defaultLoadOut = 365
         self.grid = Gtk.Grid(name="projectionsGrid")        
         self.entryRows = []
         self.totalSum = 0  
