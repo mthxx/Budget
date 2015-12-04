@@ -116,26 +116,83 @@ class Projections():
     def calculateCellSum(self):
         self.cellSum = self.totalSum
         for i in range(0, len(self.projections)):
-            if (self.projections[i][self.data.PROJECTIONS_START_YEAR] <= self.selectedYear
-                and self.projections[i][self.data.PROJECTIONS_START_YEAR] >= self.currentYear
-                and self.projections[i][self.data.PROJECTIONS_START_MONTH] <= self.selectedMonth
-                and self.projections[i][self.data.PROJECTIONS_START_MONTH] == self.currentMonth):
+            # Current year and month
+            if self.selectedYear == self.currentYear and self.selectedMonth == self.currentMonth:
+                if (self.projections[i][self.data.PROJECTIONS_START_YEAR] == self.currentYear
+                    and self.projections[i][self.data.PROJECTIONS_START_MONTH] == self.currentMonth):
+                        
                     if (self.projections[i][self.data.PROJECTIONS_START_DAY] >= self.currentDay
                         and self.projections[i][self.data.PROJECTIONS_START_DAY] <= self.dayText):
+                            
                         if self.projections[i][self.data.PROJECTIONS_CATEGORY_TYPE] == 0:
                             self.cellSum += self.projections[i][self.data.PROJECTIONS_VALUE]
                         elif self.projections[i][self.data.PROJECTIONS_CATEGORY_TYPE] == 1:
                             self.cellSum -= self.projections[i][self.data.PROJECTIONS_VALUE]
 
-            elif (self.projections[i][self.data.PROJECTIONS_START_YEAR] <= self.selectedYear
-                and self.projections[i][self.data.PROJECTIONS_START_YEAR] >= self.currentYear
-                and self.projections[i][self.data.PROJECTIONS_START_MONTH] <= self.selectedMonth
-                and self.projections[i][self.data.PROJECTIONS_START_MONTH] > self.currentMonth):
-                    if self.projections[i][self.data.PROJECTIONS_START_DAY] <= self.dayText:
+            # Current year, future month
+            elif self.selectedYear == self.currentYear and self.selectedMonth > self.currentMonth:
+                if (self.projections[i][self.PROJECTIONS_START_YEAR] == self.currentYear
+                    and self.projections[i][self.PROJECTIONS_START_MONTH] >= self.currentMonth
+                    and self.projections[i][self.PROJECTIONS_START_MONTH] <= self.selectedMonth):
+                    
+                    if self.projections[i][self.PROJECTIONS_START_MONTH] == self.currentMonth:
+                        if self.projections[i][self.data.PROJECTIONS_START_DAY] >= self.currentDay:
+                            if self.projections[i][self.data.PROJECTIONS_CATEGORY_TYPE] == 0:
+                                self.cellSum += self.projections[i][self.data.PROJECTIONS_VALUE]
+                            elif self.projections[i][self.data.PROJECTIONS_CATEGORY_TYPE] == 1:
+                                self.cellSum -= self.projections[i][self.data.PROJECTIONS_VALUE]
+                    
+                    elif (self.projections[i][self.PROJECTIONS_START_MONTH] > self.currentMonth 
+                        and self.projections[i][self.PROJECTIONS_START_MONTH] < self.selectedMonth):
+                        
                         if self.projections[i][self.data.PROJECTIONS_CATEGORY_TYPE] == 0:
                             self.cellSum += self.projections[i][self.data.PROJECTIONS_VALUE]
                         elif self.projections[i][self.data.PROJECTIONS_CATEGORY_TYPE] == 1:
                             self.cellSum -= self.projections[i][self.data.PROJECTIONS_VALUE]
+                    
+                    elif self.projections[i][self.PROJECTIONS_START_MONTH] == self.selectedMonth:
+                        if self.projections[i][self.data.PROJECTIONS_START_DAY] <= self.dayText:
+                            if self.projections[i][self.data.PROJECTIONS_CATEGORY_TYPE] == 0:
+                                self.cellSum += self.projections[i][self.data.PROJECTIONS_VALUE]
+                            elif self.projections[i][self.data.PROJECTIONS_CATEGORY_TYPE] == 1:
+                                self.cellSum -= self.projections[i][self.data.PROJECTIONS_VALUE]
+
+            # Future Year
+            elif self.selectedYear > self.currentYear:
+                if (self.projections[i][self.data.PROJECTIONS_START_YEAR] == self.currentYear
+                    and self.projections[i][self.data.PROJECTIONS_START_MONTH] >= self.currentMonth):
+                    if self.projections[i][self.data.PROJECTIONS_START_MONTH] == self.currentMonth:
+                        if self.projections[i][self.data.PROJECTIONS_START_DAY] >= self.currentDay:
+                            if self.projections[i][self.data.PROJECTIONS_CATEGORY_TYPE] == 0:
+                                self.cellSum += self.projections[i][self.data.PROJECTIONS_VALUE]
+                            elif self.projections[i][self.data.PROJECTIONS_CATEGORY_TYPE] == 1:
+                                self.cellSum -= self.projections[i][self.data.PROJECTIONS_VALUE]
+                    elif self.projections[i][self.data.PROJECTIONS_START_MONTH] > self.currentMonth:
+                        if self.projections[i][self.data.PROJECTIONS_CATEGORY_TYPE] == 0:
+                            self.cellSum += self.projections[i][self.data.PROJECTIONS_VALUE]
+                        elif self.projections[i][self.data.PROJECTIONS_CATEGORY_TYPE] == 1:
+                            self.cellSum -= self.projections[i][self.data.PROJECTIONS_VALUE]
+                
+                elif (self.projections[i][self.data.PROJECTIONS_START_YEAR] > self.currentYear
+                    and self.projections[i][self.data.PROJECTIONS_START_YEAR] <= self.selectedYear):
+                    
+                    if self.projections[i][self.data.PROJECTIONS_START_YEAR] < self.selectedYear:
+                        if self.projections[i][self.data.PROJECTIONS_CATEGORY_TYPE] == 0:
+                            self.cellSum += self.projections[i][self.data.PROJECTIONS_VALUE]
+                        elif self.projections[i][self.data.PROJECTIONS_CATEGORY_TYPE] == 1:
+                            self.cellSum -= self.projections[i][self.data.PROJECTIONS_VALUE]
+                    elif self.projections[i][self.data.PROJECTIONS_START_YEAR] == self.selectedYear:
+                        if self.projections[i][self.data.PROJECTIONS_START_MONTH] < self.selectedMonth:
+                            if self.projections[i][self.data.PROJECTIONS_CATEGORY_TYPE] == 0:
+                                self.cellSum += self.projections[i][self.data.PROJECTIONS_VALUE]
+                            elif self.projections[i][self.data.PROJECTIONS_CATEGORY_TYPE] == 1:
+                                self.cellSum -= self.projections[i][self.data.PROJECTIONS_VALUE]
+                        elif self.projections[i][self.data.PROJECTIONS_START_MONTH] == self.selectedMonth:
+                            if self.projections[i][self.data.PROJECTIONS_START_DAY] <= self.dayText:
+                                if self.projections[i][self.data.PROJECTIONS_CATEGORY_TYPE] == 0:
+                                    self.cellSum += self.projections[i][self.data.PROJECTIONS_VALUE]
+                                elif self.projections[i][self.data.PROJECTIONS_CATEGORY_TYPE] == 1:
+                                    self.cellSum -= self.projections[i][self.data.PROJECTIONS_VALUE]
 
     def create_header_grid(self):
         self.viewLabel = Gtk.Label("View:")
