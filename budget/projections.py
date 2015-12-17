@@ -15,6 +15,7 @@ class Projections():
         self.currentDay = datetime.datetime.now().day
         self.currentMonth = datetime.datetime.now().month
         self.currentYear = datetime.datetime.now().year
+        self.currentDate = datetime.date(self.currentYear, self.currentMonth, self.currentDay)
 
         # Create Grids
         self.sideGrid = Gtk.Grid()
@@ -420,17 +421,18 @@ class Projections():
             startDay = self.data.projections[i][self.data.PROJECTIONS_START_DAY]
             currentMonthEndDate = calendar.monthrange(startYear, startMonth)[1] 
             
-            start = datetime.date(self.data.projections[i][self.data.PROJECTIONS_START_YEAR],
+            projectionStart = datetime.date(self.data.projections[i][self.data.PROJECTIONS_START_YEAR],
                     self.data.projections[i][self.data.PROJECTIONS_START_MONTH],
                     self.data.projections[i][self.data.PROJECTIONS_START_DAY])
             
             if self.data.projections[i][self.data.PROJECTIONS_END_YEAR] != 0:
-                end = datetime.date(self.data.projections[i][self.data.PROJECTIONS_END_YEAR],
+                projectionEnd = datetime.date(self.data.projections[i][self.data.PROJECTIONS_END_YEAR],
                         self.data.projections[i][self.data.PROJECTIONS_END_MONTH],
                         self.data.projections[i][self.data.PROJECTIONS_END_DAY])
-                days = (end-start).days
-                if days > self.defaultLoadOut:
-                    days = self.defaultLoadOut
+                projectionDays = (projectionEnd-projectionStart).days
+                daysFromToday = (projectionEnd-self.currentDate).days
+                #if days > self.defaultLoadOut:
+                #    days = self.defaultLoadOut
             else:
                 days = self.defaultLoadOut
             
