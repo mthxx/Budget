@@ -5,6 +5,34 @@ from budget.edit_mode import Edit_Entry
 class Projections():
         
     def __init__(self, data):
+        
+        ## Entry Row Indexes
+        # Content Grid
+        self.ENTRY_ROW_LAYOUT_GRID_INDEX = 0           # Element
+
+        # Layout Widget Indexes
+        self.ENTRY_ROW_LAYOUT_WIDGET_INDEX = 1         # Array
+        #--
+        self.ENTRY_ROW_CATEGORY_LABEL_INDEX = 0        # Element
+        self.ENTRY_ROW_CATEGORY_ID_INDEX = 1           # Element
+        self.ENTRY_ROW_DATE_LABEL_INDEX = 2            # Element
+        self.ENTRY_ROW_CURRENCY_LABEL_INDEX = 3        # Element
+        self.ENTRY_ROW_COST_LABEL_INDEX = 4            # Element
+        self.ENTRY_ROW_DESCRIPTION_LABEL_INDEX = 5     # Element
+        self.ENTRY_ROW_EDIT_BUTTON_INDEX = 6
+
+        # Entry Row Unique ID
+        self.ENTRY_ROW_ENTRY_GRID_INDEX = 2  # Grid
+        
+        # Entry Row Unique ID
+        self.ENTRY_ROW_COST_GRID_INDEX = 3   # Grid
+        
+        # Entry Row Unique ID
+        self.ENTRY_ROW_UNIQUE_ID_INDEX = 4   # Element
+
+        # Entry Row Content Grid
+        self.ENTRY_ROW_CONTENT_GRID_INDEX = 5 # Grid
+        
         self.data = data
         self.projections = []
         self.grid = Gtk.Grid(name="projectionsGrid")        
@@ -590,9 +618,6 @@ class Projections():
                         
                         # Create Edit Popover
                         self.editButton = Gtk.Button()
-                        self.editView = Gtk.Popover.new(self.editButton)
-                        self.edit_view = Edit_Entry(self.data, "projection")
-                        self.editView.add(self.edit_view.editGrid)
                         
                         # Style Widgets
                         self.entryGrid.set_halign(Gtk.Align.CENTER)
@@ -646,10 +671,19 @@ class Projections():
 
                         self.transactionType = ""
                         
-                        self.entryRows.append([self.layoutGrid, [self.categoryLabel, self.categoryIndex, self.dateLabel, self.currencyLabel, self.costLabel, self.descriptionLabel, self.editButton, self.titleLabel], self.entryGrid, self.costGrid, self.projections[i][self.data.PROJECTIONS_ID]])
-                        self.editButton.connect("clicked", self.edit_view.on_editDropdown_clicked, self.editView, self.projections[i][self.data.PROJECTIONS_ID], self.entryRows[self.count],  self.transactionViewGrid, self.projections[i])
+                        #self.entryRows.append([self.layoutGrid, [self.categoryLabel, self.categoryIndex, self.dateLabel, self.currencyLabel, self.costLabel, self.descriptionLabel, self.editButton, self.titleLabel], self.entryGrid, self.costGrid, self.projections[i][self.data.PROJECTIONS_ID]])
+                        self.entryRows.append([self.layoutGrid, [self.categoryLabel, self.categoryIndex, self.dateLabel, self.currencyLabel, self.costLabel, self.descriptionLabel, self.editButton, self.titleLabel], self.entryGrid, self.costGrid, self.projections[i][self.data.PROJECTIONS_ID], self.contentGrid])
+                        #self.editButton.connect("clicked", self.editButton_clicked, i)
+                        #self.editButton.connect("clicked", self.edit_view.on_editDropdown_clicked, self.editView, self.projections[i][self.data.PROJECTIONS_ID], self.entryRows[self.count],  self.transactionViewGrid, self.projections[i])
                         self.count += 1
                         self.transactionViewGrid.show_all() 
+    
+    def editButton_clicked(self, button, i):
+        print(i)
+        self.editView = Gtk.Popover.new(self.entryRows[i][self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_EDIT_BUTTON_INDEX])
+        self.edit_view = Edit_Entry(self.data, "projection")
+        self.editView.add(self.edit_view.editGrid)
+        self.edit_view.editDropdown_clicked(self.editView, self.data.transactions[i][self.data.TRANSACTION_ID_INDEX], self.entryRows[i], self.entryRows[i][self.ENTRY_ROW_CONTENT_GRID_INDEX], self.data.transactions[i])
  
     def generate_month_view(self):
         self.monthTitleLabel = Gtk.Label()

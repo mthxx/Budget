@@ -259,6 +259,21 @@ class Edit_Entry(Gtk.Window):
         self.contentGrid.queue_draw()
         self.editGrid.show_all()
     
+    def editDropdown_clicked(self, editPopover, unique_id, entryRow, contentGrid, dataEntry):
+        if editPopover.get_visible():
+            editPopover.hide()
+        else:
+            editPopover.show_all()
+            self.confirmLabelLine1.hide()
+            self.confirmLabelLine2.hide()
+            self.deleteSelectorBox.hide()
+
+        self.editPopover = editPopover
+        self.unique_id = unique_id
+        self.entryRow = entryRow
+        self.contentGrid = contentGrid
+        self.dataEntry = dataEntry
+    
     def on_editDropdown_clicked(self, button, editPopover, unique_id, entryRow, contentGrid, dataEntry):
         if editPopover.get_visible():
             editPopover.hide()

@@ -35,6 +35,9 @@ class Transactions():
         # Entry Row Category
         self.ENTRY_ROW_TYPE_INDEX = 5        # Element
         
+        # Entry Row Content Grid
+        self.ENTRY_ROW_CONTENT_GRID_INDEX = 6 # Grid
+        
         # Menu List Box Indexes
         self.EDIT_CATEGORY_TITLE = 0
         self.EDIT_CATEGORY_ENTRY = 1
@@ -229,9 +232,6 @@ class Transactions():
             
         # Create Edit Popover
         self.editButton = Gtk.Button()
-        self.editView = Gtk.Popover.new(self.editButton)
-        self.edit_view = Edit_Entry(self.data, "transaction")
-        self.editView.add(self.edit_view.editGrid)
 
         # Style Widgets
         self.entryGrid.set_halign(Gtk.Align.CENTER)
@@ -256,7 +256,7 @@ class Transactions():
         self.editButton.set_relief(Gtk.ReliefStyle.NONE)
         self.editButton.set_valign(Gtk.Align.START)
         self.editButton.set_opacity(.5)
-
+        
         # Attach Labels
         self.costGrid.attach(self.currencyLabel, 0,1,1,1)
         self.costGrid.attach(self.costLabel, 1,1,1,1)
@@ -286,9 +286,17 @@ class Transactions():
             if self.data.transactionsMenu[j][self.data.MENU_ID_INDEX] == self.data.transactions[i][self.data.TRANSACTION_MENU_INDEX][self.data.TRANSACTION_MENU_ID_INDEX]:
                 self.transactionType = self.data.transactionsMenu[j][self.data.MENU_TYPE_INDEX]
         
-        self.entryRows.insert(i, [self.layoutGrid, [self.categoryLabel, self.categoryIndex, self.dateLabel, self.currencyLabel, self.costLabel, self.descriptionLabel, self.editButton], self.entryGrid, self.costGrid, self.data.transactions[i][self.data.TRANSACTION_ID_INDEX], self.transactionType])
-        self.editButton.connect("clicked", self.edit_view.on_editDropdown_clicked, self.editView, self.data.transactions[i][self.data.TRANSACTION_ID_INDEX], self.entryRows[i],  self.contentGrid, self.data.transactions[i])
+        self.entryRows.insert(i, [self.layoutGrid, [self.categoryLabel, self.categoryIndex, self.dateLabel, self.currencyLabel, self.costLabel, self.descriptionLabel, self.editButton], self.entryGrid, self.costGrid, self.data.transactions[i][self.data.TRANSACTION_ID_INDEX], self.transactionType, self.contentGrid])
+        self.editButton.connect("clicked", self.editButton_clicked, i)
+        # self.editButton.connect("clicked", self.edit_view.on_editDropdown_clicked, self.entryRows[i][self.ENTRY_ROW_EDIT_VIEW_INDEX], self.data.transactions[i][self.data.TRANSACTION_ID_INDEX], self.entryRows[i], self.entryRows[i][self.ENTRY_ROW_CONTENT_GRID_INDEX], self.data.transactions[i])
         self.contentGrid.show_all() 
+
+    def editButton_clicked(self, button, i):
+        print(i)
+        self.editView = Gtk.Popover.new(self.entryRows[i][self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_EDIT_BUTTON_INDEX])
+        self.edit_view = Edit_Entry(self.data, "transaction")
+        self.editView.add(self.edit_view.editGrid)
+        self.edit_view.editDropdown_clicked(self.editView, self.data.transactions[i][self.data.TRANSACTION_ID_INDEX], self.entryRows[i], self.entryRows[i][self.ENTRY_ROW_CONTENT_GRID_INDEX], self.data.transactions[i])
 
     def category_edit_mode(self, index):
         self.menuListBox.get_row_at_index(index).get_child().get_children()[self.EDIT_CATEGORY_TITLE].hide()
