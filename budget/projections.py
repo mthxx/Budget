@@ -7,15 +7,19 @@ class Projections():
     def __init__(self, data):
         self.data = data
         self.projections = []
-        self.defaultLoadOut = 365
         self.grid = Gtk.Grid(name="projectionsGrid")        
         self.entryRows = []
         self.totalSum = 0  
         
-        self.currentDay = datetime.datetime.now().day
-        self.currentMonth = datetime.datetime.now().month
-        self.currentYear = datetime.datetime.now().year
+        self.currentDay = datetime.datetime.today().day
+        self.currentMonth = datetime.datetime.today().month
+        self.currentYear = datetime.datetime.today().year
         self.currentDate = datetime.date(self.currentYear, self.currentMonth, self.currentDay)
+        
+        self.projectionCapYear = (datetime.date.today() + datetime.timedelta(6*365/12)).year
+        self.projectionCapMonth = (datetime.date.today() + datetime.timedelta(6*365/12)).month
+        self.projectionCapDay = calendar.monthrange(self.projectionCapYear, self.projectionCapMonth)[1]
+        self.projectionCapDate = (datetime.date.today() + datetime.timedelta(6*365/12))
 
         # Create Grids
         self.sideGrid = Gtk.Grid()
@@ -431,10 +435,6 @@ class Projections():
                         self.data.projections[i][self.data.PROJECTIONS_END_DAY])
                 projectionDays = (projectionEnd-projectionStart).days
                 daysFromToday = (projectionEnd-self.currentDate).days
-                #if days > self.defaultLoadOut:
-                #    days = self.defaultLoadOut
-            else:
-                days = self.defaultLoadOut
             
             # Create Daily Projections
             if self.data.projections[i][self.data.PROJECTIONS_FREQUENCY] == "One Time":
@@ -442,7 +442,7 @@ class Projections():
            
             # Create Daily Projections
             if self.data.projections[i][self.data.PROJECTIONS_FREQUENCY] == "Daily":
-                for j in range(days):
+                while self.projectionIsValid(startYear, startMonth, startDay):
                     self.add_projection(i, startYear, startMonth, startDay)
                     if startDay >= currentMonthEndDate:
                         startDay = 0
@@ -457,7 +457,7 @@ class Projections():
             # Create Weekly Projections
             if self.data.projections[i][self.data.PROJECTIONS_FREQUENCY] == "Weekly":
                 dayOfWeek = datetime.datetime(startYear, startMonth, startDay).weekday()
-                for j in range(days):
+                while self.projectionIsValid(startYear, startMonth, startDay):
                     if dayOfWeek == datetime.datetime(startYear, startMonth, startDay).weekday():
                         self.add_projection(i, startYear, startMonth, startDay)
                     if startDay >= currentMonthEndDate:
@@ -474,7 +474,7 @@ class Projections():
             if self.data.projections[i][self.data.PROJECTIONS_FREQUENCY] == "Bi-Weekly":
                 dayOfWeek = datetime.datetime(startYear, startMonth, startDay).weekday()
                 self.flag = True;
-                for j in range(days):
+                while self.projectionIsValid(startYear, startMonth, startDay):
                     if dayOfWeek == datetime.datetime(startYear, startMonth, startDay).weekday():
                         if self.flag == True:
                             self.add_projection(i, startYear, startMonth, startDay)
@@ -494,7 +494,7 @@ class Projections():
             # Create Monthly On Date Projections
             if self.data.projections[i][self.data.PROJECTIONS_FREQUENCY] == "Monthly on Date":
                 recurringDate = startDay
-                for j in range(days):
+                while self.projectionIsValid(startYear, startMonth, startDay):
                     if startDay == recurringDate:
                         self.add_projection(i, startYear, startMonth, startDay)
                     if startDay >= currentMonthEndDate:
@@ -511,7 +511,7 @@ class Projections():
             if self.data.projections[i][self.data.PROJECTIONS_FREQUENCY] == "Monthly on Weekday":
                 dayOfWeek = datetime.datetime(startYear, startMonth, startDay).weekday()
                 self.count = 0;
-                for j in range(days):
+                while self.projectionIsValid(startYear, startMonth, startDay):
                     if dayOfWeek == datetime.datetime(startYear, startMonth, startDay).weekday():
                         if self.count == 0:
                             self.add_projection(i, startYear, startMonth, startDay)
@@ -536,7 +536,7 @@ class Projections():
                 self.recurringYear = startYear
                 self.recurringMonth = startMonth
                 self.recurringDay = startDay
-                for j in range(days):
+                while self.projectionIsValid(startYear, startMonth, startDay):
                     if self.recurringMonth == startMonth and self.recurringDay == startDay:
                             self.add_projection(i, startYear, startMonth, startDay)
                     if startDay >= currentMonthEndDate:
@@ -1021,7 +1021,19 @@ class Projections():
                 self.monthCalendarGrid.attach(self.monthGrid,(i-35),6,1,1)
 
             self.monthCalendarGrid.show_all()
-    
+
+    def projectionIsValid(self, startYear, startMonth, startDay):
+        if startYear <= self.projectionCapYear:
+            if startYear < self.projectionCapYear:
+                return True
+            elif startYear == self.projectionCapYear:
+                if startMonth <= self.projectionCapMonth:
+                    return True
+                else:
+                    return False
+            else:
+                return False
+
     def redisplay_info(self):
         self.projections = []
         self.generate_transactions_view()
