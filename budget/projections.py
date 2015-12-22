@@ -28,16 +28,22 @@ class Projections():
         self.ENTRY_ROW_COST_GRID_INDEX = 3   # Grid
         
         # Entry Row Unique ID
+        # This represents the unique id of a projection series
         self.ENTRY_ROW_UNIQUE_ID_INDEX = 4   # Element
 
         # Entry Row Content Grid
         self.ENTRY_ROW_CONTENT_GRID_INDEX = 5 # Grid
+        
+        # Entry Row Projection Unique ID
+        # This ID represents the specific row of a projection
+        self.ENTRY_ROW_PROJECTION_UNIQUE_ID_INDEX = 6    # Element
         
         self.data = data
         self.projections = []
         self.grid = Gtk.Grid(name="projectionsGrid")        
         self.entryRows = []
         self.totalSum = 0  
+        self.projectionUniqueID = 0
         
         self.currentDay = datetime.datetime.today().day
         self.currentMonth = datetime.datetime.today().month
@@ -671,16 +677,15 @@ class Projections():
 
                         self.transactionType = ""
                         
-                        self.entryRows.append([self.layoutGrid, [self.categoryLabel, self.categoryIndex, self.dateLabel, self.currencyLabel, self.costLabel, self.descriptionLabel, self.editButton, self.titleLabel], self.entryGrid, self.costGrid, self.projections[i][self.data.PROJECTIONS_ID], self.contentGrid])
-                        self.editButton.connect("clicked", self.editButton_clicked, self.projections[i][self.data.PROJECTIONS_ID], self.count)
+                        self.entryRows.append([self.layoutGrid, [self.categoryLabel, self.categoryIndex, self.dateLabel, self.currencyLabel, self.costLabel, self.descriptionLabel, self.editButton, self.titleLabel], self.entryGrid, self.costGrid, self.projections[i][self.data.PROJECTIONS_ID], self.contentGrid, self.projectionUniqueID])
+                        self.editButton.connect("clicked", self.editButton_clicked, self.projectionUniqueID)
+                        self.projectionUniqueID += 1
                         self.count += 1
                         self.transactionViewGrid.show_all() 
     
-    def editButton_clicked(self, button, uniqueID, count):
-        print(uniqueID)
-
+    def editButton_clicked(self, button, uniqueID):
         for i in range(0,len(self.entryRows)):
-            if self.entryRows[i][self.ENTRY_ROW_UNIQUE_ID_INDEX] == uniqueID:
+            if self.entryRows[i][self.ENTRY_ROW_PROJECTION_UNIQUE_ID_INDEX] == uniqueID:
                 self.editView = Gtk.Popover.new(self.entryRows[i][self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_EDIT_BUTTON_INDEX])
                 self.edit_view = Edit_Entry(self.data, "projection")
                 self.editView.add(self.edit_view.editGrid)

@@ -292,8 +292,6 @@ class Transactions():
         self.contentGrid.show_all() 
 
     def editButton_clicked(self, button, uniqueID):
-        print(uniqueID)
-
         for i in range(0,len(self.entryRows)):
             if self.entryRows[i][self.ENTRY_ROW_UNIQUE_ID_INDEX] == uniqueID:
                 self.editView = Gtk.Popover.new(self.entryRows[i][self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_EDIT_BUTTON_INDEX])
