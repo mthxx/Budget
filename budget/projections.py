@@ -671,19 +671,20 @@ class Projections():
 
                         self.transactionType = ""
                         
-                        #self.entryRows.append([self.layoutGrid, [self.categoryLabel, self.categoryIndex, self.dateLabel, self.currencyLabel, self.costLabel, self.descriptionLabel, self.editButton, self.titleLabel], self.entryGrid, self.costGrid, self.projections[i][self.data.PROJECTIONS_ID]])
                         self.entryRows.append([self.layoutGrid, [self.categoryLabel, self.categoryIndex, self.dateLabel, self.currencyLabel, self.costLabel, self.descriptionLabel, self.editButton, self.titleLabel], self.entryGrid, self.costGrid, self.projections[i][self.data.PROJECTIONS_ID], self.contentGrid])
-                        #self.editButton.connect("clicked", self.editButton_clicked, i)
-                        #self.editButton.connect("clicked", self.edit_view.on_editDropdown_clicked, self.editView, self.projections[i][self.data.PROJECTIONS_ID], self.entryRows[self.count],  self.transactionViewGrid, self.projections[i])
+                        self.editButton.connect("clicked", self.editButton_clicked, self.projections[i][self.data.PROJECTIONS_ID], self.count)
                         self.count += 1
                         self.transactionViewGrid.show_all() 
     
-    def editButton_clicked(self, button, i):
-        print(i)
-        self.editView = Gtk.Popover.new(self.entryRows[i][self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_EDIT_BUTTON_INDEX])
-        self.edit_view = Edit_Entry(self.data, "projection")
-        self.editView.add(self.edit_view.editGrid)
-        self.edit_view.editDropdown_clicked(self.editView, self.data.transactions[i][self.data.TRANSACTION_ID_INDEX], self.entryRows[i], self.entryRows[i][self.ENTRY_ROW_CONTENT_GRID_INDEX], self.data.transactions[i])
+    def editButton_clicked(self, button, uniqueID, count):
+        print(uniqueID)
+
+        for i in range(0,len(self.entryRows)):
+            if self.entryRows[i][self.ENTRY_ROW_UNIQUE_ID_INDEX] == uniqueID:
+                self.editView = Gtk.Popover.new(self.entryRows[i][self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_EDIT_BUTTON_INDEX])
+                self.edit_view = Edit_Entry(self.data, "projection")
+                self.editView.add(self.edit_view.editGrid)
+                self.edit_view.editDropdown_clicked(self.editView, self.projections[i][self.data.PROJECTIONS_ID], self.entryRows[i], self.transactionViewGrid, self.projections[i])
  
     def generate_month_view(self):
         self.monthTitleLabel = Gtk.Label()
