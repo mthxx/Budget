@@ -268,6 +268,7 @@ class Edit_Entry(Gtk.Window):
             self.confirmLabelLine2.hide()
             self.deleteSelectorBox.hide()
 
+        print(unique_id)
         self.editPopover = editPopover
         self.unique_id = unique_id
         self.entryRow = entryRow
@@ -282,7 +283,6 @@ class Edit_Entry(Gtk.Window):
             self.confirmLabelLine1.hide()
             self.confirmLabelLine2.hide()
             self.deleteSelectorBox.hide()
-
         self.editPopover = editPopover
         self.unique_id = unique_id
         self.entryRow = entryRow

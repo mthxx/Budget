@@ -1,0 +1,5 @@
+* Significant Performance Improvements
+* Far screen refreshed
+* Fixed projections not calculating properly when rolling over to a new year
+* Projections now calculate 6 months out from the current date, not from the original projection start date.
+

@@ -678,18 +678,18 @@ class Projections():
                         self.transactionType = ""
                         
                         self.entryRows.append([self.layoutGrid, [self.categoryLabel, self.categoryIndex, self.dateLabel, self.currencyLabel, self.costLabel, self.descriptionLabel, self.editButton, self.titleLabel], self.entryGrid, self.costGrid, self.projections[i][self.data.PROJECTIONS_ID], self.contentGrid, self.projectionUniqueID])
-                        self.editButton.connect("clicked", self.editButton_clicked, self.projectionUniqueID)
+                        self.editButton.connect("clicked", self.editButton_clicked, self.projectionUniqueID, self.projections[i])
                         self.projectionUniqueID += 1
                         self.count += 1
                         self.transactionViewGrid.show_all() 
     
-    def editButton_clicked(self, button, uniqueID):
+    def editButton_clicked(self, button, uniqueID, projection):
         for i in range(0,len(self.entryRows)):
             if self.entryRows[i][self.ENTRY_ROW_PROJECTION_UNIQUE_ID_INDEX] == uniqueID:
                 self.editView = Gtk.Popover.new(self.entryRows[i][self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_EDIT_BUTTON_INDEX])
                 self.edit_view = Edit_Entry(self.data, "projection")
                 self.editView.add(self.edit_view.editGrid)
-                self.edit_view.editDropdown_clicked(self.editView, self.projections[i][self.data.PROJECTIONS_ID], self.entryRows[i], self.transactionViewGrid, self.projections[i])
+                self.edit_view.editDropdown_clicked(self.editView, self.entryRows[i][self.ENTRY_ROW_UNIQUE_ID_INDEX], self.entryRows[i], self.transactionViewGrid, projection)
  
     def generate_month_view(self):
         self.monthTitleLabel = Gtk.Label()
