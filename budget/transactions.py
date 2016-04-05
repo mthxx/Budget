@@ -7,7 +7,8 @@ import datetime, time
 class Transactions():
 
     def __init__(self, data):
-        
+
+
         ## Entry Row Indexes
         # Content Grid
         self.ENTRY_ROW_LAYOUT_GRID_INDEX = 0           # Element
@@ -472,8 +473,6 @@ class Transactions():
         self.button.add(self.image)
         self.button.show_all()
 
-        self.editView = Gtk.Popover.new(self.button)
-
         self.editGrid = Gtk.Grid()
 
         self.confirmLabelLine1 = Gtk.Label("Are you sure?")
@@ -493,19 +492,17 @@ class Transactions():
         self.deleteSelectorBox.set_margin_bottom(10)
         self.deleteSelectorBox.set_margin_end(5)
 
-        # Connect Widget Handlers
-        self.button.connect("clicked", self.on_deleteButton_clicked, self.editView)
-        self.deleteCancelButton.connect("clicked", self.on_deleteButton_clicked, self.editView)
-        self.deleteConfirmButton.connect("clicked", self.delete_category_confirm, label)
-
         self.deleteSelectorBox.add(self.deleteCancelButton)
         self.deleteSelectorBox.add(self.deleteConfirmButton)
-        
+
         self.editGrid.attach(self.confirmLabelLine1, 0, 0, 2, 1)
         self.editGrid.attach(self.confirmLabelLine2, 0, 1, 2, 1)
         self.editGrid.attach(self.deleteSelectorBox, 0, 2, 2, 1)
-        
-        self.editView.add(self.editGrid)
+
+        # Connect Widget Handlers
+        self.button.connect("clicked", self.on_deleteButton_clicked, self.deleteCancelButton, self.editGrid, "create")
+        #self.deleteCancelButton.connect("clicked", self.on_deleteButton_clicked, self.editGrid)
+        self.deleteConfirmButton.connect("clicked", self.delete_category_confirm, label)
 
         return self.button
     
@@ -924,11 +921,17 @@ class Transactions():
             self.range_visible(True)
             self.filter_entries()
 
-    def on_deleteButton_clicked(self, button, editView):
-        if editView.get_visible():
-            editView.hide()
-        else:
-            editView.show_all()
+    def on_deleteButton_clicked(self, button, deleteCancelButton, editGrid, event):
+
+        if event == "create":
+            self.editView = Gtk.Popover.new(button)
+            self.editView.add(editGrid)
+            deleteCancelButton.connect("clicked", self.on_deleteButton_clicked, deleteCancelButton, editGrid, "destroy")
+            self.editView.show_all()
+
+        if event == "destroy":
+            self.editView.remove(editGrid)
+            self.editView.destroy()
 
     def on_selectButton_clicked(self, *args):
         if self.editMode == 0:
