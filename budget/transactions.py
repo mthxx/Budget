@@ -924,6 +924,10 @@ class Transactions():
     def on_deleteButton_clicked(self, button, deleteCancelButton, editGrid, event):
 
         if event == "create":
+            if(editGrid.get_parent()) != None:
+                self.tempPopover = editGrid.get_parent()
+                self.tempPopover.remove(editGrid)
+                self.tempPopover.destroy()
             self.editView = Gtk.Popover.new(button)
             self.editView.add(editGrid)
             deleteCancelButton.connect("clicked", self.on_deleteButton_clicked, deleteCancelButton, editGrid, "destroy")
