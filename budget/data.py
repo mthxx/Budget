@@ -418,6 +418,9 @@ class Data():
                 row = [(str(i), str(i + 1))]
                 cur.execute('UPDATE categories set categoryOrder = ? where categoryOrder = ?', row[0])
 
+            # Delete all aggregate entries for the deleted category
+            cur.execute('delete from aggregates where categoryID = ' + str(uniqueID))
+
             con.commit()
             
             if self.optimizationTesting == True:
