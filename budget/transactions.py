@@ -514,6 +514,9 @@ class Transactions():
                 for j in range(0, len(self.data.transactionsMenu)):
                     # Find matching menu item and uniqueID in database
                     if self.data.transactionsMenu[j][self.data.MENU_NAME_INDEX] == self.menuListBox.get_row_at_index(i).get_child().get_children()[0].get_label():
+                        for k in range(0, len(self.entryRows)):
+                            if self.data.transactionsMenu[j][self.data.MENU_ID_INDEX] == self.entryRows[k][self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_CATEGORY_ID_INDEX]:
+                                self.entryRows[k][self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_CATEGORY_LABEL_INDEX].set_label("Uncategorized")
                         self.data.delete_category(self.data.transactionsMenu[j][self.data.MENU_ID_INDEX])
                         self.generate_sidebars()
                         self.editMode = 0
