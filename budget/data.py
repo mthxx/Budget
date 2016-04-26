@@ -435,8 +435,11 @@ class Data():
                     self.update_aggregates(categoryIndex, self.yearMenu[i], self.allMonthMenu[j][0])
             # This second refresh is required to update the data array for the transactions sidebar.
             self.refresh_data()
-
-
+            for i in range(1,len(self.yearMenu)):
+                for j in range(1, len(self.allMonthMenu)):
+                    self.overview.update_values(categoryIndex, self.yearMenu[i], self.allMonthMenu[j][0])
+                    self.overview.update_values(-1, self.yearMenu[i], self.allMonthMenu[j][0])
+                    self.overview.update_values(-2, self.yearMenu[i], self.allMonthMenu[j][0])
 
 
     def delete_transaction(self, uniqueID):
