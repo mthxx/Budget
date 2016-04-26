@@ -7,9 +7,9 @@ class Data():
     # Database location
     home = os.path.expanduser("~")
     local_path = home + '/.local/share/budget'
-    db_path = local_path + '/budget.db'
+    #db_path = local_path + '/budget.db'
     # For a separate development database, comment out the above 3 lines and uncomment the 1 line below
-    # db_path = 'budget.db'
+    db_path = 'dev-budget.db'
     
     #Intialize Row Arrays
     tables_row = [("table", "categories"),("table", "transactions"),("table", "projections"),("table", "frequency"),("table", "categoryType"),("table", "aggregates")]
@@ -128,7 +128,7 @@ class Data():
         self.frequencyMenu = []
         self.aggregates = []
 
-        self.current_year = 2015
+        self.current_year = 2016
         self.transaction_view = 0
         self.overview = 0
         self.projections_view = 0
@@ -424,14 +424,18 @@ class Data():
                 self.deleteCategoryEnd = time.time()
                 self.calculate_time("Delete Category", self.deleteCategoryStart, self.deleteCategoryEnd)
             
-            self.refresh_data()   
-            
             # Update all aggregates that have uncategorized items
+            # This first refresh is required to update the data arrays used to generate the aggregates
+            self.refresh_data()
             for i in range(1,len(self.yearMenu)):
                 for j in range(1, len(self.allMonthMenu)):
                     self.update_aggregates(categoryIndex, self.yearMenu[i], self.allMonthMenu[j][0])
+            # This second refresh is required to update the data array for the transactions sidebar.
+            self.refresh_data()
 
-    
+
+
+
     def delete_transaction(self, uniqueID):
         if(os.path.isfile(self.db_path)):
             if self.optimizationTesting == True:
