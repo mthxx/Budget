@@ -7,9 +7,9 @@ class Data():
     # Database location
     home = os.path.expanduser("~")
     local_path = home + '/.local/share/budget'
-    #db_path = local_path + '/budget.db'
+    db_path = local_path + '/budget.db'
     # For a separate development database, comment out the above 3 lines and uncomment the 1 line below
-    db_path = 'dev-budget.db'
+    #db_path = 'dev-budget.db'
     
     #Intialize Row Arrays
     tables_row = [("table", "categories"),("table", "transactions"),("table", "projections"),("table", "frequency"),("table", "categoryType"),("table", "aggregates")]
