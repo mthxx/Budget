@@ -368,6 +368,11 @@ class Overview():
                     else:
                         self.entryRows[j][self.ENTRY_ROW_VALUES][i].override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(self.highlightColor, self.highlightColor, self.highlightColor, self.highlightColor))
    
+    def update_deleted_category(self, categoryID):
+        for i in range(1,len(self.data.yearMenu)):
+            for j in range(1,len(self.data.allMonthMenu)):
+                self.update_values(categoryID, self.data.yearMenu[i], self.data.allMonthMenu[j][0])
+
 
     def update_values(self, categoryID, year, month):
         for i in range(0,len(self.data.transactionsMenu)):

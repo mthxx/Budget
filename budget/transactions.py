@@ -517,9 +517,17 @@ class Transactions():
                         for k in range(0, len(self.entryRows)):
                             if self.data.transactionsMenu[j][self.data.MENU_ID_INDEX] == self.entryRows[k][self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_CATEGORY_ID_INDEX]:
                                 self.entryRows[k][self.ENTRY_ROW_LAYOUT_WIDGET_INDEX][self.ENTRY_ROW_CATEGORY_LABEL_INDEX].set_label("Uncategorized")
-                        self.data.delete_category(self.data.transactionsMenu[j][self.data.MENU_ID_INDEX])
+                        self.deleted_menu_id = self.data.transactionsMenu[j][self.data.MENU_ID_INDEX]
+                        self.data.delete_category(self.deleted_menu_id)
                         self.generate_sidebars()
                         self.editMode = 0
+                        # Update overview
+                        self.data.overview.update_deleted_category(-1)
+                        self.data.overview.update_deleted_category(-2)
+                        for k in range(0, len(self.data.overview.entryRows)):
+                            if (self.data.overview.entryRows[k][self.data.overview.CATEGORY_NAME_INDEX] == self.deleted_menu_id):
+                                for l in range(0,len(self.data.overview.entryRows[k][self.data.overview.ENTRY_ROW_VALUES])):
+                                    self.data.overview.entryRows[k][self.data.overview.ENTRY_ROW_VALUES][l].destroy()
                         # If row is found, break out of loop.
                         return
     
