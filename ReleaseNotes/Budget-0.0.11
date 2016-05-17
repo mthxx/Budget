@@ -3,5 +3,6 @@
 * Fixed projections not calculating properly when rolling over to a new year
 * Projections now calculate 6 months out from the current date, not from the original projection start date.
 * Removed pre-generated popover elements for each entry. Popovers now only generate when clicked.
+* Fixed entries disappeared when it's category is deleted. Entries now show up under "uncategorized"
 * Many Bug Fixes
 
